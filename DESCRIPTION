@@ -1,5 +1,5 @@
 Package: aemetools
-Title: Accompanying set of tools to assist the Aquatic Ecosystem Model Ensemble package.
+Title: Tools to assist the Aquatic Ecosystem Model Ensemble package
 Version: 0.0.0.9000
 Authors@R: 
     c(person("Tadhg", "Moore", role = c("aut","cre"),
@@ -16,7 +16,8 @@ Imports:
     airGR,
     dplyr,
     ggplot2,
-    sf
+    sf,
+    units
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
