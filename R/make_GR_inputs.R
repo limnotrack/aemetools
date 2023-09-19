@@ -36,7 +36,7 @@ make_GR_inputs <- function(id, reaches, lake, catchment, flow = NULL,
   # Remove reach if it goes through the lake
   upstr <- sf::st_difference(upstr, lake)
 
-  sub_catch <- catchment %>%
+  sub_catch <- catchment |>
     dplyr::filter(nzsegment %in% upstr$nzsegment)
 
 
@@ -58,7 +58,7 @@ make_GR_inputs <- function(id, reaches, lake, catchment, flow = NULL,
   # Calculate catchment area for conversion from m3/s to mm/day
   catch_area <- units::drop_units(sf::st_area(tot_catchm)) #m^2
 
-  flow <- flow %>%
+  flow <- flow |>
     dplyr::mutate(Qmm = 1000 * (flow[, 2] * 86400 / catch_area),
                   Qm3 = flow[, 2])
 
@@ -103,23 +103,7 @@ make_GR_inputs <- function(id, reaches, lake, catchment, flow = NULL,
                                           Precip = all$MET_pprain,
                                           PotEvap = all$MET_poteva)
 
-  out <- list(InputsModel = InputsModel, data = all, start = start,
-              FUN_MOD = FUN_MOD, catchment_area = catch_area)
-  return(out)#' @noRd
-  make_RunOptions <- function(warmup = NULL, run_index,
-                              IniStates = NULL, IniResLevels = NULL) {
-    if (!is.null(warmup)) {
-      IndPeriod_WarmUp <- warmup
-    } else {
-      IndPeriod_WarmUp <- NULL
-    }
+  list(InputsModel = InputsModel, data = all, start = start, FUN_MOD = FUN_MOD,
+       catchment_area = catch_area)
 
-    Ind_Run <- run_index
-
-    airGR::CreateRunOptions(FUN_MOD = inputs$FUN_MOD,
-                            InputsModel = inputs$InputsModel,
-                            IndPeriod_Run = Ind_Run,
-                            IniStates = NULL, IniResLevels = NULL,
-                            IndPeriod_WarmUp = IndPeriod_WarmUp)
-  }
 }
