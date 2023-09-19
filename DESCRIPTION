@@ -1,0 +1,22 @@
+Package: aemetools
+Title: Accompanying set of tools to assist the Aquatic Ecosystem Model Ensemble package.
+Version: 0.0.0.9000
+Authors@R: 
+    c(person("Tadhg", "Moore", role = c("aut","cre"),
+    email = "tadhg.moore6@gmail.com"),
+    person("Chris", "McBride", role = "aut",
+    email = "chris@limnotrack.com"))
+Description: Run simple hydrological models to generate inflow inputs for the
+    AEME package.
+License: GPL (>= 2)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: 
+    airGR,
+    dplyr,
+    ggplot2,
+    sf
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
