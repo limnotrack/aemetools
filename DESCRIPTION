@@ -13,6 +13,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
+    AEME (>= 0.1.0),
     airGR,
     dplyr,
     ggplot2,
@@ -24,3 +25,5 @@ Imports:
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Remotes:  
+    github::limnotrack/AEME
