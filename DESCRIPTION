@@ -16,7 +16,10 @@ Imports:
     airGR,
     dplyr,
     ggplot2,
+    parallel,
+    rdrop2,
     sf,
+    stars,
     units
 Suggests: 
     testthat (>= 3.0.0)
