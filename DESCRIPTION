@@ -16,14 +16,19 @@ Imports:
     AEME (>= 0.1.0),
     airGR,
     dplyr,
+    ecmwfr,
     ggplot2,
+    job,
     parallel,
+    plyr,
     rdrop2,
     sf,
     stars,
-    units
+    stats,
+    units,
+    utils
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Remotes:  
+Remotes: 
     github::limnotrack/AEME
