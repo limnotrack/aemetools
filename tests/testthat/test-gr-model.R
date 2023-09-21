@@ -3,9 +3,9 @@ test_that("can create GR model inputs", {
   data_dir <- system.file("extdata/hydro/", package = "aemetools")
   lake <- readRDS(file.path(data_dir, "lake.rds"))
   reaches <- readRDS(file.path(data_dir, "reaches.rds"))
-  catchment <- readRDS(file.path(data_dir, "catchment.rds"))
+  catchments <- readRDS(file.path(data_dir, "catchments.rds"))
   met <- readRDS(file.path(data_dir, "met.rds"))
-  flow <- readRDS(file.path(data_dir, "flow.rds"))
+  obs_flow <- readRDS(file.path(data_dir, "obs_flow.rds"))
   FUN_MOD <- airGR::RunModel_GR4J
   id <- 4087861
 
@@ -17,7 +17,7 @@ test_that("can create GR model inputs", {
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
-                           catchment = catchment, flow = flow, met = met,
+                           catchments = catchments, obs_flow = obs_flow, met = met,
                            lat = lat, FUN_MOD = FUN_MOD,
                            plot = TRUE)
 
@@ -32,9 +32,9 @@ test_that("can calibrate GR model", {
   data_dir <- system.file("extdata/hydro/", package = "aemetools")
   lake <- readRDS(file.path(data_dir, "lake.rds"))
   reaches <- readRDS(file.path(data_dir, "reaches.rds"))
-  catchment <- readRDS(file.path(data_dir, "catchment.rds"))
+  catchments <- readRDS(file.path(data_dir, "catchments.rds"))
   met <- readRDS(file.path(data_dir, "met.rds"))
-  flow <- readRDS(file.path(data_dir, "flow.rds"))
+  obs_flow <- readRDS(file.path(data_dir, "obs_flow.rds"))
   FUN_MOD <- airGR::RunModel_GR4J
   id <- 4087861
 
@@ -46,7 +46,7 @@ test_that("can calibrate GR model", {
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
-                           catchment = catchment, flow = flow, met = met,
+                           catchments = catchments, obs_flow = obs_flow, met = met,
                            lat = lat, FUN_MOD = FUN_MOD,
                            plot = TRUE)
 
@@ -65,9 +65,9 @@ test_that("can run GR model", {
   data_dir <- system.file("extdata/hydro/", package = "aemetools")
   lake <- readRDS(file.path(data_dir, "lake.rds"))
   reaches <- readRDS(file.path(data_dir, "reaches.rds"))
-  catchment <- readRDS(file.path(data_dir, "catchment.rds"))
+  catchments <- readRDS(file.path(data_dir, "catchments.rds"))
   met <- readRDS(file.path(data_dir, "met.rds"))
-  flow <- readRDS(file.path(data_dir, "flow.rds"))
+  obs_flow <- readRDS(file.path(data_dir, "obs_flow.rds"))
   FUN_MOD <- airGR::RunModel_GR4J
   id <- 4087861
 
@@ -79,7 +79,7 @@ test_that("can run GR model", {
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
-                           catchment = catchment, flow = flow, met = met,
+                           catchments = catchments, obs_flow = obs_flow, met = met,
                            lat = lat, FUN_MOD = FUN_MOD,
                            plot = TRUE)
 
@@ -102,9 +102,9 @@ test_that("can calibrate and run GR model", {
   data_dir <- system.file("extdata/hydro/", package = "aemetools")
   lake <- readRDS(file.path(data_dir, "lake.rds"))
   reaches <- readRDS(file.path(data_dir, "reaches.rds"))
-  catchment <- readRDS(file.path(data_dir, "catchment.rds"))
+  catchments <- readRDS(file.path(data_dir, "catchments.rds"))
   met <- readRDS(file.path(data_dir, "met.rds"))
-  flow <- readRDS(file.path(data_dir, "flow.rds"))
+  obs_flow <- readRDS(file.path(data_dir, "obs_flow.rds"))
   FUN_MOD <- airGR::RunModel_GR4J
   id <- 4087861
 
@@ -116,7 +116,7 @@ test_that("can calibrate and run GR model", {
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
-                           catchment = catchment, flow = flow, met = met,
+                           catchments = catchments, obs_flow = obs_flow, met = met,
                            lat = lat, FUN_MOD = FUN_MOD,
                            plot = TRUE)
 
