@@ -8,8 +8,8 @@ make_GR_inputs(
   id,
   reaches,
   lake,
-  catchment,
-  flow = NULL,
+  catchments,
+  obs_flow = NULL,
   met,
   lat = NULL,
   FUN_MOD = airGR::RunModel_GR6J,
@@ -23,9 +23,9 @@ make_GR_inputs(
 
 \item{lake}{sf; polygon of lake shore.}
 
-\item{catchment}{sf; polygon of catchments.}
+\item{catchments}{sf; polygon of catchmentss.}
 
-\item{flow}{dataframe; containing Date and flow in m3/s.}
+\item{obs_flow}{dataframe; containing Date and flow in m3/s.}
 
 \item{met}{dataframe; containing Date, air temperature and precipitation}
 
