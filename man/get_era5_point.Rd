@@ -18,6 +18,9 @@ get_era5_point(lat, lon, years, variables, format = "aeme", parallel = FALSE)
 \item{format}{string; the format for column headers. Can be "aeme" or "ler".
 Defaults to "aeme".}
 }
+\value{
+dataframe of daily ERA5 data.
+}
 \description{
 Extract met data frame from closest grid to lat & lon
 }

@@ -14,6 +14,10 @@
 #' @importFrom parallel detectCores makeCluster stopCluster clusterExport
 #' parLapply
 #' @importFrom dplyr filter mutate across
+#'
+#' @return dataframe of daily ERA5 data.
+#'
+#' @export
 
 get_era5_point <- function(lat, lon, years, variables, format = "aeme",
                            parallel = FALSE) {
@@ -21,6 +25,16 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
   token_file <- system.file("extdata/token.rds", package = "aemetools")
   dtoken <- readRDS(token_file)
   db_path <- "nz_era5_daily_rds/"
+
+  test <- tryCatch({
+    dir <- rdrop2::drop_dir(dtoken = dtoken)
+    TRUE
+  }, error = function(e) FALSE)
+  if (!test) {
+    stop(strwrap("Current Dropbox token is not working. Please raise an issue
+                 on our GitHub page: "),
+         "\nhttps://github.com/limnotrack/aemetools/issues")
+  }
 
   data("era5_ref_table", package = "AEME")
 
