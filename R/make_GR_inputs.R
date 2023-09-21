@@ -3,8 +3,8 @@
 #' @param id numeric; Reach ID
 #' @param reaches sf; object with reaches as linestrings.
 #' @param lake sf; polygon of lake shore.
-#' @param catchment sf; polygon of catchments.
-#' @param flow dataframe; containing Date and flow in m3/s.
+#' @param catchments sf; polygon of catchmentss.
+#' @param obs_flow dataframe; containing Date and flow in m3/s.
 #' @param met dataframe; containing Date, air temperature and precipitation
 #' @param lat numeric; latitude. If NULL, uses the latitude from the centre
 #' of the lake.
@@ -21,12 +21,12 @@
 #' @return list of inputs for `run_GR()`.
 #' @export
 
-make_GR_inputs <- function(id, reaches, lake, catchment, flow = NULL,
+make_GR_inputs <- function(id, reaches, lake, catchments, obs_flow = NULL,
                            met, lat = NULL, FUN_MOD = airGR::RunModel_GR6J,
                            plot = FALSE) {
 
   if (!(sf::st_crs(reaches) == sf::st_crs(lake) &
-        sf::st_crs(reaches) == sf::st_crs(catchment))) {
+        sf::st_crs(reaches) == sf::st_crs(catchments))) {
     stop(strwrap("Coordinate reference systems are different between reaches,
                  lake and catchment. Ensure they are all on the same CRS."))
   }
@@ -36,7 +36,7 @@ make_GR_inputs <- function(id, reaches, lake, catchment, flow = NULL,
   # Remove reach if it goes through the lake
   upstr <- sf::st_difference(upstr, lake)
 
-  sub_catch <- catchment |>
+  sub_catch <- catchments |>
     dplyr::filter(nzsegment %in% upstr$nzsegment)
 
 
@@ -48,7 +48,7 @@ make_GR_inputs <- function(id, reaches, lake, catchment, flow = NULL,
   if (plot) {
     p <- ggplot2::ggplot() +
       ggplot2::geom_sf(data = lake, fill = "cyan") +
-      # ggplot2::geom_sf(data = catchment, fill = "#F0C9C0") +
+      # ggplot2::geom_sf(data = catchments, fill = "#F0C9C0") +
       ggplot2::geom_sf(data = tot_catchm, fill = "#EDB48E") +
       ggplot2::geom_sf(data = tot_rivers, colour = "blue") +
       ggplot2::theme_bw()
@@ -58,15 +58,15 @@ make_GR_inputs <- function(id, reaches, lake, catchment, flow = NULL,
   # Calculate catchment area for conversion from m3/s to mm/day
   catch_area <- units::drop_units(sf::st_area(tot_catchm)) #m^2
 
-  flow <- flow |>
-    dplyr::mutate(Qmm = 1000 * (flow[, 2] * 86400 / catch_area),
-                  Qm3 = flow[, 2])
+  obs_flow <- obs_flow |>
+    dplyr::mutate(Qmm = 1000 * (obs_flow[, 2] * 86400 / catch_area),
+                  Qm3 = obs_flow[, 2])
 
-  all <- dplyr::left_join(met, flow, by = "Date")
+  all <- dplyr::left_join(met, obs_flow, by = "Date")
 
 
   if (any(is.na(all[, 4]))) {
-    # warning("Missing dates!\n", paste0(date_seq[!(date_seq %in% flow$Date)], collapse = "\n"), "\nAdding in 0 values")
+    # warning("Missing dates!\n", paste0(date_seq[!(date_seq %in% obs_flow$Date)], collapse = "\n"), "\nAdding in 0 values")
 
     if (all(is.na(all[, 4]))) {
       stop("No overlapping data between met and inflow data.")
