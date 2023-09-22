@@ -9,11 +9,11 @@ test_that("can create GR model inputs", {
   FUN_MOD <- airGR::RunModel_GR4J
   id <- 4087861
 
-  lat <- lake %>%
-    sf::st_transform(4236) %>%
-    sf::st_centroid() %>%
-    sf::st_coordinates() %>%
-    as.data.frame(.) %>%
+  lat <- lake |>
+    sf::st_transform(4236) |>
+    sf::st_centroid() |>
+    sf::st_coordinates() |>
+    as.data.frame(.) |>
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
@@ -38,11 +38,11 @@ test_that("can calibrate GR model", {
   FUN_MOD <- airGR::RunModel_GR4J
   id <- 4087861
 
-  lat <- lake %>%
-    sf::st_transform(4236) %>%
-    sf::st_centroid() %>%
-    sf::st_coordinates() %>%
-    as.data.frame(.) %>%
+  lat <- lake |>
+    sf::st_transform(4236) |>
+    sf::st_centroid() |>
+    sf::st_coordinates() |>
+    as.data.frame(.) |>
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
@@ -71,11 +71,11 @@ test_that("can run GR model", {
   FUN_MOD <- airGR::RunModel_GR4J
   id <- 4087861
 
-  lat <- lake %>%
-    sf::st_transform(4236) %>%
-    sf::st_centroid() %>%
-    sf::st_coordinates() %>%
-    as.data.frame(.) %>%
+  lat <- lake |>
+    sf::st_transform(4236) |>
+    sf::st_centroid() |>
+    sf::st_coordinates() |>
+    as.data.frame(.) |>
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
@@ -108,11 +108,11 @@ test_that("can calibrate and run GR model", {
   FUN_MOD <- airGR::RunModel_GR4J
   id <- 4087861
 
-  lat <- lake %>%
-    sf::st_transform(4236) %>%
-    sf::st_centroid() %>%
-    sf::st_coordinates() %>%
-    as.data.frame(.) %>%
+  lat <- lake |>
+    sf::st_transform(4236) |>
+    sf::st_centroid() |>
+    sf::st_coordinates() |>
+    as.data.frame(.) |>
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
