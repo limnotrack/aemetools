@@ -21,13 +21,13 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-This is a companion package to [AEME](https://github.com/limnotrack/AEME/). It contains a range of functions to assist in setting up simulations for a new lake site.
+aemetools is designed to work with [AEME](https://github.com/limnotrack/AEME/). It contains a range of functions to assist in setting up simulations for a new lake site.
 
 Currently, you can use this to download meteorological data from [ERA5-Land](https://www.ecmwf.int/en/era5-land) for any point in New Zealand from 1999-2022, or download ERA5-Land netCDF files for any area in the world. It can set up and run hydrological simulations using the suite of models from the [`airGR`](https://hydrogr.github.io/airGR/) package using catchment, reach and lake data.
 
 ```{r include=FALSE, echo=FALSE}
 data("era5_ref_table", package = "AEME")
-era5_names <- paste0(era5_ref_table$variable[-1], collapse = ", ")
+era5_names <- paste0(tolower(era5_ref_table$variable[-1]), collapse = ", ")
 
 ```
 
@@ -40,7 +40,7 @@ You can install the development version of aemetools from [GitHub](https://githu
 devtools::install_github("limnotrack/aemetools")
 ```
 
-## Example: Download NZ point meteorological data
+### Download NZ point meteorological data
 
 Currently, there is ERA5-Land data (\~9km grid spacing) archived for New Zealand (166.5/-46.6/178.6/-34.5) for the time period 1999-2022 with the main meteorological variables (`r era5_names`) required to drive hydrological and hydrodynamic models. This can be easily downloaded using the example below. There is a `parallel` switch which allows you to use multiple cores on your computer to speed up the download.
 
@@ -56,12 +56,12 @@ met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
 summary(met)
 ```
 
-## Example: Run GR4J model 
+### Run GR4J model 
 
 Here is simple example set up for one of the lake inflows into Lake Rotorua. First, the input for the model are generated using the stream ID (nzsegment), and spatial features (sf objects) of the reaches, lake and catchment (including sub-catchments), observed discharge (if available) meteorological data (air temperature and precipitation).
 It recursively creates an upstream network using the nzsegment, then combines the subcatchments of all the upstream reaches (`sf::st_union()`) to calculate the area of the catchment.
 
-```{r make-gr4j-inputs, echo=FALSE}
+```{r make-gr4j-inputs, results='asis', fig.keep='all'}
 data_dir <- system.file("extdata/hydro/", package = "aemetools")
 lake <- readRDS(file.path(data_dir, "lake.rds"))
 reaches <- readRDS(file.path(data_dir, "reaches.rds"))
