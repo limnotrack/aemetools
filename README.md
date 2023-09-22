@@ -11,7 +11,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 <!-- badges: end -->
 
-This is a companion package to
+aemetools is designed to work with
 [AEME](https://github.com/limnotrack/AEME/). It contains a range of
 functions to assist in setting up simulations for a new lake site.
 
@@ -32,14 +32,14 @@ You can install the development version of aemetools from
 devtools::install_github("limnotrack/aemetools")
 ```
 
-## Example: Download NZ point meteorological data
+### Download NZ point meteorological data
 
 Currently, there is ERA5-Land data (~9km grid spacing) archived for New
 Zealand (166.5/-46.6/178.6/-34.5) for the time period 1999-2022 with the
-main meteorological variables (Air temperature, Dewpoint temperature,
-Wind u-vector at 10m, Wind v-vector at 10m, Total precipitation,
-Snowfall, Surface level pressure, Downwelling shortwave radiation,
-Downwelling longwave radiation) required to drive hydrological and
+main meteorological variables (air temperature, dewpoint temperature,
+wind u-vector at 10m, wind v-vector at 10m, total precipitation,
+snowfall, surface level pressure, downwelling shortwave radiation,
+downwelling longwave radiation) required to drive hydrological and
 hydrodynamic models. This can be easily downloaded using the example
 below. There is a `parallel` switch which allows you to use multiple
 cores on your computer to speed up the download.
@@ -54,8 +54,8 @@ variables <- c("MET_tmpair", "MET_pprain")
 met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
                       variables = variables, format = "aeme", parallel = TRUE)
 #> Auto-refreshing stale OAuth token.
-#> Downloading ERA5 variables in parallel... [2023-09-22 11:49:06.920828]
-#> Finished downloading ERA5 variables! [2023-09-22 11:49:15.681163]
+#> Downloading ERA5 variables in parallel... [2023-09-22 13:35:19.936016]
+#> Finished downloading ERA5 variables! [2023-09-22 13:35:30.10872]
 summary(met)
 #>       Date              MET_tmpair       MET_pprain     
 #>  Min.   :2000-01-01   Min.   : 3.407   Min.   : 0.0000  
@@ -66,7 +66,7 @@ summary(met)
 #>  Max.   :2001-12-30   Max.   :19.970   Max.   :86.6961
 ```
 
-## Example: Run GR4J model
+### Run GR4J model
 
 Here is simple example set up for one of the lake inflows into Lake
 Rotorua. First, the input for the model are generated using the stream
@@ -77,10 +77,25 @@ recursively creates an upstream network using the nzsegment, then
 combines the subcatchments of all the upstream reaches
 (`sf::st_union()`) to calculate the area of the catchment.
 
-    #> Warning: attribute variables are assumed to be spatially constant throughout
-    #> all geometries
-    #> Warning in make_GR_inputs(id = id, reaches = reaches, lake = lake, catchments =
-    #> catchments, : NA values present. Selecting period with less NA's.
+``` r
+data_dir <- system.file("extdata/hydro/", package = "aemetools")
+lake <- readRDS(file.path(data_dir, "lake.rds"))
+reaches <- readRDS(file.path(data_dir, "reaches.rds"))
+catchments <- readRDS(file.path(data_dir, "catchments.rds"))
+met <- readRDS(file.path(data_dir, "met.rds"))
+obs_flow <- readRDS(file.path(data_dir, "obs_flow.rds"))
+FUN_MOD <- airGR::RunModel_GR4J
+id <- 4087861 # nzsegment
+
+inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
+                         catchments = catchments, obs_flow = obs_flow, met = met,
+                         lat = lat, FUN_MOD = FUN_MOD,
+                         plot = TRUE)
+#> Warning: attribute variables are assumed to be spatially constant throughout
+#> all geometries
+#> Warning in make_GR_inputs(id = id, reaches = reaches, lake = lake, catchments =
+#> catchments, : NA values present. Selecting period with less NA's.
+```
 
 <img src="man/figures/README-make-gr4j-inputs-1.png" width="100%" />
 
