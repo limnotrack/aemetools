@@ -28,8 +28,11 @@ Imports:
     units,
     utils
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Remotes: 
     github::limnotrack/AEME
 URL: https://studious-enigma-z736ppg.pages.github.io/
+VignetteBuilder: knitr

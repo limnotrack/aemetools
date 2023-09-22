@@ -1,0 +1,39 @@
+---
+title: "Download ERA5 data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Download ERA5 data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r include=FALSE, echo=FALSE}
+data("era5_ref_table", package = "AEME")
+era5_names <- paste0(tolower(era5_ref_table$variable[-1]), collapse = ", ")
+
+```
+
+### Download NZ point meteorological data
+
+Currently, there is ERA5-Land data (\~9km grid spacing) archived for New Zealand (166.5/-46.6/178.6/-34.5) for the time period 1999-2022 with the main meteorological variables (`r era5_names`) required to drive hydrological and hydrodynamic models. This can be easily downloaded using the example below. There is a `parallel` switch which allows you to use multiple cores on your computer to speed up the download.
+
+```{r setup}
+library(aemetools)
+```
+
+```{r download-era5}
+lon <- 176.2717
+lat <- -38.079
+variables <- c("MET_tmpair", "MET_pprain")
+
+met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
+                      variables = variables, format = "aeme", parallel = TRUE)
+summary(met)
+```
