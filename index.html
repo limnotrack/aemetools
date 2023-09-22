@@ -7,12 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="Run simple hydrological models to generate inflow inputs for the
     AEME package.">
-<title>Tools to assist the Aquatic Ecosystem Model Ensemble package • aemetools</title>
+<title>aemetools - Improve ecosystem modelling • aemetools</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Tools to assist the Aquatic Ecosystem Model Ensemble package">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="aemetools - Improve ecosystem modelling">
 <meta property="og:description" content="Run simple hydrological models to generate inflow inputs for the
     AEME package.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -24,7 +24,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
     
     <a class="navbar-brand me-2" href="index.html">aemetools</a>
 
@@ -39,6 +39,12 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
   <a class="nav-link" href="reference/index.html">Reference</a>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/download-era5.html">Download ERA5 data</a>
+  </div>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -58,7 +64,7 @@
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>This is a companion package to <a href="https://github.com/limnotrack/AEME/" class="external-link">AEME</a>. It contains a range of functions to assist in setting up simulations for a new lake site.</p>
+<p>aemetools is designed to work with <a href="https://github.com/limnotrack/AEME/" class="external-link">AEME</a>. It contains a range of functions to assist in setting up simulations for a new lake site.</p>
 <p>Currently, you can use this to download meteorological data from <a href="https://www.ecmwf.int/en/era5-land" class="external-link">ERA5-Land</a> for any point in New Zealand from 1999-2022, or download ERA5-Land netCDF files for any area in the world. It can set up and run hydrological simulations using the suite of models from the <a href="https://hydrogr.github.io/airGR/" class="external-link"><code>airGR</code></a> package using catchment, reach and lake data.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -67,11 +73,10 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"limnotrack/aemetools"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="example-download-nz-point-meteorological-data">Example: Download NZ point meteorological data<a class="anchor" aria-label="anchor" href="#example-download-nz-point-meteorological-data"></a>
-</h2>
-<p>Currently, there is ERA5-Land data (~9km grid spacing) archived for New Zealand (166.5/-46.6/178.6/-34.5) for the time period 1999-2022 with the main meteorological variables (Air temperature, Dewpoint temperature, Wind u-vector at 10m, Wind v-vector at 10m, Total precipitation, Snowfall, Surface level pressure, Downwelling shortwave radiation, Downwelling longwave radiation) required to drive hydrological and hydrodynamic models. This can be easily downloaded using the example below. There is a <code>parallel</code> switch which allows you to use multiple cores on your computer to speed up the download.</p>
+<div class="section level3">
+<h3 id="download-nz-point-meteorological-data">Download NZ point meteorological data<a class="anchor" aria-label="anchor" href="#download-nz-point-meteorological-data"></a>
+</h3>
+<p>Currently, there is ERA5-Land data (~9km grid spacing) archived for New Zealand (166.5/-46.6/178.6/-34.5) for the time period 1999-2022 with the main meteorological variables (air temperature, dewpoint temperature, wind u-vector at 10m, wind v-vector at 10m, total precipitation, snowfall, surface level pressure, downwelling shortwave radiation, downwelling longwave radiation) required to drive hydrological and hydrodynamic models. This can be easily downloaded using the example below. There is a <code>parallel</code> switch which allows you to use multiple cores on your computer to speed up the download.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://studious-enigma-z736ppg.pages.github.io/">aemetools</a></span><span class="op">)</span></span>
 <span></span>
@@ -82,8 +87,8 @@
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_era5_point.html">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2000</span><span class="op">:</span><span class="fl">2001</span>,</span>
 <span>                      variables <span class="op">=</span> <span class="va">variables</span>, format <span class="op">=</span> <span class="st">"aeme"</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Auto-refreshing stale OAuth token.</span></span>
-<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2023-09-22 11:49:06.920828]</span></span>
-<span><span class="co">#&gt; Finished downloading ERA5 variables! [2023-09-22 11:49:15.681163]</span></span>
+<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2023-09-22 13:35:19.936016]</span></span>
+<span><span class="co">#&gt; Finished downloading ERA5 variables! [2023-09-22 13:35:30.10872]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Date              MET_tmpair       MET_pprain     </span></span>
 <span><span class="co">#&gt;  Min.   :2000-01-01   Min.   : 3.407   Min.   : 0.0000  </span></span>
@@ -93,14 +98,28 @@
 <span><span class="co">#&gt;  3rd Qu.:2001-06-30   3rd Qu.:14.815   3rd Qu.: 8.3548  </span></span>
 <span><span class="co">#&gt;  Max.   :2001-12-30   Max.   :19.970   Max.   :86.6961</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="example-run-gr4j-model">Example: Run GR4J model<a class="anchor" aria-label="anchor" href="#example-run-gr4j-model"></a>
-</h2>
+<div class="section level3">
+<h3 id="run-gr4j-model">Run GR4J model<a class="anchor" aria-label="anchor" href="#run-gr4j-model"></a>
+</h3>
 <p>Here is simple example set up for one of the lake inflows into Lake Rotorua. First, the input for the model are generated using the stream ID (nzsegment), and spatial features (sf objects) of the reaches, lake and catchment (including sub-catchments), observed discharge (if available) meteorological data (air temperature and precipitation). It recursively creates an upstream network using the nzsegment, then combines the subcatchments of all the upstream reaches (<code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">sf::st_union()</a></code>) to calculate the area of the catchment.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; all geometries</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in make_GR_inputs(id = id, reaches = reaches, lake = lake, catchments =</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; catchments, : NA values present. Selecting period with less NA's.</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/hydro/"</span>, package <span class="op">=</span> <span class="st">"aemetools"</span><span class="op">)</span></span>
+<span><span class="va">lake</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lake.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">reaches</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"reaches.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">catchments</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"catchments.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"met.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">obs_flow</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"obs_flow.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">FUN_MOD</span> <span class="op">&lt;-</span> <span class="fu">airGR</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/airGR/man/RunModel_GR4J.html" class="external-link">RunModel_GR4J</a></span></span>
+<span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fl">4087861</span> <span class="co"># nzsegment</span></span>
+<span></span>
+<span><span class="va">inputs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_GR_inputs.html">make_GR_inputs</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">id</span>, reaches <span class="op">=</span> <span class="va">reaches</span>, lake <span class="op">=</span> <span class="va">lake</span>,</span>
+<span>                         catchments <span class="op">=</span> <span class="va">catchments</span>, obs_flow <span class="op">=</span> <span class="va">obs_flow</span>, met <span class="op">=</span> <span class="va">met</span>,</span>
+<span>                         lat <span class="op">=</span> <span class="va">lat</span>, FUN_MOD <span class="op">=</span> <span class="va">FUN_MOD</span>,</span>
+<span>                         plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout</span></span>
+<span><span class="co">#&gt; all geometries</span></span>
+<span><span class="co">#&gt; Warning in make_GR_inputs(id = id, reaches = reaches, lake = lake, catchments =</span></span>
+<span><span class="co">#&gt; catchments, : NA values present. Selecting period with less NA's.</span></span></code></pre></div>
 <p><img src="reference/figures/README-make-gr4j-inputs-1.png" width="100%"></p>
 <p>Within the <code>airGR</code> package, there are calibration algorithms which allows you to calibrate the hydrological model if discharge data for the reach is available. The calibrated parameters can be passed to the <code>run_GR</code> function to run the selected model.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -138,6 +157,7 @@
 <p><img src="reference/figures/README-run-gr4j-1.png" width="100%"></p>
 </div>
 </div>
+</div>
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
@@ -167,6 +187,13 @@
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
+
+<div class="table-of-contents">
+<h2 data-toc-skip>Table of contents</h2>
+<ul class="list-unstyled">
+<li><nav id="toc"></nav></li>
 </ul>
 </div>
 
