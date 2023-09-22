@@ -13,7 +13,7 @@ test_that("can create GR model inputs", {
     sf::st_transform(4236) |>
     sf::st_centroid() |>
     sf::st_coordinates() |>
-    as.data.frame(.) |>
+    as.data.frame(x = _) |>
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
@@ -42,7 +42,7 @@ test_that("can calibrate GR model", {
     sf::st_transform(4236) |>
     sf::st_centroid() |>
     sf::st_coordinates() |>
-    as.data.frame(.) |>
+    as.data.frame(x = _) |>
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
@@ -75,7 +75,7 @@ test_that("can run GR model", {
     sf::st_transform(4236) |>
     sf::st_centroid() |>
     sf::st_coordinates() |>
-    as.data.frame(.) |>
+    as.data.frame(x = _) |>
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
@@ -112,7 +112,7 @@ test_that("can calibrate and run GR model", {
     sf::st_transform(4236) |>
     sf::st_centroid() |>
     sf::st_coordinates() |>
-    as.data.frame(.) |>
+    as.data.frame(x = _) |>
     dplyr::pull(Y)
 
   inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
