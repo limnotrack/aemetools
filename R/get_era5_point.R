@@ -38,7 +38,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
 
   data("era5_ref_table", package = "AEME")
 
-    sel_vars <- era5_ref_table |>
+  sel_vars <- era5_ref_table |>
     dplyr::filter(aeme %in% variables)
 
 
@@ -62,6 +62,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
             paste0("[", Sys.time(), "] (Have you tried parallelising?)"))
 
     out <- lapply(sel_vars$era5, function(v) {
+      # print(v)
       download_era5_point(years = years, lat = lat, lon = lon, variable = v,
                           db_path = db_path, dtoken = dtoken)
     })
@@ -107,6 +108,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
 download_era5_point <- function(years, lat, lon, variable, db_path, dtoken) {
 
   out <- lapply(years, function(y) {
+    # print(y)
     db1 <- paste0(db_path, "nz_era5-land_", y, "_", variable, "_1234_daily.rds")
     db2 <- paste0(db_path, "nz_era5-land_", y, "_", variable, "_5678_daily.rds")
     db3 <- paste0(db_path, "nz_era5-land_", y, "_", variable,
@@ -116,9 +118,18 @@ download_era5_point <- function(years, lat, lon, variable, db_path, dtoken) {
     chk2 <- rdrop2::drop_exists(path = db2, dtoken = dtoken)
     chk3 <- rdrop2::drop_exists(path = db3, dtoken = dtoken)
 
-    if (!any(c(chk1, chk2, chk3))) {
-      stop(strwrap("Files for selected years are not present currently in
-                     dropbox. Current available years are 1999-2021."))
+    if (!all(c(chk1, chk2, chk3))) {
+      message()
+      if (y %in% 1999:2021) {
+        err_msg <- paste0("Files:\n",
+                          paste0(c(db1, db2, db3)[!c(chk1, chk2, chk3)],
+                                 collapse = "\n"),
+        "\nare currently not available on Dropbox.")
+      } else {
+        err_msg <- "Files for selected years are not present currently in
+                     dropbox. Current available years are 1999-2021."
+      }
+      stop(strwrap(err_msg))
     }
 
     f1 <- tempfile()
