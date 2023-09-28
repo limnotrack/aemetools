@@ -24,7 +24,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
 
   token_file <- system.file("extdata/token.rds", package = "aemetools")
   dtoken <- readRDS(token_file)
-  db_path <- "nz_era5_daily_rds/"
+  db_path <- "lernzmp/nz_era5_daily_rds/"
 
   test <- tryCatch({
     dir <- rdrop2::drop_dir(dtoken = dtoken)
