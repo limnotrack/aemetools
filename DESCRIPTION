@@ -17,6 +17,7 @@ Imports:
     airGR,
     dplyr,
     ecmwfr,
+    FME,
     ggplot2,
     job,
     parallel,
@@ -25,6 +26,7 @@ Imports:
     sf,
     stars,
     stats,
+    stringr,
     units,
     utils
 Suggests: 
@@ -36,3 +38,6 @@ Remotes:
     github::limnotrack/AEME
 URL: https://studious-enigma-z736ppg.pages.github.io/
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)
+LazyData: true

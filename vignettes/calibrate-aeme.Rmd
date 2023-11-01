@@ -1,0 +1,275 @@
+---
+title: "Calibrate AEME"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Calibrate AEME}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Setup
+
+First, we will load the `AEME` and `aemetools` package:
+
+```{r setup}
+library(AEME)
+library(aemetools)
+```
+Create a folder for running the example calibration setup.
+
+```{r create-folder}
+
+tmpdir <- "calib-test"
+dir.create(tmpdir, showWarnings = FALSE)
+aeme_dir <- system.file("extdata/lake/", package = "AEME")
+# Copy files from package into tempdir
+file.copy(aeme_dir, tmpdir, recursive = TRUE)
+path <- file.path(tmpdir, "lake")
+
+list.files(path, recursive = TRUE)
+```
+
+## Build AEME ensemble
+
+Using the `AEME` functions, we will build an ensemble of AEME models and run them.
+
+```{r build-aeme-example}
+
+aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+model <- c("gotm_wet")
+aeme_data <- build_ensemble(path = path, aeme_data = aeme_data,
+                            model = model, mod_ctrls = mod_ctrls,
+                            inf_factor = inf_factor, ext_elev = 5,
+                            use_bgc = FALSE, use_lw = TRUE)
+aeme_data <- run_aeme(aeme_data = aeme_data, model = model,
+                      verbose = FALSE, mod_ctrls = mod_ctrls,
+                      path = path)
+# plot(aeme_data, model = model, path = path, plot = "calib",
+#      obs = "temp", save = FALSE, show = FALSE)
+
+```
+
+## Load parameters to be used for the calibration
+
+Parameters are loaded from the `aemetools` package within the `aeme_parameters`
+dataframe. The parameters are stored in a data frame with the following columns:
+ - `model`: The model name
+ - `file`: The file name of the model parameter file
+ - `name`: The parameter name
+ - `value`: The parameter value
+ - `min`: The minimum value of the parameter
+ - `max`: The maximum value of the parameter
+
+
+```{r load-parameters}
+utils::data("aeme_parameters", package = "aemetools")
+aeme_parameters
+
+```
+
+This dataframe can be modified to change the parameter values. For example, we
+can change the `light/Kw` parameter for the `glm_aed` model to 0.1:
+
+```{r change-parameters}
+aeme_parameters[aeme_parameters$model == "glm_aed" &
+                  aeme_parameters$name == "light/Kw", "value"] <- 0.1
+aeme_parameters
+```
+
+This dataframe can be passed to the `run_aeme_param` function to run AEME with
+the parameter values specified in the dataframe. This function is different to
+the `run_aeme` function in that it does not return an `aeme_data` object, but
+the model output is generate within the lake folder.
+
+```{r run-aeme-param}
+run_aeme_param(aeme_data = aeme_data, param = aeme_parameters,
+                 model = model, path = path, mod_ctrls = mod_ctrls)
+
+```
+
+## Calibration setup
+
+### Define fitness function
+
+First, we will define a function for the calibration function to use to 
+calculate the fitness of the model. This function takes two arguments, the
+observed data (`O`) and the predicted data (`P`). The function should return a 
+single value.
+
+Here we use the root mean square error (RMSE) as the fitness function:
+
+$$\text{RMSE}(y, \hat{y}) = \sqrt{\frac{\sum_{i=0}^{N - 1} (y_i - \hat{y}_i)^2}{N}}$$
+
+```{r define-fitness-function}
+# Function to calculate fitness
+fit <- function(O, P) {
+  sqrt(mean((O - P)^2))
+}
+```
+
+### Define control parameters
+
+Next, we will define the control parameters for the calibration. The control
+parameters are passed to the `calib_aeme` function. The control parameters are
+as follows:
+
+ - `VTR`: The value to reach. The calibration will stop when the fitness value
+   is less than or equal to this value. For this example
+ - `NP`: The number of individuals in the population. Best practice is to use
+   10 times the number of parameters.
+ - `itermax`: The maximum number of iterations to run the calibration for. The
+   calibration will stop when this number of iterations is reached. The number
+   of generations used is equal to `itermax / NP`. Therefore, through adjusting
+   `NP` and `itermax` the number of generations can be adjusted.
+ - `reltol`: The relative tolerance for the calibration. The calibration will
+   stop when the relative change in the fitness value is less than this value.
+ - `mutate`: The mutation rate for the calibration. This is the probability of
+   a parameter being mutated.
+ - `parallel`: Whether to run the calibration in parallel. This will decrease 
+   the time taken to run the calibration.
+ - `out_file`: The file to write the calibration results to. 
+ - `na_value`: The value to use for missing values in the observed and predicted
+   data. This is used to indicate when the model crashes and then can be easily 
+   removed from the calibration results.
+ - `vars_sim`: The variables to use for the calibration using the AEME
+ variable definition e.g. `c("HYD_temp", "HYD_wlev")`.  
+
+Here is an example of the control parameters:
+```{r define-control-parameters}
+ctrl <- list(VTR = 1, NP = 20, itermax = 200, reltol = 0.07,
+             mutate = 0.1, parallel = TRUE, out_file = "results.csv",
+             na_value = 999)
+```
+
+### Define variables
+
+Next we will select the variables to use for the calibration. The variables
+selected need to use the AEME variable definition e.g. `c("HYD_temp", "HYD_wlev")`.
+Weights need to be attributed to each of the variables. The weights are used to
+scale the fitness value. This can be helpful if the variables have different
+units. For example, if the temperature is in degrees Celsius and the water
+level is in metres, then the water level will have a much larger impact on the
+fitness value. Therefore, the weight for the water level should be much smaller
+than the weight for the temperature. 
+
+The weights are specified in a named vector. The names of the vector should be 
+the same as the variable names. 
+
+```{r define-variables}
+vars_sim <- c("HYD_temp")
+weights <- c("HYD_temp" = 1)
+```
+
+## Run calibration
+
+Once we have defined the fitness function, control parameters and variables, we
+can run the calibration. The `calib_aeme` function takes the following
+arguments:
+
+ - `aeme_data`: The `aeme_data` object to use for the calibration.
+ - `path`: The path to the lake folder.
+ - `param`: The parameters to calibrate.
+ - `model`: The model to calibrate.
+ - `mod_ctrls`: The model controls to use for the calibration.
+ - `FUN`: The fitness function to use for the calibration.
+ - `ctrl`: The control parameters to use for the calibration.
+ - `vars_sim`: The variables to use for the calibration.
+ - `weights`: The weights to use for the calibration.
+
+The `calib_aeme` function writes the calibration results to the file specified
+after each generation. This allows the calibration to be stopped and restarted
+at any time. The `calib_aeme` function returns the `ctrl` object with any 
+updated values.
+
+```{r run-calibration}
+ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
+                   param = aeme_parameters, model = model,
+                   mod_ctrls = mod_ctrls, FUN = fit, ctrl = ctrl,
+                   vars_sim = vars_sim, weights = weights)
+
+```
+
+## Visualise calibration results
+
+The calibrations results can be read in using the `read_calib` function. This
+function takes the following arguments:
+
+ - `ctrl`: The control parameters used for the calibration.
+ - `model`: The model used for the calibration.
+ 
+The `read_calib` function returns a dataframe with the calibration results. The
+calibration results include the model, generation, index (model run),
+parameter name, parameter value, fitness value and the median fitness value for 
+each generation. 
+
+These results can be visualised using the `plot_calib` function. This function
+takes the following arguments:
+
+ - `calib`: The calibration results as read in using the `read_calib` function.
+ - `model`: The model used for the calibration.
+ - `ctrl`: The control parameters used for the calibration.
+ 
+And returns a list of ggplot objects: a dotty plot, density plot and caterpillar
+plot.
+
+```{r visualise-calibration-results}
+
+calib_res <- read_calib(ctrl = ctrl, model = model)
+plist <- plot_calib(calib = calib_res, model = model, 
+                      na_value = ctrl$na_value)
+```
+
+### Dotty plot
+
+This can be used for comparing sensitivity across parameters. The dotty
+plot shows the fitness value for each parameter value for each generation. The
+fitness value is on the y-axis and the parameter value is on the x-axis. It is 
+faceted by the parameter name. The parameter values are coloured by the
+generation. The best fitness value for each generation is shown as a black
+line with a red dot. 
+
+```{r dotty-plot}
+plist$dotty
+
+```
+
+### Histogram plot
+
+This is useful for comparing the distribution of parameter values across
+generations. The histogram plot shows the frequency of the parameter values for
+each generation. The parameter values are on the x-axis and the density is on
+the y-axis. It is faceted by the parameter name. 
+
+If a parameter is converging on a value, then the histogram will show a peak
+around that value. If a parameter is not converging on a value, then the
+histogram will show a flat distribution. 
+
+```{r histogram-plot}
+
+plist$hist
+
+```
+
+### Convergence plot
+
+This is more generally used for assessing model convergence. The convergence
+plot shows the values use over the iterations. The parameter value is on the
+y-axis and the iteration is on the x-axis. It is faceted by the parameter name.
+The parameter values are coloured by the generation. The best fitness value for
+each generation is shown as a solid horizontal black line.
+
+```{r convergence-plot}
+plist$convergence
+```
+
+
