@@ -27,9 +27,8 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
   db_path <- "lernzmp/nz_era5_daily_rds/"
 
   test <- tryCatch({
-    dir <- rdrop2::drop_dir(dtoken = dtoken)
-    TRUE
-  }, error = function(e) FALSE)
+    rdrop2::drop_exists("lernzmp", dtoken = dtoken)
+    }, error = function(e) FALSE)
   if (!test) {
     stop(strwrap("Current Dropbox token is not working. Please raise an issue
                  on our GitHub page: "),
