@@ -1,11 +1,8 @@
 ---
 title: "Calibrate AEME"
-output: 
-  rmarkdown::html_vignette:
-    df_print: kable
-    toc: true
+output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Calibrate AEME}
+  %\VignetteIndexEntry{Introduction to pkgdown}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -72,8 +69,9 @@ model setup is working.
 aeme_data <- run_aeme(aeme_data = aeme_data, model = model,
                       verbose = FALSE, mod_ctrls = mod_ctrls,
                       path = path)
-outp <- AEME::output(aeme_data)
-if (!is.null(outp[[model]])) plot(aeme_data)
+# outp <- AEME::output(aeme_data)
+# if (!is.null(outp[[model]]))
+plot(aeme_data)
 ```
 
 ## Load parameters to be used for the calibration
