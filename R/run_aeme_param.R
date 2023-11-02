@@ -77,7 +77,7 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
     # Read in wdr data ----
     wdr_idx <- which(param$model == model & param$file == "wdr")
     col_id <- paste0(param$name[wdr_idx], "_", model)
-    aeme_outf <- AEME:::outflows(aeme_data)
+    aeme_outf <- AEME::outflows(aeme_data)
     wdr <- aeme_outf[["data"]]
     for (c in names(wdr)) {
       if (c == "wbal") {
