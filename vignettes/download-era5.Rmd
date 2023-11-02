@@ -41,6 +41,6 @@ lat <- -38.079
 variables <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
-                      variables = variables, format = "aeme", parallel = FALSE)
+                      variables = variables, format = "aeme", parallel = TRUE)
 summary(met)
 ```
