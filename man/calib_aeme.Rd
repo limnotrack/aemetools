@@ -71,6 +71,9 @@ if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
 
 \item{weights}{vector; of weights for each variable in vars_sim. Default to
 c(1).}
+
+\item{param_df}{dataframe; of parameters read in from a csv file. Requires
+the columns c("model", "file", "name", "value", "min", "max").}
 }
 \value{
 list; ctrl which was supplied with updated arguments if missing.
