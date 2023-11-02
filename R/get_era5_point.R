@@ -10,6 +10,8 @@
 #' Defaults to "aeme".
 #' @param parallel boolean; parallelise the download of ERA5 variables. Defaults
 #' to FALSE.
+#' @param ncores integer; number of cores to use for parallelisation. If
+#' missing, defaults to `min(c(parallel::detectCores() - 1, length(variables)))`
 #'
 #' @importFrom sf st_as_sf
 #' @importFrom stars st_extract
@@ -22,7 +24,7 @@
 #' @export
 
 get_era5_point <- function(lat, lon, years, variables, format = "aeme",
-                           parallel = FALSE) {
+                           parallel = FALSE, ncores) {
 
   token_file <- system.file("extdata/token.rds", package = "aemetools")
   dtoken <- readRDS(token_file)
@@ -44,7 +46,9 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
 
 
   if (parallel & length(variables) > 1) {
-    ncores <- min(c(parallel::detectCores() - 1, length(variables)))
+    if (missing(ncores)) {
+      ncores <- min(c(parallel::detectCores() - 1, length(variables)))
+    }
     cl <- parallel::makeCluster(ncores)
     on.exit({
       parallel::stopCluster(cl)

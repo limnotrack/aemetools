@@ -4,7 +4,15 @@
 \alias{get_era5_point}
 \title{Extract data from ERA5 RDS and format for `LakeEnsemblR```}
 \usage{
-get_era5_point(lat, lon, years, variables, format = "aeme", parallel = FALSE)
+get_era5_point(
+  lat,
+  lon,
+  years,
+  variables,
+  format = "aeme",
+  parallel = FALSE,
+  ncores
+)
 }
 \arguments{
 \item{lat}{numeric; Latitude}
@@ -20,6 +28,9 @@ Defaults to "aeme".}
 
 \item{parallel}{boolean; parallelise the download of ERA5 variables. Defaults
 to FALSE.}
+
+\item{ncores}{integer; number of cores to use for parallelisation. If
+missing, defaults to \code{min(c(parallel::detectCores() - 1, length(variables)))}}
 }
 \value{
 dataframe of daily ERA5 data.
