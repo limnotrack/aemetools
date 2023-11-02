@@ -67,7 +67,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 5, itermax = 20, reltol = 0.07,
+  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999)
 
@@ -127,7 +127,7 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 5, itermax = 20, reltol = 0.07,
+  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999)
 
@@ -188,7 +188,7 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 5, itermax = 20, reltol = 0.07,
+  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999)
 
