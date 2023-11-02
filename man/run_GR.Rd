@@ -24,7 +24,7 @@ for the model.}
 \item{run_index}{vector; index of \code{inputs$data} to be used for running the
 GR model.}
 
-\item{IniStates}{(optional) [numeric] object of class \code{IniStates} [mm and °C], see \code{\link[airGR]{CreateIniStates}} for details}
+\item{IniStates}{(optional) [numeric] object of class \code{IniStates} [mm and B0C], see \code{\link[airGR]{CreateIniStates}} for details}
 
 \item{IniResLevels}{(optional) [numeric] vector of initial fillings for the GR stores (4 values; use NA when not relevant for a given model) [- and/or mm]. See details}
 }
