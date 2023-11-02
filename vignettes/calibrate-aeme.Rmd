@@ -169,7 +169,7 @@ as follows:
 Here is an example of the control parameters:
 ```{r define-control-parameters}
 ctrl <- list(VTR = 1, NP = 8, itermax = 40, reltol = 0.07, p = 0.25,
-             mutate = 0.1, parallel = TRUE, out_file = "results.csv",
+             mutate = 0.1, parallel = FALSE, out_file = "results.csv",
              na_value = 999, ncore = 2L)
 ```
 
