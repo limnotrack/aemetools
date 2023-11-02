@@ -2,7 +2,7 @@
 title: "Calibrate AEME"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to pkgdown}
+  %\VignetteIndexEntry{Calibrate AEME}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
