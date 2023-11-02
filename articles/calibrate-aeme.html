@@ -123,7 +123,7 @@ setup. For this example, we will use the <code>glm_aed</code> model. The
 <span>                            model <span class="op">=</span> <span class="va">model</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>,</span>
 <span>                            inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                            use_bgc <span class="op">=</span> <span class="cn">FALSE</span>, use_lw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2023-11-02 09:11:32.365479]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2023-11-02 09:31:55.920943]</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
 <span><span class="co">#&gt; Observed lake level is present. Updating initial lake model depth...</span></span>
@@ -135,9 +135,9 @@ make sure the current model setup is working.</p>
 <code class="sourceCode R"><span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AEME/man/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                      verbose <span class="op">=</span> <span class="cn">FALSE</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>,</span>
 <span>                      path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:33.769022]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:34.625174]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:34.626018]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:31:57.375046]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:31:58.226929]</span></span>
+<span><span class="co">#&gt; Model run complete![2023-11-02 09:31:58.228738]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span>
 <span><span class="co"># outp &lt;- AEME::output(aeme_data)</span></span>
@@ -238,9 +238,9 @@ but the model output is generate within the lake folder.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, param <span class="op">=</span> <span class="va">aeme_parameters</span>,</span>
 <span>                 model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:48.075168]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:48.807547]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:48.808422]</span></span></code></pre></div>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:32:13.194233]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:32:14.04032]</span></span>
+<span><span class="co">#&gt; Model run complete![2023-11-02 09:32:14.041263]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="calibration-setup">Calibration setup<a class="anchor" aria-label="anchor" href="#calibration-setup"></a>
@@ -311,7 +311,7 @@ This is only used if <code>parallel = TRUE</code>.</li>
 <p>Here is an example of the control parameters:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>VTR <span class="op">=</span> <span class="fl">1</span>, NP <span class="op">=</span> <span class="fl">8</span>, itermax <span class="op">=</span> <span class="fl">40</span>, reltol <span class="op">=</span> <span class="fl">0.07</span>, p <span class="op">=</span> <span class="fl">0.25</span>,</span>
-<span>             mutate <span class="op">=</span> <span class="fl">0.1</span>, parallel <span class="op">=</span> <span class="cn">FALSE</span>, out_file <span class="op">=</span> <span class="st">"results.csv"</span>,</span>
+<span>             mutate <span class="op">=</span> <span class="fl">0.1</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>, out_file <span class="op">=</span> <span class="st">"results.csv"</span>,</span>
 <span>             na_value <span class="op">=</span> <span class="fl">999</span>, ncore <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -374,183 +374,44 @@ values.</p>
 <span>                   param <span class="op">=</span> <span class="va">aeme_parameters</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                   mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, FUN <span class="op">=</span> <span class="va">fit</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>,</span>
 <span>                   vars_sim <span class="op">=</span> <span class="va">vars_sim</span>, weights <span class="op">=</span> <span class="va">weights</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for modelled variables [2023-11-02 09:11:49.198705]</span></span>
-<span><span class="co">#&gt; Complete! [2023-11-02 09:11:50.108993]</span></span>
-<span><span class="co">#&gt; Starting generation 1/5, 8 members. [2023-11-02 09:11:50.111565]</span></span>
+<span><span class="co">#&gt; Extracting indices for modelled variables [2023-11-02 09:32:14.455956]</span></span>
+<span><span class="co">#&gt; Complete! [2023-11-02 09:32:15.474137]</span></span>
+<span><span class="co">#&gt; Calibrating in parallel using 1 cores...</span></span>
+<span><span class="co">#&gt; Starting generation 1/5, 8 members. [2023-11-02 09:32:15.80126]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      2.799     0.9967      1.007  1.4820</span></span>
-<span><span class="co">#&gt; median    2.856     0.9974      1.021  1.4310</span></span>
-<span><span class="co">#&gt; sd        1.718     0.1795      0.190  0.5879</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:50.20196]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:50.966075]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:50.966951]</span></span>
-<span><span class="co">#&gt; [1] 342.9807</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:51.145638]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:51.888557]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:51.889425]</span></span>
-<span><span class="co">#&gt; [1] 595.6504</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:52.063206]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:53.014418]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:53.015425]</span></span>
-<span><span class="co">#&gt; [1] 3.282903</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:53.182086]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:53.811705]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:53.813299]</span></span>
-<span><span class="co">#&gt; [1] 5.360576</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:53.987231]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:54.846827]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:54.847695]</span></span>
-<span><span class="co">#&gt; [1] 3.952922</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:55.018532]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:55.64335]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:55.644208]</span></span>
-<span><span class="co">#&gt; [1] 688.5734</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:55.835502]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:56.472169]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:56.473044]</span></span>
-<span><span class="co">#&gt; [1] 688.5872</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:56.643783]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:57.269889]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:57.271146]</span></span>
-<span><span class="co">#&gt; [1] 688.5899</span></span>
-<span><span class="co">#&gt; Best fit: 3.283 (sd: 328.886)</span></span>
-<span><span class="co">#&gt;             Parameters: [0.471, 0.939, 0.982, 0.604]</span></span>
+<span><span class="co">#&gt; mean      2.845     1.0140     0.9903  1.4730</span></span>
+<span><span class="co">#&gt; median    2.984     1.0070     0.9933  1.4570</span></span>
+<span><span class="co">#&gt; sd        1.671     0.1841     0.1805  0.6551</span></span>
+<span><span class="co">#&gt; Best fit: 3.394 (sd: 328.835)</span></span>
+<span><span class="co">#&gt;             Parameters: [0.694, 1.214, 0.943, 1.136]</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 2/5, 8 members. [2023-11-02 09:11:57.357352]</span></span>
+<span><span class="co">#&gt; Starting generation 2/5, 8 members. [2023-11-02 09:32:25.938368]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      1.887    0.96170    0.98120  0.7727</span></span>
-<span><span class="co">#&gt; median    1.623    0.97740    0.98150  0.7114</span></span>
-<span><span class="co">#&gt; sd        1.717    0.07471    0.09505  0.2805</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:57.45791]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:58.410925]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:58.411897]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:58.584063]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:11:59.301869]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:11:59.30277]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:11:59.46982]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:00.42801]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:00.428918]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:00.600046]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:01.553491]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:01.5544]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:01.71769]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:02.585747]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:02.587701]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:02.761414]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:03.617376]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:03.618307]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:03.79105]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:04.634182]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:04.635055]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:04.821616]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:05.681787]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:05.683108]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:05.859446]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:06.713639]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:06.714891]</span></span>
-<span><span class="co">#&gt; Best fit: 2.3779 (sd: 0.9825)</span></span>
+<span><span class="co">#&gt; mean      1.814     1.1270    0.92850  0.9986</span></span>
+<span><span class="co">#&gt; median    1.542     1.1270    0.93080  0.9761</span></span>
+<span><span class="co">#&gt; sd        1.441     0.1322    0.03443  0.2621</span></span>
+<span><span class="co">#&gt; Best fit: 2.5185 (sd: 160.71)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 3/5, 8 members. [2023-11-02 09:12:06.79754]</span></span>
+<span><span class="co">#&gt; Starting generation 3/5, 8 members. [2023-11-02 09:32:35.238828]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      2.195    0.95430     0.9078  0.9076</span></span>
-<span><span class="co">#&gt; median    2.011    0.96300     0.9352  0.7515</span></span>
-<span><span class="co">#&gt; sd        2.040    0.08333     0.1170  0.4270</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:06.88661]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:07.620172]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:07.621644]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:07.796054]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:08.417644]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:08.418763]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:08.739979]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:09.714504]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:09.715387]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:09.872001]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:10.731821]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:10.733134]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:10.912286]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:11.778909]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:11.779956]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:11.94389]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:12.920076]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:12.920961]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:13.083306]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:13.936432]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:13.937525]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:14.111284]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:14.953402]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:14.954302]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:15.125678]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:16.094333]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:16.095229]</span></span>
-<span><span class="co">#&gt; Best fit: 2.3667 (sd: 262.41)</span></span>
+<span><span class="co">#&gt; mean      2.523     1.0110     0.9092  0.8325</span></span>
+<span><span class="co">#&gt; median    3.250     0.9536     0.8873  0.6539</span></span>
+<span><span class="co">#&gt; sd        1.917     0.1943     0.0585  0.3399</span></span>
+<span><span class="co">#&gt; Best fit: 2.5185 (sd: 160.71)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 4/5, 8 members. [2023-11-02 09:12:16.178965]</span></span>
+<span><span class="co">#&gt; Starting generation 4/5, 8 members. [2023-11-02 09:32:45.006573]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean     1.4010    0.93890    0.97270  0.6967</span></span>
-<span><span class="co">#&gt; median   0.8038    0.92420    0.97170  0.6348</span></span>
-<span><span class="co">#&gt; sd       1.6630    0.06525    0.05778  0.2514</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:16.269357]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:17.141736]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:17.143001]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:17.316039]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:18.282621]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:18.283919]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:18.442729]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:19.189142]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:19.190089]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:19.355895]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:20.205596]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:20.206485]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:20.369064]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:21.221683]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:21.22257]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:21.381847]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:22.363019]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:22.363873]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:22.529741]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:23.394629]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:23.395507]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:23.562805]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:24.311419]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:24.312275]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:24.474403]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:25.334014]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:25.334916]</span></span>
-<span><span class="co">#&gt; Best fit: 2.3335 (sd: 0.85778)</span></span>
+<span><span class="co">#&gt; mean      2.093     1.0710    0.93340  1.0320</span></span>
+<span><span class="co">#&gt; median    1.560     1.0830    0.95170  0.9727</span></span>
+<span><span class="co">#&gt; sd        2.115     0.2244    0.06421  0.4646</span></span>
+<span><span class="co">#&gt; Best fit: 2.493 (sd: 228.34)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 5/5, 8 members. [2023-11-02 09:12:25.41997]</span></span>
+<span><span class="co">#&gt; Starting generation 5/5, 8 members. [2023-11-02 09:32:54.302394]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      1.946    1.00300    0.94680  0.8538</span></span>
-<span><span class="co">#&gt; median    1.723    0.98670    0.94480  0.7791</span></span>
-<span><span class="co">#&gt; sd        1.835    0.06851    0.06481  0.2883</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:25.517783]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:26.475479]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:26.47644]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:26.659704]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:27.616309]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:27.617526]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:27.804423]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:28.538762]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:28.539711]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:28.700505]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:29.67979]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:29.68068]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:29.855507]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:30.712218]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:30.713088]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:30.876894]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:31.619397]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:31.620561]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:31.791812]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:32.635188]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:32.636073]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:32.801953]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:33.651281]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:33.652359]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-02 09:12:33.8236]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-11-02 09:12:34.776502]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-02 09:12:34.777387]</span></span>
-<span><span class="co">#&gt; Best fit: 2.3335 (sd: 197.35)</span></span>
+<span><span class="co">#&gt; mean      2.267      1.013    0.94030  1.0010</span></span>
+<span><span class="co">#&gt; median    2.332      1.030    0.90730  0.8271</span></span>
+<span><span class="co">#&gt; sd        1.607      0.166    0.09158  0.4754</span></span>
+<span><span class="co">#&gt; Best fit: 2.493 (sd: 228.33)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span></code></pre></div>
 </div>
 <div class="section level2 tabset">
