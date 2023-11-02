@@ -309,19 +309,19 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
         # message(i, ", ", p)
 
         # Save the fit value
-        pars[[i]][["fit"]][p] <- aemetools::run_and_fit(aeme_data = aeme_data,
-                                                        param = param,
-                                                        model = model,
-                                                        path = path,
-                                                        vars_sim = vars_sim,
-                                                        FUN = FUN,
-                                                        mod_ctrls = mod_ctrls,
-                                                        na_value = ctrl$na_value,
-                                                        var_indices = var_indices,
-                                                        return_indices = FALSE,
-                                                        include_wlev = include_wlev,
-                                                        fit = TRUE,
-                                                        weights = weights)
+        pars[[i]][["fit"]][p] <- run_and_fit(aeme_data = aeme_data,
+                                             param = param,
+                                             model = model,
+                                             path = path,
+                                             vars_sim = vars_sim,
+                                             FUN = FUN,
+                                             mod_ctrls = mod_ctrls,
+                                             na_value = ctrl$na_value,
+                                             var_indices = var_indices,
+                                             return_indices = FALSE,
+                                             include_wlev = include_wlev,
+                                             fit = TRUE,
+                                             weights = weights)
         print(pars[[i]][["fit"]][p])
       }
       return(pars[[i]])
@@ -380,19 +380,19 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
           # print(i); print(p)
 
           # Save the
-          pars[[i]][["fit"]][p] <- aemetools::run_and_fit(aeme_data = aeme_data,
-                                                          param = param,
-                                                          model = model,
-                                                          path = path,
-                                                          vars_sim = vars_sim,
-                                                          FUN = FUN,
-                                                          mod_ctrls = mod_ctrls,
-                                                          na_value = ctrl$na_value,
-                                                          var_indices = var_indices,
-                                                          return_indices = FALSE,
-                                                          include_wlev = include_wlev,
-                                                          fit = TRUE,
-                                                          weights = weights)
+          pars[[i]][["fit"]][p] <- run_and_fit(aeme_data = aeme_data,
+                                               param = param,
+                                               model = model,
+                                               path = path,
+                                               vars_sim = vars_sim,
+                                               FUN = FUN,
+                                               mod_ctrls = mod_ctrls,
+                                               na_value = ctrl$na_value,
+                                               var_indices = var_indices,
+                                               return_indices = FALSE,
+                                               include_wlev = include_wlev,
+                                               fit = TRUE,
+                                               weights = weights)
         }
         return(pars[[i]])
       }, pars = param_list)
