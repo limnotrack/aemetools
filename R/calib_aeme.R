@@ -43,6 +43,8 @@
 #' @inheritParams AEME::build_ensemble
 #' @param weights vector; of weights for each variable in vars_sim. Default to
 #' c(1).
+#' @param param_df dataframe; of parameters read in from a csv file. Requires
+#' the columns c("model", "file", "name", "value", "min", "max").
 #'
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom utils read.csv
