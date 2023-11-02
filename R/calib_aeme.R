@@ -32,13 +32,15 @@
 #'  * `p`: The quantile used to select the parents for the next generation. For
 #'  example, if `p = 0.25`, the best 25% of the population will be used as
 #'  parents for the next generation.
-#'  * `mutate` fraction of population to undergo mutation [0, 1].
+#'  * `mutate` fraction of population to undergo mutation (0-1).
 #'  * `parallel` boolean; run calibration in parallel. Default to TRUE
 #'  * `out_file` filepath; to csv for calibration output to be written to.
 #'  Defaults to "results.csv"
 #'  * `na_value` value to replace NA values with in observations. Default to
 #'   999.
 #' @inheritParams AEME::build_ensemble
+#' @param weights vector; of weights for each variable in vars_sim. Default to
+#' c(1).
 #'
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom utils read.csv

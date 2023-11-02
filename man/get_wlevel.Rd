@@ -12,6 +12,8 @@ get_wlevel(lake_dir, model, nlev, return_df = FALSE)
 \item{model}{string; model name.}
 
 \item{nlev}{numeric; number of levels to extract.}
+
+\item{return_df}{logical; return dataframe of water level. Default is FALSE.}
 }
 \value{
 dataframe of water level.

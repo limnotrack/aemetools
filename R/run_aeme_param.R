@@ -2,6 +2,7 @@
 #'
 #' @inheritParams AEME::run_aeme
 #' @inheritParams run_and_fit
+#' @param na_value numeric; value to return if model run is unsuccessful
 #' @param return_nc boolean; return netCDF file connection
 #'
 #' @importFrom AEME run_aeme lake input observations outflows

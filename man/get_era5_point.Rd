@@ -17,6 +17,9 @@ get_era5_point(lat, lon, years, variables, format = "aeme", parallel = FALSE)
 
 \item{format}{string; the format for column headers. Can be "aeme" or "ler".
 Defaults to "aeme".}
+
+\item{parallel}{boolean; parallelise the download of ERA5 variables. Defaults
+to FALSE.}
 }
 \value{
 dataframe of daily ERA5 data.

@@ -22,6 +22,8 @@ run_and_fit(
 )
 }
 \arguments{
+\item{aeme_data}{aeme; data object.}
+
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
 
@@ -31,8 +33,15 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \item{vars_sim}{vector; of variables names to be used in the calculation of
 model fit. Currently only supports using one variable.}
 
+\item{path}{filepath; where input files are located relative to `config`.}
+
+\item{mod_ctrls}{dataframe; of configuration loaded from
+"mod_ctrls.csv".}
+
 \item{FUN}{function; of the form \verb{function(O, P)} which will be used in
 to calculate model fit. If NULL, uses mean absolute error (MAE).}
+
+\item{na_value}{numeric; value to return if model run is unsuccessful}
 
 \item{var_indices}{list; generated from running \code{run_and_fit()} with
 \verb{return indices = TRUE} on the first simulation.}

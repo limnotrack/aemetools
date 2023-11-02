@@ -8,6 +8,8 @@
 #' @param variables vector; with lookup table for variable names
 #' @param format string; the format for column headers. Can be "aeme" or "ler".
 #' Defaults to "aeme".
+#' @param parallel boolean; parallelise the download of ERA5 variables. Defaults
+#' to FALSE.
 #'
 #' @importFrom sf st_as_sf
 #' @importFrom stars st_extract
@@ -35,7 +37,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
          "\nhttps://github.com/limnotrack/aemetools/issues")
   }
 
-  data("era5_ref_table", package = "AEME")
+  data("era5_ref_table", package = "AEME", envir = environment())
 
   sel_vars <- era5_ref_table |>
     dplyr::filter(aeme %in% variables)
