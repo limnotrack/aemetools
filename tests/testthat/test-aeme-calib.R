@@ -69,7 +69,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
 
   ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999)
+               na_value = 999, ncore = 2L)
 
   vars_sim <- c("HYD_temp", "HYD_wlev")
   weights <- c(1, 10)
@@ -129,7 +129,7 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
 
   ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999)
+               na_value = 999, ncore = 2L)
 
   vars_sim <- c("HYD_temp", "HYD_wlev")
   weights <- c(1, 10)
@@ -190,7 +190,7 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
 
   ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999)
+               na_value = 999, ncore = 2L)
 
   vars_sim <- c("HYD_temp", "HYD_wlev")
   weights <- c(1, 10)
