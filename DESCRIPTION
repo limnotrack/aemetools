@@ -20,6 +20,8 @@ Imports:
     FME,
     ggplot2,
     job,
+    lubridate,
+    ncdf4,
     parallel,
     plyr,
     rdrop2 (>= 0.8.2.1),
@@ -27,14 +29,16 @@ Imports:
     stars,
     stats,
     stringr,
+    tidyr,
     units,
-    utils
+    utils,
+    yaml
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Remotes:  
+Remotes: 
     github::limnotrack/AEME,
     github::limnotrack/rdrop2
 URL: https://studious-enigma-z736ppg.pages.github.io/
