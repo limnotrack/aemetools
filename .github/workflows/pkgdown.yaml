@@ -5,6 +5,8 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest # The first job utilizes windows-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GH_ACTIONS }}
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
