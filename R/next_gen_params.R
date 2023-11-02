@@ -14,22 +14,31 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
     best_pars <- param_df[which.min(param_df$fit), ]
   }
 
-  survivors <- param_df[param_df$fit != ctrl$na_value, ]
-  if (nrow(survivors) == 0) {
+  survivors1 <- param_df[param_df$fit != ctrl$na_value, ]
+  if (nrow(survivors1) == 0) {
     survivors <- param_df[order(param_df$fit), ]
   }
-  survivors <- survivors[order(survivors$fit), ]
-  drop_cols <- which(names(survivors) %in% c("fit", "gen"))
-  if ((nrow(survivors) / nrow(param_df)) > 0.5) {
-    message("Survival rate: ", round(nrow(survivors) / nrow(param_df), 2))
-    survivors <- survivors[survivors$fit <= quantile(survivors$fit, ctrl$p), -drop_cols]
+  survivors1 <- survivors1[order(survivors1$fit), ]
+  drop_cols <- which(names(survivors1) %in% c("fit", "gen"))
+  if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
+    message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2))
+    survivors2 <- survivors1[survivors1$fit <= quantile(survivors1$fit, ctrl$p),
+                             -drop_cols]
   } else {
-    survivors <- survivors[, -drop_cols]
+    message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2),
+            " is too low, using all individuals.")
+    survivors2 <- survivors1[, -drop_cols]
+  }
+  if (nrow(survivors2) == 1) {
+    message("Number of survivors is too low (n=", nrow(survivors1),
+            ")... using 2 * ctrl$p.")
+    survivors2 <- survivors1[survivors1$fit <= quantile(survivors1$fit, (ctrl$p * 2)),
+                             -drop_cols]
   }
 
 
-  g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP, mu = apply(survivors, 2, mean),
-                                   Sigma = cov(survivors), tol = 1))
+  g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP, mu = apply(survivors2, 2, mean),
+                                   Sigma = cov(survivors2), tol = 1))
 
   # Improved targeting of outflow factor when no obs present ----
   if("outflow" %in% names(g) & !ctrl$use_obs & "MET_pprain" %in% names(g)) {
