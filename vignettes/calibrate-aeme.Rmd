@@ -66,7 +66,7 @@ model setup is working.
 #| label: run-aeme-example
 #| fig.height: 8
 #| fig.width: 8
-#| cache: true
+#| cache: false
 #| fig.cap: "Example of running AEME with the glm_aed model."
 
 aeme_data <- run_aeme(aeme_data = aeme_data, model = model,
@@ -168,7 +168,7 @@ as follows:
 
 Here is an example of the control parameters:
 ```{r define-control-parameters}
-ctrl <- list(VTR = 1, NP = 40, itermax = 800, reltol = 0.07, p = 0.25,
+ctrl <- list(VTR = 1, NP = 8, itermax = 40, reltol = 0.07, p = 0.25,
              mutate = 0.1, parallel = TRUE, out_file = "results.csv",
              na_value = 999, ncore = 2L)
 ```
@@ -244,7 +244,7 @@ takes the following arguments:
 And returns a list of ggplot objects: a dotty plot, density plot and caterpillar
 plot.
 
-```{r visualise-calibration-results, cache = TRUE}
+```{r visualise-calibration-results, cache = FALSE}
 
 calib_res <- read_calib(ctrl = ctrl, model = model)
 plist <- plot_calib(calib = calib_res, model = model, 
