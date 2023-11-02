@@ -33,6 +33,10 @@ Defaults to "results.csv"
 }
 \enumerate{
 \item 
+}
+\itemize{
+\item \code{ncore}: The number of cores to use for the calibration. This is only used
+if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
 }}
 
 \item{model}{string; for which model. Options are c("dy_cd", "glm_aed" and

@@ -163,14 +163,14 @@ as follows:
  - `na_value`: The value to use for missing values in the observed and predicted
    data. This is used to indicate when the model crashes and then can be easily 
    removed from the calibration results.
- - `vars_sim`: The variables to use for the calibration using the AEME
- variable definition e.g. `c("HYD_temp", "HYD_wlev")`.  
+ - `ncore`: The number of cores to use for the calibration. This is only used
+   if `parallel = TRUE`.
 
 Here is an example of the control parameters:
 ```{r define-control-parameters}
 ctrl <- list(VTR = 1, NP = 40, itermax = 800, reltol = 0.07, p = 0.25,
              mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-             na_value = 999)
+             na_value = 999, ncore = 2L)
 ```
 
 ### Define variables

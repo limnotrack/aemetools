@@ -63,6 +63,10 @@ Defaults to "results.csv"
 }
 \enumerate{
 \item 
+}
+\itemize{
+\item \code{ncore}: The number of cores to use for the calibration. This is only used
+if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
 }}
 
 \item{weights}{vector; of weights for each variable in vars_sim. Default to
