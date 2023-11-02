@@ -1,5 +1,8 @@
 #' Run a model and calculate model fit.
 #'
+#' @inheritParams AEME::run_aeme
+#' @inheritParams run_and_fit
+#' @inheritParams run_aeme_param
 #' @param param dataframe; of parameters read in from a csv file. Requires the
 #' columns c("model", "file", "name", "value", "min", "max", "log")
 #' @param model string; for which model. Options are c("dy_cd", "glm_aed" and
@@ -21,6 +24,7 @@
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @importFrom lubridate as_date
 #' @importFrom AEME lake input observations
+#' @importFrom reshape2 melt
 #'
 #' @export
 #'
@@ -50,7 +54,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
   if (fit | return_indices) {
 
     # Load data from AEME package ----
-    utils::data("key_naming", package = "AEME")
+    utils::data("key_naming", package = "AEME", envir = environment())
 
     # Load AEME data
     lke <- AEME::lake(aeme_data)

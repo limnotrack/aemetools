@@ -3,6 +3,7 @@
 #' @param lake_dir lake directory
 #' @param model string; model name.
 #' @param nlev numeric; number of levels to extract.
+#' @param return_df logical; return dataframe of water level. Default is FALSE.
 #'
 #' @return dataframe of water level.
 #'

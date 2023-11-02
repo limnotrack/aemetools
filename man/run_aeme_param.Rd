@@ -28,6 +28,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \item{mod_ctrls}{dataframe; of configuration loaded from
 "mod_ctrls.csv".}
 
+\item{na_value}{numeric; value to return if model run is unsuccessful}
+
 \item{return_nc}{boolean; return netCDF file connection}
 }
 \value{

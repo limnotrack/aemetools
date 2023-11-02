@@ -5,6 +5,9 @@
 #' @param ctrl list; with control parameters.
 #' @param best_pars dataframe; with best parameters.
 #'
+#' @importFrom MASS mvrnorm
+#' @importFrom stats cov rnorm sd quantile
+#'
 #' @return dataframe; with new parameters.
 #' @noRd
 
@@ -22,7 +25,8 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
   drop_cols <- which(names(survivors1) %in% c("fit", "gen"))
   if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
     message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2))
-    survivors2 <- survivors1[survivors1$fit <= quantile(survivors1$fit, ctrl$p),
+    survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
+                                                               ctrl$p),
                              -drop_cols]
   } else {
     message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2),
@@ -32,22 +36,23 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
   if (nrow(survivors2) == 1) {
     message("Number of survivors is too low (n=", nrow(survivors1),
             ")... using 2 * ctrl$p.")
-    survivors2 <- survivors1[survivors1$fit <= quantile(survivors1$fit, (ctrl$p * 2)),
+    survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
+                                                               (ctrl$p * 2)),
                              -drop_cols]
   }
 
 
   g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP, mu = apply(survivors2, 2, mean),
-                                   Sigma = cov(survivors2), tol = 1))
+                                   Sigma = stats::cov(survivors2), tol = 1))
 
   # Improved targeting of outflow factor when no obs present ----
   if("outflow" %in% names(g) & !ctrl$use_obs & "MET_pprain" %in% names(g)) {
     message("No observations, using normal distribution for outflow.")
     b_par <- param_df[which.min(param_df$fit), ]
-    g[["outflow"]] <- rnorm(n = ctrl$NP, mean = best_pars[["outflow"]],
-                            sd = sd(g$outflow))
-    g[["MET_pprain"]] <- rnorm(n = ctrl$NP, mean = best_pars[["MET_pprain"]],
-                               sd = sd(g$MET_pprain))
+    g[["outflow"]] <- stats::rnorm(n = ctrl$NP, mean = best_pars[["outflow"]],
+                                   sd = stats::sd(g$outflow))
+    g[["MET_pprain"]] <- stats::rnorm(n = ctrl$NP, mean = best_pars[["MET_pprain"]],
+                                      sd = stats::sd(g$MET_pprain))
 
   }
 

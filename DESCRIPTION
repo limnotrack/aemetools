@@ -3,11 +3,12 @@ Title: Tools to assist the Aquatic Ecosystem Model Ensemble package
 Version: 0.0.0.9000
 Authors@R: 
     c(person("Tadhg", "Moore", role = c("aut","cre"),
-    email = "tadhg.moore6@gmail.com"),
+    email = "tadhg@limnotrack.com"),
     person("Chris", "McBride", role = "aut",
     email = "chris@limnotrack.com"))
 Description: Run simple hydrological models to generate inflow inputs for the
-    AEME package.
+    AEME package, download ERA5-Land data for any point in New Zealand, and
+    calibrate the AEME model ensemble.
 License: GPL (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -18,13 +19,17 @@ Imports:
     dplyr,
     ecmwfr,
     FME,
+    forcats,
     ggplot2,
     job,
     lubridate,
+    MASS,
     ncdf4,
     parallel,
+    patchwork,
     plyr,
     rdrop2 (>= 0.8.2.1),
+    reshape2,
     sf,
     stars,
     stats,

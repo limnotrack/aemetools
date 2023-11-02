@@ -10,6 +10,11 @@
 #' @importFrom ggplot2 aes geom_point geom_vline geom_hline geom_smooth
 #' @importFrom ggplot2 facet_wrap labs theme_bw scale_colour_brewer
 #' @importFrom ggplot2 scale_x_continuous scale_y_continuous scale_fill_brewer
+#' @importFrom ggplot2 scale_colour_viridis_d
+#' @importFrom ggplot2 coord_cartesian
+#' @importFrom ggplot2 geom_text annotate
+#' @importFrom forcats fct_reorder
+#' @importFrom patchwork wrap_plots
 #'
 #' @return list of plots
 #' @export
