@@ -24,12 +24,19 @@ plot_calib <- function(calib, model, na_value, nrow = 2, base_size = 8,
 
   all_pars <- get_param(calib, model, na_value = na_value, best = FALSE)
   summ <- get_param(calib, model, na_value = na_value, best = TRUE)
+  if (min(all_pars$fit, na.rm = TRUE) <= 0) {
+    message(strwrap("Negative fit values detected, adding 1 to all values to
+                    ensure log scale is possible.",
+                    exdent = 2))
+    all_pars$fit <- all_pars$fit + 1.01
+    summ$fit <- summ$fit + 1.01
+  }
 
   # f_pars <- all_pars[all_pars$fit < 0, ]
   ylims <- c(min(all_pars$fit, na.rm = TRUE),
              stats::quantile(all_pars$fit, 0.75, na.rm = TRUE))
 
-  # Convergence plot ----
+  # Dotty plot ----
   plist <- lapply(model, \(m) {
     ggplot2::ggplot() +
       ggplot2::geom_point(data = all_pars[all_pars$model == m, ],
