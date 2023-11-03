@@ -220,7 +220,7 @@ ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
 
 ```
 
-## Visualise calibration results {.tabset}
+## Visualise calibration results
 
 The calibrations results can be read in using the `read_calib` function. This
 function takes the following arguments:
@@ -240,7 +240,7 @@ takes the following arguments:
  - `model`: The model used for the calibration.
  - `ctrl`: The control parameters used for the calibration.
  
-And returns a list of ggplot objects: a dotty plot, density plot and caterpillar
+And returns a list of ggplot objects: a dotty plot, density plot and convergence
 plot.
 
 ```{r visualise-calibration-results, cache = FALSE}
