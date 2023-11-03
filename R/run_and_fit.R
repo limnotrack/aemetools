@@ -62,7 +62,8 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
     lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
     inp <- AEME::input(aeme_data)
     obs <- AEME::observations(aeme_data)
-    obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
+    if (!is.null(obs$lake))
+      obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
 
 
     # Default function ----
@@ -234,7 +235,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         dplyr::select(LID, Date, value, var, depth_mid, depth_from, model, diff)
     }
 
-    if (nrow(obs$lake) > 0 & length(vars_sim) > 0) {
+    if (!is.null(obs$lake) & length(vars_sim) > 0) {
       obs_sub <- obs$lake |>
         dplyr::filter(Date %in% mod_out$Date)
 
