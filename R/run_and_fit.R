@@ -143,69 +143,71 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
     }
 
     # Extract model variables ----
-    vars_out <- lapply(vars_sim, \(v) {
+    if (length(vars_sim) > 0) {
+      vars_out <- lapply(vars_sim, \(v) {
 
-      v1 <- ifelse(model == "dy_cd",
-                   paste0("dyresm", key_naming[key_naming$name %in% v, model],
-                          "_Var"),
-                   key_naming[key_naming$name %in% v, model])
+        v1 <- ifelse(model == "dy_cd",
+                     paste0("dyresm", key_naming[key_naming$name %in% v, model],
+                            "_Var"),
+                     key_naming[key_naming$name %in% v, model])
 
-      this.var <- ncdf4::ncvar_get(nc, v1)
-      if(model == "dy_cd") {
-        this.var <- this.var[nrow(this.var):1, ]
-      }
+        this.var <- ncdf4::ncvar_get(nc, v1)
+        if(model == "dy_cd") {
+          this.var <- this.var[nrow(this.var):1, ]
+        }
 
-      if(length(var_indices[[v]][["depths"]]) == 0 |
-         length(var_indices[[v]][["time"]]) == 0 |
-         is.null(ncol(this.var))) {
+        if(length(var_indices[[v]][["depths"]]) == 0 |
+           length(var_indices[[v]][["time"]]) == 0 |
+           is.null(ncol(this.var))) {
+          return(na_value)
+        }
+
+        conv.fact <- ifelse(model == "glm_aed",
+                            key_naming[key_naming$name == v, "conversion_aed"],
+                            1)
+
+        na_idx <- which(apply(this.var, 2, \(x) all(is.na(x))))
+
+        out <- sapply(var_indices[[v]][["time"]], FUN = \(i) {
+          if (i > ncol(this.var)) {
+            return(rep(na_value, length(var_indices[[v]][["depths"]])))
+          }
+          if (all(is.na(this.var[, i])) | sum(!is.na(this.var[, i])) == 1) {
+            return(rep(na_value, length(var_indices[[v]][["depths"]])))
+          }
+
+          if (model %in% c("glm_aed", "dy_cd")) {
+            z <- c(0, lyrs[1:NS[i], i])
+            z <- max(z) - z
+            elevs_mid <- approx(z, n = length(z)*2 - 1)$y # extract mid layer depth
+            elevs_mid <- elevs_mid[-which(elevs_mid %in% z)]
+            approx(x = elevs_mid, y = this.var[1:NS[i], i],
+                   xout = var_indices[[v]][["depths"]], rule = 2)$y
+          } else if(model == "gotm_wet") {
+            approx(x = z[, i], y = this.var[, i],
+                   xout = var_indices[[v]][["depths"]], rule = 2)$y
+          }
+        })
+        if ("numeric" %in% class(out)) {
+          out <- matrix(out, nrow = 1, ncol = length(out))
+        }
+        out <- out * conv.fact
+        rownames(out) <- var_indices[[v]][["depths"]]
+        colnames(out) <- as.character(var_indices[[v]][["dates"]])
+        out2 <- reshape2::melt(out, value.name = "model",
+                               varnames = c("depth_mid", "Date"))
+        out2$Date <- as.Date(out2$Date)
+        out2$var <- v
+        return(out2)
+      })
+      # Filter(Negate(is.null), vars_out)
+
+      mod_out <- do.call(rbind, vars_out)
+      if (ncol(mod_out) == 1 & nrow(obs$lake) > 0) {
         return(na_value)
       }
-
-      conv.fact <- ifelse(model == "glm_aed",
-                          key_naming[key_naming$name == v, "conversion_aed"],
-                          1)
-
-      na_idx <- which(apply(this.var, 2, \(x) all(is.na(x))))
-
-      out <- sapply(var_indices[[v]][["time"]], FUN = \(i) {
-        if (i > ncol(this.var)) {
-          return(rep(na_value, length(var_indices[[v]][["depths"]])))
-        }
-        if (all(is.na(this.var[, i])) | sum(!is.na(this.var[, i])) == 1) {
-          return(rep(na_value, length(var_indices[[v]][["depths"]])))
-        }
-
-        if (model %in% c("glm_aed", "dy_cd")) {
-          z <- c(0, lyrs[1:NS[i], i])
-          z <- max(z) - z
-          elevs_mid <- approx(z, n = length(z)*2 - 1)$y # extract mid layer depth
-          elevs_mid <- elevs_mid[-which(elevs_mid %in% z)]
-          approx(x = elevs_mid, y = this.var[1:NS[i], i],
-                 xout = var_indices[[v]][["depths"]], rule = 2)$y
-        } else if(model == "gotm_wet") {
-          approx(x = z[, i], y = this.var[, i],
-                 xout = var_indices[[v]][["depths"]], rule = 2)$y
-        }
-      })
-      if ("numeric" %in% class(out)) {
-        out <- matrix(out, nrow = 1, ncol = length(out))
-      }
-      out <- out * conv.fact
-      rownames(out) <- var_indices[[v]][["depths"]]
-      colnames(out) <- as.character(var_indices[[v]][["dates"]])
-      out2 <- reshape2::melt(out, value.name = "model",
-                             varnames = c("depth_mid", "Date"))
-      out2$Date <- as.Date(out2$Date)
-      out2$var <- v
-      return(out2)
-    })
-
-    # Filter(Negate(is.null), vars_out)
-
-    mod_out <- do.call(rbind, vars_out)
-    if (ncol(mod_out) == 1 & nrow(obs$lake) > 0) {
-      return(na_value)
     }
+
 
     if (include_wlev) {
       #### PROBABLY NEED CATCHES HERE FOR NO WATER LEVEL OUTPUT #####
@@ -232,7 +234,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         dplyr::select(LID, Date, value, var, depth_mid, depth_from, model, diff)
     }
 
-    if (nrow(obs$lake) > 0) {
+    if (nrow(obs$lake) > 0 & length(vars_sim) > 0) {
       obs_sub <- obs$lake |>
         dplyr::filter(Date %in% mod_out$Date)
 
