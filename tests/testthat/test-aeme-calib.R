@@ -398,6 +398,9 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  obs <- AEME::observations(aeme_data)
+  obs$lake <- NULL
+  AEME::observations(aeme_data) <- obs
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
