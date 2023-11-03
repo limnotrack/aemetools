@@ -15,7 +15,16 @@
 #' @export
 
 run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
-                           na_value = 999, return_nc = FALSE) {
+                           na_value = 999, return_nc = FALSE,
+                           return_aeme = FALSE) {
+
+  # Function checks ----
+  if (!is.data.frame(param))
+    stop("Parameter 'param' must be a data.frame.")
+  if (!is.character(model))
+    stop("Parameter 'model' must be a character string.")
+  if (return_nc & return_aeme)
+    stop("Only one of 'return_nc' and 'return_aeme' can be TRUE.")
 
   # Load AEME data
   lke <- AEME::lake(aeme_data)
@@ -184,9 +193,9 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
   }
 
   # Run model ----
-  AEME::run_aeme(aeme_data = aeme_data, model = model, path = path,
+  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model, path = path,
                  check_output = FALSE, parallel = FALSE,
-                 mod_ctrls = mod_ctrls, return = FALSE)
+                 mod_ctrls = mod_ctrls, return = return_aeme)
 
 
   # Check if model output is produced ----
@@ -214,4 +223,7 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
     return(nc)
   }
 
+  if (return_aeme) {
+    return(aeme_data)
+  }
 }
