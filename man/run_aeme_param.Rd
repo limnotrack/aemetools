@@ -11,7 +11,8 @@ run_aeme_param(
   path,
   mod_ctrls,
   na_value = 999,
-  return_nc = FALSE
+  return_nc = FALSE,
+  return_aeme = FALSE
 )
 }
 \arguments{
