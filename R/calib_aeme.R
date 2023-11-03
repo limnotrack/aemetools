@@ -95,7 +95,7 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
   par_idx <- which(param$model %in% c(model))
   obs <- AEME::observations(aeme_data)
   # Check if there are observations for the model or just calibrating wlev
-  ctrl$use_obs <- ifelse(nrow(obs$lake) > 0, TRUE, FALSE)
+  ctrl$use_obs <- ifelse(!is.null(obs$lake), TRUE, FALSE)
 
   if (is.na(ctrl$NP)) {
     ctrl$NP <- 10 * sum(par_idx)
@@ -330,9 +330,9 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     }, pars = param_list)
 
     g1 <- do.call(rbind, model_out)
-    message("Best fit: ", round(min(g1$fit), 3), " (sd: ",
-            round(sd(g1$fit), 3), ")
-            Parameters: [", paste0(round(g1[which.min(g1$fit),
+    message("Best fit: ", signif(min(g1$fit), 3), " (sd: ",
+            signif(sd(g1$fit), 3), ")
+            Parameters: [", paste0(signif(g1[which.min(g1$fit),
                                             1:length(par_idx)], 3),
                                    collapse = ", "), "]")
     g1$gen <- gen_n
