@@ -18,6 +18,7 @@
 #' @importFrom parallel detectCores makeCluster stopCluster clusterExport
 #' parLapply
 #' @importFrom dplyr filter mutate across
+#' @importFrom stats complete.cases na.exclude
 #'
 #' @return dataframe of daily ERA5 data.
 #'
@@ -90,12 +91,12 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
 
 
   df <- df |>
-    dplyr::mutate(dplyr::across(!contains("date"), signif))
+    dplyr::mutate(dplyr::across(!dplyr::contains("date"), signif))
 
-  na_rows <- which(!complete.cases(df))
+  na_rows <- which(!stats::complete.cases(df))
   if(length(na_rows) > 0) {
     message("Removing NA's on ", paste0(df[na_rows, 1], collapse = ", "))
-    df <- na.exclude(df)
+    df <- stats::na.exclude(df)
   }
   df
 }

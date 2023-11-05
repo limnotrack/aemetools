@@ -47,10 +47,11 @@
 #' the columns c("model", "file", "name", "value", "min", "max").
 #'
 #' @importFrom parallel makeCluster stopCluster detectCores
-#' @importFrom utils read.csv
+#' @importFrom utils write.csv write.table
 #' @importFrom stats runif
 #' @importFrom FME Latinhyper
 #' @importFrom dplyr mutate
+#'
 #' @return list; ctrl which was supplied with updated arguments if missing.
 #'
 #' @export
@@ -69,7 +70,7 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
                  na_value = 999)
   }
   if (is.null(ctrl$na_value)) {
-    ctrl$na_value <- na_value
+    ctrl$na_value <- 999
   }
 
   include_wlev <- ifelse("HYD_wlev" %in% vars_sim, TRUE, FALSE)
@@ -204,11 +205,11 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     out_df <- apply(g1, 2, signif, digits = 6)
     best_pars <- g1[which.min(g1$fit), ]
     if (gen_n == 1) {
-      write.csv(out_df, ctrl$out_file,
-                quote = TRUE, row.names = FALSE)
+      utils::write.csv(out_df, ctrl$out_file,
+                       quote = TRUE, row.names = FALSE)
     } else {
-      write.table(out_df, ctrl$out_file, append = TRUE,
-                  sep = ",", row.names = FALSE, col.names = FALSE)
+      utils::write.table(out_df, ctrl$out_file, append = TRUE,
+                         sep = ",", row.names = FALSE, col.names = FALSE)
     }
 
     if (min(g1$fit) < ctrl$VTR) {
@@ -333,7 +334,7 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     message("Best fit: ", signif(min(g1$fit), 3), " (sd: ",
             signif(sd(g1$fit), 3), ")
             Parameters: [", paste0(signif(g1[which.min(g1$fit),
-                                            1:length(par_idx)], 3),
+                                             1:length(par_idx)], 3),
                                    collapse = ", "), "]")
     g1$gen <- gen_n
     out_df <- apply(g1, 2, signif, digits = 6)
