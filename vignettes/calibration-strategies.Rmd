@@ -153,7 +153,7 @@ fit <- function(O, P) {
 
 ctrl <- list(VTR = -Inf, NP = 20, itermax = 400, reltol = 0.07, p = 0.5,
              mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-             na_value = 999, ncore = 10)
+             na_value = 999)
 
 vars_sim <- c("HYD_wlev")
 weights <- c("HYD_wlev" = 10)
