@@ -1,5 +1,5 @@
 Package: aemetools
-Title: Tools to assist the Aquatic Ecosystem Model Ensemble package
+Title: Tools to Assist the Aquatic Ecosystem Model Ensemble Package
 Version: 0.0.0.9000
 Authors@R: 
     c(person("Tadhg", "Moore", role = c("aut","cre"),
