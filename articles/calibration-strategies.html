@@ -142,7 +142,7 @@ speed and lake surface area. When this cal</p>
 <span>                            model <span class="op">=</span> <span class="va">model</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>,</span>
 <span>                            inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                            use_bgc <span class="op">=</span> <span class="cn">FALSE</span>, use_lw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building simulation for Wainamu [2023-11-05 22:13:03.146985]</span></span>
+<span><span class="co">#&gt; Building simulation for Wainamu [2023-11-05 22:30:19.440412]</span></span>
 <span><span class="co">#&gt; Using observed water level</span></span>
 <span><span class="co">#&gt; Estimating temperature using Stefan &amp; Preud'homme (2007)...</span></span>
 <span><span class="co">#&gt; Warning in build_ensemble(path = path, aeme_data = aeme_data, model = model, : Outflow data are not present. This function will generate an estimated</span></span>
@@ -168,9 +168,9 @@ observations.</p>
 <span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AEME/man/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                      verbose <span class="op">=</span> <span class="cn">FALSE</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>,</span>
 <span>                      path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-05 22:13:04.709763]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2023-11-05 22:13:05.294482]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-05 22:13:05.295678]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-05 22:30:20.986266]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2023-11-05 22:30:21.570896]</span></span>
+<span><span class="co">#&gt; Model run complete![2023-11-05 22:30:21.571766]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model gotm_wet</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model gotm_wet</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AEME/man/plot_output.html" class="external-link">plot_output</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="st">"HYD_wlev"</span>,</span>
@@ -238,7 +238,7 @@ outflow data.</p>
 <span><span class="va">plist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_calib.html">plot_calib</a></span><span class="op">(</span>calib <span class="op">=</span> <span class="va">calib_res</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                    na_value <span class="op">=</span> <span class="va">ctrl</span><span class="op">$</span><span class="va">na_value</span><span class="op">)</span></span>
 <span><span class="va">plist</span><span class="op">$</span><span class="va">dotty</span></span>
-<span><span class="co">#&gt; Warning: Removed 455 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 305 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="calibration-strategies_files/figure-html/strategy1-calib-1.png" width="768"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -256,9 +256,9 @@ outflow data.</p>
 <span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, </span>
 <span>                            mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, path <span class="op">=</span> <span class="va">path</span>, param <span class="op">=</span> <span class="va">param</span>,</span>
 <span>                            return_aeme <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-05 22:18:23.854444]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2023-11-05 22:18:24.43544]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-11-05 22:18:24.43623]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-11-05 22:35:40.778558]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2023-11-05 22:35:41.352687]</span></span>
+<span><span class="co">#&gt; Model run complete![2023-11-05 22:35:41.353566]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model gotm_wet</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model gotm_wet</span></span>
 <span></span>

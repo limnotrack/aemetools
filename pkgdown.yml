@@ -3,8 +3,9 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   calibrate-aeme: calibrate-aeme.html
+  calibration-strategies: calibration-strategies.html
   download-era5: download-era5.html
-last_built: 2023-11-05T22:24Z
+last_built: 2023-11-05T22:23Z
 urls:
   reference: https://special-enigma-8p9lgre.pages.github.io/reference
   article: https://special-enigma-8p9lgre.pages.github.io/articles
