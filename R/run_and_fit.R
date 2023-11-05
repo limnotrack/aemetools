@@ -25,9 +25,9 @@
 #' @importFrom lubridate as_date
 #' @importFrom AEME lake input observations
 #' @importFrom reshape2 melt
+#' @importFrom stats approx
 #'
 #' @export
-#'
 
 run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
                         FUN = NULL, weights, na_value = 999, var_indices = NULL,
@@ -180,13 +180,13 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
           if (model %in% c("glm_aed", "dy_cd")) {
             z <- c(0, lyrs[1:NS[i], i])
             z <- max(z) - z
-            elevs_mid <- approx(z, n = length(z)*2 - 1)$y # extract mid layer depth
+            elevs_mid <- stats::approx(z, n = length(z)*2 - 1)$y # extract mid layer depth
             elevs_mid <- elevs_mid[-which(elevs_mid %in% z)]
-            approx(x = elevs_mid, y = this.var[1:NS[i], i],
-                   xout = var_indices[[v]][["depths"]], rule = 2)$y
+            stats::approx(x = elevs_mid, y = this.var[1:NS[i], i],
+                          xout = var_indices[[v]][["depths"]], rule = 2)$y
           } else if(model == "gotm_wet") {
-            approx(x = z[, i], y = this.var[, i],
-                   xout = var_indices[[v]][["depths"]], rule = 2)$y
+            stats::approx(x = z[, i], y = this.var[, i],
+                          xout = var_indices[[v]][["depths"]], rule = 2)$y
           }
         })
         if ("numeric" %in% class(out)) {

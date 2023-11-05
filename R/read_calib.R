@@ -5,6 +5,7 @@
 #' @importFrom dplyr case_when left_join mutate select summarise group_by
 #' @importFrom tidyr pivot_longer
 #' @importFrom utils read.csv
+#' @importFrom stats median
 #'
 #' @return A data frame with the calibration results.
 #' @export
@@ -24,7 +25,7 @@ read_calib <- function(ctrl, model) {
 
   gen_fit <- mlt |>
     dplyr::group_by(gen, parameter) |>
-    dplyr::summarise(gen_fit = median(fit), .groups = "drop")
+    dplyr::summarise(gen_fit = stats::median(fit), .groups = "drop")
 
   mlt |>
     dplyr::left_join(gen_fit, by = c("gen", "parameter")) |>
