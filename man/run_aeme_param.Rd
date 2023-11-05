@@ -32,6 +32,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \item{na_value}{numeric; value to return if model run is unsuccessful}
 
 \item{return_nc}{boolean; return netCDF file connection}
+
+\item{return_aeme}{boolean; return AEME object}
 }
 \value{
 \code{na_value} if model run is unsuccessful

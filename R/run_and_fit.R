@@ -1,7 +1,6 @@
 #' Run a model and calculate model fit.
 #'
 #' @inheritParams AEME::run_aeme
-#' @inheritParams run_and_fit
 #' @inheritParams run_aeme_param
 #' @param param dataframe; of parameters read in from a csv file. Requires the
 #' columns c("model", "file", "name", "value", "min", "max", "log")
@@ -17,6 +16,12 @@
 #' of each variable. Used when running calibration and the time period does not
 #'  change between simulations.
 #' @param return_df boolean; return dataframe of modelled and observed.
+#' @param weights vector; of weights to be used in the calculation of model fit.
+#' @param na_value numeric; value to be returned if model fails to run.
+#' @param include_wlev boolean; include water level in the calculation of model
+#' fit.
+#' @param fit boolean; fit model or not. If FALSE, only return netCDF file
+#' connection.
 #'
 #' @return A single value of model fit, calculated by `FUN`.
 #'

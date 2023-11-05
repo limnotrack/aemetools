@@ -41,7 +41,9 @@ model fit. Currently only supports using one variable.}
 \item{FUN}{function; of the form \verb{function(O, P)} which will be used in
 to calculate model fit. If NULL, uses mean absolute error (MAE).}
 
-\item{na_value}{numeric; value to return if model run is unsuccessful}
+\item{weights}{vector; of weights to be used in the calculation of model fit.}
+
+\item{na_value}{numeric; value to be returned if model fails to run.}
 
 \item{var_indices}{list; generated from running \code{run_and_fit()} with
 \verb{return indices = TRUE} on the first simulation.}
@@ -50,7 +52,13 @@ to calculate model fit. If NULL, uses mean absolute error (MAE).}
 of each variable. Used when running calibration and the time period does not
 change between simulations.}
 
+\item{include_wlev}{boolean; include water level in the calculation of model
+fit.}
+
 \item{return_df}{boolean; return dataframe of modelled and observed.}
+
+\item{fit}{boolean; fit model or not. If FALSE, only return netCDF file
+connection.}
 }
 \value{
 A single value of model fit, calculated by \code{FUN}.
