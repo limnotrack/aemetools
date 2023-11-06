@@ -213,7 +213,8 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     }
 
     if (min(g1$fit) < ctrl$VTR) {
-      return(g1)
+      message("Model fitness is less than VTR. Stopping simulation.")
+      return(ctrl)
     }
 
 
@@ -279,11 +280,11 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
 
       if (min(g$fit) < ctrl$VTR) {
         message("Model fitness is less than VTR. Stopping simulation.")
-        return(g)
+        return(ctrl)
       }
       if(sd(g$fit) < ctrl$reltol) {
         message("Model has converged. Stopping simulation.")
-        return(g)
+        return(ctrl)
       }
 
       g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
@@ -348,7 +349,8 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     }
 
     if (min(g1$fit) < ctrl$VTR) {
-      return(g1)
+      message("Model fitness is less than VTR. Stopping simulation.")
+      return(ctrl)
     }
 
 
@@ -412,11 +414,11 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
 
       if (min(g$fit) < ctrl$VTR) {
         message("Model fitness is less than VTR. Stopping simulation.")
-        return(g)
+        return(ctrl)
       }
       if(sd(g$fit) < ctrl$reltol) {
         message("Model has converged. Stopping simulation.")
-        return(g)
+        return(ctrl)
       }
 
       g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
