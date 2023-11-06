@@ -29,7 +29,6 @@ to run quicker."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/calibrate-aeme.html">Calibrate AEME</a>
-    <a class="dropdown-item" href="../articles/calibration-strategies.html">Calibration strategies</a>
     <a class="dropdown-item" href="../articles/download-era5.html">Download ERA5 data</a>
   </div>
 </li>
@@ -119,9 +118,9 @@ Default is 200.</p></li>
 <li><p><code>reltol</code> relative convergence tolerance. The algorithm stops if it is
 unable to reduce the value by a factor of <code>reltol * (abs(val) + reltol)</code>.
 Default = 0.07</p></li>
-<li><p><code>p</code>: The quantile used to select the parents for the next generation. For
-example, if <code>p = 0.25</code>, the best 25% of the population will be used as
-parents for the next generation.</p></li>
+<li><p><code>cutoff</code>: The quantile cutoff used to select the parents for the next
+generation. For example, if <code>cutoff = 0.25</code>, the best 25% of the population
+will be used as parents for the next generation.</p></li>
 <li><p><code>mutate</code> fraction of population to undergo mutation (0-1).</p></li>
 <li><p><code>parallel</code> boolean; run calibration in parallel. Default to TRUE</p></li>
 <li><p><code>out_file</code> filepath; to csv for calibration output to be written to.

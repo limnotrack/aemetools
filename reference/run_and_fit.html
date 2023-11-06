@@ -25,7 +25,6 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/calibrate-aeme.html">Calibrate AEME</a>
-    <a class="dropdown-item" href="../articles/calibration-strategies.html">Calibration strategies</a>
     <a class="dropdown-item" href="../articles/download-era5.html">Download ERA5 data</a>
   </div>
 </li>
@@ -103,8 +102,12 @@ model fit. Currently only supports using one variable.</p></dd>
 to calculate model fit. If NULL, uses mean absolute error (MAE).</p></dd>
 
 
+<dt>weights</dt>
+<dd><p>vector; of weights to be used in the calculation of model fit.</p></dd>
+
+
 <dt>na_value</dt>
-<dd><p>numeric; value to return if model run is unsuccessful</p></dd>
+<dd><p>numeric; value to be returned if model fails to run.</p></dd>
 
 
 <dt>var_indices</dt>
@@ -118,8 +121,18 @@ of each variable. Used when running calibration and the time period does not
 change between simulations.</p></dd>
 
 
+<dt>include_wlev</dt>
+<dd><p>boolean; include water level in the calculation of model
+fit.</p></dd>
+
+
 <dt>return_df</dt>
 <dd><p>boolean; return dataframe of modelled and observed.</p></dd>
+
+
+<dt>fit</dt>
+<dd><p>boolean; fit model or not. If FALSE, only return netCDF file
+connection.</p></dd>
 
 </dl></div>
     <div class="section level2">
