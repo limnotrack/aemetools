@@ -29,9 +29,9 @@
 #' * `reltol` relative convergence tolerance. The algorithm stops if it is
 #'  unable to reduce the value by a factor of `reltol * (abs(val) + reltol)`.
 #'  Default = 0.07
-#'  * `p`: The quantile used to select the parents for the next generation. For
-#'  example, if `p = 0.25`, the best 25% of the population will be used as
-#'  parents for the next generation.
+#'  * `cutoff`: The quantile cutoff used to select the parents for the next
+#'  generation. For example, if `cutoff = 0.25`, the best 25% of the population
+#'  will be used as parents for the next generation.
 #'  * `mutate` fraction of population to undergo mutation (0-1).
 #'  * `parallel` boolean; run calibration in parallel. Default to TRUE
 #'  * `out_file` filepath; to csv for calibration output to be written to.
@@ -66,7 +66,7 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
 
   if (is.null(ctrl)) {
     ctrl <- list(VTR = -Inf, NP = NA, itermax = 200, reltol = 0.07,
-                 mutate = 0.1, parallel = TRUE, out_file = "results.csv",
+                 cutoff = 0.25, mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                  na_value = 999)
   }
   if (is.null(ctrl$na_value)) {

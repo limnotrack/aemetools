@@ -22,9 +22,9 @@ Default is 200.
 \item \code{reltol} relative convergence tolerance. The algorithm stops if it is
 unable to reduce the value by a factor of \code{reltol * (abs(val) + reltol)}.
 Default = 0.07
-\item \code{p}: The quantile used to select the parents for the next generation. For
-example, if \code{p = 0.25}, the best 25\% of the population will be used as
-parents for the next generation.
+\item \code{cutoff}: The quantile cutoff used to select the parents for the next
+generation. For example, if \code{cutoff = 0.25}, the best 25\% of the population
+will be used as parents for the next generation.
 \item \code{mutate} fraction of population to undergo mutation (0-1).
 \item \code{parallel} boolean; run calibration in parallel. Default to TRUE
 \item \code{out_file} filepath; to csv for calibration output to be written to.

@@ -67,7 +67,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
+  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
@@ -127,7 +127,7 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 45, itermax = 450, reltol = 0.07, p = 0.25,
+  ctrl <- list(VTR = -Inf, NP = 45, itermax = 450, reltol = 0.07, cutoff = 0.25,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 15)
 
@@ -187,7 +187,7 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
+  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
@@ -247,7 +247,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
+  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
@@ -306,7 +306,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
+  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
@@ -365,7 +365,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
+  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
@@ -428,7 +428,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, p = 0.5,
+  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 

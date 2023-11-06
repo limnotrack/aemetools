@@ -26,7 +26,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
   if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
     message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2))
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
-                                                               ctrl$p),
+                                                               ctrl$cutoff),
                              -drop_cols]
   } else {
     message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2),
@@ -35,9 +35,9 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
   }
   if (nrow(survivors2) == 1) {
     message("Number of survivors is too low (n=", nrow(survivors1),
-            ")... using 2 * ctrl$p.")
+            ")... using 2 * ctrl$cutoff.")
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
-                                                               (ctrl$p * 2)),
+                                                               (ctrl$cutoff * 2)),
                              -drop_cols]
   }
 
@@ -46,24 +46,25 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
                                    Sigma = stats::cov(survivors2), tol = 1))
 
   # Improved targeting of outflow factor when no obs present ----
-  if("outflow" %in% names(g) & !ctrl$use_obs & "MET_pprain" %in% names(g)) {
+  if ("outflow" %in% names(g) & !ctrl$use_obs & "MET_pprain" %in% names(g)) {
     message("No observations, using normal distribution for outflow.")
     b_par <- param_df[which.min(param_df$fit), ]
     g[["outflow"]] <- stats::rnorm(n = ctrl$NP, mean = best_pars[["outflow"]],
                                    sd = stats::sd(g$outflow))
-    g[["MET_pprain"]] <- stats::rnorm(n = ctrl$NP, mean = best_pars[["MET_pprain"]],
+    g[["MET_pprain"]] <- stats::rnorm(n = ctrl$NP,
+                                      mean = best_pars[["MET_pprain"]],
                                       sd = stats::sd(g$MET_pprain))
 
   }
 
   # Correct parameters outside ranges ----
-  for(p in names(g)) {
+  for (p in names(g)) {
     g[[p]][g[[p]] < param$min[param$name == p]] <- param$min[param$name == p]
     g[[p]][g[[p]] > param$max[param$name == p]] <- param$max[param$name == p]
   }
   # Add mutation ----
   n_mut <- round(ctrl$NP * ctrl$mutate)
-  for(p in names(g)) {
+  for (p in names(g)) {
     g[[p]][sample(ctrl$NP, n_mut)] <- runif(n_mut,
                                             min = param$min[param$name == p],
                                             max = param$max[param$name == p])
