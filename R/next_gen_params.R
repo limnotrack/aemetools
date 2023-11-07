@@ -33,6 +33,10 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
             " is too low, using all individuals.")
     survivors2 <- survivors1[, -drop_cols]
   }
+  if (is.null(nrow(survivors2))) {
+    survivors2 <- data.frame(matrix(survivors2))
+    names(survivors2) <- names(survivors1)[-drop_cols]
+  }
   if (nrow(survivors2) == 1) {
     message("Number of survivors is too low (n=", nrow(survivors1),
             ")... using 2 * ctrl$cutoff.")
@@ -42,20 +46,21 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
   }
 
 
-  g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP, mu = apply(survivors2, 2, mean),
+  g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP,
+                                   mu = apply(survivors2, 2, mean),
                                    Sigma = stats::cov(survivors2), tol = 1))
 
   # Improved targeting of outflow factor when no obs present ----
-  if ("outflow" %in% names(g) & !ctrl$use_obs & "MET_pprain" %in% names(g)) {
-    message("No observations, using normal distribution for outflow.")
-    b_par <- param_df[which.min(param_df$fit), ]
-    g[["outflow"]] <- stats::rnorm(n = ctrl$NP, mean = best_pars[["outflow"]],
-                                   sd = stats::sd(g$outflow))
-    g[["MET_pprain"]] <- stats::rnorm(n = ctrl$NP,
-                                      mean = best_pars[["MET_pprain"]],
-                                      sd = stats::sd(g$MET_pprain))
-
-  }
+  # if ("outflow" %in% names(g) & !ctrl$use_obs & "MET_pprain" %in% names(g)) {
+  #   message("No observations, using normal distribution for outflow.")
+  #   b_par <- param_df[which.min(param_df$fit), ]
+  #   g[["outflow"]] <- stats::rnorm(n = ctrl$NP, mean = best_pars[["outflow"]],
+  #                                  sd = stats::sd(g$outflow))
+  #   g[["MET_pprain"]] <- stats::rnorm(n = ctrl$NP,
+  #                                     mean = best_pars[["MET_pprain"]],
+  #                                     sd = stats::sd(g$MET_pprain))
+  #
+  # }
 
   # Correct parameters outside ranges ----
   for (p in names(g)) {
@@ -69,7 +74,8 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
                                             min = param$min[param$name == p],
                                             max = param$max[param$name == p])
   }
-  g <- rbind(g, best_pars[, -drop_cols])
+  # Replace last parameter rather than adding
+  g[nrow(g), ] <- best_pars[, -drop_cols]
 
   return(g)
 }
