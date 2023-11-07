@@ -35,6 +35,9 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
   obs <- AEME::observations(aeme_data)
   obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
 
+  # Path for model
+  model_path <- file.path(lake_dir, model)
+
   if (!is.null(obs$level)) {
     z_max <- mean(obs$level[, 2]) - min(inp$hypsograph$elev)
   } else {
@@ -67,7 +70,6 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
       }
     }
 
-    model_path <- file.path(lake_dir, model)
     if(model == "glm_aed") {
       AEME:::make_metGLM(obs_met = met, path_glm = model_path, use_lw = TRUE)
     } else if(model == "gotm_wet") {
