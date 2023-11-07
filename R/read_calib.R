@@ -30,7 +30,7 @@ read_calib <- function(ctrl, model) {
   mlt |>
     dplyr::left_join(gen_fit, by = c("gen", "parameter")) |>
     dplyr::mutate(fit = dplyr::case_when(
-      fit >= ctrl$na_value ~ NA,
+      fit == ctrl$na_value ~ NA,
       .default = fit
     ),
     model = model) |>
