@@ -75,15 +75,14 @@
 <h3 id="download-nz-point-meteorological-data">Download NZ point meteorological data<a class="anchor" aria-label="anchor" href="#download-nz-point-meteorological-data"></a>
 </h3>
 <p>Currently, there is <a href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land" class="external-link">ERA5-Land
-data</a><br>
-(~9km grid spacing) archived for New Zealand (166.5/-46.6/178.6/-34.5)
-for the time period 1999-2022 with the main meteorological variables
-(air temperature, dewpoint temperature, wind u-vector at 10m, wind
-v-vector at 10m, total precipitation, snowfall, surface level pressure,
-downwelling shortwave radiation, downwelling longwave radiation)
-required to drive hydrological and hydrodynamic models. This can be
-easily downloaded using the example below. There is a
-<code>parallel</code> switch which allows you to use multiple cores on
+data</a> (~9km grid spacing) archived for New Zealand
+(166.5/-46.6/178.6/-34.5) for the time period 1999-2022 with the main
+meteorological variables (air temperature, dewpoint temperature, wind
+u-vector at 10m, wind v-vector at 10m, total precipitation, snowfall,
+surface level pressure, downwelling shortwave radiation, downwelling
+longwave radiation) required to drive hydrological and hydrodynamic
+models. This can be easily downloaded using the example below. There is
+a <code>parallel</code> switch which allows you to use multiple cores on
 your computer to speed up the download.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://studious-enigma-z736ppg.pages.github.io/" class="external-link">aemetools</a></span><span class="op">)</span></span></code></pre></div>
@@ -95,8 +94,8 @@ your computer to speed up the download.</p>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_era5_point.html">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2000</span><span class="op">:</span><span class="fl">2001</span>,</span>
 <span>                      variables <span class="op">=</span> <span class="va">variables</span>, format <span class="op">=</span> <span class="st">"aeme"</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Auto-refreshing stale OAuth token.</span></span>
-<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2023-11-06 23:27:34.248759]</span></span>
-<span><span class="co">#&gt; Finished downloading ERA5 variables! [2023-11-06 23:27:46.524655]</span></span>
+<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2023-11-07 01:56:20.459243]</span></span>
+<span><span class="co">#&gt; Finished downloading ERA5 variables! [2023-11-07 01:56:33.250232]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Date              MET_tmpair       MET_pprain     </span></span>
 <span><span class="co">#&gt;  Min.   :2000-01-01   Min.   : 3.407   Min.   : 0.0000  </span></span>
