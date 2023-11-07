@@ -93,7 +93,7 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
     wdr <- aeme_outf[["data"]]
     for (c in names(wdr)) {
       if (c == "wbal") {
-        wdr[[c]] <- wdr[[c]][, c("Date", col_id)]
+        # wdr[[c]] <- wdr[[c]][, c("Date", col_id)]
         wdr[[c]][[col_id]] <- wdr[[c]][[col_id]] * param[["value"]][wdr_idx]
       } else {
         wdr[[c]][["outflow"]] <- wdr[[c]][["outflow"]] *
