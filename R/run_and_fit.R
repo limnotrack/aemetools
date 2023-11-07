@@ -279,7 +279,9 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         }
       }
     } else {
-      res1 <- sum(abs(df_lvl$diff))
+      plot(df_lvl$Date, df_lvl$model, type = "l")
+      points(df_lvl$Date, df_lvl$value, col = "red")
+      res1 <- FUN(O = df_lvl$value, P = df_lvl$model) * wlev_weight
       res1 <- ifelse(is.nan(res1), na_value, res1)
       return(res1)
     }
