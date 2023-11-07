@@ -480,7 +480,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in
   lke <- AEME::lake(aeme_data)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
-                                    model, "output", "output.nc"))
+                                    model, "DYsim.nc"))
   testthat::expect_true(file_chk)
 
   utils::data("aeme_parameters", package = "aemetools")
