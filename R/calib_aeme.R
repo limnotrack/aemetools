@@ -79,18 +79,21 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
   lakename <- tolower(lke[["name"]])
   lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
 
-  # Extract indices for modelled variables
-  message("Extracting indices for modelled variables [", Sys.time(), "]")
-  suppressMessages(
-    var_indices <- run_and_fit(aeme_data = aeme_data, param = param,
-                               model = model, path = path, FUN = FUN,
-                               mod_ctrls = mod_ctrls, vars_sim = vars_sim,
-                               weights = weights,
-                               return_indices = TRUE,
-                               include_wlev = include_wlev,
-                               fit = FALSE)
-  )
-  message("Complete! [", Sys.time(), "]")
+  var_indices <- list()
+  if (any(vars_sim != "HYD_wlev")) {
+    # Extract indices for modelled variables
+    message("Extracting indices for modelled variables [", Sys.time(), "]")
+    suppressMessages(
+      var_indices <- run_and_fit(aeme_data = aeme_data, param = param,
+                                 model = model, path = path, FUN = FUN,
+                                 mod_ctrls = mod_ctrls, vars_sim = vars_sim,
+                                 weights = weights,
+                                 return_indices = TRUE,
+                                 include_wlev = include_wlev,
+                                 fit = FALSE)
+    )
+    message("Complete! [", Sys.time(), "]")
+  }
 
   param <- param[param$model == model, ]
   par_idx <- which(param$model %in% c(model))
