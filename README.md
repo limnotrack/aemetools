@@ -8,7 +8,8 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml)
-
+[![Codecov test
+coverage](https://codecov.io/gh/limnotrack/aemetools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/limnotrack/aemetools?branch=main)
 <!-- badges: end -->
 
 aemetools is designed to work with
@@ -54,8 +55,8 @@ variables <- c("MET_tmpair", "MET_pprain")
 met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
                       variables = variables, format = "aeme", parallel = TRUE)
 #> Auto-refreshing stale OAuth token.
-#> Downloading ERA5 variables in parallel... [2023-09-22 13:35:19.936016]
-#> Finished downloading ERA5 variables! [2023-09-22 13:35:30.10872]
+#> Downloading ERA5 variables in parallel... [2023-11-08 15:28:05.108454]
+#> Finished downloading ERA5 variables! [2023-11-08 15:28:25.315201]
 summary(met)
 #>       Date              MET_tmpair       MET_pprain     
 #>  Min.   :2000-01-01   Min.   : 3.407   Min.   : 0.0000  
