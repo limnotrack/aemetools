@@ -12,7 +12,7 @@ test_that("can run AEME-GLM with parameters", {
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
 
   utils::data("aeme_parameters", package = "aemetools")
 
@@ -47,7 +47,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
                               path = path)
@@ -107,7 +107,7 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
                               path = path)
@@ -167,7 +167,7 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
                               path = path)
@@ -227,7 +227,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
                               path = path)
@@ -286,7 +286,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
                               path = path)
@@ -345,7 +345,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
                               path = path)
@@ -408,7 +408,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
                               path = path)
@@ -471,7 +471,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
                               path = path)
@@ -536,7 +536,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GLM in
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
                               path = path)
@@ -601,7 +601,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE, use_lw = TRUE)
+                                    use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
                               path = path)

@@ -71,7 +71,8 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
     }
 
     if(model == "glm_aed") {
-      AEME:::make_metGLM(obs_met = met, path_glm = model_path, use_lw = TRUE)
+      AEME:::make_metGLM(obs_met = met, path_glm = model_path,
+                         use_lw = inp$use_lw)
     } else if(model == "gotm_wet") {
       AEME:::make_metGOTM(df_met = met, path.gotm = model_path,
                           return_df = FALSE)
