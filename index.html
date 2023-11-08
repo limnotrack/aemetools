@@ -66,7 +66,6 @@
 </h1></div>
 <!-- badges: start -->
 
-<!-- badges: end -->
 <p>aemetools is designed to work with <a href="https://github.com/limnotrack/AEME/" class="external-link">AEME</a>. It contains a range of functions to assist in setting up simulations for a new lake site.</p>
 <p>Currently, you can use this to download meteorological data from <a href="https://www.ecmwf.int/en/era5-land" class="external-link">ERA5-Land</a> for any point in New Zealand from 1999-2022, or download ERA5-Land netCDF files for any area in the world. It can set up and run hydrological simulations using the suite of models from the <a href="https://hydrogr.github.io/airGR/" class="external-link"><code>airGR</code></a> package using catchment, reach and lake data.</p>
 <div class="section level2">
@@ -90,8 +89,8 @@
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_era5_point.html">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2000</span><span class="op">:</span><span class="fl">2001</span>,</span>
 <span>                      variables <span class="op">=</span> <span class="va">variables</span>, format <span class="op">=</span> <span class="st">"aeme"</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Auto-refreshing stale OAuth token.</span></span>
-<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2023-09-22 13:35:19.936016]</span></span>
-<span><span class="co">#&gt; Finished downloading ERA5 variables! [2023-09-22 13:35:30.10872]</span></span>
+<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2023-11-08 15:28:05.108454]</span></span>
+<span><span class="co">#&gt; Finished downloading ERA5 variables! [2023-11-08 15:28:25.315201]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Date              MET_tmpair       MET_pprain     </span></span>
 <span><span class="co">#&gt;  Min.   :2000-01-01   Min.   : 3.407   Min.   : 0.0000  </span></span>
@@ -190,6 +189,7 @@
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/limnotrack/aemetools?branch=main" class="external-link"><img src="https://codecov.io/gh/limnotrack/aemetools/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 
