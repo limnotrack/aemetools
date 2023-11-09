@@ -241,6 +241,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         ),
         LID = NA, var = "DEPTH", depth_mid = NA,
         depth_from = NA, diff = model - value) |>
+        dplyr::filter(!is.na(diff)) |>
         dplyr::select(LID, Date, value, var, depth_mid, depth_from, model, diff)
     }
 
