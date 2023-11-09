@@ -44,11 +44,22 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
                                                                (ctrl$cutoff * 2)),
                              -drop_cols]
   }
+  if (nrow(survivors2) == 0) {
+    message("All parameter sets are NA. Generating base parameters...")
+    survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
+                                                               (ctrl$cutoff * 3)),
+                             -drop_cols]
+    g <- FME::Latinhyper(param[, c("min", "max")],
+                         ctrl$NP)
+    colnames(g) <- param$name
+    g <- as.data.frame(g)
+  } else {
+    g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP,
+                                     mu = apply(survivors2, 2, mean),
+                                     Sigma = stats::cov(survivors2), tol = 1))
+  }
 
 
-  g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP,
-                                   mu = apply(survivors2, 2, mean),
-                                   Sigma = stats::cov(survivors2), tol = 1))
 
   # Improved targeting of outflow factor when no obs present ----
   # if ("outflow" %in% names(g) & !ctrl$use_obs & "MET_pprain" %in% names(g)) {
