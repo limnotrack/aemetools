@@ -95,14 +95,15 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     message("Complete! [", Sys.time(), "]")
   }
 
+  # Extract parameters for the model ----
   param <- param[param$model == model, ]
-  par_idx <- which(param$model %in% c(model))
+  # par_idx <- which(param$model %in% c(model))
   obs <- AEME::observations(aeme_data)
   # Check if there are observations for the model or just calibrating wlev
   ctrl$use_obs <- ifelse(!is.null(obs$lake), TRUE, FALSE)
 
   if (is.na(ctrl$NP)) {
-    ctrl$NP <- 10 * sum(par_idx)
+    ctrl$NP <- 10 * nrow(param) # sum(par_idx)
   }
   ctrl$ngen <- round(ctrl$itermax / ctrl$NP)
 
@@ -110,18 +111,18 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
   # Generate parameters for running calibration
   best_pars <- NULL
   if (is.null(param_df)) {
-    start_param <- FME::Latinhyper(param[par_idx, c("min", "max")],
+    start_param <- FME::Latinhyper(param[, c("min", "max")],
                                    ctrl$NP)
-    # start_param <- apply(param[par_idx, c("min", "max")], 1,
+    # start_param <- apply(param[, c("min", "max")], 1,
     #                      \(x) runif(ctrl$NP, x[1], x[2]))
 
-    colnames(start_param) <- param$name[par_idx]
+    colnames(start_param) <- param$name
     start_param <- as.data.frame(start_param)
     gen_n <- 1
     tot_gen <- ctrl$ngen
   } else {
     # Add check for parameters to be the same
-    p_chk <- param$name[par_idx] %in% names(param_df)
+    p_chk <- param$name %in% names(param_df)
     if (any(!p_chk)) {
       message("Warning! Not all parameters are in supplied parameter dataframe")
     }
@@ -202,7 +203,7 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     message("Best fit: ", round(min(g1$fit), 3), " (sd: ",
             round(sd(g1$fit), 3), ")
             Parameters: [", paste0(round(g1[which.min(g1$fit),
-                                            1:length(par_idx)], 3),
+                                            1:nrow(param)], 3),
                                    collapse = ", "), "]")
     g1$gen <- gen_n
     out_df <- apply(g1, 2, signif, digits = 6)
@@ -338,7 +339,7 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     message("Best fit: ", signif(min(g1$fit), 3), " (sd: ",
             signif(sd(g1$fit), 3), ")
             Parameters: [", paste0(signif(g1[which.min(g1$fit),
-                                             1:length(par_idx)], 3),
+                                             1:nrow(param)], 3),
                                    collapse = ", "), "]")
     g1$gen <- gen_n
     out_df <- apply(g1, 2, signif, digits = 6)
