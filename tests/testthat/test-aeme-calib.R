@@ -597,7 +597,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed")
+  model <- c("gotm_wet")
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
