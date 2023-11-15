@@ -33,7 +33,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
 
   test <- tryCatch({
     rdrop2::drop_exists("lernzmp", dtoken = dtoken)
-    }, error = function(e) FALSE)
+  }, error = function(e) FALSE)
   if (!test) {
     stop(strwrap("Current Dropbox token is not working. Please raise an issue
                  on our GitHub page: "),
@@ -42,11 +42,42 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
 
   data("era5_ref_table", package = "AEME", envir = environment())
 
+  # Catch for date
+  if ("Date" %in% variables) {
+    message("'Date' found in variables... Removing this from the vector.")
+    variables <- variables[!variables %in% "Date"]
+  }
+
+
   sel_vars <- era5_ref_table |>
     dplyr::filter(aeme %in% variables)
 
+  # Error if no variables are found
+  if (nrow(sel_vars) == 0)
+    stop(strwrap("No variables found in lookup table. Ensure you use AEME
+                 variable names."))
 
-  if (parallel & length(variables) > 1) {
+
+  if (parallel & length(variables) == 1) {
+    if (missing(ncores)) {
+      ncores <- min(c(parallel::detectCores() - 1, length(years)))
+    }
+    cl <- parallel::makeCluster(ncores)
+    on.exit({
+      parallel::stopCluster(cl)
+    })
+    parallel::clusterExport(cl, varlist = list("sel_vars", "lat", "lon", "db_path",
+                                               "dtoken", "download_era5_point"),
+                            envir = environment())
+    message("Downloading ERA5 variable in parallel... ",
+            paste0("[", Sys.time(), "]"))
+    out <- parallel::parLapply(cl = cl, years, function(y) {
+      download_era5_point(years = y, lat = lat, lon = lon,
+                          variable = sel_vars$era5, db_path = db_path,
+                          dtoken = dtoken)
+    })
+    df <- do.call(rbind, out)
+  } else if (parallel & length(variables) > 1) {
     if (missing(ncores)) {
       ncores <- min(c(parallel::detectCores() - 1, length(variables)))
     }
@@ -63,6 +94,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
       download_era5_point(years = years, lat = lat, lon = lon, variable = v,
                           db_path = db_path, dtoken = dtoken)
     })
+    df <- Reduce(merge, out)
   } else {
     message("Downloading ERA5 variables... ",
             paste0("[", Sys.time(), "] (Have you tried parallelising?)"))
@@ -72,17 +104,17 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
       download_era5_point(years = years, lat = lat, lon = lon, variable = v,
                           db_path = db_path, dtoken = dtoken)
     })
+    df <- Reduce(merge, out)
   }
 
   message("Finished downloading ERA5 variables! ", paste0("[", Sys.time(), "]"))
 
-  df <- Reduce(merge, out)
 
-  if("t2m" %in% colnames(df) | "d2m" %in% colnames(df)) {
+  if ("t2m" %in% colnames(df) | "d2m" %in% colnames(df)) {
     sel_cols <- which(colnames(df) %in% c("t2m", "d2m"))
     df[, sel_cols] <- df[, sel_cols] - 273.15
   }
-  if("tp" %in% colnames(df) | "sf" %in% colnames(df)) {
+  if ("tp" %in% colnames(df) | "sf" %in% colnames(df)) {
     sel_cols <- which(colnames(df) %in% c("tp", "sf"))
     df[, sel_cols] <- df[, sel_cols] * 1000 # Convert to m
   }
@@ -99,7 +131,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
     df <- stats::na.exclude(df)
   }
   df
-}
+  }
 
 #' Download ERA5 data for a variable
 #'
@@ -130,7 +162,7 @@ download_era5_point <- function(years, lat, lon, variable, db_path, dtoken) {
         err_msg <- paste0("Files:\n",
                           paste0(c(db1, db2, db3)[!c(chk1, chk2, chk3)],
                                  collapse = "\n"),
-        "\nare currently not available on Dropbox.")
+                          "\nare currently not available on Dropbox.")
       } else {
         err_msg <- "Files for selected years are not present currently in
                      dropbox. Current available years are 1999-2021."
