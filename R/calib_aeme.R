@@ -73,14 +73,14 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     ctrl$na_value <- 999
   }
 
-  include_wlev <- ifelse("HYD_wlev" %in% vars_sim, TRUE, FALSE)
+  include_wlev <- ifelse("LKE_lvlwtr" %in% vars_sim, TRUE, FALSE)
 
   lke <- AEME::lake(aeme_data)
   lakename <- tolower(lke[["name"]])
   lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
 
   var_indices <- list()
-  if (any(vars_sim != "HYD_wlev")) {
+  if (any(vars_sim != "LKE_lvlwtr")) {
     # Extract indices for modelled variables
     message("Extracting indices for modelled variables [", Sys.time(), "]")
     suppressMessages(

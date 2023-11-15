@@ -83,12 +83,12 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
     }
 
     if (include_wlev) {
-      wlev_weight <- weights[["HYD_wlev"]]
-      vars_sim <- vars_sim[vars_sim != "HYD_wlev"]
-      weights <- weights[names(weights) != "HYD_wlev"]
+      wlev_weight <- weights[["LKE_lvlwtr"]]
+      vars_sim <- vars_sim[vars_sim != "LKE_lvlwtr"]
+      weights <- weights[names(weights) != "LKE_lvlwtr"]
     } else {
-      vars_sim <- vars_sim[vars_sim != "HYD_wlev"]
-      weights <- weights[names(weights) != "HYD_wlev"]
+      vars_sim <- vars_sim[vars_sim != "LKE_lvlwtr"]
+      weights <- weights[names(weights) != "LKE_lvlwtr"]
     }
 
 
