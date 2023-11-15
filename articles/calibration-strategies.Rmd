@@ -103,7 +103,7 @@ library(ggplot2)
 aeme_data <- run_aeme(aeme_data = aeme_data, model = model,
                       verbose = FALSE, mod_ctrls = mod_ctrls,
                       path = path)
-p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
+p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
                   print_plots = FALSE, ylim = c(12.8, 14)) +
   scale_size_manual(values = c("Obs" = 0.1)) +
   ggtitle("Uncalibrated model")
@@ -155,8 +155,8 @@ ctrl <- list(VTR = -Inf, NP = 20, itermax = 400, reltol = 0.07, cutoff = 0.5,
              mutate = 0.1, parallel = TRUE, out_file = "results.csv",
              na_value = 999)
 
-vars_sim <- c("HYD_wlev")
-weights <- c("HYD_wlev" = 10)
+vars_sim <- c("LKE_lvlwtr")
+weights <- c("LKE_lvlwtr" = 10)
 
 # Calibrate AEME model
 ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
@@ -196,7 +196,7 @@ aeme_data <- run_aeme_param(aeme_data = aeme_data, model = model,
                             mod_ctrls = mod_ctrls, path = path, param = param,
                             return_aeme = TRUE)
 
-p2 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "HYD_wlev",
+p2 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
                   print_plots = FALSE, ylim = c(12.8, 14)) +
   scale_size_manual(values = c("Obs" = 0.1)) +
   ggtitle("Calibrated model")

@@ -186,7 +186,7 @@ ctrl <- list(VTR = 1, NP = 40, itermax = 400, reltol = 0.07, cutoff = 0.25,
 
 Next we will select the variables to use for the calibration. The variables
 selected need to use the AEME variable definition e.g.
-`c("HYD_temp", "HYD_wlev")`. Weights need to be attributed to each of the
+`c("HYD_temp", "LKE_lvlwtr")`. Weights need to be attributed to each of the
 variables. The weights are used to scale the fitness value. This can be helpful
 if the variables have different units. For example, if the temperature is in
 degrees Celsius and the water level is in metres, then the water level will have

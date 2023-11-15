@@ -50,7 +50,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
                                     use_bgc = FALSE)
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
                               verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
+                              path = path, parallel = FALSE)
   # AEME::plot(aeme_data, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme_data)
@@ -71,7 +71,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
-  vars_sim <- c("HYD_temp", "HYD_wlev")
+  vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c(1, 10)
   names(weights) <- vars_sim
 
@@ -131,8 +131,8 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 15)
 
-  vars_sim <- c("HYD_temp", "HYD_wlev")
-  weights <- c("HYD_temp" = 10, "HYD_wlev" = 1)
+  vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+  weights <- c("HYD_temp" = 10, "LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
   ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
@@ -191,7 +191,7 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
-  vars_sim <- c("HYD_temp", "HYD_wlev")
+  vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c(1, 10)
   names(weights) <- vars_sim
 
@@ -251,8 +251,8 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
-  vars_sim <- c("HYD_wlev")
-  weights <- c("HYD_wlev" = 1)
+  vars_sim <- c("LKE_lvlwtr")
+  weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
   ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
@@ -310,8 +310,8 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
-  vars_sim <- c("HYD_wlev")
-  weights <- c("HYD_wlev" = 1)
+  vars_sim <- c("LKE_lvlwtr")
+  weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
   ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
@@ -369,8 +369,8 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
-  vars_sim <- c("HYD_wlev")
-  weights <- c("HYD_wlev" = 1)
+  vars_sim <- c("LKE_lvlwtr")
+  weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
   ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
@@ -432,8 +432,8 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
-  vars_sim <- c("HYD_wlev")
-  weights <- c("HYD_wlev" = 1)
+  vars_sim <- c("LKE_lvlwtr")
+  weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
   ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
@@ -497,8 +497,8 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
-  vars_sim <- c("HYD_wlev")
-  weights <- c("HYD_wlev" = 1)
+  vars_sim <- c("LKE_lvlwtr")
+  weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
   ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
@@ -562,8 +562,8 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GLM in
                mutate = 0.1, parallel = F, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
-  vars_sim <- c("HYD_wlev")
-  weights <- c("HYD_wlev" = 1)
+  vars_sim <- c("LKE_lvlwtr")
+  weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
   ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
@@ -627,8 +627,8 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in
                mutate = 0.1, parallel = F, out_file = "results.csv",
                na_value = 999, ncore = 2L)
 
-  vars_sim <- c("HYD_wlev")
-  weights <- c("HYD_wlev" = 1)
+  vars_sim <- c("LKE_lvlwtr")
+  weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
   ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
