@@ -229,12 +229,12 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         return(na_value)
       }
       lvl_adj <- obs$level |>
-        dplyr::mutate(lvlwtr = (lvlwtr - min(inp$hypsograph$elev)))
+        dplyr::mutate(value = (value - min(inp$hypsograph$elev)))
 
       df_lvl <- dplyr::left_join(balance, lvl_adj, by = "Date")
 
       df_lvl <- df_lvl |>
-        dplyr::rename(value = lvlwtr, model = lvl) |>
+        dplyr::rename(model = lvl) |>
         dplyr::mutate(model = dplyr::case_when(
           is.na(model) ~ 0,
           .default = model

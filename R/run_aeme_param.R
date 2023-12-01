@@ -39,7 +39,7 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
   model_path <- file.path(lake_dir, model)
 
   if (!is.null(obs$level)) {
-    z_max <- mean(obs$level[, 2]) - min(inp$hypsograph$elev)
+    z_max <- mean(obs$level[["value"]]) - min(inp$hypsograph$elev)
   } else {
     z_max <- max(inp$hypsograph$elev) - min(inp$hypsograph$elev)
   }
@@ -75,7 +75,7 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
                          use_lw = inp$use_lw)
     } else if(model == "gotm_wet") {
       AEME:::make_metGOTM(df_met = met, path.gotm = model_path,
-                          return_df = FALSE)
+                          return_colname = FALSE)
     } else if(model == "dy_cd") {
       # lakename <- strsplit(basename(lake_dir), "_")[[1]][2]
       AEME:::make_DYmet(lakename = lakename, info = "test", obsMet = met,
