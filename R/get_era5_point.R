@@ -42,7 +42,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
          "\nhttps://github.com/limnotrack/aemetools/issues")
   }
 
-  data("era5_ref_table", package = "AEME", envir = environment())
+  data("era5_ref_table", package = "aemetools", envir = environment())
 
   # Catch for date
   if ("Date" %in% variables) {

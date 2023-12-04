@@ -35,7 +35,7 @@ convert_era5_ncdf <- function(lat,
                               format = "AEME") {
 
   # Load Rdata
-  utils::data("era5_ref_table", package = "AEME", envir = environment())
+  utils::data("era5_ref_table", package = "aemetools", envir = environment())
 
   coords <- data.frame(lat = lat, lon = lon)
   coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)

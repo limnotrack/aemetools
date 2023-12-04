@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r include=FALSE, echo=FALSE}
-data("era5_ref_table", package = "AEME")
+data("era5_ref_table", package = "aemetools")
 era5_names <- paste0(tolower(era5_ref_table$variable[-1]), collapse = ", ")
 
 ```
