@@ -54,9 +54,9 @@ variables <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
                       variables = variables, format = "aeme", parallel = TRUE)
-#> Auto-refreshing stale OAuth token.
-#> Downloading ERA5 variables in parallel... [2023-11-08 15:28:05.108454]
-#> Finished downloading ERA5 variables! [2023-11-08 15:28:25.315201]
+#> Point is in the grid.
+#> Downloading ERA5 variables in parallel... [2023-12-04 17:46:17.34525]
+#> Finished downloading ERA5 variables! [2023-12-04 17:46:34.228331]
 summary(met)
 #>       Date              MET_tmpair       MET_pprain     
 #>  Min.   :2000-01-01   Min.   : 3.407   Min.   : 0.0000  

@@ -26,7 +26,7 @@ aemetools is designed to work with [AEME](https://github.com/limnotrack/AEME/). 
 Currently, you can use this to download meteorological data from [ERA5-Land](https://www.ecmwf.int/en/era5-land) for any point in New Zealand from 1999-2022, or download ERA5-Land netCDF files for any area in the world. It can set up and run hydrological simulations using the suite of models from the [`airGR`](https://hydrogr.github.io/airGR/) package using catchment, reach and lake data.
 
 ```{r include=FALSE, echo=FALSE}
-data("era5_ref_table", package = "AEME")
+data("era5_ref_table", package = "aemetools")
 era5_names <- paste0(tolower(era5_ref_table$variable[-1]), collapse = ", ")
 
 ```

@@ -2,7 +2,7 @@ test_that("can download ERA5 point data", {
 
   lon <- 176.2717
   lat <- -38.079
-  data("era5_ref_table", package = "AEME")
+  data("era5_ref_table", package = "aemetools")
   variables <- c("MET_tmpair", "MET_tmpdew", "MET_wnduvu")
 
   met <- get_era5_point(lat = lat, lon = lon, years = 2000,
@@ -16,7 +16,7 @@ test_that("can download ERA5 point data outside of grid", {
 
   lon <- 179
   lat <- -38.079
-  data("era5_ref_table", package = "AEME")
+  data("era5_ref_table", package = "aemetools")
   variables <- c("MET_tmpair")
 
   met <- get_era5_point(lat = lat, lon = lon, years = 2000,
