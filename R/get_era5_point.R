@@ -32,7 +32,9 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
   db_path <- "lernzmp/nz_era5_daily_rds/"
 
   test <- tryCatch({
-    rdrop2::drop_exists("lernzmp", dtoken = dtoken)
+    suppressMessages(
+      rdrop2::drop_exists("lernzmp", dtoken = dtoken)
+    )
   }, error = function(e) FALSE)
   if (!test) {
     stop(strwrap("Current Dropbox token is not working. Please raise an issue
@@ -57,6 +59,10 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
     stop(strwrap("No variables found in lookup table. Ensure you use AEME
                  variable names."))
 
+  # Check if point is in the grid
+  coords <- check_point_in_grid(lat = lat, lon = lon, dtoken = dtoken,
+                                db_path = db_path)
+
 
   if (parallel & length(variables) == 1) {
     if (missing(ncores)) {
@@ -66,13 +72,13 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
     on.exit({
       parallel::stopCluster(cl)
     })
-    parallel::clusterExport(cl, varlist = list("sel_vars", "lat", "lon", "db_path",
+    parallel::clusterExport(cl, varlist = list("sel_vars", "coords", "db_path",
                                                "dtoken", "download_era5_point"),
                             envir = environment())
     message("Downloading ERA5 variable in parallel... ",
             paste0("[", Sys.time(), "]"))
     out <- parallel::parLapply(cl = cl, years, function(y) {
-      download_era5_point(years = y, lat = lat, lon = lon,
+      download_era5_point(years = y, lat = coords$lat, lon = coords$lon,
                           variable = sel_vars$era5, db_path = db_path,
                           dtoken = dtoken)
     })
@@ -85,14 +91,14 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
     on.exit({
       parallel::stopCluster(cl)
     })
-    parallel::clusterExport(cl, varlist = list("years", "lat", "lon", "db_path",
+    parallel::clusterExport(cl, varlist = list("years", "coords", "db_path",
                                                "dtoken", "download_era5_point"),
                             envir = environment())
     message("Downloading ERA5 variables in parallel... ",
             paste0("[", Sys.time(), "]"))
     out <- parallel::parLapply(cl = cl, sel_vars$era5, function(v) {
-      download_era5_point(years = years, lat = lat, lon = lon, variable = v,
-                          db_path = db_path, dtoken = dtoken)
+      download_era5_point(years = years, lat = coords$lat, lon = coords$lon,
+                          variable = v, db_path = db_path, dtoken = dtoken)
     })
     df <- Reduce(merge, out)
   } else {
@@ -101,8 +107,8 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
 
     out <- lapply(sel_vars$era5, function(v) {
       # print(v)
-      download_era5_point(years = years, lat = lat, lon = lon, variable = v,
-                          db_path = db_path, dtoken = dtoken)
+      download_era5_point(years = years, lat = coords$lat, lon = coords$lon,
+                          variable = v, db_path = db_path, dtoken = dtoken)
     })
     df <- Reduce(merge, out)
   }
@@ -136,6 +142,9 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
 #' Download ERA5 data for a variable
 #'
 #' @inheritParams get_era5_point
+#' @param variable A character vector of ERA5 variables to download.
+#' @param db_path A character string of the path to the Dropbox folder.
+#' @param dtoken A Dropbox token.
 #'
 #' @importFrom rdrop2 drop_exists drop_download
 #' @importFrom stars st_extract
@@ -193,6 +202,7 @@ download_era5_point <- function(years, lat, lon, variable, db_path, dtoken) {
       stars::st_extract(coords_sf) |>
       as.data.frame() |>
       dplyr::select(-geometry)
+    d1
     d2 <- readRDS(f2) |>
       stars::st_extract(coords_sf) |>
       as.data.frame() |>
@@ -206,4 +216,62 @@ download_era5_point <- function(years, lat, lon, variable, db_path, dtoken) {
   })
 
   do.call(rbind, out)
+}
+
+
+
+#' Check if a point is in the ERA5 grid
+#'
+#' @inheritParams download_era5_point
+#'
+#' @importFrom rdrop2 drop_download
+#' @importFrom stars st_extract
+#' @importFrom dplyr select
+#' @importFrom units set_units
+#'
+#' @noRd
+check_point_in_grid <- function(lat, lon, dtoken, db_path) {
+
+  db1 <- paste0(db_path, "nz_era5-land_2020_2m_temperature_1234_daily.rds")
+  f1 <- tempfile()
+  rdrop2::drop_download(path = db1, local_path = f1, dtoken = dtoken,
+                        progress = FALSE, verbose = FALSE)
+
+
+  coords <- data.frame(lat = lat, lon = lon)
+
+  coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
+
+  strs <- readRDS(f1)
+  d1 <- strs |>
+    stars::st_extract(coords_sf) |>
+    as.data.frame() |>
+    dplyr::select(-geometry)
+
+  if (all(is.na(d1[, 2]))) {
+    message("Point is not in the grid. Identifying nearest point...")
+    dat <- strs[1, 1, , ] |>
+      # Convert stars object to sf
+      sf::st_as_sf()
+
+    p1 <- dat[sf::st_nearest_feature(coords_sf, dat), ] |>
+      sf::st_centroid()
+
+    dist <- sf::st_distance(coords_sf, p1)
+
+    message("Nearest point identified. It is ",
+            round(units::set_units(dist, "km"), 2), " km away.")
+
+    p1 |>
+      sf::st_coordinates() |>
+      as.data.frame() |>
+      dplyr::select(X, Y) |>
+      setNames(c("lon", "lat"))
+
+
+  } else {
+    message("Point is in the grid.")
+    coords
+  }
+
 }
