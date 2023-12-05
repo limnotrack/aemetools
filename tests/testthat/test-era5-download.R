@@ -6,7 +6,8 @@ test_that("can download ERA5 point data", {
   variables <- c("MET_tmpair", "MET_tmpdew", "MET_wnduvu")
 
   met <- get_era5_point(lat = lat, lon = lon, years = 2000,
-                        variables = variables, format = "aeme", parallel = TRUE)
+                        variables = variables, format = "aeme",
+                        parallel = TRUE, n_cores = 2)
 
   testthat::expect_true(is.data.frame(met))
   testthat::expect_true(ncol(met) == 4)
