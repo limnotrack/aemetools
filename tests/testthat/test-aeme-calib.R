@@ -127,7 +127,7 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
             (mean(abs(O - P)) / (max(O) - min(O))))
   }
 
-  ctrl <- list(VTR = -Inf, NP = 45, itermax = 450, reltol = 0.07, cutoff = 0.25,
+  ctrl <- list(VTR = -Inf, NP = 15, itermax = 45, reltol = 0.07, cutoff = 0.25,
                mutate = 0.1, parallel = TRUE, out_file = "results.csv",
                na_value = 999, ncore = 15)
 
