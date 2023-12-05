@@ -81,7 +81,7 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
       # lakename <- strsplit(basename(lake_dir), "_")[[1]][2]
       AEME:::make_DYmet(lakename = lakename, info = "test", obsMet = met,
                         filePath = model_path, infRain = FALSE, wndType = 0,
-                        metHeight = 15, z_max = z_max)
+                        metHeight = 15, z_max = z_max, use_lw = inp$use_lw)
     }
   }
 
