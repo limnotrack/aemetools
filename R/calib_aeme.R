@@ -402,6 +402,7 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
                                                include_wlev = include_wlev,
                                                fit = TRUE,
                                                weights = weights)
+          print(pars[[i]][["fit"]][p])
         }
         return(pars[[i]])
       }, pars = param_list)
