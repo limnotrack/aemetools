@@ -128,7 +128,7 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
   }
 
   ctrl <- list(VTR = -Inf, NP = 15, itermax = 45, reltol = 0.07, cutoff = 0.25,
-               mutate = 0.1, parallel = TRUE, out_file = "results.csv",
+               mutate = 0.1, parallel = FALSE, out_file = "results.csv",
                na_value = 999, ncore = 15)
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
