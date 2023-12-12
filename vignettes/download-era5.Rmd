@@ -15,6 +15,8 @@ knitr::opts_chunk$set(
 ```
 
 ```{r include=FALSE, echo=FALSE}
+library(aemetools)
+
 data("era5_ref_table", package = "aemetools")
 era5_names <- paste0(tolower(era5_ref_table$variable[-1]), collapse = ", ")
 
@@ -41,6 +43,6 @@ lat <- -38.079
 variables <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
-                      variables = variables, format = "aeme", parallel = TRUE)
+                      variables = variables, format = "aeme", parallel = FALSE)
 summary(met)
 ```
