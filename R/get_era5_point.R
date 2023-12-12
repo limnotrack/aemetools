@@ -241,6 +241,7 @@ check_point_in_grid <- function(lat, lon, dtoken, db_path) {
 
 
   coords <- data.frame(lat = lat, lon = lon)
+  coords <- data.frame(lat = lat, lon = lon +0.09)
 
   coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
 
@@ -249,15 +250,31 @@ check_point_in_grid <- function(lat, lon, dtoken, db_path) {
     stars::st_extract(coords_sf) |>
     as.data.frame() |>
     dplyr::select(-geometry)
+  head(d1)
 
   if (all(is.na(d1[, 2]))) {
     message("Point is not in the grid. Identifying nearest point...")
     dat <- strs[1, 1, , ] |>
       # Convert stars object to sf
-      sf::st_as_sf()
+      sf::st_as_sf() |>
+      sf::st_transform(2193) |>
+      sf::st_centroid() |>
+      sf::st_transform(4326)
+    dists <- sf::st_distance(dat, coords_sf)
 
-    p1 <- dat[sf::st_nearest_feature(coords_sf, dat), ] |>
-      sf::st_centroid()
+    # Recursively search for nearest grid that is not NA
+    for (i in 1:5) {
+      print(i)
+      idx <- which(dists == sort(dists)[i])
+      p1 <- dat[idx, ]
+      d2 <- strs |>
+        stars::st_extract(p1) |>
+        as.data.frame() |>
+        dplyr::select(-geometry)
+      if (all(!is.na(d2[, 2]))) {
+        break
+      }
+    }
 
     dist <- sf::st_distance(coords_sf, p1)
 
@@ -275,5 +292,4 @@ check_point_in_grid <- function(lat, lon, dtoken, db_path) {
     message("Point is in the grid.")
     coords
   }
-
 }
