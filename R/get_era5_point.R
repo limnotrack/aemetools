@@ -228,6 +228,8 @@ download_era5_point <- function(years, lat, lon, variable, db_path, dtoken) {
 #' @importFrom stars st_extract
 #' @importFrom dplyr select
 #' @importFrom units set_units
+#' @importFrom sf st_as_sf st_crs st_transform st_distance st_centroid
+#' @importFrom stats setNames
 #'
 #' @noRd
 check_point_in_grid <- function(lat, lon, dtoken, db_path) {
@@ -266,7 +268,7 @@ check_point_in_grid <- function(lat, lon, dtoken, db_path) {
       sf::st_coordinates() |>
       as.data.frame() |>
       dplyr::select(X, Y) |>
-      setNames(c("lon", "lat"))
+      stats::setNames(c("lon", "lat"))
 
 
   } else {
