@@ -250,7 +250,6 @@ check_point_in_grid <- function(lat, lon, dtoken, db_path) {
     stars::st_extract(coords_sf) |>
     as.data.frame() |>
     dplyr::select(-geometry)
-  head(d1)
 
   if (all(is.na(d1[, 2]))) {
     message("Point is not in the grid. Identifying nearest point...")
