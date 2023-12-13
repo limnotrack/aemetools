@@ -22,6 +22,9 @@
     <loc>https://special-enigma-8p9lgre.pages.github.io/LICENSE.html</loc>
   </url>
   <url>
+    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/add_linz_key.html</loc>
+  </url>
+  <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/aeme_parameters.html</loc>
   </url>
   <url>
@@ -34,16 +37,25 @@
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/convert_era5_ncdf.html</loc>
   </url>
   <url>
+    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/create_linz_key.html</loc>
+  </url>
+  <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/download_era5_ncdf.html</loc>
   </url>
   <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/era5_ref_table.html</loc>
   </url>
   <url>
+    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_dem_value.html</loc>
+  </url>
+  <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_era5_point.html</loc>
   </url>
   <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_param.html</loc>
+  </url>
+  <url>
+    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_raster_layer_value.html</loc>
   </url>
   <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_upstream_rec.html</loc>
