@@ -31,6 +31,8 @@
 #' @importFrom AEME lake input observations
 #' @importFrom reshape2 melt
 #' @importFrom stats approx
+#' @importFrom utils data
+#' @importFrom graphics points
 #'
 #' @export
 
@@ -285,7 +287,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
       }
     } else {
       plot(df_lvl$Date, df_lvl$model, type = "l")
-      points(df_lvl$Date, df_lvl$value, col = "red")
+      graphics::points(df_lvl$Date, df_lvl$value, col = "red")
       res1 <- FUN(O = df_lvl$value, P = df_lvl$model) * wlev_weight
       res1 <- ifelse(is.nan(res1), na_value, res1)
       return(res1)
