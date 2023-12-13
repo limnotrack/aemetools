@@ -21,7 +21,8 @@ test_that("can download ERA5 point data outside of grid", {
   variables <- c("MET_tmpair")
 
   met <- get_era5_point(lat = lat, lon = lon, years = 2000,
-                        variables = variables, format = "aeme", parallel = FALSE)
+                        variables = variables, format = "aeme",
+                        parallel = FALSE)
 
   testthat::expect_true(is.data.frame(met))
   testthat::expect_true(ncol(met) == 2)
