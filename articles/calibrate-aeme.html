@@ -121,9 +121,9 @@ make sure the current model setup is working.</p>
 <code class="sourceCode R"><span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AEME/man/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                      verbose <span class="op">=</span> <span class="cn">FALSE</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>,</span>
 <span>                      path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-12-14 01:58:57.950474]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-12-14 01:58:58.680347]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-12-14 01:58:58.681304]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-12-14 02:23:47.87291]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2023-12-14 02:23:48.526153]</span></span>
+<span><span class="co">#&gt; Model run complete![2023-12-14 02:23:48.527008]</span></span>
 <span><span class="co">#&gt; Warning in regularize.values(x, y, ties, missing(ties), na.rm = na.rm):</span></span>
 <span><span class="co">#&gt; collapsing to unique 'x' values</span></span>
 <span></span>
@@ -1793,9 +1793,9 @@ but the model output is generate within the lake folder.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, param <span class="op">=</span> <span class="va">aeme_parameters</span>,</span>
 <span>                 model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-12-14 01:59:12.909436]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2023-12-14 01:59:13.63063]</span></span>
-<span><span class="co">#&gt; Model run complete![2023-12-14 01:59:13.631463]</span></span></code></pre></div>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2023-12-14 02:23:58.865123]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2023-12-14 02:23:59.599969]</span></span>
+<span><span class="co">#&gt; Model run complete![2023-12-14 02:23:59.600867]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="calibration-setup">Calibration setup<a class="anchor" aria-label="anchor" href="#calibration-setup"></a>
@@ -1929,79 +1929,79 @@ values.</p>
 <span>                   param <span class="op">=</span> <span class="va">aeme_parameters</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                   mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, FUN <span class="op">=</span> <span class="va">fit</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>,</span>
 <span>                   vars_sim <span class="op">=</span> <span class="va">vars_sim</span>, weights <span class="op">=</span> <span class="va">weights</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for modelled variables [2023-12-14 01:59:13.963227]</span></span>
-<span><span class="co">#&gt; Complete! [2023-12-14 01:59:14.831343]</span></span>
+<span><span class="co">#&gt; Extracting indices for modelled variables [2023-12-14 02:23:59.945687]</span></span>
+<span><span class="co">#&gt; Complete! [2023-12-14 02:24:00.896095]</span></span>
 <span><span class="co">#&gt; Calibrating in parallel using 1 cores...</span></span>
-<span><span class="co">#&gt; Starting generation 1/10, 40 members. [2023-12-14 01:59:15.084795]</span></span>
+<span><span class="co">#&gt; Starting generation 1/10, 40 members. [2023-12-14 02:24:01.214902]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      2.806     1.0010     0.9996  1.4970</span></span>
-<span><span class="co">#&gt; median    2.840     1.0040     1.0030  1.4870</span></span>
-<span><span class="co">#&gt; sd        1.580     0.1765     0.1756  0.5855</span></span>
-<span><span class="co">#&gt; Best fit: 2.567 (sd: 322.61)</span></span>
-<span><span class="co">#&gt;             Parameters: [5.23, 0.807, 1.023, 1.299]</span></span>
+<span><span class="co">#&gt; mean      2.818     1.0000     1.0000  1.5040</span></span>
+<span><span class="co">#&gt; median    2.813     1.0040     0.9972  1.4970</span></span>
+<span><span class="co">#&gt; sd        1.578     0.1758     0.1755  0.5826</span></span>
+<span><span class="co">#&gt; Best fit: 2.631 (sd: 317.171)</span></span>
+<span><span class="co">#&gt;             Parameters: [3.404, 0.976, 1.132, 0.891]</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 2/10, 40 members. [2023-12-14 01:59:49.925434]</span></span>
+<span><span class="co">#&gt; Starting generation 2/10, 40 members. [2023-12-14 02:24:38.893416]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      2.793     0.9604     1.0660  0.9458</span></span>
-<span><span class="co">#&gt; median    2.856     0.9621     1.0850  0.9173</span></span>
-<span><span class="co">#&gt; sd        1.405     0.1535     0.1095  0.2946</span></span>
-<span><span class="co">#&gt; Best fit: 2.5672 (sd: 155.88)</span></span>
+<span><span class="co">#&gt; mean      3.050     0.9148     1.0860  0.9733</span></span>
+<span><span class="co">#&gt; median    3.295     0.9060     1.0780  0.9297</span></span>
+<span><span class="co">#&gt; sd        1.696     0.1193     0.1108  0.2638</span></span>
+<span><span class="co">#&gt; Best fit: 2.5787 (sd: 141.52)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 3/10, 40 members. [2023-12-14 02:00:24.798159]</span></span>
+<span><span class="co">#&gt; Starting generation 3/10, 40 members. [2023-12-14 02:25:15.221669]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      3.082     0.9751     1.1080  1.0370</span></span>
-<span><span class="co">#&gt; median    3.309     0.9483     1.1280  0.9842</span></span>
-<span><span class="co">#&gt; sd        1.569     0.1477     0.1142  0.3327</span></span>
-<span><span class="co">#&gt; Best fit: 2.5672 (sd: 199.01)</span></span>
+<span><span class="co">#&gt; mean      3.062     0.9034     1.0840  0.9008</span></span>
+<span><span class="co">#&gt; median    3.096     0.8731     1.1210  0.8399</span></span>
+<span><span class="co">#&gt; sd        1.477     0.1143     0.1154  0.3094</span></span>
+<span><span class="co">#&gt; Best fit: 2.5787 (sd: 164.61)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 4/10, 40 members. [2023-12-14 02:00:59.418821]</span></span>
+<span><span class="co">#&gt; Starting generation 4/10, 40 members. [2023-12-14 02:25:52.700273]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      3.221     0.9511     1.0740  1.0700</span></span>
-<span><span class="co">#&gt; median    3.485     0.9610     1.1000  1.0470</span></span>
-<span><span class="co">#&gt; sd        1.261     0.1484     0.1293  0.3502</span></span>
-<span><span class="co">#&gt; Best fit: 2.5672 (sd: 211.37)</span></span>
+<span><span class="co">#&gt; mean      3.003    0.91990     1.1060  0.9465</span></span>
+<span><span class="co">#&gt; median    3.000    0.91200     1.1260  0.9236</span></span>
+<span><span class="co">#&gt; sd        1.762    0.08157     0.1132  0.2947</span></span>
+<span><span class="co">#&gt; Best fit: 2.5787 (sd: 147.63)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 5/10, 40 members. [2023-12-14 02:01:33.971504]</span></span>
+<span><span class="co">#&gt; Starting generation 5/10, 40 members. [2023-12-14 02:26:29.981741]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      3.113     0.9798     1.0720  1.0430</span></span>
-<span><span class="co">#&gt; median    3.353     0.9822     1.0630  1.0470</span></span>
-<span><span class="co">#&gt; sd        1.344     0.1581     0.1145  0.3366</span></span>
-<span><span class="co">#&gt; Best fit: 2.5672 (sd: 185.11)</span></span>
+<span><span class="co">#&gt; mean      3.123     0.9593      1.082  0.9221</span></span>
+<span><span class="co">#&gt; median    3.251     0.9463      1.084  0.9127</span></span>
+<span><span class="co">#&gt; sd        1.598     0.1249      0.104  0.2489</span></span>
+<span><span class="co">#&gt; Best fit: 2.5787 (sd: 149.1)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 6/10, 40 members. [2023-12-14 02:02:08.368397]</span></span>
+<span><span class="co">#&gt; Starting generation 6/10, 40 members. [2023-12-14 02:27:06.973029]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      3.632     0.9462     1.0970  1.1200</span></span>
-<span><span class="co">#&gt; median    3.602     0.9553     1.0950  1.1600</span></span>
-<span><span class="co">#&gt; sd        1.269     0.1479     0.1049  0.4253</span></span>
-<span><span class="co">#&gt; Best fit: 2.5672 (sd: 235.73)</span></span>
+<span><span class="co">#&gt; mean      2.668     0.9311    1.09100  0.9098</span></span>
+<span><span class="co">#&gt; median    2.789     0.9226    1.08300  0.8033</span></span>
+<span><span class="co">#&gt; sd        1.480     0.1230    0.09587  0.3006</span></span>
+<span><span class="co">#&gt; Best fit: 2.5787 (sd: 131.04)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 7/10, 40 members. [2023-12-14 02:02:42.367938]</span></span>
+<span><span class="co">#&gt; Starting generation 7/10, 40 members. [2023-12-14 02:27:44.11078]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      3.382     0.9582     1.0730  1.0280</span></span>
-<span><span class="co">#&gt; median    3.433     0.9367     1.0760  1.0230</span></span>
-<span><span class="co">#&gt; sd        1.253     0.1539     0.1193  0.3377</span></span>
-<span><span class="co">#&gt; Best fit: 2.5672 (sd: 185.66)</span></span>
+<span><span class="co">#&gt; mean      3.358     0.9071     1.0980  0.9553</span></span>
+<span><span class="co">#&gt; median    3.432     0.8901     1.1070  0.8919</span></span>
+<span><span class="co">#&gt; sd        1.650     0.1127     0.1239  0.3324</span></span>
+<span><span class="co">#&gt; Best fit: 2.5787 (sd: 180.54)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 8/10, 40 members. [2023-12-14 02:03:17.028482]</span></span>
+<span><span class="co">#&gt; Starting generation 8/10, 40 members. [2023-12-14 02:28:21.34231]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      3.370     0.9540    1.05800  1.0230</span></span>
-<span><span class="co">#&gt; median    3.128     0.9473    1.05100  0.9198</span></span>
-<span><span class="co">#&gt; sd        1.147     0.1529    0.08567  0.3641</span></span>
-<span><span class="co">#&gt; Best fit: 2.5672 (sd: 208.65)</span></span>
+<span><span class="co">#&gt; mean      3.136     0.9333     1.0530  0.9555</span></span>
+<span><span class="co">#&gt; median    3.431     0.9490     1.0730  0.9613</span></span>
+<span><span class="co">#&gt; sd        1.855     0.0959     0.1175  0.2756</span></span>
+<span><span class="co">#&gt; Best fit: 2.5787 (sd: 131.04)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 9/10, 40 members. [2023-12-14 02:03:51.505491]</span></span>
+<span><span class="co">#&gt; Starting generation 9/10, 40 members. [2023-12-14 02:28:59.350157]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      3.490     0.9676     1.0640  1.0100</span></span>
-<span><span class="co">#&gt; median    3.585     1.0070     1.0730  0.9749</span></span>
-<span><span class="co">#&gt; sd        1.274     0.1612     0.1177  0.2939</span></span>
-<span><span class="co">#&gt; Best fit: 2.5672 (sd: 178.14)</span></span>
+<span><span class="co">#&gt; mean      3.220     0.9323    1.04500  0.9913</span></span>
+<span><span class="co">#&gt; median    3.616     0.9323    1.02900  0.9984</span></span>
+<span><span class="co">#&gt; sd        1.744     0.1336    0.09689  0.1983</span></span>
+<span><span class="co">#&gt; Best fit: 2.5787 (sd: 93.753)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 10/10, 40 members. [2023-12-14 02:04:26.245109]</span></span>
+<span><span class="co">#&gt; Starting generation 10/10, 40 members. [2023-12-14 02:29:37.916694]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd outflow</span></span>
-<span><span class="co">#&gt; mean      3.736     0.9947     1.0540  1.0420</span></span>
-<span><span class="co">#&gt; median    3.994     0.9789     1.0510  0.9076</span></span>
-<span><span class="co">#&gt; sd        1.156     0.1291     0.1276  0.3484</span></span>
-<span><span class="co">#&gt; Best fit: 2.5672 (sd: 234.15)</span></span>
+<span><span class="co">#&gt; mean      3.618    0.90970     1.1080  0.8417</span></span>
+<span><span class="co">#&gt; median    4.030    0.91290     1.1180  0.8097</span></span>
+<span><span class="co">#&gt; sd        1.699    0.08511     0.1292  0.2908</span></span>
+<span><span class="co">#&gt; Best fit: 2.5671 (sd: 108.44)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span></code></pre></div>
 </div>
 <div class="section level2">
