@@ -31,7 +31,7 @@ get_raster_tile <- function(shape, layer_id, zoom = 15, key = NULL,
                                                  "/EPSG:3857/{z}/{x}/{y}.png"),
                                     citation = "LINZ")
   catch <- tryCatch({
-    tiles <- maptiles::get_tiles(shape, provider = prov, zoom = zoom,
+    tiles <- maptiles::get_tiles(x = shape, provider = prov, zoom = zoom,
                                  verbose = verbose)
     TRUE
   }, error = function(e) {
@@ -39,12 +39,9 @@ get_raster_tile <- function(shape, layer_id, zoom = 15, key = NULL,
   })
 
   if (!catch) {
+    message("No tiles found for this location and layer id. Returning NULL.")
     return(invisible(NULL))
   }
 
-  # ras <- raster::raster(tiles)
-  ras <- terra::subset(tiles, 1)
-  # raster::plot(ras)
-  # terra::plot(ras)
-  return(ras)
+  return(tiles)
 }
