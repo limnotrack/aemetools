@@ -26,6 +26,8 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
     stop("Parameter 'model' must be a character string.")
   if (return_nc & return_aeme)
     stop("Only one of 'return_nc' and 'return_aeme' can be TRUE.")
+  if (length(model) != 1)
+    stop("Only one model can be run at a time.")
 
   # Load AEME data
   lke <- AEME::lake(aeme_data)

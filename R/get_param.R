@@ -6,6 +6,7 @@
 #' the calibration.
 #' @param best A logical value indicating whether to return the best parameter
 #' values or all parameter values.
+#' @inheritParams plot_calib
 #'
 #' @importFrom dplyr case_when filter group_by mutate summarise
 #' @importFrom stringr str_replace
@@ -13,8 +14,11 @@
 #' @return A data frame with the parameter values.
 #' @export
 
-get_param <- function(calib, model, na_value, best = FALSE) {
+get_param <- function(calib, model, na_value, fit_col = "fit", best = FALSE) {
 
+  if (!fit_col %in% names(calib)) stop("fit_col not in calib")
+
+  calib$fit <- calib[[fit_col]]
   all_pars <- calib |>
     dplyr::filter(model %in% model) |>
     dplyr::mutate(fit2 = dplyr::case_when(

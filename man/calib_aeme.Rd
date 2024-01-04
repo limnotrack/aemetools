@@ -6,12 +6,12 @@
 \usage{
 calib_aeme(
   aeme_data,
-  path,
+  path = ".",
   param,
   model,
   mod_ctrls,
   vars_sim = "HYD_temp",
-  FUN = NULL,
+  FUN_list = NULL,
   ctrl = NULL,
   weights = c(1),
   param_df = NULL
@@ -34,7 +34,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \item{vars_sim}{vector; of variables names to be used in the calculation of
 model fit. Currently only supports using one variable.}
 
-\item{FUN}{function; of the form \verb{function(O, P)} which will be used in
+\item{FUN_list}{list of functions; named according to the variables in the
+\code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
 to calculate model fit. If NULL, uses mean absolute error (MAE).}
 
 \item{ctrl}{list; of controls for calibration function.

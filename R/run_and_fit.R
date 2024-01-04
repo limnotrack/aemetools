@@ -2,13 +2,14 @@
 #'
 #' @inheritParams AEME::run_aeme
 #' @inheritParams run_aeme_param
+#' @inheritParams calib_aeme
 #' @param param dataframe; of parameters read in from a csv file. Requires the
 #' columns c("model", "file", "name", "value", "min", "max", "log")
 #' @param model string; for which model. Options are c("dy_cd", "glm_aed" and
 #'  "gotm_wet")
 #' @param vars_sim vector; of variables names to be used in the calculation of
 #' model fit. Currently only supports using one variable.
-#' @param FUN function; of the form `function(O, P)` which will be used in
+#' @param FUN_list function; of the form `function(O, P)` which will be used in
 #'  to calculate model fit. If NULL, uses mean absolute error (MAE).
 #' @param var_indices list; generated from running `run_and_fit()` with
 #' `return indices = TRUE` on the first simulation.
@@ -23,7 +24,7 @@
 #' @param fit boolean; fit model or not. If FALSE, only return netCDF file
 #' connection.
 #'
-#' @return A single value of model fit, calculated by `FUN`.
+#' @return A single value of model fit, calculated by `FUN_list`.
 #'
 #' @importFrom dplyr case_when
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
@@ -37,7 +38,7 @@
 #' @export
 
 run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
-                        FUN = NULL, weights, na_value = 999, var_indices = NULL,
+                        FUN_list = NULL, weights, na_value = 999, var_indices = NULL,
                         return_indices = FALSE, include_wlev = FALSE,
                         return_df = FALSE, fit = TRUE) {
 
@@ -46,20 +47,27 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
   nc <- run_aeme_param(aeme_data = aeme_data, param = param, model = model,
                        path = path, mod_ctrls = mod_ctrls,
                        na_value = na_value, return_nc = return_nc)
+
+  # Create a list for the return values
+  return_list <- list()
+  for (v in vars_sim) {
+    return_list[[v]] <- na_value
+  }
+
   on.exit({
     ncdf4::nc_close(nc)
   })
   if (!is.list(nc)) {
     message("Error opening netCDF file. Returning na_value.")
-    return(na_value)
+    return(return_list)
   }
   if (nc$error) {
     message("Error opening netCDF file. Returning na_value.")
-    return(na_value)
+    return(return_list)
   }
   # If error in running model, return na_value
   if (is.null(nc)) {
-    return(na_value)
+    return(return_list)
   }
 
   if (fit | return_indices) {
@@ -78,9 +86,9 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
 
 
     # Default function ----
-    if (is.null(FUN)) {
-      FUN <- function(O, P) {
-        mean(abs(P - O))
+    if (is.null(FUN_list)) {
+      FUN_list <- function(df) {
+        mean(abs(df$model - df$obs))
       }
     }
 
@@ -104,7 +112,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")
       }, error = \(e) return(NULL))
       if (is.null(lyrs)) {
-        return(na_value)
+        return(return_list)
       }
       lyrs <- lyrs[nrow(lyrs):1, ]
       NS <- ncdf4::ncvar_get(nc, "dyresmLayerCount")
@@ -171,7 +179,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         if(length(var_indices[[v]][["depths"]]) == 0 |
            length(var_indices[[v]][["time"]]) == 0 |
            is.null(ncol(this.var))) {
-          return(na_value)
+          return(return_list)
         }
 
         conv.fact <- ifelse(model == "glm_aed",
@@ -216,7 +224,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
 
       mod_out <- do.call(rbind, vars_out)
       if (ncol(mod_out) == 1 & nrow(obs$lake) > 0) {
-        return(na_value)
+        return(return_list)
       }
     }
 
@@ -226,9 +234,9 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
       balance <- aemetools::get_wlevel(lake_dir = lake_dir, model = model,
                                        nlev = 10, return_df = TRUE)
       if (is.null(ncol(balance))) {
-        return(na_value)
+        return(return_list)
       } else if (any(balance[["lvl"]] <= 0) | any(is.na(balance[["lvl"]]))) {
-        return(na_value)
+        return(return_list)
       }
       lvl_adj <- obs$level |>
         dplyr::mutate(value = (value - min(inp$hypsograph$elev)))
@@ -244,53 +252,62 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         LID = NA, var = "DEPTH", depth_mid = NA,
         depth_from = NA, diff = model - value) |>
         dplyr::filter(!is.na(diff)) |>
-        dplyr::select(LID, Date, value, var, depth_mid, depth_from, model, diff)
+        dplyr::select(LID, Date, value, var, depth_mid, depth_from, model,
+                      diff) |>
+        dplyr::rename(obs = value)
     }
 
     if (!is.null(obs$lake) & length(vars_sim) > 0) {
       obs_sub <- obs$lake |>
-        dplyr::filter(Date %in% mod_out$Date)
+        dplyr::filter(Date %in% mod_out$Date) |>
+        dplyr::rename(obs = value)
 
       if (nrow(obs_sub) < 1) {
         message("No observational data present.")
-        return(na_value)
+        return(return_list)
       } else {
         tst <- dplyr::left_join(obs_sub, mod_out,
                                 by = c("Date", "depth_mid", "var")) |>
           dplyr::filter(!is.na(model)) |>
-          dplyr::mutate(diff = model - value)
+          dplyr::mutate(diff = model - obs)
 
         if (nrow(tst) == 0) {
-          return(na_value)
+          return(return_list)
         }
 
         if (return_df) {
           return(tst)
         } else {
-
-          res <- sapply(unique(tst$var), \(v) {
+          vars_present <- unique(tst$var)
+          names(vars_present) <- vars_present
+          res <- lapply(vars_present, \(v) {
             sub <- tst |>
               dplyr::filter(var == v)
-            FUN(O = sub$value, P = sub$model)
+            FUN_list[[v]](sub)
           })
-          res <- sum(res)
-          # res <- FUN(O = tst$value, P = tst$model)
+          for (v in names(res)) {
+            return_list[[v]] <- res[[v]]
+          }
+
+          # res <- sum(res)
+          # res <- FUN_list(O = tst$obs, P = tst$model)
           if (include_wlev) {
             # Mutiply residuals by the mean difference in water level
             # res1 <- mean(abs(df_lvl$diff))
-            res1 <- FUN(O = df_lvl$value, P = df_lvl$model) * wlev_weight
-            res <- res + res1
+            return_list[["LKE_lvlwtr"]] <- FUN_list$LKE_lvlwtr(df_lvl) *
+              wlev_weight
+            # res <- res + res1
           }
-          res <- ifelse(is.na(res), na_value, res)
-          return(res)
+          # res <- ifelse(is.na(res), na_value, res)
+          return(return_list)
         }
       }
     } else {
       plot(df_lvl$Date, df_lvl$model, type = "l")
-      graphics::points(df_lvl$Date, df_lvl$value, col = "red")
-      res1 <- FUN(O = df_lvl$value, P = df_lvl$model) * wlev_weight
-      res1 <- ifelse(is.nan(res1), na_value, res1)
-      return(res1)
+      graphics::points(df_lvl$Date, df_lvl$obs, col = "red")
+      res1 <- FUN_list$LKE_lvlwtr(df_lvl) * wlev_weight
+      return_list[["LKE_lvlwtr"]] <- ifelse(is.nan(res1), na_value, res1)
+      return(return_list)
     }
   }
 }

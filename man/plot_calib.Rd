@@ -8,6 +8,7 @@ plot_calib(
   calib,
   model,
   na_value,
+  fit_col = "fit",
   nrow = 2,
   base_size = 8,
   return_pars = FALSE
@@ -20,6 +21,9 @@ plot_calib(
 "gotm_wet")}
 
 \item{na_value}{numeric; value to replace NA values with}
+
+\item{fit_col}{character; name of column containing fit values. Default is
+\code{"fit"}.}
 
 \item{nrow}{integer; number of rows in plot}
 

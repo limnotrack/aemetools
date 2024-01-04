@@ -11,7 +11,7 @@ run_and_fit(
   vars_sim,
   path,
   mod_ctrls,
-  FUN = NULL,
+  FUN_list = NULL,
   weights,
   na_value = 999,
   var_indices = NULL,
@@ -38,7 +38,7 @@ model fit. Currently only supports using one variable.}
 \item{mod_ctrls}{dataframe; of configuration loaded from
 "mod_ctrls.csv".}
 
-\item{FUN}{function; of the form \verb{function(O, P)} which will be used in
+\item{FUN_list}{function; of the form \verb{function(O, P)} which will be used in
 to calculate model fit. If NULL, uses mean absolute error (MAE).}
 
 \item{weights}{vector; of weights to be used in the calculation of model fit.}
@@ -61,7 +61,7 @@ fit.}
 connection.}
 }
 \value{
-A single value of model fit, calculated by \code{FUN}.
+A single value of model fit, calculated by \code{FUN_list}.
 }
 \description{
 Run a model and calculate model fit.
