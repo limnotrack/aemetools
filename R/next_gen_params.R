@@ -22,33 +22,33 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
     survivors <- param_df[order(param_df$fit), ]
   }
   survivors1 <- survivors1[order(survivors1$fit), ]
-  drop_cols <- which(names(survivors1) %in% c("fit", "gen"))
+  keep_cols <- which(names(survivors1) %in% param$name)
   if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
     message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2))
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
                                                                ctrl$cutoff),
-                             -drop_cols]
+                             keep_cols]
   } else {
     message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2),
             " is too low, using all individuals.")
-    survivors2 <- survivors1[, -drop_cols]
+    survivors2 <- survivors1[, keep_cols]
   }
   if (is.null(nrow(survivors2))) {
     survivors2 <- data.frame(matrix(survivors2))
-    names(survivors2) <- names(survivors1)[-drop_cols]
+    names(survivors2) <- names(survivors1)[keep_cols]
   }
   if (nrow(survivors2) == 1) {
     message("Number of survivors is too low (n=", nrow(survivors1),
             ")... using 2 * ctrl$cutoff.")
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
                                                                (ctrl$cutoff * 2)),
-                             -drop_cols]
+                             keep_cols]
   }
   if (nrow(survivors2) == 0) {
     message("All parameter sets are NA. Generating base parameters...")
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
                                                                (ctrl$cutoff * 3)),
-                             -drop_cols]
+                             keep_cols]
     g <- FME::Latinhyper(param[, c("min", "max")],
                          ctrl$NP)
     colnames(g) <- param$name
@@ -86,7 +86,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
                                             max = param$max[param$name == p])
   }
   # Replace last parameter rather than adding
-  g[nrow(g), ] <- best_pars[, -drop_cols]
+  g[nrow(g), ] <- best_pars[, keep_cols]
 
   return(g)
 }

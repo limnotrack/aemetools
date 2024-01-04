@@ -4,7 +4,7 @@
 \alias{get_param}
 \title{Get parameter values from calibration results}
 \usage{
-get_param(calib, model, na_value, best = FALSE)
+get_param(calib, model, na_value, fit_col = "fit", best = FALSE)
 }
 \arguments{
 \item{calib}{A data frame with the calibration results.}
@@ -13,6 +13,9 @@ get_param(calib, model, na_value, best = FALSE)
 
 \item{na_value}{A numeric value which corresponds to the NA value used in
 the calibration.}
+
+\item{fit_col}{character; name of column containing fit values. Default is
+\code{"fit"}.}
 
 \item{best}{A logical value indicating whether to return the best parameter
 values or all parameter values.}

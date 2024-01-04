@@ -13,7 +13,8 @@
 #'  "gotm_wet")
 #' @param vars_sim vector; of variables names to be used in the calculation of
 #' model fit. Currently only supports using one variable.
-#' @param FUN function; of the form `function(O, P)` which will be used in
+#' @param FUN_list list of functions; named according to the variables in the
+#'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If NULL, uses mean absolute error (MAE).
 #' @param ctrl list; of controls for calibration function.
 #' * `VTR` Value to be reached. The optimization process will stop if
@@ -56,13 +57,16 @@
 #'
 #' @export
 
-calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
-                       vars_sim = "HYD_temp", FUN = NULL, ctrl = NULL,
+calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
+                       vars_sim = "HYD_temp", FUN_list = NULL, ctrl = NULL,
                        weights = c(1), param_df = NULL) {
 
   # Check if vars_sim and weights are the same length
   if (length(vars_sim) != length(weights))
     stop("vars_sim and weights must be the same length")
+
+  if (!all(vars_sim %in% names(FUN_list)))
+    stop("FUN_list must have names that match vars_sim")
 
   if (is.null(ctrl)) {
     ctrl <- list(VTR = -Inf, NP = NA, itermax = 200, reltol = 0.07,
@@ -85,7 +89,7 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     message("Extracting indices for modelled variables [", Sys.time(), "]")
     suppressMessages(
       var_indices <- run_and_fit(aeme_data = aeme_data, param = param,
-                                 model = model, path = path, FUN = FUN,
+                                 model = model, path = path, FUN_list = FUN_list,
                                  mod_ctrls = mod_ctrls, vars_sim = vars_sim,
                                  weights = weights,
                                  return_indices = TRUE,
@@ -145,7 +149,6 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
   # Calibrate in parallel
   if (ctrl$parallel) {
 
-
     temp_dirs <- make_temp_dir(model, lake_dir, n = ctrl$ncore)
     # list.files(temp_dirs[1], recursive = TRUE)
     ncores <- min((parallel::detectCores() - 1), ctrl$ncore)
@@ -153,7 +156,7 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
 
     cl <- parallel::makeCluster(ncores)
     on.exit(parallel::stopCluster(cl))
-    varlist <- list("param", "aeme_data", "path", "model", "vars_sim", "FUN",
+    varlist <- list("param", "aeme_data", "path", "model", "vars_sim", "FUN_list",
                     "mod_ctrls", "var_indices", "temp_dirs","ctrl",
                     "weights", "var_indices", "include_wlev")
     parallel::clusterExport(cl, varlist = varlist,
@@ -181,19 +184,32 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
         # message(i, ", ", p)
 
         # Save the fit value
-        pars[[i]][["fit"]][p] <- aemetools::run_and_fit(aeme_data = aeme_data,
-                                                        param = param,
-                                                        model = model,
-                                                        path = path,
-                                                        vars_sim = vars_sim,
-                                                        FUN = FUN,
-                                                        mod_ctrls = mod_ctrls,
-                                                        na_value = ctrl$na_value,
-                                                        var_indices = var_indices,
-                                                        return_indices = FALSE,
-                                                        include_wlev = include_wlev,
-                                                        fit = TRUE,
-                                                        weights = weights)
+        res <- aemetools::run_and_fit(aeme_data = aeme_data,
+                                      param = param,
+                                      model = model,
+                                      path = path,
+                                      vars_sim = vars_sim,
+                                      FUN_list = FUN_list,
+                                      mod_ctrls = mod_ctrls,
+                                      na_value = ctrl$na_value,
+                                      var_indices = var_indices,
+                                      return_indices = FALSE,
+                                      include_wlev = include_wlev,
+                                      fit = TRUE,
+                                      weights = weights)
+
+        for (v in vars_sim) {
+          pars[[i]][[v]][p] <- res[[v]]
+        }
+
+        if (ctrl$na_value %in% unlist(res)) {
+          res1 <- ctrl$na_value
+        } else {
+          res1 <- sum(unlist(res))
+          res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
+        }
+
+        pars[[i]][["fit"]][p] <- res1
         print(pars[[i]][["fit"]][p])
       }
       return(pars[[i]])
@@ -206,15 +222,9 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
                                             1:nrow(param)], 3),
                                    collapse = ", "), "]")
     g1$gen <- gen_n
-    out_df <- apply(g1, 2, signif, digits = 6)
     best_pars <- g1[which.min(g1$fit), ]
-    if (gen_n == 1) {
-      utils::write.csv(out_df, ctrl$out_file,
-                       quote = TRUE, row.names = FALSE)
-    } else {
-      utils::write.table(out_df, ctrl$out_file, append = TRUE,
-                         sep = ",", row.names = FALSE, col.names = FALSE)
-    }
+    out_df <- apply(g1, 2, signif, digits = 6)
+    write_calib_output(x = out_df, file.path(path, ctrl$out_file))
 
     if (min(g1$fit) < ctrl$VTR) {
       message("Model fitness is less than VTR. Stopping simulation.")
@@ -254,28 +264,43 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
           }
           # print(i); print(p)
 
-          # Save the
-          pars[[i]][["fit"]][p] <- aemetools::run_and_fit(aeme_data = aeme_data,
-                                                          param = param,
-                                                          model = model,
-                                                          path = path,
-                                                          vars_sim = vars_sim,
-                                                          FUN = FUN,
-                                                          mod_ctrls = mod_ctrls,
-                                                          na_value = ctrl$na_value,
-                                                          var_indices = var_indices,
-                                                          return_indices = FALSE,
-                                                          include_wlev = include_wlev,
-                                                          fit = TRUE,
-                                                          weights = weights)
+          # Save the fit value
+          res <- aemetools::run_and_fit(aeme_data = aeme_data,
+                                        param = param,
+                                        model = model,
+                                        path = path,
+                                        vars_sim = vars_sim,
+                                        FUN_list = FUN_list,
+                                        mod_ctrls = mod_ctrls,
+                                        na_value = ctrl$na_value,
+                                        var_indices = var_indices,
+                                        return_indices = FALSE,
+                                        include_wlev = include_wlev,
+                                        fit = TRUE,
+                                        weights = weights)
+
+          for (v in vars_sim) {
+            pars[[i]][[v]][p] <- res[[v]]
+          }
+
+          if (ctrl$na_value %in% unlist(res)) {
+            res1 <- ctrl$na_value
+          } else {
+            res1 <- sum(unlist(res))
+            res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
+          }
+
+          pars[[i]][["fit"]][p] <- res1
         }
         return(pars[[i]])
       }, pars = param_list)
 
       g <- do.call(rbind, model_out)
       g$gen <- gen_n
-      write.table(apply(g, 2, signif, digits = 6), ctrl$out_file, append = TRUE,
-                  sep = ",", row.names = FALSE, col.names = FALSE)
+
+      out_df <- apply(g, 2, signif, digits = 6)
+      write_calib_output(x = out_df, file.path(path, ctrl$out_file))
+
       message("Best fit: ", signif(min(g$fit), 5), " (sd: ",
               signif(sd(g$fit), 5), ")")
       if(min(g$fit) < best_pars$fit) {
@@ -291,7 +316,7 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
         return(ctrl)
       }
 
-      g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
+      g <- next_gen_params(param_df = g, param = param, ctrl = ctrl,
                            best_pars = best_pars)
     }
   } else {
@@ -306,6 +331,9 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     model_out <- lapply(seq_along(param_list), \(pars, i) {
 
       pars[[i]][["fit"]] <- NA
+      for (v in vars_sim) {
+        pars[[i]][[v]] <- NA
+      }
 
       # Loop through each of the parameters
       for (p in seq_len(nrow(pars[[i]]))) {
@@ -317,20 +345,34 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
         # message(i, ", ", p)
 
         # Save the fit value
-        pars[[i]][["fit"]][p] <- run_and_fit(aeme_data = aeme_data,
-                                             param = param,
-                                             model = model,
-                                             path = path,
-                                             vars_sim = vars_sim,
-                                             FUN = FUN,
-                                             mod_ctrls = mod_ctrls,
-                                             na_value = ctrl$na_value,
-                                             var_indices = var_indices,
-                                             return_indices = FALSE,
-                                             include_wlev = include_wlev,
-                                             fit = TRUE,
-                                             weights = weights)
+        res <- run_and_fit(aeme_data = aeme_data,
+                           param = param,
+                           model = model,
+                           path = path,
+                           vars_sim = vars_sim,
+                           FUN_list = FUN_list,
+                           mod_ctrls = mod_ctrls,
+                           na_value = ctrl$na_value,
+                           var_indices = var_indices,
+                           return_indices = FALSE,
+                           include_wlev = include_wlev,
+                           fit = TRUE,
+                           weights = weights)
+
+        for (v in vars_sim) {
+          pars[[i]][[v]][p] <- res[[v]]
+        }
+
+        if (ctrl$na_value %in% unlist(res)) {
+          res1 <- ctrl$na_value
+        } else {
+          res1 <- sum(unlist(res))
+          res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
+        }
+
+        pars[[i]][["fit"]][p] <- res1
         print(pars[[i]][["fit"]][p])
+        # print(pars[[i]][p, ])
       }
       return(pars[[i]])
     }, pars = param_list)
@@ -344,13 +386,8 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
     g1$gen <- gen_n
     out_df <- apply(g1, 2, signif, digits = 6)
     best_pars <- g1[which.min(g1$fit), ]
-    if (gen_n == 1) {
-      write.csv(out_df, ctrl$out_file,
-                quote = TRUE, row.names = FALSE)
-    } else {
-      write.table(out_df, ctrl$out_file, append = TRUE,
-                  sep = ",", row.names = FALSE, col.names = FALSE)
-    }
+
+    write_calib_output(x = out_df, file.path(path, ctrl$out_file))
 
     if (min(g1$fit) < ctrl$VTR) {
       message("Model fitness is less than VTR. Stopping simulation.")
@@ -378,6 +415,9 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
       model_out <- lapply(seq_along(param_list), \(pars, i) {
 
         pars[[i]][["fit"]] <- NA
+        for (v in vars_sim) {
+          pars[[i]][[v]] <- NA
+        }
 
         # Loop through each of the parameters
         for(p in seq_len(nrow(pars[[i]]))) {
@@ -388,29 +428,45 @@ calib_aeme <- function(aeme_data, path, param, model, mod_ctrls,
           }
           # print(i); print(p)
 
-          # Save the
-          pars[[i]][["fit"]][p] <- run_and_fit(aeme_data = aeme_data,
-                                               param = param,
-                                               model = model,
-                                               path = path,
-                                               vars_sim = vars_sim,
-                                               FUN = FUN,
-                                               mod_ctrls = mod_ctrls,
-                                               na_value = ctrl$na_value,
-                                               var_indices = var_indices,
-                                               return_indices = FALSE,
-                                               include_wlev = include_wlev,
-                                               fit = TRUE,
-                                               weights = weights)
-          print(pars[[i]][["fit"]][p])
+          # Save the fit value
+          res <- run_and_fit(aeme_data = aeme_data,
+                             param = param,
+                             model = model,
+                             path = path,
+                             vars_sim = vars_sim,
+                             FUN_list = FUN_list,
+                             mod_ctrls = mod_ctrls,
+                             na_value = ctrl$na_value,
+                             var_indices = var_indices,
+                             return_indices = FALSE,
+                             include_wlev = include_wlev,
+                             fit = TRUE,
+                             weights = weights)
+
+          for (v in vars_sim) {
+            pars[[i]][[v]][p] <- res[[v]]
+          }
+
+          if (ctrl$na_value %in% unlist(res)) {
+            res1 <- ctrl$na_value
+          } else {
+            res1 <- sum(unlist(res))
+            res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
+          }
+
+          pars[[i]][["fit"]][p] <- res1
+          # print(pars[[i]][["fit"]][p])
+          print(pars[[i]][p, ])
         }
         return(pars[[i]])
       }, pars = param_list)
 
       g <- do.call(rbind, model_out)
       g$gen <- gen_n
-      write.table(apply(g, 2, signif, digits = 6), ctrl$out_file, append = TRUE,
-                  sep = ",", row.names = FALSE, col.names = FALSE)
+      out_df <- apply(g, 2, signif, digits = 6)
+
+      write_calib_output(x = out_df, file.path(path, ctrl$out_file))
+
       message("Best fit: ", signif(min(g$fit), 5), " (sd: ",
               signif(sd(g$fit), 5), ")")
       if(min(g$fit) < best_pars$fit) {

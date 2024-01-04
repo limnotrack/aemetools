@@ -4,7 +4,7 @@
 \alias{read_calib}
 \title{Read calibration output}
 \usage{
-read_calib(ctrl, model)
+read_calib(ctrl, model, path = ".")
 }
 \arguments{
 \item{ctrl}{list; of controls for calibration function.
@@ -41,6 +41,8 @@ if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
 
 \item{model}{string; for which model. Options are c("dy_cd", "glm_aed" and
 "gotm_wet")}
+
+\item{path}{filepath; where input files are located relative to `config`.}
 }
 \value{
 A data frame with the calibration results.

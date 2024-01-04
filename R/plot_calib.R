@@ -3,6 +3,8 @@
 #' @param calib dataframe; output from \code{\link{read_calib}}
 #' @inheritParams calib_aeme
 #' @param na_value numeric; value to replace NA values with
+#' @param fit_col character; name of column containing fit values. Default is
+#'  \code{"fit"}.
 #' @param nrow integer; number of rows in plot
 #' @param base_size numeric; base size for theme
 #' @param return_pars logical; return parameter values
@@ -19,11 +21,13 @@
 #' @return list of plots
 #' @export
 
-plot_calib <- function(calib, model, na_value, nrow = 2, base_size = 8,
-                       return_pars = FALSE) {
+plot_calib <- function(calib, model, na_value, fit_col = "fit", nrow = 2,
+                       base_size = 8, return_pars = FALSE) {
 
-  all_pars <- get_param(calib, model, na_value = na_value, best = FALSE)
-  summ <- get_param(calib, model, na_value = na_value, best = TRUE)
+  all_pars <- get_param(calib, model, na_value = na_value, fit_col = fit_col,
+                        best = FALSE)
+  summ <- get_param(calib, model, na_value = na_value, fit_col = fit_col,
+                    best = TRUE)
   if (min(all_pars$fit, na.rm = TRUE) <= 0) {
     message(strwrap("Negative fit values detected, adding 1 to all values to
                     ensure log scale is possible.",
@@ -35,6 +39,7 @@ plot_calib <- function(calib, model, na_value, nrow = 2, base_size = 8,
   # f_pars <- all_pars[all_pars$fit < 0, ]
   ylims <- c(min(all_pars$fit, na.rm = TRUE),
              stats::quantile(all_pars$fit, 0.75, na.rm = TRUE))
+  ylab <- ifelse(fit_col == "fit", "Fit", paste0("Fit (", fit_col, ")"))
 
   # Dotty plot ----
   plist <- lapply(model, \(m) {
@@ -50,6 +55,7 @@ plot_calib <- function(calib, model, na_value, nrow = 2, base_size = 8,
       ggplot2::scale_colour_viridis_d() +
       ggplot2::coord_cartesian(ylim = ylims) +
       ggplot2::xlab("") +
+      ggplot2::ylab(ylab) +
       # annotate(geom = 'text', label = 'sometext', x = -Inf, y = Inf, hjust = 0,
       #          vjust = 1) +
       ggplot2::geom_text(data = summ[summ$model == m, ],
@@ -63,7 +69,7 @@ plot_calib <- function(calib, model, na_value, nrow = 2, base_size = 8,
   pdotty <- patchwork::wrap_plots(plist, nrow = length(model),
                                   guides = "collect")
 
-  # Caterpillar plot ----
+  # Convergence plot ----
   plist <- lapply(model, \(m) {
     ggplot2::ggplot() +
       ggplot2::geom_hline(data = summ[summ$model == m, ],
@@ -96,7 +102,3 @@ plot_calib <- function(calib, model, na_value, nrow = 2, base_size = 8,
                                  guides = "collect")
   return(list(dotty = pdotty, histogram = phist, convergence = pconverge))
 }
-
-
-
-
