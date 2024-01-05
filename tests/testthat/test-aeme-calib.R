@@ -202,7 +202,7 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
                      mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
                      vars_sim = vars_sim, weights = weights)
 
-  calib_res <- read_calib(ctrl = ctrl, model = model)
+  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
 
   testthat::expect_true(is.data.frame(calib_res))
 
