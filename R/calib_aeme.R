@@ -86,7 +86,8 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
   var_indices <- list()
   if (any(vars_sim != "LKE_lvlwtr")) {
     # Extract indices for modelled variables
-    message("Extracting indices for modelled variables [", Sys.time(), "]")
+    message("Extracting indices for modelled variables [",
+            format(Sys.time()), "]")
     suppressMessages(
       var_indices <- run_and_fit(aeme_data = aeme_data, param = param,
                                  model = model, path = path, FUN_list = FUN_list,
@@ -96,7 +97,7 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                                  include_wlev = include_wlev,
                                  fit = FALSE)
     )
-    message("Complete! [", Sys.time(), "]")
+    message("Complete! [", format(Sys.time()), "]")
   }
 
   # Extract parameters for the model ----
@@ -163,7 +164,7 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                             envir = environment())
     message("Starting generation ", gen_n, "/", tot_gen,", ",
             ctrl$NP, " members. ",
-            "[", Sys.time(), "]")
+            "[", format(Sys.time()), "]")
     print(data.frame(rbind(signif(apply(start_param, 2, mean), 4),
                            signif(apply(start_param, 2, median), 4),
                            signif(apply(start_param, 2, sd), 4)),
@@ -240,7 +241,7 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
       gen_n <- gen_n + 1
       message("Starting generation ", gen_n, "/", tot_gen,", ", ctrl$NP,
-              " members. ", "[", Sys.time(), "]")
+              " members. ", "[", format(Sys.time()), "]")
       print(data.frame(rbind(signif(apply(g, 2, mean), 4),
                              signif(apply(g, 2, median), 4),
                              signif(apply(g, 2, sd), 4)),
@@ -323,7 +324,7 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     # Run in serial ----
     message("Starting generation ", gen_n, "/", tot_gen,", ",
             ctrl$NP, " members. ",
-            "[", Sys.time(), "]")
+            "[", format(Sys.time()), "]")
     print(data.frame(rbind(signif(apply(start_param, 2, mean), 4),
                            signif(apply(start_param, 2, median), 4),
                            signif(apply(start_param, 2, sd), 4)),
@@ -403,7 +404,7 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
       gen_n <- gen_n + 1
       message("Starting generation ", gen_n, "/", tot_gen,", ", ctrl$NP,
-              " members. ", "[", Sys.time(), "]")
+              " members. ", "[", format(Sys.time()), "]")
       print(data.frame(rbind(signif(apply(g, 2, mean), 4),
                              signif(apply(g, 2, median), 4),
                              signif(apply(g, 2, sd), 4)),
