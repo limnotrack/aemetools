@@ -129,9 +129,9 @@ run_aeme_param(aeme_data = aeme_data, param = aeme_parameters,
 ### Define fitness function
 
 First, we will define a function for the calibration function to use to
-calculate the fitness of the model. This function takes two arguments, the
-observed data (`O`) and the predicted data (`P`). The function should return a
-single value.
+calculate the fitness of the model. This function takes a dataframe as an 
+argument. The dataframe contains the observed data (`obs`) and the modelled data
+(`model`). The function should return a single value.
 
 Here we use the root mean square error (RMSE) as the fitness function:
 
@@ -139,10 +139,34 @@ $$\text{RMSE}(y, \hat{y}) = \sqrt{\frac{\sum_{i=0}^{N - 1} (y_i - \hat{y}_i)^2}{
 
 ```{r define-fitness-function}
 # Function to calculate fitness
-fit <- function(O, P) {
-  sqrt(mean((O - P)^2))
+rmse <- function(df) {
+  sqrt(mean((df$obs - df$model)^2))
 }
+
 ```
+
+Different functions can be applied to different variables. For example, we can
+use the RMSE for the lake level and the mean absolute error (MAE) for the
+water temperature:
+
+```{r define-fitness-function-2}
+# Function to calculate fitness
+mae <- function(df) {
+  mean(abs(df$obs - df$model))
+}
+
+```
+
+Then these would be combined into a named list of functions which will be 
+passed to the `calib_aeme` function.
+
+```{r define-function-list}
+
+# Create list of functions
+FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = rmse)
+
+```
+
 
 ### Define control parameters
 
@@ -212,7 +236,7 @@ arguments:
 -   `param`: The parameters to calibrate.
 -   `model`: The model to calibrate.
 -   `mod_ctrls`: The model controls to use for the calibration.
--   `FUN`: The fitness function to use for the calibration.
+-   `FUN_list`: The list of functions to use for each variable within the calibration.
 -   `ctrl`: The control parameters to use for the calibration.
 -   `vars_sim`: The variables to use for the calibration.
 -   `weights`: The weights to use for the calibration.
@@ -225,7 +249,7 @@ updated values.
 ```{r run-calibration, cache=FALSE}
 ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
                    param = aeme_parameters, model = model,
-                   mod_ctrls = mod_ctrls, FUN = fit, ctrl = ctrl,
+                   mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
                    vars_sim = vars_sim, weights = weights)
 
 ```
@@ -255,7 +279,7 @@ plot.
 
 ```{r visualise-calibration-results, cache = FALSE}
 
-calib_res <- read_calib(ctrl = ctrl, model = model)
+calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
 plist <- plot_calib(calib = calib_res, model = model, 
                       na_value = ctrl$na_value)
 ```
