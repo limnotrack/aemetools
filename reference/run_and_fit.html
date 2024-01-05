@@ -56,7 +56,7 @@
 <span>  <span class="va">vars_sim</span>,</span>
 <span>  <span class="va">path</span>,</span>
 <span>  <span class="va">mod_ctrls</span>,</span>
-<span>  FUN <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  FUN_list <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">weights</span>,</span>
 <span>  na_value <span class="op">=</span> <span class="fl">999</span>,</span>
 <span>  var_indices <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -97,7 +97,7 @@ model fit. Currently only supports using one variable.</p></dd>
 "mod_ctrls.csv".</p></dd>
 
 
-<dt>FUN</dt>
+<dt>FUN_list</dt>
 <dd><p>function; of the form <code>function(O, P)</code> which will be used in
 to calculate model fit. If NULL, uses mean absolute error (MAE).</p></dd>
 
@@ -139,7 +139,7 @@ connection.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A single value of model fit, calculated by <code>FUN</code>.</p>
+<p>A single value of model fit, calculated by <code>FUN_list</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
