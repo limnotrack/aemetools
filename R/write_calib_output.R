@@ -13,8 +13,8 @@ write_calib_output <- function(x, file) {
   type <- tools::file_ext(file)
   gen_n <- x[1, "gen"]
 
-  messae("Writing output for generation ", gen_n, " to ", file, ". [",
-         Sys.time(), "]")
+  message("Writing output for generation ", gen_n, " to ", file, ". [",
+          Sys.time(), "]")
 
   if (type == "csv") {
     if (gen_n == 1) {
