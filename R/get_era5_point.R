@@ -76,7 +76,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
                                                "dtoken", "download_era5_point"),
                             envir = environment())
     message("Downloading ERA5 variable in parallel... ",
-            paste0("[", Sys.time(), "]"))
+            paste0("[", format(Sys.time()), "]"))
     out <- parallel::parLapply(cl = cl, years, function(y) {
       download_era5_point(years = y, lat = coords$lat, lon = coords$lon,
                           variable = sel_vars$era5, db_path = db_path,
@@ -95,7 +95,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
                                                "dtoken", "download_era5_point"),
                             envir = environment())
     message("Downloading ERA5 variables in parallel... ",
-            paste0("[", Sys.time(), "]"))
+            paste0("[", format(Sys.time()), "]"))
     out <- parallel::parLapply(cl = cl, sel_vars$era5, function(v) {
       download_era5_point(years = years, lat = coords$lat, lon = coords$lon,
                           variable = v, db_path = db_path, dtoken = dtoken)
@@ -103,7 +103,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
     df <- Reduce(merge, out)
   } else {
     message("Downloading ERA5 variables... ",
-            paste0("[", Sys.time(), "] (Have you tried parallelising?)"))
+            paste0("[", format(Sys.time()), "] (Have you tried parallelising?)"))
 
     out <- lapply(sel_vars$era5, function(v) {
       # print(v)
@@ -113,7 +113,7 @@ get_era5_point <- function(lat, lon, years, variables, format = "aeme",
     df <- Reduce(merge, out)
   }
 
-  message("Finished downloading ERA5 variables! ", paste0("[", Sys.time(), "]"))
+  message("Finished downloading ERA5 variables! ", paste0("[", format(Sys.time()), "]"))
 
 
   if ("t2m" %in% colnames(df) | "d2m" %in% colnames(df)) {
