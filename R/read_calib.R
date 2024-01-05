@@ -20,7 +20,7 @@ read_calib <- function(ctrl, model, path = ".") {
   type <- tools::file_ext(file)
 
   if (type == "csv") {
-    out <- utils::read.csv(ctrl$out_file)
+    out <- utils::read.csv(file)
   } else if (type == "db") {
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
     out <- DBI::dbReadTable(con, "calib_output")
