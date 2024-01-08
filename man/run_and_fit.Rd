@@ -18,6 +18,8 @@ run_and_fit(
   return_indices = FALSE,
   include_wlev = FALSE,
   return_df = FALSE,
+  method = "calib",
+  sa_ctrl = NULL,
   fit = TRUE
 )
 }
@@ -56,6 +58,9 @@ change between simulations.}
 fit.}
 
 \item{return_df}{boolean; return dataframe of modelled and observed.}
+
+\item{method}{string; of the method of the model run. Options are c("sa",
+"calib").}
 
 \item{fit}{boolean; fit model or not. If FALSE, only return netCDF file
 connection.}
