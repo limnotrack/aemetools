@@ -27,6 +27,9 @@ read_calib <- function(ctrl, model, path = ".") {
     DBI::dbDisconnect(con, shutdown = TRUE)
   }
   ngen <- ceiling(nrow(out) / ctrl$NP)
+  if (length(ngen) == 0) {
+    ngen <- 1
+  }
   if ("gen" %in% names(out)) {
     out$gen <- factor(out$gen)
   } else {

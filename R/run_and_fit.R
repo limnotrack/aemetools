@@ -21,6 +21,8 @@
 #' @param na_value numeric; value to be returned if model fails to run.
 #' @param include_wlev boolean; include water level in the calculation of model
 #' fit.
+#' @param method string; of the method of the model run. Options are c("sa",
+#'  "calib").
 #' @param fit boolean; fit model or not. If FALSE, only return netCDF file
 #' connection.
 #'
@@ -38,9 +40,11 @@
 #' @export
 
 run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
-                        FUN_list = NULL, weights, na_value = 999, var_indices = NULL,
-                        return_indices = FALSE, include_wlev = FALSE,
-                        return_df = FALSE, fit = TRUE) {
+                        FUN_list = NULL, weights, na_value = 999,
+                        var_indices = NULL, return_indices = FALSE,
+                        include_wlev = FALSE, return_df = FALSE,
+                        method = "calib", sa_ctrl = NULL,
+                        fit = TRUE) {
 
   return_nc <- ifelse(fit | return_indices, TRUE, FALSE)
 
@@ -147,15 +151,31 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
       }
 
       names(vars_sim) <- vars_sim
-      var_indices <- lapply(vars_sim, \(v) {
-        obs_v <- obs$lake |>
-          dplyr::filter(var == v & Date %in% dates)
-        deps <- unique(obs_v$depth_mid)
-        deps <- deps[order(deps)]
 
-        date_idx <- which(dates %in% obs_v$Date)
-        list(time = date_idx, depths = deps, dates = dates[date_idx])
-      })
+      # Indices for sensitivity analysis
+      if (method == "sa") {
+        var_indices <- lapply(vars_sim, \(v) {
+          obs_v <- obs$lake |>
+            dplyr::filter(var == v & Date %in% dates)
+          deps <- seq(min(sa_ctrl[[v]][["depths"]]),
+                      max(sa_ctrl[[v]][["depths"]]), by = 0.5)
+          df <- data.frame(dates = dates, month = lubridate::month(dates))
+
+          date_idx <- which(df$month %in% sa_ctrl[[v]]$month)
+          list(time = date_idx, depths = deps, dates = dates[date_idx])
+        })
+      } else if (method == "calib") {
+        var_indices <- lapply(vars_sim, \(v) {
+          obs_v <- obs$lake |>
+            dplyr::filter(var == v & Date %in% dates)
+          deps <- unique(obs_v$depth_mid)
+          deps <- deps[order(deps)]
+
+          date_idx <- which(dates %in% obs_v$Date)
+          list(time = date_idx, depths = deps, dates = dates[date_idx])
+        })
+      }
+
 
       if (return_indices) {
         return(var_indices)
@@ -258,50 +278,49 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
     }
 
     if (!is.null(obs$lake) & length(vars_sim) > 0) {
-      obs_sub <- obs$lake |>
-        dplyr::filter(Date %in% mod_out$Date) |>
-        dplyr::rename(obs = value)
 
-      if (nrow(obs_sub) < 1) {
-        message("No observational data present.")
-        return(return_list)
-      } else {
+      if (method == "calib") {
+        obs_sub <- obs$lake |>
+          dplyr::filter(Date %in% mod_out$Date) |>
+          dplyr::rename(obs = value)
+
+        if (nrow(obs_sub) < 1) {
+          message("No observational data present.")
+          return(return_list)
+        } #else {
         tst <- dplyr::left_join(obs_sub, mod_out,
                                 by = c("Date", "depth_mid", "var")) |>
           dplyr::filter(!is.na(model)) |>
           dplyr::mutate(diff = model - obs)
-
-        if (nrow(tst) == 0) {
-          return(return_list)
-        }
-
-        if (return_df) {
-          return(tst)
-        } else {
-          vars_present <- unique(tst$var)
-          names(vars_present) <- vars_present
-          res <- lapply(vars_present, \(v) {
-            sub <- tst |>
-              dplyr::filter(var == v)
-            FUN_list[[v]](sub)
-          })
-          for (v in names(res)) {
-            return_list[[v]] <- res[[v]]
-          }
-
-          # res <- sum(res)
-          # res <- FUN_list(O = tst$obs, P = tst$model)
-          if (include_wlev) {
-            # Mutiply residuals by the mean difference in water level
-            # res1 <- mean(abs(df_lvl$diff))
-            return_list[["LKE_lvlwtr"]] <- FUN_list$LKE_lvlwtr(df_lvl) *
-              wlev_weight
-            # res <- res + res1
-          }
-          # res <- ifelse(is.na(res), na_value, res)
-          return(return_list)
-        }
+      } else {
+          tst <- mod_out
       }
+
+      if (nrow(tst) == 0) {
+        return(return_list)
+      }
+
+      if (return_df) {
+        return(tst)
+      } else {
+        vars_present <- unique(tst$var)
+        names(vars_present) <- vars_present
+        res <- lapply(vars_present, \(v) {
+          sub <- tst |>
+            dplyr::filter(var == v)
+          FUN_list[[v]](sub)
+        })
+        for (v in names(res)) {
+          return_list[[v]] <- res[[v]]
+        }
+        if (include_wlev) {
+          # Mutiply residuals by the mean difference in water level
+          return_list[["LKE_lvlwtr"]] <- FUN_list$LKE_lvlwtr(df_lvl) *
+            wlev_weight
+        }
+        return(return_list)
+      }
+      # }
     } else {
       plot(df_lvl$Date, df_lvl$model, type = "l")
       graphics::points(df_lvl$Date, df_lvl$obs, col = "red")
