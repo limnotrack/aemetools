@@ -63,6 +63,8 @@
 <span>  return_indices <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  include_wlev <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  return_df <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"calib"</span>,</span>
+<span>  sa_ctrl <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fit <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -128,6 +130,11 @@ fit.</p></dd>
 
 <dt>return_df</dt>
 <dd><p>boolean; return dataframe of modelled and observed.</p></dd>
+
+
+<dt>method</dt>
+<dd><p>string; of the method of the model run. Options are c("sa",
+"calib").</p></dd>
 
 
 <dt>fit</dt>
