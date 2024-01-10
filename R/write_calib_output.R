@@ -1,6 +1,7 @@
 #' Write calibration output to file
 #'
 #' @inheritParams utils::write.csv
+#' @inheritParams DBI::dbWriteTable
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #' @importFrom duckdb duckdb
@@ -9,7 +10,7 @@
 #' @noRd
 #'
 
-write_calib_output <- function(x, file) {
+write_calib_output <- function(x, file, name) {
   type <- tools::file_ext(file)
   if ("gen" %in% names(x)) {
     gen_n <- x[1, "gen"]
@@ -30,7 +31,7 @@ write_calib_output <- function(x, file) {
   } else if (type == "db") {
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
     append <- gen_n > 1
-    DBI::dbWriteTable(con, "calib_output", as.data.frame(x),
+    DBI::dbWriteTable(con, name, as.data.frame(x),
                       overwrite = !append, append = append)
     DBI::dbDisconnect(con, shutdown = TRUE)
   }
