@@ -35,6 +35,7 @@ Imports:
     plyr,
     rdrop2 (>= 0.8.2.1),
     reshape2,
+    sensobol,
     sf,
     stars,
     stats,
