@@ -11,8 +11,6 @@
 #' columns c("model", "file", "name", "value", "min", "max", "log")
 #' @param model string; for which model. Options are c("dy_cd", "glm_aed" and
 #'  "gotm_wet")
-#' @param vars_sim vector; of variables names to be used in the calculation of
-#' model fit. Currently only supports using one variable.
 #' @param FUN_list list of functions; named according to the variables in the
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If NULL, uses mean absolute error (MAE).
@@ -42,8 +40,6 @@
 #'  * `ncore`: The number of cores to use for the calibration. This is only used
 #'  if `parallel = TRUE`. Default to `parallel::detectCores() - 1`.
 #' @inheritParams AEME::build_ensemble
-#' @param weights vector; of weights for each variable in vars_sim. Default to
-#' c(1).
 #' @param param_df dataframe; of parameters read in from a csv file. Requires
 #' the columns c("model", "file", "name", "value", "min", "max").
 #'
@@ -52,27 +48,30 @@
 #' @importFrom stats runif
 #' @importFrom FME Latinhyper
 #' @importFrom dplyr mutate
+#' @importFrom sensobol sobol_matrices
 #'
 #' @return list; ctrl which was supplied with updated arguments if missing.
 #'
 #' @export
 
 sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
-                       vars_sim = "HYD_temp", FUN_list = NULL, ctrl = NULL,
-                       weights = c(1), param_df = NULL) {
+                    FUN_list = NULL, ctrl = NULL, param_df = NULL) {
+
 
   # Check if vars_sim and weights are the same length
-  if (length(vars_sim) != length(weights))
-    stop("vars_sim and weights must be the same length")
+  if (is.null(ctrl)) {
+    stop("ctrl must be supplied")
+  }
+  vars_sim <- sapply(ctrl$vars_sim, \(v) v$var) |>
+    unique()
+  weights <- rep(1, length(vars_sim))
+  names(weights) <- vars_sim
+  # if (length(vars_sim) != length(weights))
+  #   stop("vars_sim and weights must be the same length")
 
   if (!all(vars_sim %in% names(FUN_list)))
     stop("FUN_list must have names that match vars_sim")
 
-  if (is.null(ctrl)) {
-    ctrl <- list(VTR = -Inf, NP = NA, itermax = 200, reltol = 0.07,
-                 cutoff = 0.25, mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-                 na_value = 999)
-  }
   if (is.null(ctrl$na_value)) {
     ctrl$na_value <- 999
   }
@@ -104,7 +103,7 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
   # Extract parameters for the model ----
   param <- param[param$model == model, ]
   # par_idx <- which(param$model %in% c(model))
-  obs <- AEME::observations(aeme_data)
+  # obs <- AEME::observations(aeme_data)
   # Check if there are observations for the model or just calibrating wlev
   # ctrl$use_obs <- ifelse(!is.null(obs$lake), TRUE, FALSE)
 
@@ -114,31 +113,17 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
   # ctrl$ngen <- round(ctrl$itermax / ctrl$NP)
 
 
-  # Generate parameters for running calibration
-  # best_pars <- NULL
+  # Generate parameters for sensitivity analysis ----
   if (is.null(param_df)) {
-    param_df <- FME::Latinhyper(param[, c("min", "max")],
-                                   ctrl$N)
-    # param_df <- apply(param[, c("min", "max")], 1,
-    #                      \(x) runif(ctrl$NP, x[1], x[2]))
-
+    ## Create sample matrix to compute first and total-order indices:
+    mat <- sensobol::sobol_matrices(N = ctrl$N, params = param$name)
+    param_df <- mat
+    for (i in 1:ncol(mat)) {
+      param_df[, i] <- param$min[i] + (param$max[i] - param$min[i]) * mat[, i]
+    }
     colnames(param_df) <- param$name
     param_df <- as.data.frame(param_df)
-    # gen_n <- 1
-    # tot_gen <- ctrl$ngen
-  } #else {
-    # Add check for parameters to be the same
-  #   p_chk <- param$name %in% names(param_df)
-  #   if (any(!p_chk)) {
-  #     message("Warning! Not all parameters are in supplied parameter dataframe")
-  #   }
-  #   best_pars <- param_df[param_df$fit == min(param_df$fit), ]
-  #   last_gen <- param_df[param_df$gen == max(param_df$gen), ]
-  #   param_df <- next_gen_params(param_df = last_gen, param = param,
-  #                                  ctrl = ctrl, best_pars = best_pars)
-  #   gen_n <- max(param_df$gen) + 1
-  #   tot_gen <- max(param_df$gen) + ctrl$ngen
-  # }
+  }
   if (is.null(ctrl$ncore)) {
     ctrl$ncore <- parallel::detectCores() - 1
     if (ctrl$ncore > nrow(param_df)) ctrl$ncore <- nrow(param_df)
@@ -155,13 +140,14 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     # list.files(temp_dirs[1], recursive = TRUE)
     ncores <- min((parallel::detectCores() - 1), ctrl$ncore)
     message("Running sensitivity analysis in parallel using ", ncores,
-            " cores...")
+            " cores with ", nrow(param_df), " parameter sets [",
+            format(Sys.time()), "]")
 
     cl <- parallel::makeCluster(ncores)
     on.exit(parallel::stopCluster(cl))
     varlist <- list("param", "aeme_data", "path", "model", "vars_sim",
                     "FUN_list", "mod_ctrls", "var_indices", "temp_dirs",
-                    "ctrl", "weights", "var_indices", "include_wlev")
+                    "ctrl", "weights", "var_indices", "include_wlev", "nmes")
     parallel::clusterExport(cl, varlist = varlist,
                             envir = environment())
     # message("Starting generation ", gen_n, "/", tot_gen,", ",
@@ -175,7 +161,11 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     model_out <- parallel::parLapply(cl, seq_along(param_list), \(pars, i) {
 
       path <- temp_dirs[i]
+      # Add columns to pars
       pars[[i]][["fit"]] <- NA
+      for (n in nmes) {
+        pars[[i]][[n]] <- NA
+      }
 
       # Loop through each of the parameters
       for (p in seq_len(nrow(pars[[i]]))) {
@@ -199,11 +189,11 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                                       return_indices = FALSE,
                                       include_wlev = include_wlev,
                                       fit = TRUE,
-                                      method = "sa",
+                                      method = "sa", sa_ctrl = ctrl,
                                       weights = weights)
 
-        for (v in vars_sim) {
-          pars[[i]][[v]][p] <- res[[v]]
+        for (n in nmes) {
+          pars[[i]][[n]][p] <- res[[n]]
         }
 
         if (ctrl$na_value %in% unlist(res)) {
@@ -221,22 +211,25 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
     g1 <- do.call(rbind, model_out)
     out_df <- apply(g1, 2, signif, digits = 6)
-    write_calib_output(x = out_df, file = file.path(path, ctrl$out_file))
+    write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
+                       name = "sa_output")
 
   } else {
     # Run in serial ----
-    # message("Starting generation ", gen_n, "/", tot_gen,", ",
-    #         ctrl$NP, " members. ",
-    #         "[", format(Sys.time()), "]")
+    message("Running sensitivity analysis in serial with ", nrow(param_df),
+            " parameter sets [", format(Sys.time()), "]")
+
     print(data.frame(rbind(signif(apply(param_df, 2, mean), 4),
                            signif(apply(param_df, 2, median), 4),
                            signif(apply(param_df, 2, sd), 4)),
                      row.names = c("mean", "median", "sd")))
+    nmes <- names(ctrl$vars_sim)
     model_out <- lapply(seq_along(param_list), \(pars, i) {
 
+      # Add columns to pars
       pars[[i]][["fit"]] <- NA
-      for (v in vars_sim) {
-        pars[[i]][[v]] <- NA
+      for (n in nmes) {
+        pars[[i]][[n]] <- NA
       }
 
       # Loop through each of the parameters
@@ -260,11 +253,11 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                            var_indices = var_indices,
                            return_indices = FALSE,
                            include_wlev = include_wlev,
-                           fit = TRUE, method = "sa",
+                           fit = TRUE, method = "sa", sa_ctrl = ctrl,
                            weights = weights)
 
-        for (v in vars_sim) {
-          pars[[i]][[v]][p] <- res[[v]]
+        for (n in nmes) {
+          pars[[i]][[n]][p] <- res[[n]]
         }
 
         if (ctrl$na_value %in% unlist(res)) {
@@ -279,7 +272,8 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
         # print(pars[[i]][p, ])
       }
       out_df <- apply(pars[[i]], 2, signif, digits = 6)
-      write_calib_output(x = out_df, file.path(path, ctrl$out_file))
+      write_calib_output(x = out_df, file.path(path, ctrl$out_file),
+                         name = "sa_output")
 
       return(pars[[i]])
     }, pars = param_list)
