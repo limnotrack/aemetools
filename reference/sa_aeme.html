@@ -61,10 +61,8 @@ to run quicker.</p>
 <span>  <span class="va">param</span>,</span>
 <span>  <span class="va">model</span>,</span>
 <span>  <span class="va">mod_ctrls</span>,</span>
-<span>  vars_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>,</span>
 <span>  FUN_list <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ctrl <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
 <span>  param_df <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -92,11 +90,6 @@ columns c("model", "file", "name", "value", "min", "max", "log")</p></dd>
 <dt>mod_ctrls</dt>
 <dd><p>dataframe; of configuration loaded from
 "mod_ctrls.csv".</p></dd>
-
-
-<dt>vars_sim</dt>
-<dd><p>vector; of variables names to be used in the calculation of
-model fit. Currently only supports using one variable.</p></dd>
 
 
 <dt>FUN_list</dt>
@@ -131,11 +124,6 @@ Defaults to "results.csv"</p></li>
 </ol><ul><li><p><code>ncore</code>: The number of cores to use for the calibration. This is only used
 if <code>parallel = TRUE</code>. Default to <code>parallel::detectCores() - 1</code>.</p></li>
 </ul></dd>
-
-
-<dt>weights</dt>
-<dd><p>vector; of weights for each variable in vars_sim. Default to
-c(1).</p></dd>
 
 
 <dt>param_df</dt>
