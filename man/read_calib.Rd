@@ -4,7 +4,7 @@
 \alias{read_calib}
 \title{Read calibration output}
 \usage{
-read_calib(ctrl, model, path = ".")
+read_calib(ctrl, model, name = "calib_output", path = ".")
 }
 \arguments{
 \item{ctrl}{list; of controls for calibration function.

@@ -14,7 +14,7 @@
 #' @return A data frame with the calibration results.
 #' @export
 
-read_calib <- function(ctrl, model, path = ".") {
+read_calib <- function(ctrl, model, name = "calib_output", path = ".") {
 
   file <- file.path(path, ctrl$out_file)
   type <- tools::file_ext(file)
@@ -23,7 +23,7 @@ read_calib <- function(ctrl, model, path = ".") {
     out <- utils::read.csv(file)
   } else if (type == "db") {
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
-    out <- DBI::dbReadTable(con, "calib_output")
+    out <- DBI::dbReadTable(con, name)
     DBI::dbDisconnect(con, shutdown = TRUE)
   }
   ngen <- ceiling(nrow(out) / ctrl$NP)
