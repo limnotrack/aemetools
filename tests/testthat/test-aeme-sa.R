@@ -1,4 +1,4 @@
-test_that("can calibrate temperature for AEME-DYRESM in parallel", {
+test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
@@ -35,28 +35,31 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-
-  ctrl <- list(N = 10, ncore = 2L, na_value = 999, parallel = TRUE,
-               out_file = "results.csv",
-               HYD_temp = list(month = c(10:12, 1:3),
-                               depths = c(0, 2)
+  ctrl <- list(N = 2^3, ncore = 2L, na_value = 999, parallel = TRUE,
+               out_file = "results.db",
+               vars_sim = list(
+                 surf_temp = list(var = "HYD_temp",
+                                  month = c(10:12, 1:3),
+                                  depths = c(0, 2)
+                 ),
+                 bot_temp = list(var = "HYD_temp",
+                                 month = c(10:12, 1:3),
+                                 depths = c(10, 13)
+                 )
                )
   )
 
-  vars_sim <- c("HYD_temp")
-  weights <- c("HYD_temp" = 1)
-
   # Run sensitivity analysis AEME model
-  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = aeme_parameters,
+  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
                   model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
-                  vars_sim = vars_sim, FUN_list = FUN_list, weights = weights)
+                  FUN_list = FUN_list)
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  sa_res <- read_sa(ctrl = ctrl, model = model, path = path)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.data.frame(sa_res$df))
 })
 
-test_that("can calibrate temperature for AEME-GLM in parallel", {
+test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
 
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
@@ -84,6 +87,8 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
   testthat::expect_true(file_chk)
 
   utils::data("aeme_parameters", package = "aemetools")
+  param <- aeme_parameters |>
+    dplyr::filter(file != "wdr")
 
   # Function to calculate fitness
   fit <- function(df) {
@@ -92,27 +97,31 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- list(N = 10, ncore = 2L, na_value = 999, parallel = F,
-               out_file = "results.csv",
-               HYD_temp = list(month = c(10:12, 1:3),
-                               depths = c(0, 2)
+  ctrl <- list(N = 2^3, ncore = 2L, na_value = 999, parallel = TRUE,
+               out_file = "results.db",
+               vars_sim = list(
+                 surf_temp = list(var = "HYD_temp",
+                                  month = c(10:12, 1:3),
+                                  depths = c(0, 2)
+                                  ),
+                 bot_temp = list(var = "HYD_temp",
+                                 month = c(10:12, 1:3),
+                                 depths = c(10, 13)
+                                 )
+                 )
                )
-  )
-
-  vars_sim <- c("HYD_temp")
-  weights <- c("HYD_temp" = 1)
 
   # Run sensitivity analysis AEME model
-  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = aeme_parameters,
+  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
                   model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
-                  vars_sim = vars_sim, FUN_list = FUN_list, weights = weights)
+                  FUN_list = FUN_list)
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  sa_res <- read_sa(ctrl = ctrl, model = model, path = path)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.data.frame(sa_res$df))
 })
 
-test_that("can calibrate temperature for AEME-GOTM in parallel", {
+test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
 
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
@@ -148,23 +157,26 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-
-  ctrl <- list(N = 10, ncore = 2L, na_value = 999, parallel = TRUE,
-               out_file = "results.csv",
-               HYD_temp = list(month = c(10:12, 1:3),
-                               depths = c(0, 2)
+  ctrl <- list(N = 2^3, ncore = 2L, na_value = 999, parallel = TRUE,
+               out_file = "results.db",
+               vars_sim = list(
+                 surf_temp = list(var = "HYD_temp",
+                                  month = c(10:12, 1:3),
+                                  depths = c(0, 2)
+                 ),
+                 bot_temp = list(var = "HYD_temp",
+                                 month = c(10:12, 1:3),
+                                 depths = c(10, 13)
+                 )
                )
   )
 
-  vars_sim <- c("HYD_temp")
-  weights <- c("HYD_temp" = 1)
-
   # Run sensitivity analysis AEME model
-  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = aeme_parameters,
+  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
                   model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
-                  vars_sim = vars_sim, FUN_list = FUN_list, weights = weights)
+                  FUN_list = FUN_list)
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  sa_res <- read_sa(ctrl = ctrl, model = model, path = path)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.data.frame(sa_res$df))
 })
