@@ -54,8 +54,14 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
 
   # Create a list for the return values
   return_list <- list()
-  for (v in vars_sim) {
-    return_list[[v]] <- na_value
+  if (method == "calib") {
+    for (v in vars_sim) {
+      return_list[[v]] <- na_value
+    }
+  } else if (method == "sa") {
+    for (n in names(sa_ctrl$vars_sim)) {
+      return_list[[n]] <- na_value
+    }
   }
 
   on.exit({
@@ -154,14 +160,28 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
 
       # Indices for sensitivity analysis
       if (method == "sa") {
-        var_indices <- lapply(vars_sim, \(v) {
+
+        nmes <- names(sa_ctrl$var)
+        names(nmes) <- nmes
+        vars_sim <- sapply(sa_ctrl$vars_sim, \(v) v$var)
+
+        # if (any(!vars_sim %in% names(sa_ctrl))) {
+        #   stop(strwrap(paste0("Variables: ",
+        #                       vars_sim[!vars_sim %in% names(sa_ctrl)],
+        #                       "; are not in sa_ctrl.\nAdd to the ctrl with
+        #                       sa_ctrl[['var']] <- list(month = c(1, 2, 3),
+        #                       depths = c(0, 1, 2))"),
+        #                width = 80))
+        # }
+        var_indices <- lapply(nmes, \(n) {
           obs_v <- obs$lake |>
-            dplyr::filter(var == v & Date %in% dates)
-          deps <- seq(min(sa_ctrl[[v]][["depths"]]),
-                      max(sa_ctrl[[v]][["depths"]]), by = 0.5)
+            dplyr::filter(var == sa_ctrl[["vars_sim"]][[n]][["var"]] &
+                            Date %in% dates)
+          deps <- seq(min(sa_ctrl[["vars_sim"]][[n]][["depths"]]),
+                      max(sa_ctrl[["vars_sim"]][[n]][["depths"]]), by = 0.5)
           df <- data.frame(dates = dates, month = lubridate::month(dates))
 
-          date_idx <- which(df$month %in% sa_ctrl[[v]]$month)
+          date_idx <- which(df$month %in% sa_ctrl[["vars_sim"]][[n]][["month"]])
           list(time = date_idx, depths = deps, dates = dates[date_idx])
         })
       } else if (method == "calib") {
@@ -184,63 +204,127 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
 
     # Extract model variables ----
     if (length(vars_sim) > 0) {
-      vars_out <- lapply(vars_sim, \(v) {
+      if (method == "calib") {
+        vars_out <- lapply(vars_sim, \(v) {
 
-        v1 <- ifelse(model == "dy_cd",
-                     paste0("dyresm", key_naming[key_naming$name %in% v, model],
-                            "_Var"),
-                     key_naming[key_naming$name %in% v, model])
+          v1 <- ifelse(model == "dy_cd",
+                       paste0("dyresm", key_naming[key_naming$name %in% v, model],
+                              "_Var"),
+                       key_naming[key_naming$name %in% v, model])
 
-        this.var <- ncdf4::ncvar_get(nc, v1)
-        if(model == "dy_cd") {
-          this.var <- this.var[nrow(this.var):1, ]
-        }
-
-        if(length(var_indices[[v]][["depths"]]) == 0 |
-           length(var_indices[[v]][["time"]]) == 0 |
-           is.null(ncol(this.var))) {
-          return(return_list)
-        }
-
-        conv.fact <- ifelse(model == "glm_aed",
-                            key_naming[key_naming$name == v, "conversion_aed"],
-                            1)
-
-        na_idx <- which(apply(this.var, 2, \(x) all(is.na(x))))
-
-        out <- sapply(var_indices[[v]][["time"]], FUN = \(i) {
-          if (i > ncol(this.var)) {
-            return(rep(na_value, length(var_indices[[v]][["depths"]])))
-          }
-          if (all(is.na(this.var[, i])) | sum(!is.na(this.var[, i])) == 1) {
-            return(rep(na_value, length(var_indices[[v]][["depths"]])))
+          this.var <- ncdf4::ncvar_get(nc, v1)
+          if(model == "dy_cd") {
+            this.var <- this.var[nrow(this.var):1, ]
           }
 
-          if (model %in% c("glm_aed", "dy_cd")) {
-            z <- c(0, lyrs[1:NS[i], i])
-            z <- max(z) - z
-            elevs_mid <- stats::approx(z, n = length(z)*2 - 1)$y # extract mid layer depth
-            elevs_mid <- elevs_mid[-which(elevs_mid %in% z)]
-            stats::approx(x = elevs_mid, y = this.var[1:NS[i], i],
-                          xout = var_indices[[v]][["depths"]], rule = 2)$y
-          } else if(model == "gotm_wet") {
-            stats::approx(x = z[, i], y = this.var[, i],
-                          xout = var_indices[[v]][["depths"]], rule = 2)$y
+          if(length(var_indices[[v]][["depths"]]) == 0 |
+             length(var_indices[[v]][["time"]]) == 0 |
+             is.null(ncol(this.var))) {
+            return(return_list)
           }
+
+          conv.fact <- ifelse(model == "glm_aed",
+                              key_naming[key_naming$name == v, "conversion_aed"],
+                              1)
+
+          na_idx <- which(apply(this.var, 2, \(x) all(is.na(x))))
+
+          out <- sapply(var_indices[[v]][["time"]], FUN = \(i) {
+            if (i > ncol(this.var)) {
+              return(rep(na_value, length(var_indices[[v]][["depths"]])))
+            }
+            if (all(is.na(this.var[, i])) | sum(!is.na(this.var[, i])) == 1) {
+              return(rep(na_value, length(var_indices[[v]][["depths"]])))
+            }
+
+            if (model %in% c("glm_aed", "dy_cd")) {
+              z <- c(0, lyrs[1:NS[i], i])
+              z <- max(z) - z
+              elevs_mid <- stats::approx(z, n = length(z)*2 - 1)$y # extract mid layer depth
+              elevs_mid <- elevs_mid[-which(elevs_mid %in% z)]
+              stats::approx(x = elevs_mid, y = this.var[1:NS[i], i],
+                            xout = var_indices[[v]][["depths"]], rule = 2)$y
+            } else if(model == "gotm_wet") {
+              stats::approx(x = z[, i], y = this.var[, i],
+                            xout = var_indices[[v]][["depths"]], rule = 2)$y
+            }
+          })
+          if ("numeric" %in% class(out)) {
+            out <- matrix(out, nrow = 1, ncol = length(out))
+          }
+          out <- out * conv.fact
+          rownames(out) <- var_indices[[v]][["depths"]]
+          colnames(out) <- as.character(var_indices[[v]][["dates"]])
+          out2 <- reshape2::melt(out, value.name = "model",
+                                 varnames = c("depth_mid", "Date"))
+          out2$Date <- as.Date(out2$Date)
+          out2$var <- v
+          return(out2)
         })
-        if ("numeric" %in% class(out)) {
-          out <- matrix(out, nrow = 1, ncol = length(out))
-        }
-        out <- out * conv.fact
-        rownames(out) <- var_indices[[v]][["depths"]]
-        colnames(out) <- as.character(var_indices[[v]][["dates"]])
-        out2 <- reshape2::melt(out, value.name = "model",
-                               varnames = c("depth_mid", "Date"))
-        out2$Date <- as.Date(out2$Date)
-        out2$var <- v
-        return(out2)
-      })
-      # Filter(Negate(is.null), vars_out)
+      } else if (method == "sa") {
+        nmes <- names(sa_ctrl$var)
+        names(nmes) <- nmes
+        vars_out <- lapply(nmes, \(n) {
+
+          v1 <- ifelse(model == "dy_cd",
+                       paste0("dyresm", key_naming[key_naming$name %in%
+                                                     sa_ctrl$vars_sim[[n]]$var,
+                                                   model],
+                              "_Var"),
+                       key_naming[key_naming$name %in%
+                                    sa_ctrl$vars_sim[[n]]$var, model])
+
+          this.var <- ncdf4::ncvar_get(nc, v1)
+          if (model == "dy_cd") {
+            this.var <- this.var[nrow(this.var):1, ]
+          }
+
+          if(length(var_indices[[n]][["depths"]]) == 0 |
+             length(var_indices[[n]][["time"]]) == 0 |
+             is.null(ncol(this.var))) {
+            return(return_list)
+          }
+
+          conv.fact <- ifelse(model == "glm_aed",
+                              key_naming[key_naming$name == sa_ctrl$vars_sim[[n]]$var, "conversion_aed"],
+                              1)
+
+          na_idx <- which(apply(this.var, 2, \(x) all(is.na(x))))
+
+          out <- sapply(var_indices[[n]][["time"]], FUN = \(i) {
+            if (i > ncol(this.var)) {
+              return(rep(na_value, length(var_indices[[n]][["depths"]])))
+            }
+            if (all(is.na(this.var[, i])) | sum(!is.na(this.var[, i])) == 1) {
+              return(rep(na_value, length(var_indices[[n]][["depths"]])))
+            }
+
+            if (model %in% c("glm_aed", "dy_cd")) {
+              z <- c(0, lyrs[1:NS[i], i])
+              z <- max(z) - z
+              elevs_mid <- stats::approx(z, n = length(z)*2 - 1)$y # extract mid layer depth
+              elevs_mid <- elevs_mid[-which(elevs_mid %in% z)]
+              stats::approx(x = elevs_mid, y = this.var[1:NS[i], i],
+                            xout = var_indices[[n]][["depths"]], rule = 2)$y
+            } else if(model == "gotm_wet") {
+              stats::approx(x = z[, i], y = this.var[, i],
+                            xout = var_indices[[n]][["depths"]], rule = 2)$y
+            }
+          })
+          if ("numeric" %in% class(out)) {
+            out <- matrix(out, nrow = 1, ncol = length(out))
+          }
+          out <- out * conv.fact
+          rownames(out) <- var_indices[[n]][["depths"]]
+          colnames(out) <- as.character(var_indices[[n]][["dates"]])
+          out2 <- reshape2::melt(out, value.name = "model",
+                                 varnames = c("depth_mid", "Date"))
+          out2$Date <- as.Date(out2$Date)
+          out2$var <- sa_ctrl$vars_sim[[n]]$var
+          out2$name <- n
+          return(out2)
+        })
+      }
 
       mod_out <- do.call(rbind, vars_out)
       if (ncol(mod_out) == 1 & nrow(obs$lake) > 0) {
@@ -303,16 +387,31 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
       if (return_df) {
         return(tst)
       } else {
-        vars_present <- unique(tst$var)
-        names(vars_present) <- vars_present
-        res <- lapply(vars_present, \(v) {
-          sub <- tst |>
-            dplyr::filter(var == v)
-          FUN_list[[v]](sub)
-        })
-        for (v in names(res)) {
-          return_list[[v]] <- res[[v]]
+
+        if (method == "calib") {
+          vars_present <- unique(tst$var)
+          names(vars_present) <- vars_present
+          res <- lapply(vars_present, \(v) {
+            sub <- tst |>
+              dplyr::filter(var == v)
+            FUN_list[[v]](sub)
+          })
+          for (v in names(res)) {
+            return_list[[v]] <- res[[v]]
+          }
+        } else if (method == "sa") {
+          nmes_present <- unique(tst$name)
+          names(nmes_present) <- nmes_present
+          res <- lapply(nmes_present, \(n) {
+            sub <- tst |>
+              dplyr::filter(name == n)
+            FUN_list[[sa_ctrl$vars_sim[[n]]$var]](sub)
+          })
+          for (n in names(res)) {
+            return_list[[n]] <- res[[n]]
+          }
         }
+
         if (include_wlev) {
           # Mutiply residuals by the mean difference in water level
           return_list[["LKE_lvlwtr"]] <- FUN_list$LKE_lvlwtr(df_lvl) *
