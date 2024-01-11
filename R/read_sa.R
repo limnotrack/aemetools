@@ -2,6 +2,7 @@
 #'
 #' @inheritParams calib_aeme
 #' @inheritParams AEME::build_ensemble
+#' @inheritParams sensobol::sobol_indices
 #'
 #' @importFrom dplyr case_when left_join mutate select summarise group_by
 #' @importFrom tidyr pivot_longer
@@ -16,7 +17,8 @@
 #' the sobol indices for each variable.
 #' @export
 
-read_sa <- function(ctrl, model, name = "sa_output", path = ".") {
+read_sa <- function(ctrl, model, name = "sa_output", path = ".", R = 2^3,
+                    boot = TRUE) {
 
   file <- file.path(path, ctrl$out_file)
   type <- tools::file_ext(file)
@@ -53,7 +55,13 @@ read_sa <- function(ctrl, model, name = "sa_output", path = ".") {
   sobol_indices <- lapply(vars, function(v) {
     Y <- out[[v]]
     # Y[Y > 100] <- 999
-    sensobol::sobol_indices(Y = Y, N = N, params = params)
+    sensobol::sobol_indices(Y = Y, N = N, params = params, boot = boot, R = R)
+  })
+
+  sobol_dummy_indices <- lapply(vars, function(v) {
+    Y <- out[[v]]
+    # Y[Y > 100] <- 999
+    sensobol::sobol_dummy(Y = Y, N = N, params = params, boot = boot, R = R)
   })
 
 
@@ -78,6 +86,7 @@ read_sa <- function(ctrl, model, name = "sa_output", path = ".") {
     model = model) |>
     dplyr::select(model, index, parameter, value, dplyr::everything())
 
-  list(df = df, sobol_indices = sobol_indices)
+  list(df = df, sobol_indices = sobol_indices,
+       sobol_dummy_indices = sobol_dummy_indices)
 }
 

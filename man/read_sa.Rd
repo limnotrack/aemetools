@@ -4,7 +4,7 @@
 \alias{read_sa}
 \title{Read calibration output}
 \usage{
-read_sa(ctrl, model, name = "sa_output", path = ".")
+read_sa(ctrl, model, name = "sa_output", path = ".", R = 2^3, boot = TRUE)
 }
 \arguments{
 \item{ctrl}{list; of controls for calibration function.
@@ -43,6 +43,11 @@ if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
 "gotm_wet")}
 
 \item{path}{filepath; where input files are located relative to `config`.}
+
+\item{R}{Positive integer, number of bootstrap replicas. Default is NULL.}
+
+\item{boot}{Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
+estimates. Default is \code{boot = FALSE}.}
 }
 \value{
 A list with thedata frame with the sensitivity analysis results and
