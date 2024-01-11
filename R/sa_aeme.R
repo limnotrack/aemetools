@@ -139,6 +139,7 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     temp_dirs <- make_temp_dir(model, lake_dir, n = ctrl$ncore)
     # list.files(temp_dirs[1], recursive = TRUE)
     ncores <- min((parallel::detectCores() - 1), ctrl$ncore)
+    nmes <- names(ctrl$vars_sim)
     message("Running sensitivity analysis in parallel using ", ncores,
             " cores with ", nrow(param_df), " parameter sets [",
             format(Sys.time()), "]")
