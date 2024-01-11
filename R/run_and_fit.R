@@ -91,6 +91,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
     lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
     inp <- AEME::input(aeme_data)
     obs <- AEME::observations(aeme_data)
+    aeme_time <- AEME::time(aeme_data)
     if (!is.null(obs$lake))
       obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
 
@@ -155,6 +156,9 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
           as.Date()
         dates <- seq.Date(date.start, by = 1, length.out = length(out.steps))
       }
+
+      # Trim off spinup time
+      dates <- dates[dates >= aeme_time$start & dates <= aeme_time$stop]
 
       names(vars_sim) <- vars_sim
 
