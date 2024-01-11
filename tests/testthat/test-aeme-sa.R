@@ -119,6 +119,21 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   sa_res <- read_sa(ctrl = ctrl, model = model, path = path)
 
   testthat::expect_true(is.data.frame(sa_res$df))
+
+  p1 <- plot_uncertainty(sa_res)
+  testthat::expect_true(ggplot2::is.ggplot(p1))
+
+  p2 <- plot_scatter(sa_res)
+  testthat::expect_true(ggplot2::is.ggplot(p2))
+
+  pl1 <- plot_multiscatter(sa_res)
+  testthat::expect_true(is.list(pl1))
+  testthat::expect_true(ggplot2::is.ggplot(pl1[[1]]))
+
+  pl2 <- plot_sobol(sa_res)
+  testthat::expect_true(is.list(pl2))
+  testthat::expect_true(ggplot2::is.ggplot(pl2[[1]]))
+
 })
 
 test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
