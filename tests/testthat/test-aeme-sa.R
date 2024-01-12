@@ -27,6 +27,8 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
   testthat::expect_true(file_chk)
 
   utils::data("aeme_parameters", package = "aemetools")
+  param <- aeme_parameters |>
+    dplyr::filter(file != "wdr")
 
   # Function to calculate fitness
   fit <- function(df) {
@@ -164,6 +166,8 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   testthat::expect_true(file_chk)
 
   utils::data("aeme_parameters", package = "aemetools")
+  param <- aeme_parameters |>
+    dplyr::filter(file != "wdr")
 
   # Function to calculate fitness
   fit <- function(df) {
