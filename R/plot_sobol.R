@@ -9,7 +9,7 @@ plot_sobol <- function(sa) {
 
   lapply(names(sa$sobol_indices), \(v) {
     sensobol:::plot.sensobol(sa$sobol_indices[[v]],
-                             dummy = sa_res$sobol_dummy_indices[[v]]) +
+                             dummy = sa$sobol_dummy_indices[[v]]) +
       ggplot2::ggtitle(v)
   })
 }
