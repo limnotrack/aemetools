@@ -42,11 +42,11 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
                vars_sim = list(
                  surf_temp = list(var = "HYD_temp",
                                   month = c(10:12, 1:3),
-                                  depths = c(0, 2)
+                                  depth_range = c(0, 2)
                  ),
                  bot_temp = list(var = "HYD_temp",
                                  month = c(10:12, 1:3),
-                                 depths = c(10, 13)
+                                 depth_range = c(10, 13)
                  )
                )
   )
@@ -104,11 +104,11 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
                vars_sim = list(
                  surf_temp = list(var = "HYD_temp",
                                   month = c(10:12, 1:3),
-                                  depths = c(0, 2)
+                                  depth_range = c(0, 2)
                                   ),
                  bot_temp = list(var = "HYD_temp",
                                  month = c(10:12, 1:3),
-                                 depths = c(10, 13)
+                                 depth_range = c(10, 13)
                                  )
                  )
                )
@@ -181,11 +181,11 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
                vars_sim = list(
                  surf_temp = list(var = "HYD_temp",
                                   month = c(10:12, 1:3),
-                                  depths = c(0, 2)
+                                  depth_range = c(0, 2)
                  ),
                  bot_temp = list(var = "HYD_temp",
                                  month = c(10:12, 1:3),
-                                 depths = c(10, 13)
+                                 depth_range = c(10, 13)
                  )
                )
   )
