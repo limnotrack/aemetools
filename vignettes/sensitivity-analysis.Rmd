@@ -1,0 +1,204 @@
+---
+title: "Sensitivity Analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sensitivity Analysis}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 80
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(printr)
+unlink("sa-test", recursive = TRUE, force = TRUE)
+```
+
+## Setup
+
+First, we will load the `AEME` and `aemetools` package:
+
+```{r setup, message = FALSE, warning=FALSE}
+library(AEME)
+library(aemetools)
+```
+
+Create a folder for running the example calibration setup.
+
+```{r create-folder}
+
+tmpdir <- "sa-test"
+dir.create(tmpdir, showWarnings = FALSE)
+aeme_dir <- system.file("extdata/lake/", package = "AEME")
+# Copy files from package into tempdir
+file.copy(aeme_dir, tmpdir, recursive = TRUE)
+path <- file.path(tmpdir, "lake")
+
+list.files(path, recursive = TRUE)
+```
+
+## Build AEME ensemble
+
+Using the `AEME` functions, we will build the AEME model setup. For this
+example, we will use the `glm_aed` model. The `build_ensemble` function will
+
+```{r build-aeme-example, warning=FALSE, message=FALSE}
+
+aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+model <- c("glm_aed")
+aeme_data <- build_ensemble(path = path, aeme_data = aeme_data,
+                            model = model, mod_ctrls = mod_ctrls,
+                            inf_factor = inf_factor, ext_elev = 5,
+                            use_bgc = TRUE)
+
+```
+
+## Load parameters to be used for the sensitivity analysis
+
+Parameters are loaded from the `aemetools` package within the `aeme_parameters`
+dataframe. The parameters are stored in a data frame with the following columns:
+
+-   `model`: The model name
+
+-   `file`: The file name of the model parameter file
+
+-   `name`: The parameter name
+
+-   `value`: The parameter value
+
+-   `min`: The minimum value of the parameter
+
+-   `max`: The maximum value of the parameter
+
+Parameters to be used for the calibration. (man)
+
+```{r}
+#| label: load-parameters
+#| tbl-captions: "Parameters to be used for the calibration."
+utils::data("aeme_parameters", package = "aemetools")
+param <- aeme_parameters |>
+  dplyr::filter(file != "wdr")
+param
+```
+
+## Sensitivity analysis setup
+
+### Define fitness function
+
+First, we will define a function for the sensitivity analysis function to use to
+calculate the sensitivity of the model. This function takes a dataframe as an
+argument. The dataframe contains the observed data (`obs`) and the modelled data
+(`model`). The function should return a single value.
+
+Here we use the model mean.
+
+```{r define-fitness-function}
+# Function to calculate fitness
+fit <- function(df) {
+  mean(df$model)
+}
+```
+
+Different functions can be applied to different variables. For example, we can
+use the mean for water temperature and median for chloophyll-a.
+
+```{r define-fitness-function-2}
+# Function to calculate fitness
+fit2 <- function(df) {
+  median(df$model)
+}
+```
+
+Then these would be combined into a named list of functions which will be passed
+to the `sa_aeme` function. They are named according to the target variable.
+
+```{r define-function-list}
+
+# Create list of functions
+FUN_list <- list(HYD_temp = fit, PHY_tchla = fit2)
+
+```
+
+### Define control parameters
+
+Next, we will define the control parameters for the sensitivity analysis. The
+control parameters are passed to the `sa_aeme` function. The control parameters
+are as follows:
+
+-   `N`: The initial sample size of the base sample matrix.
+
+-   `ncore`: The number of cores to use for the calibration. This is only used
+    if parallel = `TRUE`. Default to `parallel::detectCores() - 1.`
+
+-   `na_value`: value to replace NA value when returned.
+
+-   `parallel`: Logical value. If `TRUE`, the sensitivity analysis will be run
+    in parallel. If `FALSE`, it will be run in series.
+
+-   `out_file`: A character string naming a file for writing. Currently it can
+    write to a .csv file or a database (.db; using the duckDB package) file. If
+    writing to a database, it creates a table named "sa_output".
+
+-   `vars_sim`: A named list of output variables for sensitivity analysis. The
+    name is user defined but each list must contain:
+
+    -   `var`: The variable name to use for the sensitivity analysis.
+
+    -   `month`: A vector of months to use for the sensitivity analysis.
+
+    -   `depth_range`: A vector of length 2 with the minimum and maximum depth
+        range to use for the sensitivity analysis.
+
+Here is an example for examining surface temperature (surf_temp) in the months
+December to February, bottom temperature (bot_temp), (10 - 13 m) and also total
+chlorophyll-a (PHY_tchla) at the surface (0 - 2 m) during the summer period.
+
+```{r define-control-parameters}
+ctrl <- list(N = 2^4, ncore = 2L, na_value = 999, parallel = TRUE,
+             out_file = "results.csv",
+             vars_sim = list(
+               surf_temp = list(var = "HYD_temp",
+                                month = c(12, 1:2),
+                                depth_range = c(0, 2) # change to depth_range
+               ),
+               bot_temp = list(var = "HYD_temp",
+                               month = c(12, 1:2),
+                               depth_range = c(10, 13)
+               ),
+               surf_chla = list(var = "PHY_tchla",
+                              month = c(12, 1:2),
+                              depth_range = c(0, 2)
+               )
+             )
+)
+```
+
+## Run sensitivity analysis
+
+Once we have defined the fitness function, control parameters and variables, we
+can run the sensitivity analysis. The `sa_aeme` function takes the following
+arguments:
+
+```{r sa-aeme-args, tidy=FALSE, printr.help.sections=c('arguments'), comment=''}
+?sa_aeme
+```
+
+
+The `sa_aeme` function writes the results to the file specified.  The 
+`sa_aeme` function returns the `ctrl` object with any updated values.
+
+```{r run-sensitivity-analysis, cache=FALSE}
+# Run sensitivity analysis AEME model
+  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
+                  model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+                  FUN_list = FUN_list)
+
+```
