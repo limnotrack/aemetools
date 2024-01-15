@@ -158,7 +158,8 @@ mae <- function(df) {
 ```
 
 Then these would be combined into a named list of functions which will be 
-passed to the `calib_aeme` function.
+passed to the `calib_aeme` function. They are named according to the target
+variable.
 
 ```{r define-function-list}
 
