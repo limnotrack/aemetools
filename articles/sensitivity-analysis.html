@@ -403,56 +403,63 @@ to calculate model fit. If NULL, uses mean absolute error (MAE).</p>
 <tr>
 <td><code id="sa_aeme_:_ctrl">ctrl</code></td>
 <td>
-<p>list; of controls for calibration function.
+<p>list; of controls for calibration function. The control
+parameters are as follows:
 </p>
 
 <ul>
-<li> <p><code>VTR</code> Value to be reached. The optimization process will stop if
-either the maximum number of iterations itermax is reached or the best
-parameter vector bestmem has found a value fn(bestmem) &lt;= VTR. Default to
--Inf.
+<li> <p><code>N</code>: The initial sample size of the base sample matrix.
 </p>
 </li>
-<li> <p><code>NP</code> number of population members. Defaults to NA; if the user does not
-change the value of NP from NA it is reset as
-<code>10 * sum(param$model == model)</code>. For many  problems it is best to set NP
-to be at least 10 times the length of the parameter vector.
+<li> <p><code>ncore</code>: The number of cores to use for the calibration. This is only
+used if parallel = <code>TRUE</code>. Default to <code>parallel::detectCores() - 1.</code>
 </p>
 </li>
-<li> <p><code>itermax</code> the maximum iteration (population generation) allowed.
-Default is 200.
+<li> <p><code>na_value</code>: value to replace NA value when returned.
 </p>
 </li>
-<li> <p><code>reltol</code> relative convergence tolerance. The algorithm stops if it is
-unable to reduce the value by a factor of <code>reltol * (abs(val) + reltol)</code>.
-Default = 0.07
+<li> <p><code>parallel</code>: Logical value. If <code>TRUE</code>, the sensitivity analysis will be
+run in parallel. If <code>FALSE</code>, it will be run in series.
 </p>
 </li>
-<li> <p><code>cutoff</code>: The quantile cutoff used to select the parents for the next
-generation. For example, if <code>cutoff = 0.25</code>, the best 25% of the population
-will be used as parents for the next generation.
+<li> <p><code>out_file</code>: A character string naming a file for writing. Currently it
+can write to a .csv file or a database (.db; using the duckDB package)
+file. If writing to a database, it creates a table named "sa_output".
 </p>
 </li>
-<li> <p><code>mutate</code> fraction of population to undergo mutation (0-1).
+<li> <p><code>vars_sim</code>: A named list of output variables for sensitivity analysis.
+The name is user defined but each list must contain:
+</p>
+
+<ul>
+<li> <p><code>var</code>: The variable name to use for the sensitivity analysis.
 </p>
 </li>
-<li> <p><code>parallel</code> boolean; run calibration in parallel. Default to TRUE
+<li> <p><code>month</code>: A vector of months to use for the sensitivity analysis.
 </p>
 </li>
-<li> <p><code>out_file</code> filepath; to csv for calibration output to be written to.
-Defaults to "results.csv"
-</p>
-</li>
-<li> <p><code>na_value</code> value to replace NA values with in observations. Default to
+<li> <p><code>depth_range</code>: A vector of length 2 with the minimum and maximum depth
+range to use for the sensitivity analysis.
 </p>
 </li>
 </ul>
-<ol><li> 
-</li></ol>
-<ul><li> <p><code>ncore</code>: The number of cores to use for the calibration. This is only used
-if <code>parallel = TRUE</code>. Default to <code>parallel::detectCores() - 1</code>.
+</li>
+<li>
+<p> Second step.
 </p>
-</li></ul>
+
+<ul>
+<li>
+<p> Substep 1.
+</p>
+</li>
+<li>
+<p> Substep 2.
+</p>
+</li>
+</ul>
+</li>
+</ul>
 </td>
 </tr>
 <tr>
@@ -473,14 +480,14 @@ specified. The <code>sa_aeme</code> function returns the
 <span>  <span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sa_aeme.html">sa_aeme</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, path <span class="op">=</span> <span class="va">path</span>, param <span class="op">=</span> <span class="va">param</span>,</span>
 <span>                  model <span class="op">=</span> <span class="va">model</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>,</span>
 <span>                  FUN_list <span class="op">=</span> <span class="va">FUN_list</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for modelled variables [2024-01-15 04:13:38]</span></span>
-<span><span class="co">#&gt; Complete! [2024-01-15 04:13:43]</span></span>
-<span><span class="co">#&gt; Running sensitivity analysis in parallel using 1 cores with 80 parameter sets [2024-01-15 04:13:43]</span></span>
+<span><span class="co">#&gt; Extracting indices for modelled variables [2024-01-15 04:16:05]</span></span>
+<span><span class="co">#&gt; Complete! [2024-01-15 04:16:11]</span></span>
+<span><span class="co">#&gt; Running sensitivity analysis in parallel using 1 cores with 80 parameter sets [2024-01-15 04:16:11]</span></span>
 <span><span class="co">#&gt;        light.Kw MET_wndspd MET_radswd</span></span>
 <span><span class="co">#&gt; mean      2.715     0.9960     1.0050</span></span>
 <span><span class="co">#&gt; median    2.641     0.9906     1.0000</span></span>
 <span><span class="co">#&gt; sd        1.488     0.1592     0.1635</span></span>
-<span><span class="co">#&gt; Complete! [2024-01-15 04:20:32]</span></span></code></pre></div>
+<span><span class="co">#&gt; Complete! [2024-01-15 04:24:49]</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
