@@ -181,8 +181,8 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
           obs_v <- obs$lake |>
             dplyr::filter(var == sa_ctrl[["vars_sim"]][[n]][["var"]] &
                             Date %in% dates)
-          deps <- seq(min(sa_ctrl[["vars_sim"]][[n]][["depths"]]),
-                      max(sa_ctrl[["vars_sim"]][[n]][["depths"]]), by = 0.5)
+          deps <- seq(min(sa_ctrl[["vars_sim"]][[n]][["depth_range"]]),
+                      max(sa_ctrl[["vars_sim"]][[n]][["depth_range"]]), by = 0.5)
           df <- data.frame(dates = dates, month = lubridate::month(dates))
 
           date_idx <- which(df$month %in% sa_ctrl[["vars_sim"]][[n]][["month"]])

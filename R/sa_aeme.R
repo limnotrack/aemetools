@@ -1,4 +1,4 @@
-#' Conduct a sensitivity analysis on AEME model parameters
+#' Run sensitivity analysis on AEME model parameters
 #'
 #' @name sa_aeme
 #' @description
@@ -14,31 +14,26 @@
 #' @param FUN_list list of functions; named according to the variables in the
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If NULL, uses mean absolute error (MAE).
-#' @param ctrl list; of controls for calibration function.
-#' * `VTR` Value to be reached. The optimization process will stop if
-#' either the maximum number of iterations itermax is reached or the best
-#' parameter vector bestmem has found a value fn(bestmem) <= VTR. Default to
-#'  -Inf.
-#' * `NP` number of population members. Defaults to NA; if the user does not
-#'  change the value of NP from NA it is reset as
-#'   `10 * sum(param$model == model)`. For many  problems it is best to set NP
-#'   to be at least 10 times the length of the parameter vector.
-#' * `itermax` the maximum iteration (population generation) allowed.
-#' Default is 200.
-#' * `reltol` relative convergence tolerance. The algorithm stops if it is
-#'  unable to reduce the value by a factor of `reltol * (abs(val) + reltol)`.
-#'  Default = 0.07
-#'  * `cutoff`: The quantile cutoff used to select the parents for the next
-#'  generation. For example, if `cutoff = 0.25`, the best 25% of the population
-#'  will be used as parents for the next generation.
-#'  * `mutate` fraction of population to undergo mutation (0-1).
-#'  * `parallel` boolean; run calibration in parallel. Default to TRUE
-#'  * `out_file` filepath; to csv for calibration output to be written to.
-#'  Defaults to "results.csv"
-#'  * `na_value` value to replace NA values with in observations. Default to
-#'   999.
-#'  * `ncore`: The number of cores to use for the calibration. This is only used
-#'  if `parallel = TRUE`. Default to `parallel::detectCores() - 1`.
+#' @param ctrl list; of controls for calibration function. The control
+#' parameters are as follows:
+#' -   `N`: The initial sample size of the base sample matrix.
+#' -   `ncore`: The number of cores to use for the calibration. This is only
+#' used if parallel = `TRUE`. Default to `parallel::detectCores() - 1.`
+#' -   `na_value`: value to replace NA value when returned.
+#' -   `parallel`: Logical value. If `TRUE`, the sensitivity analysis will be
+#'  run in parallel. If `FALSE`, it will be run in series.
+#' -   `out_file`: A character string naming a file for writing. Currently it
+#'   can write to a .csv file or a database (.db; using the duckDB package)
+#'   file. If writing to a database, it creates a table named "sa_output".
+#' -   `vars_sim`: A named list of output variables for sensitivity analysis.
+#'   The name is user defined but each list must contain:
+#'     - `var`: The variable name to use for the sensitivity analysis.
+#'     - `month`: A vector of months to use for the sensitivity analysis.
+#'     - `depth_range`: A vector of length 2 with the minimum and maximum depth
+#'   range to use for the sensitivity analysis.
+#' - Second step.
+#'     - Substep 1.
+#'     - Substep 2.
 #' @inheritParams AEME::build_ensemble
 #' @param param_df dataframe; of parameters read in from a csv file. Requires
 #' the columns c("model", "file", "name", "value", "min", "max").
@@ -51,6 +46,58 @@
 #' @importFrom sensobol sobol_matrices
 #'
 #' @return list; ctrl which was supplied with updated arguments if missing.
+#'
+#' @examples
+#' \dontrun{
+#'   # Run sensitivity analysis
+#'   tmpdir <- tempdir()
+#'   aeme_dir <- system.file("extdata/lake/", package = "AEME")
+#'   # Copy files from package into tempdir
+#'   file.copy(aeme_dir, tmpdir, recursive = TRUE)
+#'   path <- file.path(tmpdir, "lake")
+#'   aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+#'   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+#'   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+#'   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+#'   model <- c("glm_aed")
+#'   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
+#'                                     model = model, mod_ctrls = mod_ctrls,
+#'                                     inf_factor = inf_factor, ext_elev = 5,
+#'                                     use_bgc = FALSE)
+#'
+#'   # Load parameters
+#'   utils::data("aeme_parameters", package = "aemetools")
+#'   param <- aeme_parameters |>
+#'     dplyr::filter(file != "wdr")
+#'
+#'   # Function to calculate fitness
+#'   fit <- function(df) {
+#'     mean(df$model)
+#'   }
+#'
+#'   # Assign function to variable
+#'   FUN_list <- list(HYD_temp = fit)
+#'
+#'   # Set up control parameters for surface and bottom temperature
+#'   ctrl <- list(N = 2^3, ncore = 2L, na_value = 999, parallel = TRUE,
+#'                out_file = "results.db",
+#'                vars_sim = list(
+#'                  surf_temp = list(var = "HYD_temp",
+#'                                   month = c(10:12, 1:3),
+#'                                   depth_range = c(0, 2)
+#'                  ),
+#'                  bot_temp = list(var = "HYD_temp",
+#'                                  month = c(10:12, 1:3),
+#'                                  depth_range = c(10, 13)
+#'                  )
+#'                )
+#'   )
+#'
+#'   # Run sensitivity analysis AEME model
+#'   ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
+#'                   model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+#'                   FUN_list = FUN_list)
+#' }
 #'
 #' @export
 
@@ -210,6 +257,8 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
       return(pars[[i]])
     }, pars = param_list)
 
+    message("Complete! [", format(Sys.time()), "]")
+
     g1 <- do.call(rbind, model_out)
     out_df <- apply(g1, 2, signif, digits = 6)
     write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
@@ -278,6 +327,8 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
       return(pars[[i]])
     }, pars = param_list)
+
+    message("Complete! [", format(Sys.time()), "]")
   }
   ctrl
 }
