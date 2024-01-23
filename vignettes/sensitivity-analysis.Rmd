@@ -61,6 +61,22 @@ aeme_data <- build_ensemble(path = path, aeme_data = aeme_data,
 
 ```
 
+## Description of Sensitivity Analysis method
+
+The sensitivity analysis method used here is based on the Sobol method 
+and uses the `sensobol` package.
+
+This package provides several functions to conduct variance-based uncertainty 
+and sensitivity analysis, from the estimation of sensitivity indices to the 
+visual representation of the results. It implements several state-of-the-art 
+first and total-order estimators and allows the computation of up to 
+fourth-order effects, as well as of the approximation error, in a swift and 
+user-friendly way.
+
+For more information on the method, see the [sensobol package
+vignette](https://cran.r-project.org/web/packages/sensobol/vignettes/sensobol.html).
+
+
 ## Load parameters to be used for the sensitivity analysis
 
 Parameters are loaded from the `aemetools` package within the `aeme_parameters`
@@ -197,8 +213,99 @@ The `sa_aeme` function writes the results to the file specified.  The
 
 ```{r run-sensitivity-analysis, cache=FALSE}
 # Run sensitivity analysis AEME model
-  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                  model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
-                  FUN_list = FUN_list)
+ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
+                model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+                FUN_list = FUN_list)
+
+```
+
+## Reading sensitivity analysis results
+
+The sensitivity results can be read in using the `read_sa` function. This
+function takes the following arguments:
+
+-   `ctrl`: The control parameters used for the sensitivity analysis.
+-   `model`: The model used for the sensitivity analysis.
+-   `path`: The path to the directory where the model is configuration is.
+
+```{r read-sensitivity-analysis}
+# Read in sensitivity analysis results
+sa_res <- read_sa(ctrl = ctrl, model = model, path = path)
+names(sa_res)
+```
+
+The `read_sa` function returns a list with:
+
+-   `df`: dataframe of the sensitivity analysis results. The dataframe contains
+    the model, generation, index (model run), parameter name, parameter value,
+    fitness value and the median fitness value for each generation.
+    
+```{r print-sa-df}
+head(sa_res$df)
+```
+
+-   `sobol_indices`: list of the Sobol indices for each variable an it's 
+senstivity to the parameters.
+
+```{r print-sa-sobol}
+sa_res$sobol_indices
+```
+
+-   `sobol_dummy`: list of the Sobol indices for the dummy parameter.
+
+```{r print-sa-sobol-dummy}
+sa_res$sobol_dummy
+
+```
+
+## Visualising sensitivity analysis results
+
+The sensitivity analysis results can be visualised in different ways using the
+functions: `plot_uncertainty`, `plot_scatter` and `plot_multiscatter`. These 
+plots are based on the output plots from the `sensobol` package. 
+
+These functions take the following argument:
+
+-   `sa_res`: The sensitivity analysis results returned from the `read_sa`
+    function.
+
+### Uncertainty plot
+
+The `plot_uncertainty` function plots the distribution of the model output for
+each variable.
+
+```{r plot-sa-uncertainty}
+# Plot sensitivity analysis results
+plot_uncertainty(sa_res)
+```
+
+### Scatter plot
+
+The `plot_scatter` function plots the model output against the parameter value
+for each variable. This is useful for identifying relationships between the
+model output and the parameter value. For example, the plot below shows that
+there is a relationship between the model surface temperature (surf_temp_) and 
+the parameter value of the scaling factor for shortwave radiation (MET_radswd), 
+and also for surface chlorophyll-a (surf_chla) and the light extinction
+coefficient (light.Kw). When there is a low parameter value for Kw, the model
+chlorophyll-a is higher.
+
+```{r plot-sa-scatter}
+plot_scatter(sa_res)
+```
+
+### Multi-scatter plot
+
+The `plot_multiscatter` function plots the parameters against each other for
+each variable. The parameter on top is the x-axis and the parameter below is 
+the y-axis. This is useful for identifying relationships between the
+parameters and response variable.
+
+```{r plot-sa-multiscatter, fig.width=10, fig.height=10}
+pl <- plot_multiscatter(sa_res)
+
+library(ggpubr)
+
+ggarrange(plotlist = pl, nrow = 3)
 
 ```
