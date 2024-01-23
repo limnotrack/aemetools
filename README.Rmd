@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# aemetools
+# aemetools <a href="https://special-enigma-8p9lgre.pages.github.io/"><img src="man/figures/logo.png" align="right" height="120" alt="aemetools website" /></a>
 
 <!-- badges: start -->
 
