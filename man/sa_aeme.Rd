@@ -2,7 +2,7 @@
 % Please edit documentation in R/sa_aeme.R
 \name{sa_aeme}
 \alias{sa_aeme}
-\title{Conduct a sensitivity analysis on AEME model parameters}
+\title{Run sensitivity analysis on AEME model parameters}
 \usage{
 sa_aeme(
   aeme_data,
@@ -52,11 +52,6 @@ The name is user defined but each list must contain:
 \item \code{month}: A vector of months to use for the sensitivity analysis.
 \item \code{depth_range}: A vector of length 2 with the minimum and maximum depth
 range to use for the sensitivity analysis.
-}
-\item Second step.
-\itemize{
-\item Substep 1.
-\item Substep 2.
 }
 }}
 

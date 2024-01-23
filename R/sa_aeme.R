@@ -31,9 +31,6 @@
 #'     - `month`: A vector of months to use for the sensitivity analysis.
 #'     - `depth_range`: A vector of length 2 with the minimum and maximum depth
 #'   range to use for the sensitivity analysis.
-#' - Second step.
-#'     - Substep 1.
-#'     - Substep 2.
 #' @inheritParams AEME::build_ensemble
 #' @param param_df dataframe; of parameters read in from a csv file. Requires
 #' the columns c("model", "file", "name", "value", "min", "max").
