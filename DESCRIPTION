@@ -1,5 +1,5 @@
 Package: aemetools
-Title: Tools to Assist the Aquatic Ecosystem Model Ensemble Package
+Title: Tools to expand the Aquatic Ecosystem Model Ensemble Package
 Version: 0.0.0.9000
 Authors@R: 
     c(person("Tadhg", "Moore", role = c("aut","cre"),
@@ -12,7 +12,7 @@ Description: Run simple hydrological models to generate inflow inputs for the
 License: GPL (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 Imports: 
     AEME (>= 0.1.0),
     airGR,
@@ -56,6 +56,7 @@ Remotes:
     github::limnotrack/AEME,
     github::limnotrack/rdrop2
 URL: https://studious-enigma-z736ppg.pages.github.io/
+BugReports: https://github.com/limnotrack/aemetools/issues
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
