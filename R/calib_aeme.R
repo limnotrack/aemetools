@@ -301,7 +301,7 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
       g$gen <- gen_n
 
       out_df <- apply(g, 2, signif, digits = 6)
-      write_calib_output(x = out_df, file.path(path, ctrl$out_file),
+      write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
                          name = "calib_output")
 
       message("Best fit: ", signif(min(g$fit), 5), " (sd: ",
