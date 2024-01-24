@@ -103,15 +103,16 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
       }
     }
 
-    if (include_wlev) {
-      wlev_weight <- weights[["LKE_lvlwtr"]]
-      vars_sim <- vars_sim[vars_sim != "LKE_lvlwtr"]
-      weights <- weights[names(weights) != "LKE_lvlwtr"]
-    } else {
-      vars_sim <- vars_sim[vars_sim != "LKE_lvlwtr"]
-      weights <- weights[names(weights) != "LKE_lvlwtr"]
+    if (method == "calib") {
+      if (include_wlev) {
+        wlev_weight <- weights[["LKE_lvlwtr"]]
+        vars_sim <- vars_sim[vars_sim != "LKE_lvlwtr"]
+        weights <- weights[names(weights) != "LKE_lvlwtr"]
+      } else {
+        vars_sim <- vars_sim[vars_sim != "LKE_lvlwtr"]
+        weights <- weights[names(weights) != "LKE_lvlwtr"]
+      }
     }
-
 
     if (return_indices) {
       var_indices <- NULL
@@ -355,7 +356,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
     }
 
 
-    if (include_wlev) {
+    if (include_wlev & method == "calib") {
       #### PROBABLY NEED CATCHES HERE FOR NO WATER LEVEL OUTPUT #####
       balance <- aemetools::get_wlevel(lake_dir = lake_dir, model = model,
                                        nlev = 10, return_df = TRUE)
@@ -434,7 +435,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
           }
         }
 
-        if (include_wlev) {
+        if (include_wlev & method == "calib") {
           # Mutiply residuals by the mean difference in water level
           return_list[["LKE_lvlwtr"]] <- FUN_list$LKE_lvlwtr(df_lvl) *
             wlev_weight
