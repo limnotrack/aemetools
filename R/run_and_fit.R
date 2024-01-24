@@ -269,7 +269,6 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         nmes <- names(sa_ctrl$var)
         names(nmes) <- nmes
         vars_out <- lapply(nmes, \(n) {
-
           v1 <- ifelse(model == "dy_cd",
                        paste0("dyresm", key_naming[key_naming$name %in%
                                                      sa_ctrl$vars_sim[[n]]$var,
@@ -278,6 +277,25 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
                        key_naming[key_naming$name %in%
                                     sa_ctrl$vars_sim[[n]]$var, model])
 
+          if (sa_ctrl$vars_sim[[n]]$var == "LKE_lvlwtr") {
+            if (model == "dy_cd") {
+              mod_layers <- ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")
+              depth <- apply(mod_layers, 2, \(x) max(x, na.rm = TRUE))
+            } else if (model == "glm_aed") {
+              depth <- ncdf4::ncvar_get(nc, "lake_level")[idx]
+            } else if (model == "gotm_wet") {
+              zi <- ncdf4::ncvar_get(nc, "zi")
+              depth <- zi[nrow(zi), ] - zi[1, ]
+              depth[depth <= 0] <- 0
+            }
+            # depth <- depth[var_indices[[n]][["time"]]]
+            df <- data.frame(depth_mid = NA,
+                             Date = var_indices[[n]][["dates"]],
+                             model = depth[var_indices[[n]][["time"]]],
+                             var = "LKE_lvlwtr",
+                             name = n)
+            return(df)
+          }
           this.var <- ncdf4::ncvar_get(nc, v1)
           if (model == "dy_cd") {
             this.var <- this.var[nrow(this.var):1, ]
