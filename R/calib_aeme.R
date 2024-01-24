@@ -132,6 +132,9 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
       message("Warning! Not all parameters are in supplied parameter dataframe")
     }
     best_pars <- param_df[param_df$fit == min(param_df$fit), ]
+    if (nrow(best_pars) > 1) {
+      best_pars <- best_pars[which.max(best_pars$gen), ]
+    }
     last_gen <- param_df[param_df$gen == max(param_df$gen), ]
     start_param <- next_gen_params(param_df = last_gen, param = param,
                                    ctrl = ctrl, best_pars = best_pars)
