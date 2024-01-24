@@ -4,7 +4,7 @@
 \alias{read_calib}
 \title{Read calibration output}
 \usage{
-read_calib(ctrl, model, name = "calib_output", path = ".")
+read_calib(ctrl, model, name = "calib_output", path = ".", raw = FALSE)
 }
 \arguments{
 \item{ctrl}{list; of controls for calibration function.
@@ -43,6 +43,10 @@ if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
 "gotm_wet")}
 
 \item{path}{filepath; where input files are located relative to `config`.}
+
+\item{raw}{logical. If TRUE, return the raw calibration output as a dataframe
+with the "fit" and "gen" columns. This is generally used when restarting a
+calibration.}
 }
 \value{
 A data frame with the calibration results.
