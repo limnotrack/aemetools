@@ -12,7 +12,7 @@
 
 write_calib_output <- function(x, file, name) {
   type <- tools::file_ext(file)
-  if ("gen" %in% names(x)) {
+  if ("gen" %in% colnames(x)) {
     gen_n <- x[1, "gen"]
 
     message("Writing output for generation ", gen_n, " to ", basename(file),
