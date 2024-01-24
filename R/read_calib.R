@@ -2,6 +2,9 @@
 #'
 #' @inheritParams calib_aeme
 #' @inheritParams AEME::build_ensemble
+#' @param raw logical. If TRUE, return the raw calibration output as a dataframe
+#' with the "fit" and "gen" columns. This is generally used when restarting a
+#' calibration.
 #'
 #' @importFrom dplyr case_when left_join mutate select summarise group_by
 #' @importFrom tidyr pivot_longer
@@ -14,7 +17,8 @@
 #' @return A data frame with the calibration results.
 #' @export
 
-read_calib <- function(ctrl, model, name = "calib_output", path = ".") {
+read_calib <- function(ctrl, model, name = "calib_output", path = ".",
+                       raw = FALSE) {
 
   file <- file.path(path, ctrl$out_file)
   type <- tools::file_ext(file)
@@ -36,6 +40,13 @@ read_calib <- function(ctrl, model, name = "calib_output", path = ".") {
     out$gen <- factor(rep(1:ngen, each = ctrl$NP, length.out = nrow(out)))
   }
   out$index <- 1:nrow(out)
+  if (raw) {
+    out <- out |>
+      dplyr::mutate(gen = as.numeric(as.character(gen))) |>
+      dplyr::select(c(1:fit, gen))
+    names(out) <- gsub("\\.", "/", names(out))
+    return(out)
+  }
   mlt <- tidyr::pivot_longer(out, cols = -c(fit:index),
                              names_to = "parameter", values_to = "value") |>
     as.data.frame()
