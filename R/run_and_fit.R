@@ -282,7 +282,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
               mod_layers <- ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")
               depth <- apply(mod_layers, 2, \(x) max(x, na.rm = TRUE))
             } else if (model == "glm_aed") {
-              depth <- ncdf4::ncvar_get(nc, "lake_level")[idx]
+              depth <- ncdf4::ncvar_get(nc, "lake_level")
             } else if (model == "gotm_wet") {
               zi <- ncdf4::ncvar_get(nc, "zi")
               depth <- zi[nrow(zi), ] - zi[1, ]
