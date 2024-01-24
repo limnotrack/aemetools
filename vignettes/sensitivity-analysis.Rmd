@@ -178,7 +178,7 @@ December to February, bottom temperature (bot_temp), (10 - 13 m) and also total
 chlorophyll-a (PHY_tchla) at the surface (0 - 2 m) during the summer period.
 
 ```{r define-control-parameters}
-ctrl <- list(N = 2^4, ncore = 2L, na_value = 999, parallel = TRUE,
+ctrl <- list(N = 2^4, ncore = 10, na_value = 999, parallel = TRUE,
              out_file = "results.csv",
              vars_sim = list(
                surf_temp = list(var = "HYD_temp",
@@ -274,7 +274,7 @@ These functions take the following argument:
 The `plot_uncertainty` function plots the distribution of the model output for
 each variable.
 
-```{r plot-sa-uncertainty}
+```{r plot-sa-uncertainty, fig.width=8, fig.height=6}
 # Plot sensitivity analysis results
 plot_uncertainty(sa_res)
 ```
@@ -290,7 +290,7 @@ and also for surface chlorophyll-a (surf_chla) and the light extinction
 coefficient (light.Kw). When there is a low parameter value for Kw, the model
 chlorophyll-a is higher.
 
-```{r plot-sa-scatter}
+```{r plot-sa-scatter, fig.width=8, fig.height=6}
 plot_scatter(sa_res)
 ```
 
@@ -301,7 +301,7 @@ each variable. The parameter on top is the x-axis and the parameter below is
 the y-axis. This is useful for identifying relationships between the
 parameters and response variable.
 
-```{r plot-sa-multiscatter, fig.width=10, fig.height=10}
+```{r plot-sa-multiscatter, fig.width=8, fig.height=8}
 pl <- plot_multiscatter(sa_res)
 
 library(ggpubr)
