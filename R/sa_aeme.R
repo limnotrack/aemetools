@@ -35,6 +35,7 @@
 #' @param param_df dataframe; of parameters read in from a csv file. Requires
 #' the columns c("model", "file", "name", "value", "min", "max").
 #'
+#' @importFrom AEME lake
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom utils write.csv write.table
 #' @importFrom stats runif
@@ -101,7 +102,6 @@
 sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                     FUN_list = NULL, ctrl = NULL, param_df = NULL) {
 
-
   # Check if vars_sim and weights are the same length
   if (is.null(ctrl)) {
     stop("ctrl must be supplied")
@@ -147,15 +147,6 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
   # Extract parameters for the model ----
   param <- param[param$model == model, ]
   # par_idx <- which(param$model %in% c(model))
-  # obs <- AEME::observations(aeme_data)
-  # Check if there are observations for the model or just calibrating wlev
-  # ctrl$use_obs <- ifelse(!is.null(obs$lake), TRUE, FALSE)
-
-  # if (is.na(ctrl$NP)) {
-  #   ctrl$NP <- 10 * nrow(param) # sum(par_idx)
-  # }
-  # ctrl$ngen <- round(ctrl$itermax / ctrl$NP)
-
 
   # Generate parameters for sensitivity analysis ----
   if (is.null(param_df)) {
@@ -177,7 +168,7 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     param_list <- split(param_df, rep(1:ctrl$ncore))
   })
 
-  # Calibrate in parallel
+  # Run in parallel
   if (ctrl$parallel) {
 
     temp_dirs <- make_temp_dir(model, lake_dir, n = ctrl$ncore)
@@ -318,14 +309,19 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
         # print(pars[[i]][["fit"]][p])
         # print(pars[[i]][p, ])
       }
-      out_df <- apply(pars[[i]], 2, signif, digits = 6)
-      write_calib_output(x = out_df, file.path(path, ctrl$out_file),
-                         name = "sa_output")
+      # out_df <- apply(pars[[i]], 2, signif, digits = 6)
+      # write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
+      #                    name = "sa_output")
 
       return(pars[[i]])
     }, pars = param_list)
 
+    g1 <- do.call(rbind, model_out)
+    out_df <- apply(g1, 2, signif, digits = 6)
+    write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
+                       name = "sa_output")
+
     message("Complete! [", format(Sys.time()), "]")
   }
-  ctrl
+  invisible(ctrl)
 }
