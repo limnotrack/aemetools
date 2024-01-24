@@ -156,11 +156,11 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
   } else if (model == "glm_aed") {
     cfg_files <- c("glm3.nml", "aed2/aed2.nml")
     for (f in cfg_files) {
-      if (f %in% param$file) {
+      if (basename(f) %in% param$file) {
         cfg_file <- file.path(lake_dir, model, f)
         nml <- AEME::read_nml(cfg_file)
 
-        idx <- which(param$file == f)
+        idx <- which(param$file == basename(f))
         pnames <- sapply(idx, \(p) {
           nme <- strsplit(param$name[p], "/")[[1]]
           nme[length(nme)]
