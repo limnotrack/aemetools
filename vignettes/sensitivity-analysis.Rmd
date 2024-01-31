@@ -304,8 +304,10 @@ parameters and response variable.
 ```{r plot-sa-multiscatter, fig.width=8, fig.height=8}
 pl <- plot_multiscatter(sa_res)
 
-library(ggpubr)
+pl[[1]]
 
-ggarrange(plotlist = pl, nrow = 3)
+pl[[2]]
+
+pl[[3]]
 
 ```
