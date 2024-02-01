@@ -38,6 +38,7 @@ Imports:
     scales,
     sensobol,
     sf,
+    shiny,
     stars,
     stats,
     stringr,
