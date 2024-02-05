@@ -154,21 +154,63 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
       }
     }
   } else if (model == "glm_aed") {
-    cfg_files <- c("glm3.nml", "aed2/aed2.nml")
+    cfg_files <- c("glm3.nml", "aed2/aed2.nml", "aed2/aed2_phyto_pars.nml",
+                   "aed2/aed2_zoop_pars.nml")
     for (f in cfg_files) {
       if (basename(f) %in% param$file) {
+        idx <- which(param$file == basename(f))
         cfg_file <- file.path(lake_dir, model, f)
         nml <- AEME::read_nml(cfg_file)
 
-        idx <- which(param$file == basename(f))
-        pnames <- sapply(idx, \(p) {
-          nme <- strsplit(param$name[p], "/")[[1]]
-          nme[length(nme)]
-        })
-        arg_list <- lapply(idx, \(p) {
-          param$value[p]
-        })
-        names(arg_list) <- pnames
+        if (basename(f) %in% c("aed2_phyto_pars.nml", "aed2_zoop_pars.nml")) {
+          aed_file <- file.path(lake_dir, model, "aed2/aed2.nml")
+          aed <- AEME::read_nml(aed_file)
+          grp <- ifelse(basename(f) == "aed2_phyto_pars.nml", "the_phytos",
+                        "the_zoops")
+          grp_idx <- AEME::get_nml_value(aed, grp)
+
+          if (length(grp_idx) > 1) {
+            wid <- tidyr::pivot_wider(param[idx, c("name", "value", "group")],
+                                      names_from = "group",
+                                      values_from = "value") |>
+              as.data.frame()
+
+
+            names <- strsplit(AEME::get_nml_value(nml, "pd%p_name"), ",")[[1]]
+            names[grp_idx] <- substr(names(wid)[-1], 1, 6)
+
+            grps <- unique(param$group[idx])
+            arg_list <- lapply(1:nrow(wid), \(p) {
+              par <- strsplit(wid$name[p], "/")[[1]][2]
+              vals <- AEME::get_nml_value(nml, par)
+              vals[grp_idx] <- unlist(wid[p, -1])
+              vals
+            })
+            names(arg_list) <- sapply(1:nrow(wid), \(p) {
+              nme <- gsub("/", "::", wid$name[p])
+            })
+          } else {
+            arg_list <- lapply(idx, \(p) {
+              par <- strsplit(param$name[p], "/")[[1]][2]
+              vals <- AEME::get_nml_value(nml, par)
+              vals[grp_idx] <- param$value[p]
+              vals
+            })
+            names(arg_list) <- sapply(idx, \(p) {
+              nme <- gsub("/", "::", param$name[p])
+            })
+          }
+        } else {
+          pnames <- sapply(idx, \(p) {
+            nme <- gsub("/", "::", param$name[p])
+          })
+          arg_list <- lapply(idx, \(p) {
+            param$value[p]
+          })
+          names(arg_list) <- pnames
+        }
+
+        # Set and write nml file
         nml <- AEME::set_nml(nml, arg_list = arg_list)
         AEME::write_nml(nml, cfg_file)
       }
@@ -201,8 +243,8 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
 
   # Run model ----
   aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model, path = path,
-                 check_output = FALSE, parallel = FALSE,
-                 mod_ctrls = mod_ctrls, return = return_aeme)
+                              check_output = FALSE, parallel = FALSE,
+                              mod_ctrls = mod_ctrls, return = return_aeme)
 
 
   # Check if model output is produced ----
