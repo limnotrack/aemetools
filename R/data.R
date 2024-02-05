@@ -73,6 +73,28 @@
 #' @source Package development.
 "gotm_wet_parameters"
 
+#' Example dataframe used for calibrating the biogeochemistry in the GOTM-WET
+#' model.
+#'
+#' All the parameters within the fabm.yaml file. This includes three
+#' phytoplankton groups (greens, cyanobacteria an diatoms), one zooplankton
+#' group (cladocerans). This has the values in the default file and 25 % parameter
+#' ranges for sensitivity analysis.
+#'
+#' @format ## `glm_aed_parameters`
+#' A data frame with 253 rows and 7 columns:
+#' \describe{
+#'   \item{model}{Model for the parameter}
+#'   \item{file}{File in which the parameter is stored}
+#'   \item{name}{Name of the parameter}
+#'   \item{value}{Value of the parameter}
+#'   \item{min}{Minimum range of the parameter}
+#'   \item{max}{Maximum range of the parameter}
+#'   \item{var}{Maximum range of the parameter}
+#' }
+#' @source Package development.
+"glm_aed_parameters"
+
 #' sf object of Digital Elevation Model (DEM) metadata for New Zealand.
 #'
 #' This can be used to query DEM coverage and metadata for New Zealand.
