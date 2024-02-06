@@ -64,9 +64,6 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
     }
   }
 
-  on.exit({
-    ncdf4::nc_close(nc)
-  })
   if (!is.list(nc)) {
     message("Error opening netCDF file. Returning na_value.")
     return(return_list)
@@ -77,8 +74,12 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
   }
   # If error in running model, return na_value
   if (is.null(nc)) {
+    message("Error opening netCDF file. Returning na_value.")
     return(return_list)
   }
+  on.exit({
+    ncdf4::nc_close(nc)
+  })
 
   if (fit | return_indices) {
 
