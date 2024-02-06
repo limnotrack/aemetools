@@ -156,7 +156,7 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     for (i in 1:ncol(mat)) {
       param_df[, i] <- param$min[i] + (param$max[i] - param$min[i]) * mat[, i]
     }
-    colnames(param_df) <- param$name
+    colnames(param_df) <- paste0(param$group, "/", param$name)
     param_df <- as.data.frame(param_df)
   }
   if (is.null(ctrl$ncore)) {
@@ -208,7 +208,13 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
         # Update the parameter value in the parameter table
         for(n in names(pars[[i]])) {
-          param$value[param$name == n] <- pars[[i]][p, n]
+          grp <- strsplit(n, "/")[[1]][1]
+          nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
+          if (grp != "NA") {
+            param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
+          } else {
+            param$value[param$name == nme] <- pars[[i]][p, n]
+          }
         }
         # message(i, ", ", p)
 
@@ -275,7 +281,13 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
         # Update the parameter value in the parameter table
         for(n in names(pars[[i]])) {
-          param$value[param$name == n] <- pars[[i]][p, n]
+          grp <- strsplit(n, "/")[[1]][1]
+          nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
+          if (grp != "NA") {
+            param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
+          } else {
+            param$value[param$name == nme] <- pars[[i]][p, n]
+          }
         }
         # message(i, ", ", p)
 
