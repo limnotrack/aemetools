@@ -129,10 +129,38 @@ glm_aed_parameters <- dplyr::bind_rows(aed, phy_pars, zoo_pars) |>
   dplyr::mutate(default = as.numeric(default), value = default)
 
 glm_aed_parameters <- glm_aed_parameters |>
+  dplyr::filter(!grepl("noncohesive", process, ignore.case = TRUE),
+                # Filter out switches ----
+                !grepl("fT_Method|lightModel|salTol|simDINUptake|simDONUptake|simNFixation|simINDynamics|simDIPUptake|simIPDynamics|simSiUptake", parameter, ignore.case = TRUE),
+                ) |>
   dplyr::mutate(
     model = "glm_aed",
-    min = default - (0.25 * abs(default)),
-    max = default + (0.25 * abs(default))
+    min = default - (0.5 * abs(default)),
+    max = default + (0.5 * abs(default))
+  ) |>
+  dplyr::mutate(
+    default = dplyr::case_when(
+      parameter == "Fsed_oxy" ~ -50,
+      parameter == "Ksed_oxy" ~ 100,
+      parameter == "Fsed_frp" ~ 0.05,
+      .default = default
+    ),
+    min = dplyr::case_when(
+      parameter == "Fsed_oxy" ~ -100,
+      parameter == "Ksed_oxy" ~ 10,
+      .default = min
+    ),
+    max = dplyr::case_when(
+      parameter == "Fsed_oxy" ~ 0,
+      parameter == "Ksed_oxy" ~ 100,
+      .default = max
+    ),
+    value = dplyr::case_when(
+      parameter == "Fsed_oxy" ~ -50,
+      parameter == "Ksed_oxy" ~ 100,
+      parameter == "Fsed_frp" ~ 0.05,
+      .default = value
+    )
   ) |>
   dplyr::rename(
     name = path,
@@ -140,6 +168,7 @@ glm_aed_parameters <- glm_aed_parameters |>
     description = note
   ) |>
   dplyr::select(model, file, name, value, min, max, dplyr::everything())
+dim(glm_aed_parameters)
 head(glm_aed_parameters)
 tail(glm_aed_parameters)
 glm_aed_parameters |>
