@@ -19,13 +19,14 @@ test_that("running GLM-AED works with bgc_params", {
 
   # utils::data("aeme_parameters_bgc", package = "aemetools")
   utils::data("glm_aed_parameters", package = "aemetools")
+  param <- glm_aed_parameters
   # param <- dplyr::bind_rows(
   #   # aeme_parameters_bgc,
   #   glm_aed_parameters
   # ) |>
   #   dplyr::filter(model == "glm_aed")
-  run_aeme_shiny(aeme_data = aeme_data, param = param, path = path,
-                 mod_ctrls = mod_ctrls)
+  # run_aeme_shiny(aeme_data = aeme_data, param = param, path = path,
+  #                mod_ctrls = mod_ctrls)
 
   aeme_data <- run_aeme_param(aeme_data = aeme_data,
                               model = model,
