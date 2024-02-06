@@ -177,13 +177,20 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
 
 
             names <- strsplit(AEME::get_nml_value(nml, "pd%p_name"), ",")[[1]]
-            names[grp_idx] <- substr(names(wid)[-1], 1, 6)
 
+            grp_idx <- grep(paste0(substr(names(wid)[-1], 1, 4), collapse = "|"), names)
+
+            names(grp_idx) <- names(wid)[-1]
+            # param[, c("value", "par", "group")]
             grps <- unique(param$group[idx])
             arg_list <- lapply(1:nrow(wid), \(p) {
               par <- strsplit(wid$name[p], "/")[[1]][2]
               vals <- AEME::get_nml_value(nml, par)
-              vals[grp_idx] <- unlist(wid[p, -1])
+              for (v in 2:ncol(wid)) {
+                if (!is.na(wid[p, v])) {
+                  vals[grp_idx[v-1]] <- wid[p, v]
+                }
+              }
               vals
             })
             names(arg_list) <- sapply(1:nrow(wid), \(p) {
