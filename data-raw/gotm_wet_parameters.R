@@ -573,8 +573,21 @@ for (i in 1:nrow(wet)) {
   }
 }
 summary(wet)
+wet |>
+  dplyr::filter(is.na(min))
+
 gotm_wet_parameters <- wet |>
-  dplyr::filter(!is.na(value) & (!logical | is.na(logical)))
-# View(gotm_wet_parameters)
+  dplyr::filter(!is.na(value) & (!logical | is.na(logical))) |>
+  dplyr::mutate(
+    min = dplyr::case_when(
+      is.na(min) ~ value - (0.5 * abs(value)),
+      .default = min
+    ),
+    max = dplyr::case_when(
+      is.na(max) ~ value + (0.5 * abs(value)),
+      .default = max
+    )
+  )
+summary(gotm_wet_parameters)
 
 usethis::use_data(gotm_wet_parameters, overwrite = TRUE)
