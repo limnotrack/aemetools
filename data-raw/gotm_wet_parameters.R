@@ -577,7 +577,8 @@ wet |>
   dplyr::filter(is.na(min))
 
 gotm_wet_parameters <- wet |>
-  dplyr::filter(!is.na(value) & (!logical | is.na(logical))) |>
+  dplyr::filter(!is.na(value) & (!logical | is.na(logical)) &
+                  !grepl("nPrey", par)) |>
   dplyr::mutate(
     min = dplyr::case_when(
       is.na(min) ~ value - (0.5 * abs(value)),
@@ -589,5 +590,6 @@ gotm_wet_parameters <- wet |>
     )
   )
 summary(gotm_wet_parameters)
+View(gotm_wet_parameters)
 
 usethis::use_data(gotm_wet_parameters, overwrite = TRUE)
