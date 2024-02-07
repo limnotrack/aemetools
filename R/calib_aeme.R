@@ -120,8 +120,8 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                                    ctrl$NP)
     # start_param <- apply(param[, c("min", "max")], 1,
     #                      \(x) runif(ctrl$NP, x[1], x[2]))
-
-    colnames(start_param) <- param$name
+    colnames(start_param) <- paste0(param$group, "/", param$name)
+    # colnames(start_param) <- param$name
     start_param <- as.data.frame(start_param)
     gen_n <- 1
     tot_gen <- ctrl$ngen
@@ -168,10 +168,12 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     message("Starting generation ", gen_n, "/", tot_gen,", ",
             ctrl$NP, " members. ",
             "[", format(Sys.time()), "]")
-    print(data.frame(rbind(signif(apply(start_param, 2, mean), 4),
-                           signif(apply(start_param, 2, median), 4),
-                           signif(apply(start_param, 2, sd), 4)),
-                     row.names = c("mean", "median", "sd")))
+    pr_df <- data.frame(rbind(signif(apply(start_param, 2, mean), 4),
+                              signif(apply(start_param, 2, median), 4),
+                              signif(apply(start_param, 2, sd), 4)),
+                        row.names = c("mean", "median", "sd"))
+    names(pr_df) <- gsub("NA/", "", names(start_param))
+    print(pr_df)
     # model_out <- lapply(seq_along(param_list), \(pars, i) {
     model_out <- parallel::parLapply(cl, seq_along(param_list), \(pars, i) {
 
@@ -183,7 +185,13 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
         # Update the parameter value in the parameter table
         for(n in names(pars[[i]])) {
-          param$value[param$name == n] <- pars[[i]][p, n]
+          grp <- strsplit(n, "/")[[1]][1]
+          nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
+          if (grp != "NA") {
+            param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
+          } else {
+            param$value[param$name == nme] <- pars[[i]][p, n]
+          }
         }
         # message(i, ", ", p)
 
@@ -246,10 +254,12 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
       gen_n <- gen_n + 1
       message("Starting generation ", gen_n, "/", tot_gen,", ", ctrl$NP,
               " members. ", "[", format(Sys.time()), "]")
-      print(data.frame(rbind(signif(apply(g, 2, mean), 4),
-                             signif(apply(g, 2, median), 4),
-                             signif(apply(g, 2, sd), 4)),
-                       row.names = c("mean", "median", "sd")))
+      pr_df <- data.frame(rbind(signif(apply(g, 2, mean), 4),
+                                signif(apply(g, 2, median), 4),
+                                signif(apply(g, 2, sd), 4)),
+                          row.names = c("mean", "median", "sd"))
+      names(pr_df) <- gsub("NA/", "", names(g))
+      print(pr_df)
       suppressWarnings({
         param_list <- split(g, rep(1:ctrl$ncore, each = ctrl$ncore,
                                    length.out = ctrl$NP))
@@ -265,7 +275,13 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
           # Update the parameter value in the parameter table
           for(n in names(pars[[i]])) {
-            param$value[param$name == n] <- pars[[i]][p, n]
+            grp <- strsplit(n, "/")[[1]][1]
+            nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
+            if (grp != "NA") {
+              param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
+            } else {
+              param$value[param$name == nme] <- pars[[i]][p, n]
+            }
           }
           # print(i); print(p)
 
@@ -294,6 +310,7 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
             res1 <- sum(unlist(res))
             res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
           }
+          print(res1)
 
           pars[[i]][["fit"]][p] <- res1
         }
@@ -330,10 +347,12 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     message("Starting generation ", gen_n, "/", tot_gen,", ",
             ctrl$NP, " members. ",
             "[", format(Sys.time()), "]")
-    print(data.frame(rbind(signif(apply(start_param, 2, mean), 4),
-                           signif(apply(start_param, 2, median), 4),
-                           signif(apply(start_param, 2, sd), 4)),
-                     row.names = c("mean", "median", "sd")))
+    pr_df <- data.frame(rbind(signif(apply(start_param, 2, mean), 4),
+                              signif(apply(start_param, 2, median), 4),
+                              signif(apply(start_param, 2, sd), 4)),
+                        row.names = c("mean", "median", "sd"))
+    names(pr_df) <- gsub("NA/", "", names(start_param))
+    print(pr_df)
     model_out <- lapply(seq_along(param_list), \(pars, i) {
 
       pars[[i]][["fit"]] <- NA
@@ -346,7 +365,13 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
         # Update the parameter value in the parameter table
         for(n in names(pars[[i]])) {
-          param$value[param$name == n] <- pars[[i]][p, n]
+          grp <- strsplit(n, "/")[[1]][1]
+          nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
+          if (grp != "NA") {
+            param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
+          } else {
+            param$value[param$name == nme] <- pars[[i]][p, n]
+          }
         }
         # message(i, ", ", p)
 
@@ -411,10 +436,12 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
       gen_n <- gen_n + 1
       message("Starting generation ", gen_n, "/", tot_gen,", ", ctrl$NP,
               " members. ", "[", format(Sys.time()), "]")
-      print(data.frame(rbind(signif(apply(g, 2, mean), 4),
-                             signif(apply(g, 2, median), 4),
-                             signif(apply(g, 2, sd), 4)),
-                       row.names = c("mean", "median", "sd")))
+      pr_df <- data.frame(rbind(signif(apply(g, 2, mean), 4),
+                                signif(apply(g, 2, median), 4),
+                                signif(apply(g, 2, sd), 4)),
+                          row.names = c("mean", "median", "sd"))
+      names(pr_df) <- gsub("NA/", "", names(g))
+      print(pr_df)
       suppressWarnings({
         param_list <- split(g, rep(1:ctrl$ncore, each = ctrl$ncore,
                                    length.out = ctrl$NP))
@@ -431,7 +458,13 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
           # Update the parameter value in the parameter table
           for(n in names(pars[[i]])) {
-            param$value[param$name == n] <- pars[[i]][p, n]
+            grp <- strsplit(n, "/")[[1]][1]
+            nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
+            if (grp != "NA") {
+              param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
+            } else {
+              param$value[param$name == nme] <- pars[[i]][p, n]
+            }
           }
           # print(i); print(p)
 

@@ -49,7 +49,7 @@ read_sa <- function(ctrl, model, name = "sa_output", path = ".", R = 2^3,
     names()
   names(vars) <- vars
 
-  params <- colnames(mat)
+  params <- gsub("NA.", "", colnames(mat))
   N <- ctrl$N
 
   sobol_indices <- lapply(vars, function(v) {
@@ -71,6 +71,7 @@ read_sa <- function(ctrl, model, name = "sa_output", path = ".", R = 2^3,
     dplyr::select(-fit) |>
     tidyr::pivot_longer(cols = !c(index:value),
                         names_to = "variable", values_to = "output") |>
+    dplyr::mutate(parameter = gsub("NA.", "", parameter)) |>
     as.data.frame()
 #
 #   gen_fit <- mlt |>
