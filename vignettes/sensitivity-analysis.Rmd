@@ -230,7 +230,7 @@ function takes the following arguments:
 
 ```{r read-sensitivity-analysis}
 # Read in sensitivity analysis results
-sa_res <- read_sa(ctrl = ctrl, model = model, path = path)
+sa_res <- read_sa(ctrl = ctrl, model = model, path = path, R = 2^2)
 names(sa_res)
 ```
 
