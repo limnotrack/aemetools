@@ -13,8 +13,6 @@
 #' @export
 
 run_aeme_shiny <- function(aeme_data, param, path, mod_ctrls) {
-  require(shiny)
-  require(AEME)
 
   # data("aeme_parameters")
   data("key_naming", package = "AEME")
@@ -59,12 +57,18 @@ run_aeme_shiny <- function(aeme_data, param, path, mod_ctrls) {
           shiny::h3("Parameters"),
           shiny::tableOutput("table")
         )
-      )
+      ),
+      actionButton("exitButton", "Exit App")
     ),
     server = function(input, output) {
 
       reac <- shiny::reactiveValues(df = NULL, aeme = aeme_data,
                                     update_tab = TRUE, tabs = NULL)
+
+      # Exit button ----
+      observeEvent(input$exitButton, {
+        stopApp()
+      })
 
       # Create tabs for each module ----
       shiny::observeEvent({
