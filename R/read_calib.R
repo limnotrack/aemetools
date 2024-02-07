@@ -44,12 +44,14 @@ read_calib <- function(ctrl, model, name = "calib_output", path = ".",
     out <- out |>
       dplyr::mutate(gen = as.numeric(as.character(gen))) |>
       dplyr::select(c(1:fit, gen))
+    names(out) <- gsub("NA.", "", names(out))
     names(out) <- gsub("\\.", "/", names(out))
     return(out)
   }
   mlt <- tidyr::pivot_longer(out, cols = -c(fit:index),
                              names_to = "parameter", values_to = "value") |>
-    as.data.frame()
+    as.data.frame() |>
+    dplyr::mutate(parameter = gsub("NA.", "", parameter))
 
   gen_fit <- mlt |>
     dplyr::group_by(gen, parameter) |>

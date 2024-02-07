@@ -22,6 +22,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
     survivors <- param_df[order(param_df$fit), ]
   }
   survivors1 <- survivors1[order(survivors1$fit), ]
+  names(survivors1) <- gsub("NA/", "", names(survivors1))
   keep_cols <- which(names(survivors1) %in% param$name)
   if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
     message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2))
@@ -87,6 +88,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
   }
   # Replace last parameter rather than adding
   g[nrow(g), ] <- best_pars[, keep_cols]
+  names(g) <- names(param_df)[keep_cols]
 
   return(g)
 }

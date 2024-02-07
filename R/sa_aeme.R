@@ -186,13 +186,13 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                     "ctrl", "weights", "var_indices", "include_wlev", "nmes")
     parallel::clusterExport(cl, varlist = varlist,
                             envir = environment())
-    # message("Starting generation ", gen_n, "/", tot_gen,", ",
-    #         ctrl$NP, " members. ",
-    #         "[", format(Sys.time()), "]")
-    print(data.frame(rbind(signif(apply(param_df, 2, mean), 4),
-                           signif(apply(param_df, 2, median), 4),
-                           signif(apply(param_df, 2, sd), 4)),
-                     row.names = c("mean", "median", "sd")))
+    pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
+                              signif(apply(param_df, 2, median), 4),
+                              signif(apply(param_df, 2, sd), 4)),
+                        row.names = c("mean", "median", "sd"))
+    names(pr_df) <- gsub("NA/", "", names(param_df))
+    print(pr_df)
+
     # model_out <- lapply(seq_along(param_list), \(pars, i) {
     model_out <- parallel::parLapply(cl, seq_along(param_list), \(pars, i) {
 
@@ -262,11 +262,12 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     # Run in serial ----
     message("Running sensitivity analysis in serial with ", nrow(param_df),
             " parameter sets [", format(Sys.time()), "]")
-
-    print(data.frame(rbind(signif(apply(param_df, 2, mean), 4),
-                           signif(apply(param_df, 2, median), 4),
-                           signif(apply(param_df, 2, sd), 4)),
-                     row.names = c("mean", "median", "sd")))
+    pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
+                             signif(apply(param_df, 2, median), 4),
+                             signif(apply(param_df, 2, sd), 4)),
+                       row.names = c("mean", "median", "sd"))
+    names(pr_df) <- gsub("NA/", "", names(param_df))
+    print(pr_df)
     nmes <- names(ctrl$vars_sim)
     model_out <- lapply(seq_along(param_list), \(pars, i) {
 
