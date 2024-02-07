@@ -2,14 +2,17 @@
 #'
 #' @inheritParams plot_uncertainty
 #'
-#' @return list of \code{ggplot} objects
+#' @importFrom ggplot2 ggtitle
+#'
+#' @return list of \code{ggplot} objects for each variable
 #' @export
 #'
-plot_sobol <- function(sa) {
+plot_sobol <- function(sa, use_dummy = TRUE, ...) {
 
   lapply(names(sa$sobol_indices), \(v) {
+    dummy <- if (use_dummy) sa$sobol_dummy_indices[[v]] else NULL
     sensobol:::plot.sensobol(sa$sobol_indices[[v]],
-                             dummy = sa$sobol_dummy_indices[[v]]) +
+                             dummy = dummy, ...) +
       ggplot2::ggtitle(v)
   })
 }

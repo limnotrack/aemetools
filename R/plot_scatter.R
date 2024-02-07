@@ -12,7 +12,7 @@
 plot_scatter <- function(sa) {
 
   mean_y <- sa$df |>
-    dplyr::group_by(parameter, variable) |>
+    dplyr::group_by(label, variable) |>
     dplyr::do(
       dplyr::tibble(
         value = seq(min(.$value), max(.$value), length.out = 30),
@@ -24,7 +24,7 @@ plot_scatter <- function(sa) {
     ggplot2::geom_point(data = sa$df, ggplot2::aes(x = value, y = output)) +
     ggplot2::geom_point(data = mean_y, ggplot2::aes(x = value, y = mean_y,
                                                     colour = "Mean")) +
-    ggplot2::facet_wrap(parameter ~ variable, scales = "free") +
+    ggplot2::facet_wrap(label ~ variable, scales = "free") +
     ggplot2::xlab("Value") +
     ggplot2::ylab("y") +
     ggplot2::theme_bw()
