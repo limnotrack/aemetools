@@ -50,7 +50,28 @@ read_sa <- function(ctrl, model, name = "sa_output", path = ".", R = NULL,
   names(vars) <- vars
 
   params1 <- gsub("NA.", "", colnames(mat))
-  if (model == "glm_aed") {
+  if (model == "dy_cd") {
+    dy_abbrev <- function(string) {
+      # Split the string into words
+      words <- strsplit(string, "_")[[1]]
+
+      # Extract the first letter of each word
+      initials <- abbreviate(words, 3)
+
+      # Concatenate the initials to form the abbreviation
+      abbreviation <- paste(initials, collapse = "_")
+
+      return(abbreviation)
+    }
+    params <- sub("\\..*", "", params1)
+    params <- sapply(params, \(x) {
+      if (!grepl("MET_", x)) {
+        dy_abbrev(x)
+      } else {
+        x
+      }
+    })
+  } else if (model == "glm_aed") {
     params <- sub(".*\\.", "", params1)
   } else if (model == "gotm_wet") {
     params <- sub(".+\\.", "", params1)
