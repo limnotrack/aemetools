@@ -17,7 +17,7 @@
 #' the sobol indices for each variable.
 #' @export
 
-read_sa <- function(ctrl, model, name = "sa_output", path = ".", R = 2^3,
+read_sa <- function(ctrl, model, name = "sa_output", path = ".", R = NULL,
                     boot = TRUE) {
 
   file <- file.path(path, ctrl$out_file)
@@ -49,12 +49,27 @@ read_sa <- function(ctrl, model, name = "sa_output", path = ".", R = 2^3,
     names()
   names(vars) <- vars
 
-  params <- gsub("NA.", "", colnames(mat))
+  params1 <- gsub("NA.", "", colnames(mat))
+  if (model == "glm_aed") {
+    params <- sub(".*\\.", "", params1)
+  } else if (model == "gotm_wet") {
+    params <- sub(".+\\.", "", params1)
+    if ("constant_value" %in% params) {
+      params[params == "constant_value"] <- stringr::str_extract(params1[params == "constant_value"], "[^.]+(?=\\.[^.]+$)")
+    }
+  }
+  if (any(grepl("MET_", params))) {
+    params <- sub("MET_", "", params)
+  }
+
+  # names(params) <- params1
+  par_ref <- data.frame(parameter = params1, label = params)
   N <- ctrl$N
 
   sobol_indices <- lapply(vars, function(v) {
     Y <- out[[v]]
     # Y[Y > 100] <- 999
+    if (sd(Y) < 1e-3) return()
     sensobol::sobol_indices(Y = Y, N = N, params = params, boot = boot, R = R)
   })
 
@@ -73,19 +88,23 @@ read_sa <- function(ctrl, model, name = "sa_output", path = ".", R = 2^3,
                         names_to = "variable", values_to = "output") |>
     dplyr::mutate(parameter = gsub("NA.", "", parameter)) |>
     as.data.frame()
-#
-#   gen_fit <- mlt |>
-#     dplyr::group_by(gen, parameter) |>
-#     dplyr::summarise(gen_fit = stats::median(fit), .groups = "drop")
+  #
+  #   gen_fit <- mlt |>
+  #     dplyr::group_by(gen, parameter) |>
+  #     dplyr::summarise(gen_fit = stats::median(fit), .groups = "drop")
 
   df <- mlt |>
     # dplyr::left_join(gen_fit, by = c("gen", "parameter")) |>
-    dplyr::mutate(output = dplyr::case_when(
-      output == ctrl$na_value ~ NA,
-      .default = output
-    ),
-    model = model) |>
-    dplyr::select(model, index, parameter, value, dplyr::everything())
+    dplyr::mutate(
+      output = dplyr::case_when(
+        output == ctrl$na_value ~ NA,
+        .default = output
+      ),
+      # label = sub("MET_", "", parameter),
+      model = model) |>
+    dplyr::select(model, index, parameter, value, dplyr::everything()) |>
+    dplyr::left_join(par_ref, by = "parameter")
+
 
   list(df = df, sobol_indices = sobol_indices,
        sobol_dummy_indices = sobol_dummy_indices)

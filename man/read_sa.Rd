@@ -4,7 +4,7 @@
 \alias{read_sa}
 \title{Read calibration output}
 \usage{
-read_sa(ctrl, model, name = "sa_output", path = ".", R = 2^3, boot = TRUE)
+read_sa(ctrl, model, name = "sa_output", path = ".", R = NULL, boot = TRUE)
 }
 \arguments{
 \item{ctrl}{list; of controls for calibration function.

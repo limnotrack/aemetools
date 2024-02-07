@@ -4,13 +4,13 @@
 \alias{plot_sobol}
 \title{Visualization of first, total, second, third and fourth-order Sobol' indices}
 \usage{
-plot_sobol(sa)
+plot_sobol(sa, use_dummy = TRUE, ...)
 }
 \arguments{
 \item{sa}{list; of sensitivity analysis results read in with \code{\link{read_sa}}}
 }
 \value{
-list of \code{ggplot} objects
+list of \code{ggplot} objects for each variable
 }
 \description{
 Visualization of first, total, second, third and fourth-order Sobol' indices

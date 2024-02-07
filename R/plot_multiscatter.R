@@ -20,12 +20,12 @@ plot_multiscatter <- function(sa) {
     df <- sa$df |>
       dplyr::filter(variable == v)
 
-    params <- unique(df$parameter)
+    params <- unique(df$label)
     dt <- df # data.table::data.table(df)
     out <- t(utils::combn(params, 2))
     N <- nrow(t)
     Y <- dt$output
-    wid <- tidyr::pivot_wider(df, names_from = parameter, values_from = value)
+    wid <- tidyr::pivot_wider(df, id_cols = index, names_from = label, values_from = value)
     da <- list()
     for (i in 1:nrow(out)) {
       cols <- out[i, ]
@@ -36,7 +36,7 @@ plot_multiscatter <- function(sa) {
     }
     output <- do.call(rbind, da)
 
-    gg <- ggplot2::ggplot(output, ggplot2::aes(xvar, yvar, color = output)) +
+    g <- ggplot2::ggplot(output, ggplot2::aes(xvar, yvar, color = output)) +
       ggplot2::geom_point(size = 2) +
       ggplot2::scale_colour_gradientn(colours = grDevices::terrain.colors(10),
                                       name = v) +
@@ -53,7 +53,7 @@ plot_multiscatter <- function(sa) {
                      # legend.key.size = ggplot2::unit(0.5, "cm"),
                      strip.background = ggplot2::element_rect(fill = "white"),
                      legend.position = "top")
-    gg
+    g
   })
   return(pl)
 }
