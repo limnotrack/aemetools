@@ -179,6 +179,7 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
   testthat::expect_true(file_chk)
 
   utils::data("aeme_parameters", package = "aemetools")
+  param <- aeme_parameters
 
   # Function to calculate fitness
   fit <- function(df) {
@@ -198,7 +199,7 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
 
   # Calibrate AEME model
   ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = aeme_parameters, model = model,
+                     param = param, model = model,
                      mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
                      vars_sim = vars_sim, weights = weights)
 
