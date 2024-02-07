@@ -56,7 +56,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
                   model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
                   FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, model = model, path = path)
+  sa_res <- read_sa(ctrl = ctrl, model = model, path = path, R = 2^2)
 
   testthat::expect_true(is.data.frame(sa_res$df))
 })
@@ -118,7 +118,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
                   model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
                   FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, model = model, path = path)
+  sa_res <- read_sa(ctrl = ctrl, model = model, path = path, R = 2^2)
 
   testthat::expect_true(is.data.frame(sa_res$df))
 
@@ -195,7 +195,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
                   model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
                   FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, model = model, path = path)
+  sa_res <- read_sa(ctrl = ctrl, model = model, path = path, R = 2^2)
 
   testthat::expect_true(is.data.frame(sa_res$df))
 })
