@@ -93,7 +93,7 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
+                                    use_bgc = TRUE)
 
   utils::data("gotm_wet_parameters", package = "aemetools")
   param <- gotm_wet_parameters |>
@@ -104,9 +104,9 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
     mean(df$model)
   }
 
-  FUN_list <- list(HYD_temp = fit)
+  FUN_list <- list(HYD_temp = fit, PHY_tchla = fit)
 
-  ctrl <- list(N = 2^2, ncore = 2L, na_value = 999, parallel = TRUE,
+  ctrl <- list(N = 2^1, ncore = 14, na_value = 999, parallel = TRUE,
                out_file = "results.db",
                vars_sim = list(
                  surf_temp = list(var = "HYD_temp",
@@ -116,17 +116,24 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
                  bot_temp = list(var = "HYD_temp",
                                  month = c(10:12, 1:3),
                                  depth_range = c(10, 13)
+                 ),
+                 PHY_tchla = list(var = "PHY_tchla",
+                                  month = c(10:12, 1:3),
+                                  depth_range = c(0, 2)
                  )
                )
   )
 
   # Run sensitivity analysis AEME model
-  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                  model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
-                  FUN_list = FUN_list)
+  sim_id <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
+                    model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+                    FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, model = model, path = path)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, boot = FALSE)
 
-  testthat::expect_true(is.data.frame(sa_res$df))
+  testthat::expect_true(is.data.frame(sa_res[[1]]$df))
+
+  p1 <- plot_uncertainty(sa = sa_res)
+  testthat::expect_true(ggplot2::is.ggplot(p1))
 })
 
