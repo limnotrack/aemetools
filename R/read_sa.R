@@ -20,6 +20,9 @@
 read_sa <- function(ctrl, sim_id, R = NULL, boot = TRUE) {
 
   out <- read_simulation_output(ctrl = ctrl, sim_id = sim_id, method = "sa")
+  if (nrow(out$simulation_data) == 0) {
+    stop("No data found for that sim_id. Check the sim_id.")
+  }
 
   all <- lapply(sim_id, \(sid) {
     wid <- out$simulation_data |>
