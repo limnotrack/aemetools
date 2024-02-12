@@ -116,17 +116,20 @@ abbrev_pars <- function(par, model) {
     dy_abbrev <- function(string) {
       # Split the string into words
       words <- strsplit(string, "_")[[1]]
+      if (length(words) > 1) {
+        # Extract the first letter of each word
+        initials <- abbreviate(words, 3)
 
-      # Extract the first letter of each word
-      initials <- abbreviate(words, 3)
+        # Concatenate the initials to form the abbreviation
+        abbreviation <- paste(initials, collapse = "_")
 
-      # Concatenate the initials to form the abbreviation
-      abbreviation <- paste(initials, collapse = "_")
-
-      return(abbreviation)
+        return(abbreviation)
+      } else {
+        return(string)
+      }
     }
-    params <- sub("\\..*", "", params1)
-    params <- sapply(params, \(x) {
+    par2 <- sub("\\/.*", "", par1)
+    par2 <- sapply(par2, \(x) {
       if (!grepl("MET_", x)) {
         dy_abbrev(x)
       } else {
