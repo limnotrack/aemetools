@@ -40,19 +40,30 @@ write_simulation_output <- function(x, ctrl, aeme_data, model, param, method,
   file_to_check <- ifelse(type == "db", ctrl$out_file,
                           "simulation_metadata.csv")
 
+  sim_stem_chk <- data.frame()
+  lake_in_meta_chk <- FALSE
   if (file.exists(file_to_check)) {
     if (type == "db") {
       con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file_to_check)
       db_tabs <- DBI::dbListTables(con)
-      if (!"simulation_metadata" %in% db_tabs)
-        stop("No simulation_metadata table found in ", file_to_check)
-      sim_stem_chk <- dplyr::tbl(con, "simulation_metadata") |>
-        dplyr::filter(grepl(sim_stem, sim_id)) |>
-        as.data.frame()
+      if ("lake_metadata" %in% db_tabs) {
+        lke_ids <- dplyr::tbl(con, "lake_metadata") |>
+          dplyr::pull(id)
+        lake_in_meta_chk <- lke$id %in% lke_ids
+      }
+      if ("simulation_metadata" %in% db_tabs) {
+        # message("No simulation_metadata table found in ", file_to_check)
+        sim_stem_chk <- dplyr::tbl(con, "simulation_metadata") |>
+          dplyr::filter(grepl(sim_stem, sim_id)) |>
+          as.data.frame()
+      }
       DBI::dbDisconnect(con, shutdown = TRUE)
     } else if (type == "csv") {
       sim_stem_chk <- read.csv("simulation_metadata.csv") |>
         dplyr::filter(grepl(sim_stem, sim_id))
+      lke_ids <- read.csv("lake_metadata.csv") |>
+        dplyr::pull(id)
+      lake_in_meta_chk <- lke$id %in% lke_ids
     }
 
     if (nrow(sim_stem_chk) > 0) {
@@ -92,7 +103,7 @@ write_simulation_output <- function(x, ctrl, aeme_data, model, param, method,
 
     # Extract parameter info
     param_meta <- param |>
-      dplyr::mutate(sim_id = sim_id) |>
+      dplyr::mutate(sim_id = sim_id, group = as.character(group)) |>
       dplyr::select(sim_id, file, name, value, min, max, module, group)
 
     # Sensitivity analysis metadata
@@ -155,7 +166,9 @@ write_simulation_output <- function(x, ctrl, aeme_data, model, param, method,
     for (i in seq_along(output)) {
       fname <- paste0(names(output)[i], ".csv")
       file_chk <- file.exists(fname)
-
+      if (names(output)[i] == "lake_metadata") {
+        if (lake_in_meta_chk) next
+      }
       if (gen_n == 1 & !file_chk) {
         write.csv(output[[i]], fname, quote = TRUE,
                   row.names = FALSE)
@@ -172,6 +185,11 @@ write_simulation_output <- function(x, ctrl, aeme_data, model, param, method,
     db_tabs <- DBI::dbListTables(con)
 
     for (i in seq_along(output)) {
+
+      if (names(output)[i] == "lake_metadata") {
+        if (lake_in_meta_chk) next
+      }
+
       DBI::dbWriteTable(con, names(output)[i], output[[i]],
                         overwrite = !file_chk, append = file_chk)
     }
