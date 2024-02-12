@@ -17,6 +17,7 @@ Imports:
     AEME (>= 0.1.0),
     airGR,
     DBI,
+    dbplyr,
     dplyr,
     duckdb,
     ecmwfr,
