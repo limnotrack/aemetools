@@ -37,7 +37,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- list(N = 2^3, ncore = 2L, na_value = 999, parallel = TRUE,
+  ctrl <- list(N = 2^2, ncore = 2L, na_value = 999, parallel = TRUE,
                out_file = "results.db",
                vars_sim = list(
                  surf_temp = list(var = "HYD_temp",
@@ -52,13 +52,13 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
   )
 
   # Run sensitivity analysis AEME model
-  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
+  sim_id <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
                   model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
                   FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, model = model, path = path, R = 2^2)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 
-  testthat::expect_true(is.data.frame(sa_res$df))
+  testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 })
 
 test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
@@ -99,7 +99,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- list(N = 2^2, ncore = 14, na_value = 999, parallel = TRUE,
+  ctrl <- list(N = 2^2, ncore = 12, na_value = 999, parallel = TRUE,
                out_file = "results.db",
                vars_sim = list(
                  surf_temp = list(var = "HYD_temp",
@@ -118,7 +118,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
                     model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
                     FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, path = path, R = 2^2)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
@@ -132,7 +132,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   testthat::expect_true(is.list(pl1))
   testthat::expect_true(ggplot2::is.ggplot(pl1[[1]][[1]]))
 
-  pl2 <- plot_sobol(sa_res, add_errorbars = T, use_dummy = T)
+  pl2 <- plot_sobol(sa = sa_res, add_errorbars = TRUE, use_dummy = TRUE)
   testthat::expect_true(is.list(pl2))
   testthat::expect_true(ggplot2::is.ggplot(pl2[[1]]))
 
@@ -176,7 +176,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- list(N = 2^3, ncore = 2L, na_value = 999, parallel = TRUE,
+  ctrl <- list(N = 2^2, ncore = 2L, na_value = 999, parallel = TRUE,
                out_file = "results.db",
                vars_sim = list(
                  surf_temp = list(var = "HYD_temp",
@@ -195,7 +195,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
                     model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
                     FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, path = path, R = 2^2)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 })
