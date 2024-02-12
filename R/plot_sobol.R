@@ -19,6 +19,11 @@ plot_sobol <- function(sa, order = "first", add_errorbars = TRUE,
       colNames <- colnames(data)
       dt <- data[sensitivity %in% c("Si", "Ti")] |>
         dplyr::mutate(fit_type = v, sim_id = sid)
+      if (nrow(dt) == 0) {
+        return(data.frame())
+      } else {
+        return(dt)
+      }
     })
 
     sub1 |>
@@ -33,7 +38,7 @@ plot_sobol <- function(sa, order = "first", add_errorbars = TRUE,
     lapply(names(sa[[sid]]$sobol_indices), \(v) {
       dummy <- if (use_dummy) {
         sa[[sid]]$sobol_dummy_indices[[v]] |>
-          dplyr::mutate(variable = v, sim_id = sid)
+          dplyr::mutate(fit_type = v, sim_id = sid)
       } else {
         NULL
       }
@@ -41,7 +46,7 @@ plot_sobol <- function(sa, order = "first", add_errorbars = TRUE,
       dplyr::bind_rows()
   }) |>
     dplyr::bind_rows()
-  if(nrow(dummy) == 0) {
+  if (nrow(dummy) == 0) {
     dummy <- NULL
   }
   # Plot only first-order indices
