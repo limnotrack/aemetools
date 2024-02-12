@@ -13,7 +13,8 @@ editor_options:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE
 )
 unlink("calib-test", recursive = TRUE, force = TRUE)
 ```
@@ -248,7 +249,7 @@ at any time. The `calib_aeme` function returns the `ctrl` object with any
 updated values.
 
 ```{r run-calibration, cache=FALSE}
-ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
+sim_id <- calib_aeme(aeme_data = aeme_data, path = path,
                    param = aeme_parameters, model = model,
                    mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
                    vars_sim = vars_sim, weights = weights)
@@ -280,9 +281,8 @@ plot.
 
 ```{r visualise-calibration-results, cache = FALSE}
 
-calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
-plist <- plot_calib(calib = calib_res, model = model, 
-                      na_value = ctrl$na_value)
+calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
 ```
 
 ### Dotty plot

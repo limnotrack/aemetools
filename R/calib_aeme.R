@@ -112,7 +112,6 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
   }
   ctrl$ngen <- round(ctrl$itermax / ctrl$NP)
 
-
   # Generate parameters for running calibration
   best_pars <- NULL
   if (is.null(param_df)) {
@@ -228,16 +227,20 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     }, pars = param_list)
 
     g1 <- do.call(rbind, model_out)
-    message("Best fit: ", round(min(g1$fit), 3), " (sd: ",
-            round(sd(g1$fit), 3), ")
-            Parameters: [", paste0(round(g1[which.min(g1$fit),
-                                            1:nrow(param)], 3),
+    message("Best fit: ", signif(min(g1$fit), 3), " (sd: ",
+            signif(sd(g1$fit), 5), ")
+            Parameters: [", paste0(signif(g1[which.min(g1$fit),
+                                             1:nrow(param)], 3),
                                    collapse = ", "), "]")
-    g1$gen <- gen_n
+    g1$gen <- 1
     best_pars <- g1[which.min(g1$fit), ]
     out_df <- apply(g1, 2, signif, digits = 6)
-    write_calib_output(x = out_df, file.path(path, ctrl$out_file),
-                       name = "calib_output")
+    sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
+                                      FUN_list = FUN_list,
+                                      aeme_data = aeme_data, model = model,
+                                      param = param, method = "calib",
+                                      append_metadata = TRUE)
+    ctrl$sim_id <- sim_id
 
     if (min(g1$fit) < ctrl$VTR) {
       message("Model fitness is less than VTR. Stopping simulation.")
@@ -321,8 +324,10 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
       g$gen <- gen_n
 
       out_df <- apply(g, 2, signif, digits = 6)
-      write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
-                         name = "calib_output")
+      write_simulation_output(x = out_df, ctrl = ctrl, aeme_data = aeme_data,
+                              model = model, param = param, method = "calib",
+                              FUN_list = FUN_list, sim_id = ctrl$sim_id,
+                              append_metadata = FALSE)
 
       message("Best fit: ", signif(min(g$fit), 5), " (sd: ",
               signif(sd(g$fit), 5), ")")
@@ -418,8 +423,11 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     out_df <- apply(g1, 2, signif, digits = 6)
     best_pars <- g1[which.min(g1$fit), ]
 
-    write_calib_output(x = out_df, file.path(path, ctrl$out_file),
-                       name = "calib_output")
+    ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
+                                           FUN_list = FUN_list,
+                                           aeme_data = aeme_data, model = model,
+                                           param = param, method = "calib",
+                                           append_metadata = TRUE)
 
     if (min(g1$fit) < ctrl$VTR) {
       message("Model fitness is less than VTR. Stopping simulation.")
@@ -505,8 +513,10 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
       g$gen <- gen_n
       out_df <- apply(g, 2, signif, digits = 6)
 
-      write_calib_output(x = out_df, file.path(path, ctrl$out_file),
-                         name = "calib_output")
+      write_simulation_output(x = out_df, ctrl = ctrl, aeme_data = aeme_data,
+                              model = model, param = param, method = "calib",
+                              FUN_list = FUN_list, sim_id = ctrl$sim_id,
+                              append_metadata = FALSE)
 
       message("Best fit: ", signif(min(g$fit), 5), " (sd: ",
               signif(sd(g$fit), 5), ")")
@@ -527,5 +537,5 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                            best_pars = best_pars)
     }
   }
-  ctrl
+  sim_id
 }

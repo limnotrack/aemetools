@@ -2,10 +2,10 @@
 title: "Sensitivity Analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Sensitivity Analysis}
+%\VignetteIndexEntry{Sensitivity Analysis}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
+  editor_options: 
   markdown: 
     wrap: 80
 ---
@@ -13,7 +13,8 @@ editor_options:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE
 )
 library(printr)
 unlink("sa-test", recursive = TRUE, force = TRUE)
@@ -152,26 +153,26 @@ are as follows:
 -   `N`: The initial sample size of the base sample matrix.
 
 -   `ncore`: The number of cores to use for the calibration. This is only used
-    if parallel = `TRUE`. Default to `parallel::detectCores() - 1.`
+if parallel = `TRUE`. Default to `parallel::detectCores() - 1.`
 
 -   `na_value`: value to replace NA value when returned.
 
 -   `parallel`: Logical value. If `TRUE`, the sensitivity analysis will be run
-    in parallel. If `FALSE`, it will be run in series.
+in parallel. If `FALSE`, it will be run in series.
 
 -   `out_file`: A character string naming a file for writing. Currently it can
-    write to a .csv file or a database (.db; using the duckDB package) file. If
-    writing to a database, it creates a table named "sa_output".
+write to a .csv file or a database (.db; using the duckDB package) file. If
+writing to a database, it creates a table named "sa_output".
 
 -   `vars_sim`: A named list of output variables for sensitivity analysis. The
-    name is user defined but each list must contain:
+name is user defined but each list must contain:
 
-    -   `var`: The variable name to use for the sensitivity analysis.
+-   `var`: The variable name to use for the sensitivity analysis.
 
-    -   `month`: A vector of months to use for the sensitivity analysis.
+-   `month`: A vector of months to use for the sensitivity analysis.
 
-    -   `depth_range`: A vector of length 2 with the minimum and maximum depth
-        range to use for the sensitivity analysis.
+-   `depth_range`: A vector of length 2 with the minimum and maximum depth
+range to use for the sensitivity analysis.
 
 Here is an example for examining surface temperature (surf_temp) in the months
 December to February, bottom temperature (bot_temp), (10 - 13 m) and also total
@@ -179,7 +180,7 @@ chlorophyll-a (PHY_tchla) at the surface (0 - 2 m) during the summer period.
 
 ```{r define-control-parameters}
 ctrl <- list(N = 2^4, ncore = 10, na_value = 999, parallel = TRUE,
-             out_file = "results.csv",
+             out_file = "results.db",
              vars_sim = list(
                surf_temp = list(var = "HYD_temp",
                                 month = c(12, 1:2),
@@ -190,8 +191,8 @@ ctrl <- list(N = 2^4, ncore = 10, na_value = 999, parallel = TRUE,
                                depth_range = c(10, 13)
                ),
                surf_chla = list(var = "PHY_tchla",
-                              month = c(12, 1:2),
-                              depth_range = c(0, 2)
+                                month = c(12, 1:2),
+                                depth_range = c(0, 2)
                )
              )
 )
@@ -209,13 +210,13 @@ arguments:
 
 
 The `sa_aeme` function writes the results to the file specified.  The 
-`sa_aeme` function returns the `ctrl` object with any updated values.
+`sa_aeme` function returns the `sim_id` of the run.
 
 ```{r run-sensitivity-analysis, cache=FALSE}
 # Run sensitivity analysis AEME model
-ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
-                FUN_list = FUN_list)
+sim_id <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
+                  model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+                  FUN_list = FUN_list)
 
 ```
 
@@ -230,31 +231,32 @@ function takes the following arguments:
 
 ```{r read-sensitivity-analysis}
 # Read in sensitivity analysis results
-sa_res <- read_sa(ctrl = ctrl, model = model, path = path, R = 2^2)
+sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 names(sa_res)
 ```
 
-The `read_sa` function returns a list with:
+The `read_sa` function returns a list for each simulation id provided. This list
+contains the following elements:
 
 -   `df`: dataframe of the sensitivity analysis results. The dataframe contains
-    the model, generation, index (model run), parameter name, parameter value,
-    fitness value and the median fitness value for each generation.
-    
+the model, generation, index (model run), parameter name, parameter value,
+fitness value and the median fitness value for each generation.
+
 ```{r print-sa-df}
-head(sa_res$df)
+head(sa_res[[1]]$df)
 ```
 
 -   `sobol_indices`: list of the Sobol indices for each variable an it's 
 senstivity to the parameters.
 
 ```{r print-sa-sobol}
-sa_res$sobol_indices
+sa_res[[1]]$sobol_indices
 ```
 
 -   `sobol_dummy`: list of the Sobol indices for the dummy parameter.
 
 ```{r print-sa-sobol-dummy}
-sa_res$sobol_dummy
+sa_res[[1]]$sobol_dummy
 
 ```
 
@@ -267,7 +269,7 @@ plots are based on the output plots from the `sensobol` package.
 These functions take the following argument:
 
 -   `sa_res`: The sensitivity analysis results returned from the `read_sa`
-    function.
+function.
 
 ### Uncertainty plot
 
@@ -301,13 +303,13 @@ each variable. The parameter on top is the x-axis and the parameter below is
 the y-axis. This is useful for identifying relationships between the
 parameters and response variable.
 
-```{r plot-sa-multiscatter, fig.width=8, fig.height=8}
+```{r plot-sa-multiscatter, fig.width=8, fig.height=6}
 pl <- plot_multiscatter(sa_res)
 
-pl[[1]]
+pl[[1]][1]
 
-pl[[2]]
+pl[[1]][2]
 
-pl[[3]]
+pl[[1]][3]
 
 ```

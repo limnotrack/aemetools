@@ -4,12 +4,10 @@
 \alias{get_param}
 \title{Get parameter values from calibration results}
 \usage{
-get_param(calib, model, na_value, fit_col = "fit", best = FALSE)
+get_param(calib, na_value, fit_col = "fit", best = FALSE)
 }
 \arguments{
 \item{calib}{A data frame with the calibration results.}
-
-\item{model}{A character vector with the model name.}
 
 \item{na_value}{A numeric value which corresponds to the NA value used in
 the calibration.}
@@ -19,6 +17,8 @@ the calibration.}
 
 \item{best}{A logical value indicating whether to return the best parameter
 values or all parameter values.}
+
+\item{model}{A character vector with the model name.}
 }
 \value{
 A data frame with the parameter values.

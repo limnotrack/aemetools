@@ -11,20 +11,28 @@
 
 plot_scatter <- function(sa) {
 
-  mean_y <- sa$df |>
-    dplyr::group_by(label, variable) |>
+  df <- lapply(names(sa), \(x) {
+    sa[[x]]$df |>
+      dplyr::filter(fit_type != "fit") |>
+      dplyr::mutate(sim_id = x, label = abbrev_pars(parameter_name, model[1]))
+  }) |>
+    dplyr::bind_rows()
+
+  mean_y <- df |>
+    dplyr::group_by(label, fit_type, sim_id) |>
     dplyr::do(
       dplyr::tibble(
-        value = seq(min(.$value), max(.$value), length.out = 30),
-        mean_y = suppressWarnings(approx(.$value, .$output, xout = value)$y)
+        value = seq(min(.$parameter_value), max(.$parameter_value), length.out = 30),
+        mean_y = suppressWarnings(approx(.$parameter_value, .$fit_value, xout = value)$y)
       )
     )
 
   ggplot2::ggplot() +
-    ggplot2::geom_point(data = sa$df, ggplot2::aes(x = value, y = output)) +
+    ggplot2::geom_point(data = df, ggplot2::aes(x = parameter_value, y = fit_value)) +
     ggplot2::geom_point(data = mean_y, ggplot2::aes(x = value, y = mean_y,
                                                     colour = "Mean")) +
-    ggplot2::facet_wrap(label ~ variable, scales = "free") +
+    # ggplot2::facet_wrap(fit_type ~ label, scales = "free") +
+    ggplot2::facet_grid(fit_type ~ sim_id * label, scales = "free") +
     ggplot2::xlab("Value") +
     ggplot2::ylab("y") +
     ggplot2::theme_bw()

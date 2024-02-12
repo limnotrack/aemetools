@@ -1,7 +1,6 @@
 #' Plot calibration results
 #'
 #' @param calib dataframe; output from \code{\link{read_calib}}
-#' @inheritParams calib_aeme
 #' @param na_value numeric; value to replace NA values with
 #' @param fit_col character; name of column containing fit values. Default is
 #'  \code{"fit"}.
@@ -21,36 +20,38 @@
 #' @return list of plots
 #' @export
 
-plot_calib <- function(calib, model, na_value, fit_col = "fit", nrow = 2,
+plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
                        base_size = 8, return_pars = FALSE) {
 
-  all_pars <- get_param(calib, model, na_value = na_value, fit_col = fit_col,
+  all_pars <- get_param(calib, na_value = na_value, fit_col = fit_col,
                         best = FALSE)
-  summ <- get_param(calib, model, na_value = na_value, fit_col = fit_col,
-                    best = TRUE)
-  if (min(all_pars$fit, na.rm = TRUE) <= 0) {
+  summ <- get_param(calib, na_value = na_value, fit_col = fit_col, best = TRUE)
+  if (min(all_pars$fit2, na.rm = TRUE) <= 0) {
     message(strwrap("Negative fit values detected, adding 1 to all values to
                     ensure log scale is possible.",
                     exdent = 2))
-    all_pars$fit <- all_pars$fit + 1.01
-    summ$fit <- summ$fit + 1.01
+    all_pars$fit2 <- all_pars$fit2 + 1.01
+    summ$fit2 <- summ$fit2 + 1.01
   }
 
-  # f_pars <- all_pars[all_pars$fit < 0, ]
-  ylims <- c(min(all_pars$fit, na.rm = TRUE),
-             stats::quantile(all_pars$fit, 0.75, na.rm = TRUE))
+  # f_pars <- all_pars[all_pars$fit2 < 0, ]
+  ylims <- c(min(all_pars$fit2, na.rm = TRUE),
+             stats::quantile(all_pars$fit2, 0.75, na.rm = TRUE))
   ylab <- ifelse(fit_col == "fit", "Fit", paste0("Fit (", fit_col, ")"))
 
   # Dotty plot ----
-  plist <- lapply(model, \(m) {
+  sim_ids <- calib$simulation_metadata$sim_id
+
+  plist <- lapply(sim_ids, \(s) {
     ggplot2::ggplot() +
-      ggplot2::geom_point(data = all_pars[all_pars$model == m, ],
-                          ggplot2::aes(value, fit, colour = gen,
+      ggplot2::geom_point(data = all_pars[all_pars$sim_id == s, ],
+                          ggplot2::aes(parameter_value, fit2, colour = gen,
                                        group = model)) +
-      ggplot2::geom_point(data = summ[summ$model == m, ],
-                          ggplot2::aes(value, fit), colour = "red") +
-      ggplot2::geom_vline(data = summ[summ$model == m, ],
-                          ggplot2::aes(xintercept = value)) +
+      ggplot2::geom_point(data = summ[summ$sim_id == s, ],
+                          ggplot2::aes(parameter_value, fit_value),
+                          colour = "red") +
+      ggplot2::geom_vline(data = summ[summ$sim_id == s, ],
+                          ggplot2::aes(xintercept = parameter_value)) +
       ggplot2::scale_y_log10() +
       ggplot2::scale_colour_viridis_d() +
       ggplot2::coord_cartesian(ylim = ylims) +
@@ -58,27 +59,28 @@ plot_calib <- function(calib, model, na_value, fit_col = "fit", nrow = 2,
       ggplot2::ylab(ylab) +
       # annotate(geom = 'text', label = 'sometext', x = -Inf, y = Inf, hjust = 0,
       #          vjust = 1) +
-      ggplot2::geom_text(data = summ[summ$model == m, ],
+      ggplot2::geom_text(data = summ[summ$sim_id == s, ],
                          ggplot2::aes(x = Inf, y = Inf,
-                                      label = signif(value, 3)), vjust = 4,
+                                      label = signif(parameter_value, 3)),
+                         vjust = 4,
                          hjust = 2, size = 3) +
       # facet_wrap(model ~ param, scales = "free_x", nrow = nrow) +
-      ggplot2::facet_grid(model ~ param2, scales = "free_x") +
+      ggplot2::facet_grid(sim_id ~ param2, scales = "free_x") +
       ggplot2::theme_bw(base_size = base_size)
   })
   pdotty <- patchwork::wrap_plots(plist, nrow = length(model),
                                   guides = "collect")
 
   # Convergence plot ----
-  plist <- lapply(model, \(m) {
+  plist <- lapply(sim_ids, \(s) {
     ggplot2::ggplot() +
-      ggplot2::geom_hline(data = summ[summ$model == m, ],
-                          ggplot2::aes(yintercept = value)) +
-      ggplot2::geom_point(data = all_pars[all_pars$model == m, ],
-                          ggplot2::aes(index, value, colour = gen, group = model)) +
+      ggplot2::geom_hline(data = summ[summ$sim_id == s, ],
+                          ggplot2::aes(yintercept = parameter_value)) +
+      ggplot2::geom_point(data = all_pars[all_pars$sim_id == s, ],
+                          ggplot2::aes(index, parameter_value, colour = gen, group = model)) +
       ggplot2::scale_colour_viridis_d() +
       ggplot2::xlab("Iteration") +
-      ggplot2::facet_grid(param2 ~ model, scales = "free") +
+      ggplot2::facet_grid(param2 ~ sim_id, scales = "free") +
       ggplot2::theme_bw(base_size = base_size)
   })
   pconverge <- patchwork::wrap_plots(plist, nrow = length(model),
@@ -87,13 +89,13 @@ plot_calib <- function(calib, model, na_value, fit_col = "fit", nrow = 2,
   all_pars$gen <- forcats::fct_rev(all_pars$gen)
 
   # Histogram ----
-  plist <- lapply(model, \(m) {
+  plist <- lapply(sim_ids, \(s) {
     ggplot2::ggplot() +
-      ggplot2::geom_histogram(data = all_pars[all_pars$model == m, ],
-                              ggplot2::aes(value, fill = gen), bins = 50) +
-      ggplot2::geom_vline(data = summ[summ$model == m, ],
-                          ggplot2::aes(xintercept = value)) +
-      ggplot2::facet_grid(model ~ param2, scales = "free") +
+      ggplot2::geom_histogram(data = all_pars[all_pars$sim_id == s, ],
+                              ggplot2::aes(parameter_value, fill = gen), bins = 50) +
+      ggplot2::geom_vline(data = summ[summ$sim_id == s, ],
+                          ggplot2::aes(xintercept = parameter_value)) +
+      ggplot2::facet_grid(sim_id ~ param2, scales = "free") +
       ggplot2::xlab("Parameter value") +
       ggplot2::scale_fill_viridis_d(direction = -1) +
       ggplot2::theme_bw(base_size = base_size)

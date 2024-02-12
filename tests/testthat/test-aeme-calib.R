@@ -107,12 +107,14 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
+  model <- c("gotm_wet", "glm_aed")
   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
                                     model = model, mod_ctrls = mod_ctrls,
                                     inf_factor = inf_factor, ext_elev = 5,
                                     use_bgc = FALSE)
 
   utils::data("aeme_parameters", package = "aemetools")
+  param <- aeme_parameters
 
   # Function to calculate fitness
   fit <- function(df) {
@@ -128,23 +130,25 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
   FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = fit)
 
   ctrl <- list(VTR = -Inf, NP = 15, itermax = 45, reltol = 0.07, cutoff = 0.25,
-               mutate = 0.1, parallel = FALSE, out_file = "results.db",
-               na_value = 999, ncore = 2)
+               mutate = 0.1, parallel = T, out_file = "results.db",
+               na_value = 999, ncore = 15)
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = aeme_parameters, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+  sim_id <- sapply(model, \(m) {
+    calib_aeme(aeme_data = aeme_data, path = path,
+               param = param, model = m,
+               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+               vars_sim = vars_sim, weights = weights)
+  })
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.list(calib_res))
 
-  plist <- plot_calib(calib = calib_res, model = model, fit_col = "LKE_lvlwtr",
+  plist <- plot_calib(calib = calib_res, fit_col = "LKE_lvlwtr",
                       na_value = ctrl$na_value)
 
   testthat::expect_true(is.list(plist))
@@ -198,14 +202,16 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
   weights <- c("HYD_temp" = 10, "LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = param, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+  sim_id <- sapply(model, \(m) {
+    calib_aeme(aeme_data = aeme_data, path = path,
+               param = param, model = m,
+               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+               vars_sim = vars_sim, weights = weights)
+  })
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.list(calib_res))
 
   plist <- plot_calib(calib = calib_res, model = model, fit_col = "LKE_lvlwtr",
                       na_value = ctrl$na_value)
@@ -261,14 +267,16 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
   names(weights) <- vars_sim
 
   # Calibrate AEME model
-  ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = aeme_parameters, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+  sim_id <- sapply(model, \(m) {
+    calib_aeme(aeme_data = aeme_data, path = path,
+               param = param, model = m,
+               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+               vars_sim = vars_sim, weights = weights)
+  })
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.list(calib_res))
 
   plist <- plot_calib(calib = calib_res, model = model,
                       na_value = ctrl$na_value)
@@ -323,14 +331,16 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = aeme_parameters, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+  sim_id <- sapply(model, \(m) {
+    calib_aeme(aeme_data = aeme_data, path = path,
+               param = param, model = m,
+               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+               vars_sim = vars_sim, weights = weights)
+  })
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.list(calib_res))
 
   plist <- plot_calib(calib = calib_res, model = model,
                       na_value = ctrl$na_value)
@@ -385,14 +395,16 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = aeme_parameters, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+  sim_id <- sapply(model, \(m) {
+    calib_aeme(aeme_data = aeme_data, path = path,
+               param = param, model = m,
+               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+               vars_sim = vars_sim, weights = weights)
+  })
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.list(calib_res))
 
   plist <- plot_calib(calib = calib_res, model = model,
                       na_value = ctrl$na_value)
@@ -447,14 +459,16 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = aeme_parameters, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+  sim_id <- sapply(model, \(m) {
+    calib_aeme(aeme_data = aeme_data, path = path,
+               param = param, model = m,
+               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+               vars_sim = vars_sim, weights = weights)
+  })
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.list(calib_res))
 
   plist <- plot_calib(calib = calib_res, model = model,
                       na_value = ctrl$na_value)
@@ -513,14 +527,16 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = aeme_parameters, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+  sim_id <- sapply(model, \(m) {
+    calib_aeme(aeme_data = aeme_data, path = path,
+               param = param, model = m,
+               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+               vars_sim = vars_sim, weights = weights)
+  })
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.list(calib_res))
 
   plist <- plot_calib(calib = calib_res, model = model,
                       na_value = ctrl$na_value)
@@ -580,14 +596,16 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = param, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+  sim_id <- sapply(model, \(m) {
+    calib_aeme(aeme_data = aeme_data, path = path,
+               param = param, model = m,
+               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+               vars_sim = vars_sim, weights = weights)
+  })
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.list(calib_res))
 
   plist <- plot_calib(calib = calib_res, model = model,
                       na_value = ctrl$na_value)
@@ -647,14 +665,16 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GLM in para
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = param, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+  sim_id <- sapply(model, \(m) {
+    calib_aeme(aeme_data = aeme_data, path = path,
+               param = param, model = m,
+               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+               vars_sim = vars_sim, weights = weights)
+  })
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.list(calib_res))
 
   plist <- plot_calib(calib = calib_res, model = model,
                       na_value = ctrl$na_value)
@@ -714,14 +734,16 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
-                     param = param, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+  sim_id <- sapply(model, \(m) {
+    calib_aeme(aeme_data = aeme_data, path = path,
+               param = param, model = m,
+               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+               vars_sim = vars_sim, weights = weights)
+  })
 
-  calib_res <- read_calib(ctrl = ctrl, model = model, path = path)
+  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.data.frame(calib_res))
+  testthat::expect_true(is.list(calib_res))
 
   plist <- plot_calib(calib = calib_res, model = model,
                       na_value = ctrl$na_value)
