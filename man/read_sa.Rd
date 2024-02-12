@@ -4,7 +4,7 @@
 \alias{read_sa}
 \title{Read calibration output}
 \usage{
-read_sa(ctrl, model, name = "sa_output", path = ".", R = NULL, boot = TRUE)
+read_sa(ctrl, sim_id, R = NULL, boot = TRUE)
 }
 \arguments{
 \item{ctrl}{list; of controls for calibration function.
@@ -38,11 +38,6 @@ Defaults to "results.csv"
 \item \code{ncore}: The number of cores to use for the calibration. This is only used
 if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
 }}
-
-\item{model}{string; for which model. Options are c("dy_cd", "glm_aed" and
-"gotm_wet")}
-
-\item{path}{filepath; where input files are located relative to `config`.}
 
 \item{R}{Positive integer, number of bootstrap replicas. Default is NULL.}
 

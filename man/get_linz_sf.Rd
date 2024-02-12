@@ -4,7 +4,7 @@
 \alias{get_linz_sf}
 \title{Get LINZ data as sf object}
 \usage{
-get_linz_sf(url, layer_id, key = NULL)
+get_linz_sf(url, shape = NULL, layer_id, key = NULL, version = "2.0.0")
 }
 \arguments{
 \item{url}{character, URL to LINZ API}

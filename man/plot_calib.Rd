@@ -6,7 +6,6 @@
 \usage{
 plot_calib(
   calib,
-  model,
   na_value,
   fit_col = "fit",
   nrow = 2,
@@ -16,9 +15,6 @@ plot_calib(
 }
 \arguments{
 \item{calib}{dataframe; output from \code{\link{read_calib}}}
-
-\item{model}{string; for which model. Options are c("dy_cd", "glm_aed" and
-"gotm_wet")}
 
 \item{na_value}{numeric; value to replace NA values with}
 

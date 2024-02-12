@@ -4,7 +4,7 @@
 \alias{plot_sobol}
 \title{Visualization of first, total, second, third and fourth-order Sobol' indices}
 \usage{
-plot_sobol(sa, use_dummy = TRUE, ...)
+plot_sobol(sa, order = "first", add_errorbars = TRUE, use_dummy = TRUE, ...)
 }
 \arguments{
 \item{sa}{list; of sensitivity analysis results read in with \code{\link{read_sa}}}

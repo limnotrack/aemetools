@@ -99,28 +99,28 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- list(N = 2^3, ncore = 2L, na_value = 999, parallel = TRUE,
+  ctrl <- list(N = 2^2, ncore = 14, na_value = 999, parallel = TRUE,
                out_file = "results.db",
                vars_sim = list(
                  surf_temp = list(var = "HYD_temp",
                                   month = c(10:12, 1:3),
                                   depth_range = c(0, 2)
-                                  ),
+                 ),
                  bot_temp = list(var = "HYD_temp",
                                  month = c(10:12, 1:3),
                                  depth_range = c(10, 13)
-                                 )
                  )
                )
+  )
 
   # Run sensitivity analysis AEME model
-  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                  model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
-                  FUN_list = FUN_list)
+  sim_id <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
+                    model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+                    FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, model = model, path = path, R = 2^2)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, path = path, R = 2^2)
 
-  testthat::expect_true(is.data.frame(sa_res$df))
+  testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
   p1 <- plot_uncertainty(sa_res)
   testthat::expect_true(ggplot2::is.ggplot(p1))
@@ -130,9 +130,9 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
 
   pl1 <- plot_multiscatter(sa_res)
   testthat::expect_true(is.list(pl1))
-  testthat::expect_true(ggplot2::is.ggplot(pl1[[1]]))
+  testthat::expect_true(ggplot2::is.ggplot(pl1[[1]][[1]]))
 
-  pl2 <- plot_sobol(sa_res)
+  pl2 <- plot_sobol(sa_res, add_errorbars = T, use_dummy = T)
   testthat::expect_true(is.list(pl2))
   testthat::expect_true(ggplot2::is.ggplot(pl2[[1]]))
 
@@ -191,11 +191,11 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   )
 
   # Run sensitivity analysis AEME model
-  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                  model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
-                  FUN_list = FUN_list)
+  sim_id <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
+                    model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+                    FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, model = model, path = path, R = 2^2)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, path = path, R = 2^2)
 
-  testthat::expect_true(is.data.frame(sa_res$df))
+  testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 })

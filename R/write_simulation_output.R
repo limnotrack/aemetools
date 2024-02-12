@@ -1,0 +1,180 @@
+#' Write calibration output to file
+#'
+#' @inheritParams utils::write.csv
+#' @inheritParams DBI::dbWriteTable
+#'
+#' @importFrom DBI dbConnect dbDisconnect dbWriteTable
+#' @importFrom duckdb duckdb
+#'
+#' @return \code{write_calib_output} writes the calibration output to a file
+#' @noRd
+#'
+
+write_simulation_output <- function(x, ctrl, aeme_data, model, param, method,
+                                    FUN_list, sim_id = NULL,
+                                    append_metadata = TRUE) {
+
+  # Extract meta information
+  lke <- AEME::lake(aeme_data)
+  tme <- AEME::time(aeme_data)
+  cfg <- AEME::configuration(aeme_data)
+  use_bgc <- !is.null(cfg[[model]]$ecosystem)
+
+  # Create function string
+  fun_string <- lapply(FUN_list, deparse1)
+
+  # Check if ctrl exists & assign sim id
+  type <- tools::file_ext(ctrl$out_file)
+  iter <- 1
+  if (is.null(sim_id)) {
+    sim_stem <- paste0(lke$id, "_", gsub("_", "", model), "_",
+                       ifelse(method == "calib", "C", "S"))
+  } else {
+    sim_stem <- paste0(strsplit(sim_id, "_")[[1]][1:3], collapse = "_")
+  }
+
+  # Table names
+  tbl_names <- c("lake_metadata", "simulation_metadata", "function_metadata",
+                 "parameter_metadata", "simulation_data")
+
+  file_to_check <- ifelse(type == "db", ctrl$out_file,
+                          "simulation_metadata.csv")
+
+  if (file.exists(file_to_check)) {
+    if (type == "db") {
+      con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file_to_check)
+      db_tabs <- DBI::dbListTables(con)
+      if (!"simulation_metadata" %in% db_tabs)
+        stop("No simulation_metadata table found in ", file_to_check)
+      sim_stem_chk <- dplyr::tbl(con, "simulation_metadata") |>
+        dplyr::filter(grepl(sim_stem, sim_id)) |>
+        as.data.frame()
+      DBI::dbDisconnect(con, shutdown = TRUE)
+    } else if (type == "csv") {
+      sim_stem_chk <- read.csv("simulation_metadata.csv") |>
+        dplyr::filter(grepl(sim_stem, sim_id))
+    }
+
+    if (nrow(sim_stem_chk) > 0) {
+      prev_iter <- sim_stem_chk |>
+        dplyr::slice_tail(n = 1) |>
+        dplyr::pull(sim_id) |>
+        strsplit("_")
+      prev_iter <- max(as.numeric(prev_iter[[1]][4]))
+      iter <- prev_iter + 1
+    }
+  }
+
+  if (is.null(sim_id)) {
+    # format to a 3 character number, pad with leading zeros
+    sim_id <- paste0(sim_stem, "_", formatC(iter, width = 3, flag = "0"))
+  }
+
+  if (append_metadata) {
+    # Convert lke list to dataframe
+    lake_meta <- data.frame(name = lke$name, id = lke$id, latitude = lke$latitude,
+                            longitude = lke$longitude, elevation = lke$elevation,
+                            depth = lke$depth, area = lke$area)
+
+    # Simulation metadata
+    sim_meta <- data.frame(sim_id = sim_id, id = lke$id, model = model,
+                           spin_up = tme$spin_up[[model]], start = tme$start,
+                           stop = tme$stop, use_bgc = use_bgc,
+                           n_params = nrow(param), method = method,
+                           time_started = as.POSIXct(Sys.time(),
+                                                     format = "%Y-%m-%d %H:%M:%S"))
+
+    # Function metadata
+    fun_meta <- lapply(names(FUN_list), \(f) {
+      data.frame(sim_id = sim_id, var = f, fun = deparse1(FUN_list[[f]]))
+    }) |>
+      dplyr::bind_rows()
+
+    # Extract parameter info
+    param_meta <- param |>
+      dplyr::mutate(sim_id = sim_id) |>
+      dplyr::select(sim_id, file, name, value, min, max, module, group)
+
+    # Sensitivity analysis metadata
+    if (method == "sa") {
+
+      sa_meta <- lapply(names(ctrl$vars_sim), \(n) {
+        data.frame(sim_id = sim_id, variable = n, var = ctrl$vars_sim[[n]]$var,
+                   depth_from = min(ctrl$vars_sim[[n]]$depth_range),
+                   depth_to = max(ctrl$vars_sim[[n]]$depth_range),
+                   month = ctrl$vars_sim[[n]]$month)
+      }) |>
+        dplyr::bind_rows()
+    }
+  }
+
+
+  # Format simulation output
+  sims <- x |>
+    as.data.frame() |>
+    dplyr::mutate(run = 1:dplyr::n()) |>
+    dplyr::select(run, dplyr::everything())
+
+  if (!"gen" %in% names(sims)) {
+    sims$gen <- 1
+  }
+
+  # pivot_longer to get the output in long format
+  sim_data <- sims |>
+    tidyr::pivot_longer(cols = dplyr::contains("/"), names_to = "pname",
+                        values_to = "pvalue") |>
+    tidyr::pivot_longer(cols = dplyr::contains("_") | dplyr::contains("fit"),
+                        names_to = "fit_type", values_to = "fit_value") |>
+    as.data.frame() |>
+    dplyr::rename(parameter_name = pname, parameter_value = pvalue) |>
+    dplyr::mutate(sim_id = sim_id) |>
+    dplyr::select(sim_id, gen, run, parameter_name, parameter_value, fit_type, fit_value)
+
+
+  if (!append_metadata) {
+    output <- list(simulation_data = sim_data)
+  } else {
+    output <- list(lake_metadata = lake_meta, simulation_metadata = sim_meta,
+                   function_metadata = fun_meta, parameter_metadata = param_meta,
+                   simulation_data = sim_data)
+    if (method == "sa") {
+      output$sensitivity_metadata <- sa_meta
+    }
+  }
+
+  if ("gen" %in% colnames(sim_data)) {
+    gen_n <- sim_data[1, "gen"]
+
+    file_to_print <- ifelse(type == "db", ctrl$out_file, "simulation_data.csv")
+
+    message("Writing output for generation ", gen_n, " to ", file_to_print,
+            " with sim ID: ", sim_id, " [", format(Sys.time()), "]")
+  }
+
+  if (type == "csv") {
+    for (i in seq_along(output)) {
+      fname <- paste0(names(output)[i], ".csv")
+      file_chk <- file.exists(fname)
+
+      if (gen_n == 1 & !file_chk) {
+        write.csv(output[[i]], fname, quote = TRUE,
+                  row.names = FALSE)
+
+      } else {
+        write.table(output[[i]], fname, append = TRUE, sep = ",", row.names = FALSE,
+                    col.names = FALSE)
+      }
+    }
+  } else if (type == "db") {
+    file_chk <- file.exists(ctrl$out_file)
+    con <- DBI::dbConnect(duckdb::duckdb(), dbdir = ctrl$out_file)
+    on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
+    db_tabs <- DBI::dbListTables(con)
+
+    for (i in seq_along(output)) {
+      DBI::dbWriteTable(con, names(output)[i], output[[i]],
+                        overwrite = !file_chk, append = file_chk)
+    }
+  }
+  sim_id
+}

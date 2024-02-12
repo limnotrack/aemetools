@@ -17,117 +17,88 @@
 #' the sobol indices for each variable.
 #' @export
 
-read_sa <- function(ctrl, model, name = "sa_output", path = ".", R = NULL,
-                    boot = TRUE) {
+read_sa <- function(ctrl, sim_id, R = NULL, boot = TRUE) {
 
-  file <- file.path(path, ctrl$out_file)
-  type <- tools::file_ext(file)
+  out <- read_simulation_output(ctrl = ctrl, sim_id = sim_id, method = "sa")
 
-  if (type == "csv") {
-    out <- utils::read.csv(file)
-  } else if (type == "db") {
-    con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
-    out <- DBI::dbReadTable(con, name)
-    DBI::dbDisconnect(con, shutdown = TRUE)
-  }
-  # ngen <- ceiling(nrow(out) / ctrl$NP)
-  # if (length(ngen) == 0) {
-  #   ngen <- 1
-  # }
-  # if ("gen" %in% names(out)) {
-  #   out$gen <- factor(out$gen)
-  # } else {
-  #   out$gen <- factor(rep(1:ngen, each = ctrl$NP, length.out = nrow(out)))
-  # }
-  mat <- out |>
-    dplyr::select(-c(fit:dplyr::last_col())) |>
-    as.matrix()
+  all <- lapply(sim_id, \(sid) {
+    wid <- out$simulation_data |>
+      dplyr::filter(sim_id == sid) |>
+      tidyr::pivot_wider(names_from = c(parameter_name),
+                         values_from = c(parameter_value)) |>
+      tidyr::pivot_wider(names_from = fit_type, values_from = fit_value) |>
+      dplyr::select(-c(sim_id, gen, run))
 
-  vars <- out |>
-    dplyr::select(c(fit:dplyr::last_col())) |>
-    dplyr::select(-fit) |>
-    names()
-  names(vars) <- vars
+    model <- out$simulation_metadata |>
+      dplyr::filter(sim_id == sid) |>
+      dplyr::pull(model)
 
-  params1 <- gsub("NA.", "", colnames(mat))
-  if (model == "dy_cd") {
-    dy_abbrev <- function(string) {
-      # Split the string into words
-      words <- strsplit(string, "_")[[1]]
+    vars <- out$sensitivity_metadata |>
+      dplyr::filter(sim_id == sid) |>
+      dplyr::pull(variable) |>
+      unique()
+    # vars <- c("fit", vars)
 
-      # Extract the first letter of each word
-      initials <- abbreviate(words, 3)
+    mat <- wid |>
+      dplyr::select(-dplyr::all_of(c("fit", vars))) |>
+      as.matrix()
 
-      # Concatenate the initials to form the abbreviation
-      abbreviation <- paste(initials, collapse = "_")
+    # vars <- out |>
+    #   dplyr::select(c(fit:dplyr::last_col())) |>
+    #   dplyr::select(-fit) |>
+    #   names()
+    names(vars) <- vars
 
-      return(abbreviation)
-    }
-    params <- sub("\\..*", "", params1)
-    params <- sapply(params, \(x) {
-      if (!grepl("MET_", x)) {
-        dy_abbrev(x)
-      } else {
-        x
-      }
+    params1 <- gsub("NA.", "", colnames(mat))
+    params <- abbrev_pars(params1, model)
+
+    # names(params) <- params1
+    par_ref <- data.frame(parameter_name = params1, label = params)
+    N <- ctrl$N
+
+    sobol_indices <- lapply(vars, function(v) {
+      Y <- wid[[v]]
+      # Y[Y > 100] <- 999
+      if (sd(Y) < 1e-3) return()
+      sensobol::sobol_indices(Y = Y, N = N, params = params, boot = boot, R = R)
     })
-  } else if (model == "glm_aed") {
-    params <- sub(".*\\.", "", params1)
-  } else if (model == "gotm_wet") {
-    params <- sub(".+\\.", "", params1)
-    if ("constant_value" %in% params) {
-      params[params == "constant_value"] <- stringr::str_extract(params1[params == "constant_value"], "[^.]+(?=\\.[^.]+$)")
-    }
-  }
-  if (any(grepl("MET_", params))) {
-    params <- sub("MET_", "", params)
-  }
 
-  # names(params) <- params1
-  par_ref <- data.frame(parameter = params1, label = params)
-  N <- ctrl$N
+    sobol_dummy_indices <- lapply(vars, function(v) {
+      Y <- wid[[v]]
+      sensobol::sobol_dummy(Y = Y, N = N, params = params, boot = boot, R = R)
+    })
 
-  sobol_indices <- lapply(vars, function(v) {
-    Y <- out[[v]]
-    # Y[Y > 100] <- 999
-    if (sd(Y) < 1e-3) return()
-    sensobol::sobol_indices(Y = Y, N = N, params = params, boot = boot, R = R)
+
+    # out$index <- 1:nrow(out)
+    # mlt <- tidyr::pivot_longer(out, cols = -c(fit:dplyr::last_col()),
+    #                            names_to = "parameter", values_to = "value") |>
+    #   dplyr::select(-fit) |>
+    #   tidyr::pivot_longer(cols = !c(index:value),
+    #                       names_to = "variable", values_to = "output") |>
+    #   dplyr::mutate(parameter = gsub("NA.", "", parameter)) |>
+    #   as.data.frame()
+    #
+    #   gen_fit <- mlt |>
+    #     dplyr::group_by(gen, parameter) |>
+    #     dplyr::summarise(gen_fit = stats::median(fit), .groups = "drop")
+
+    df <- out$simulation_data |>
+      dplyr::filter(sim_id == sid) |>
+      dplyr::mutate(
+        model = model,
+        label = abbrev_pars(parameter_name, model),
+        fit_value = dplyr::case_when(
+          fit_value == ctrl$na_value ~ NA,
+          .default = fit_value
+        )) |>
+      dplyr::select(sim_id, model, run, dplyr::everything())
+
+
+    list(df = df, sobol_indices = sobol_indices,
+         sobol_dummy_indices = sobol_dummy_indices)
+
   })
-
-  sobol_dummy_indices <- lapply(vars, function(v) {
-    Y <- out[[v]]
-    # Y[Y > 100] <- 999
-    sensobol::sobol_dummy(Y = Y, N = N, params = params, boot = boot, R = R)
-  })
-
-
-  out$index <- 1:nrow(out)
-  mlt <- tidyr::pivot_longer(out, cols = -c(fit:dplyr::last_col()),
-                             names_to = "parameter", values_to = "value") |>
-    dplyr::select(-fit) |>
-    tidyr::pivot_longer(cols = !c(index:value),
-                        names_to = "variable", values_to = "output") |>
-    dplyr::mutate(parameter = gsub("NA.", "", parameter)) |>
-    as.data.frame()
-  #
-  #   gen_fit <- mlt |>
-  #     dplyr::group_by(gen, parameter) |>
-  #     dplyr::summarise(gen_fit = stats::median(fit), .groups = "drop")
-
-  df <- mlt |>
-    # dplyr::left_join(gen_fit, by = c("gen", "parameter")) |>
-    dplyr::mutate(
-      output = dplyr::case_when(
-        output == ctrl$na_value ~ NA,
-        .default = output
-      ),
-      # label = sub("MET_", "", parameter),
-      model = model) |>
-    dplyr::select(model, index, parameter, value, dplyr::everything()) |>
-    dplyr::left_join(par_ref, by = "parameter")
-
-
-  list(df = df, sobol_indices = sobol_indices,
-       sobol_dummy_indices = sobol_dummy_indices)
+  names(all) <- sim_id
+  return(all)
 }
 

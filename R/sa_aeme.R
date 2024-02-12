@@ -255,17 +255,22 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
     g1 <- do.call(rbind, model_out)
     out_df <- apply(g1, 2, signif, digits = 6)
-    write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
-                       name = "sa_output")
+    ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
+                                           FUN_list = FUN_list,
+                                           aeme_data = aeme_data, model = model,
+                                           param = param, method = "sa",
+                                           append_metadata = TRUE)
+    # write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
+    #                    name = "sa_output")
 
   } else {
     # Run in serial ----
     message("Running sensitivity analysis in serial with ", nrow(param_df),
             " parameter sets [", format(Sys.time()), "]")
     pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
-                             signif(apply(param_df, 2, median), 4),
-                             signif(apply(param_df, 2, sd), 4)),
-                       row.names = c("mean", "median", "sd"))
+                              signif(apply(param_df, 2, median), 4),
+                              signif(apply(param_df, 2, sd), 4)),
+                        row.names = c("mean", "median", "sd"))
     names(pr_df) <- gsub("NA/", "", names(param_df))
     print(pr_df)
     nmes <- names(ctrl$vars_sim)
@@ -331,10 +336,13 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
     g1 <- do.call(rbind, model_out)
     out_df <- apply(g1, 2, signif, digits = 6)
-    write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
-                       name = "sa_output")
+    ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
+                                           FUN_list = FUN_list,
+                                           aeme_data = aeme_data, model = model,
+                                           param = param, method = "sa",
+                                           append_metadata = TRUE)
 
     message("Complete! [", format(Sys.time()), "]")
   }
-  invisible(ctrl)
+  ctrl$sim_id
 }
