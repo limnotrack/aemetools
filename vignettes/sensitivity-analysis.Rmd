@@ -118,7 +118,7 @@ argument. The dataframe contains the observed data (`obs`) and the modelled data
 Here we use the model mean.
 
 ```{r define-fitness-function}
-# Function to calculate fitness
+# Function to calculate mean model output
 fit <- function(df) {
   mean(df$model)
 }
@@ -128,7 +128,7 @@ Different functions can be applied to different variables. For example, we can
 use the mean for water temperature and median for chloophyll-a.
 
 ```{r define-fitness-function-2}
-# Function to calculate fitness
+# Function to calculate median model output
 fit2 <- function(df) {
   median(df$model)
 }
@@ -147,8 +147,9 @@ FUN_list <- list(HYD_temp = fit, PHY_tchla = fit2)
 ### Define control parameters
 
 Next, we will define the control parameters for the sensitivity analysis. The
-control parameters are passed to the `sa_aeme` function. The control parameters
-are as follows:
+control parameters are generated using `create_control` and are then passed to 
+the `sa_aeme` function. The control parameters for the sensitivity analysis are 
+as follows:
 
 -   `N`: The initial sample size of the base sample matrix.
 
@@ -179,22 +180,22 @@ December to February, bottom temperature (bot_temp), (10 - 13 m) and also total
 chlorophyll-a (PHY_tchla) at the surface (0 - 2 m) during the summer period.
 
 ```{r define-control-parameters}
-ctrl <- list(N = 2^4, ncore = 10, na_value = 999, parallel = TRUE,
-             out_file = "results.db",
-             vars_sim = list(
-               surf_temp = list(var = "HYD_temp",
-                                month = c(12, 1:2),
-                                depth_range = c(0, 2) # change to depth_range
-               ),
-               bot_temp = list(var = "HYD_temp",
-                               month = c(12, 1:2),
-                               depth_range = c(10, 13)
-               ),
-               surf_chla = list(var = "PHY_tchla",
-                                month = c(12, 1:2),
-                                depth_range = c(0, 2)
-               )
-             )
+ctrl <- create_control(method = "sa", N = 2^4, ncore = 10, na_value = 999,
+                       parallel = TRUE, out_file = "results.db",
+                       vars_sim = list(
+                         surf_temp = list(var = "HYD_temp",
+                                          month = c(12, 1:2),
+                                          depth_range = c(0, 2) 
+                         ),
+                         bot_temp = list(var = "HYD_temp",
+                                         month = c(12, 1:2),
+                                         depth_range = c(10, 13)
+                         ),
+                         surf_chla = list(var = "PHY_tchla",
+                                          month = c(12, 1:2),
+                                          depth_range = c(0, 2)
+                         )
+                       )
 )
 ```
 
