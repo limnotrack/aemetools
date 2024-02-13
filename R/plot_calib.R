@@ -23,6 +23,7 @@
 plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
                        base_size = 8, return_pars = FALSE) {
 
+  nsims <- nrow(calib$simulation_metadata)
   all_pars <- get_param(calib, na_value = na_value, fit_col = fit_col,
                         best = FALSE)
   summ <- get_param(calib, na_value = na_value, fit_col = fit_col, best = TRUE)
@@ -68,7 +69,7 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
       ggplot2::facet_grid(sim_id ~ param2, scales = "free_x") +
       ggplot2::theme_bw(base_size = base_size)
   })
-  pdotty <- patchwork::wrap_plots(plist, nrow = length(model),
+  pdotty <- patchwork::wrap_plots(plist, nrow = nsims,
                                   guides = "collect")
 
   # Convergence plot ----
@@ -83,7 +84,7 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
       ggplot2::facet_grid(param2 ~ sim_id, scales = "free") +
       ggplot2::theme_bw(base_size = base_size)
   })
-  pconverge <- patchwork::wrap_plots(plist, nrow = length(model),
+  pconverge <- patchwork::wrap_plots(plist, nrow = nsims,
                                    guides = "collect")
 
   all_pars$gen <- forcats::fct_rev(all_pars$gen)
@@ -100,7 +101,7 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
       ggplot2::scale_fill_viridis_d(direction = -1) +
       ggplot2::theme_bw(base_size = base_size)
   })
-  phist <- patchwork::wrap_plots(plist, nrow = length(model),
+  phist <- patchwork::wrap_plots(plist, nrow = nsims,
                                  guides = "collect")
   return(list(dotty = pdotty, histogram = phist, convergence = pconverge))
 }
