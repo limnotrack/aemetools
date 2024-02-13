@@ -69,9 +69,10 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     stop("FUN_list must have names that match vars_sim")
 
   if (is.null(ctrl)) {
-    ctrl <- list(VTR = -Inf, NP = NA, itermax = 200, reltol = 0.07,
-                 cutoff = 0.25, mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-                 na_value = 999)
+    ctrl <- create_control(method = "calib", VTR = -Inf, NP = NA, itermax = 200,
+                           reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                           parallel = TRUE, out_file = "results.csv",
+                           na_value = 999)
   }
   if (is.null(ctrl$na_value)) {
     ctrl$na_value <- 999
