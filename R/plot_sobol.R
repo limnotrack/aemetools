@@ -16,6 +16,9 @@ plot_sobol <- function(sa, order = "first", add_errorbars = TRUE,
     sub1 <- lapply(names(sa[[sid]]$sobol_indices), \(v) {
       sensitivity <- parameters <- original <- low.ci <- high.ci <- NULL
       data <- sa[[sid]]$sobol_indices[[v]]$results
+      if (is.null(data)) {
+        return(data.frame())
+      }
       colNames <- colnames(data)
       dt <- data[sensitivity %in% c("Si", "Ti")] |>
         dplyr::mutate(fit_type = v, sim_id = sid)
