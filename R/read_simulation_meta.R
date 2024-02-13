@@ -1,0 +1,51 @@
+#' Read the simulation metadata
+#'
+#' This function reads the simulation metadata from the output file. The output
+#' file can be either a DuckDB database or a CSV file. The function reads the
+#' metadata and returns it as a data frame.
+#'
+#' @param ctrl A control object created by \code{\link{create_control}} and used
+#' to run a calibration or a sensitivity analysis.
+#'
+#' @return A data frame with the simulation metadata
+#' @export
+#'
+#' @importFrom dplyr tbl group_by summarise left_join
+#' @importFrom DBI dbConnect dbDisconnect
+#'
+
+read_simulation_meta <- function(ctrl) {
+
+  type <- tools::file_ext(ctrl$out_file)
+  if (type == "db") {
+    file <- ctrl$out_file
+  } else if (type == "csv") {
+    file <- "simulation_metadata.csv"
+  }
+
+  if (!file.exists(file)) stop("File not found: ", file)
+
+  # Read the file
+  if (type == "db") {
+    con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
+    on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
+    n_sim <- dplyr::tbl(con, "simulation_data") |>
+      dplyr::group_by(sim_id, gen) |>
+      dplyr::summarise(nruns = max(run)) |>
+      dplyr::group_by(sim_id) |>
+      dplyr::summarise(n_run = sum(nruns)) |>
+      as.data.frame()
+    sim_meta <- dplyr::tbl(con, "simulation_metadata") |>
+      as.data.frame() |>
+      dplyr::left_join(n_sim, by = "sim_id")
+    } else if (type == "csv") {
+      n_sim <- read.csv("simulation_data.csv") |>
+        dplyr::group_by(sim_id, gen) |>
+        dplyr::summarise(nruns = max(run)) |>
+        dplyr::group_by(sim_id) |>
+        dplyr::summarise(n_run = sum(nruns))
+      sim_meta <- read.csv("simulation_metadata.csv") |>
+        dplyr::left_join(n_sim, by = "sim_id")
+    }
+  return(sim_meta)
+}
