@@ -13,14 +13,16 @@ plot_sobol <- function(sa, order = "first", add_errorbars = TRUE,
   sim_ids <- names(sa)
 
   lst <- lapply(sim_ids, \(sid) {
-    sub1 <- lapply(names(sa[[sid]]$sobol_indices), \(v) {
-      sensitivity <- parameters <- original <- low.ci <- high.ci <- NULL
+    vars <- names(sa[[sid]]$sobol_indices)
+    sub1 <- lapply(vars, \(v) {
+      # sensitivity <- parameters <- original <- low.ci <- high.ci <- NULL
       data <- sa[[sid]]$sobol_indices[[v]]$results
       if (is.null(data)) {
         return(data.frame())
       }
       colNames <- colnames(data)
-      dt <- data[sensitivity %in% c("Si", "Ti")] |>
+      # dt <- data[sensitivity %in% c("Si", "Ti")] |>
+      dt <- data |>
         dplyr::mutate(fit_type = v, sim_id = sid)
       if (nrow(dt) == 0) {
         return(data.frame())
@@ -57,7 +59,8 @@ plot_sobol <- function(sa, order = "first", add_errorbars = TRUE,
 
   if (order == "first") {
     # dt <- data[sensitivity %in% c("Si", "Ti")]
-    gg <- ggplot2::ggplot(dt, ggplot2::aes(parameters, original, fill = sensitivity)) +
+    gg <- ggplot2::ggplot(dt, ggplot2::aes(parameters, original,
+                                           fill = sensitivity)) +
       ggplot2::geom_bar(stat = "identity",
                         position = ggplot2::position_dodge(0.6),
                         color = "black") +
