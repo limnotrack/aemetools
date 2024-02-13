@@ -98,18 +98,18 @@ to run quicker.
   FUN_list <- list(HYD_temp = fit)
 
   # Set up control parameters for surface and bottom temperature
-  ctrl <- list(N = 2^3, ncore = 2L, na_value = 999, parallel = TRUE,
-               out_file = "results.db",
-               vars_sim = list(
-                 surf_temp = list(var = "HYD_temp",
-                                  month = c(10:12, 1:3),
-                                  depth_range = c(0, 2)
-                 ),
-                 bot_temp = list(var = "HYD_temp",
-                                 month = c(10:12, 1:3),
-                                 depth_range = c(10, 13)
-                 )
-               )
+  ctrl <- create_control(method = "sa", N = 2^3, ncore = 2L, na_value = 999,
+                         parallel = TRUE, out_file = "results.db",
+                         vars_sim = list(
+                                   surf_temp = list(var = "HYD_temp",
+                                                    month = c(10:12, 1:3),
+                                                    depth_range = c(0, 2)
+                                                    ),
+                                   bot_temp = list(var = "HYD_temp",
+                                                   month = c(10:12, 1:3),
+                                                   depth_range = c(10, 13)
+                                                   )
+                                   )
   )
 
   # Run sensitivity analysis AEME model
