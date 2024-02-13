@@ -106,22 +106,22 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
 
   FUN_list <- list(HYD_temp = fit, PHY_tchla = fit)
 
-  ctrl <- list(N = 2^1, ncore = 14, na_value = 999, parallel = TRUE,
-               out_file = "results.db",
-               vars_sim = list(
-                 surf_temp = list(var = "HYD_temp",
-                                  month = c(10:12, 1:3),
-                                  depth_range = c(0, 2)
-                 ),
-                 bot_temp = list(var = "HYD_temp",
-                                 month = c(10:12, 1:3),
-                                 depth_range = c(10, 13)
-                 ),
-                 PHY_tchla = list(var = "PHY_tchla",
-                                  month = c(10:12, 1:3),
-                                  depth_range = c(0, 2)
-                 )
-               )
+  ctrl <- create_control(method = "calib", N = 2^1, ncore = 14, na_value = 999,
+                         parallel = TRUE, out_file = "results.db",
+                         vars_sim = list(
+                           surf_temp = list(var = "HYD_temp",
+                                            month = c(10:12, 1:3),
+                                            depth_range = c(0, 2)
+                           ),
+                           bot_temp = list(var = "HYD_temp",
+                                           month = c(10:12, 1:3),
+                                           depth_range = c(10, 13)
+                           ),
+                           PHY_tchla = list(var = "PHY_tchla",
+                                            month = c(10:12, 1:3),
+                                            depth_range = c(0, 2)
+                           )
+                         )
   )
 
   # Run sensitivity analysis AEME model

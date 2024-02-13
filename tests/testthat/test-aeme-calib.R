@@ -72,9 +72,12 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
-               mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999, ncore = 10)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.5, mutate = 0.1,
+                         parallel = TRUE, out_file = "results.csv",
+                         na_value = 999, ncore = 10)
+
+  testthat::expect_true(is.list(ctrl))
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 10)
@@ -132,9 +135,10 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
 
   FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.25,
-               mutate = 0.1, parallel = T, out_file = "results.db",
-               na_value = 999, ncore = 10)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = FALSE, out_file = "results.db",
+                         na_value = 999, ncore = 10)
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
@@ -197,9 +201,10 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 15, itermax = 45, reltol = 0.07, cutoff = 0.25,
-               mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999, ncore = 2)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = TRUE, out_file = "results.db",
+                         na_value = 999, ncore = 2)
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c("HYD_temp" = 10, "LKE_lvlwtr" = 1)
@@ -222,6 +227,9 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+
+  sim_meta <- read_simulation_meta(ctrl = ctrl)
+  testthat::expect_true(is.data.frame(sim_meta))
 
 })
 
@@ -261,9 +269,10 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
-               mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999, ncore = 2L)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = TRUE, out_file = "results.csv",
+                         na_value = 999, ncore = 2L)
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c(1, 10)
@@ -326,9 +335,10 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
-               mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999, ncore = 2L)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = TRUE, out_file = "results.csv",
+                         na_value = 999, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -390,9 +400,10 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
-               mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999, ncore = 2L)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = TRUE, out_file = "results.csv",
+                         na_value = 999, ncore = 2)
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -454,9 +465,10 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
-               mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999, ncore = 2L)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = TRUE, out_file = "results.csv",
+                         na_value = 999, ncore = 2)
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -523,9 +535,10 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
-               mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999, ncore = 2L)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = TRUE, out_file = "results.csv",
+                         na_value = 999, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -593,9 +606,10 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
-               mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999, ncore = 2L)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = TRUE, out_file = "results.csv",
+                         na_value = 999, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -663,9 +677,10 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GLM in para
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
-               mutate = 0.1, parallel = F, out_file = "results.csv",
-               na_value = 999, ncore = 2L)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = FALSE, out_file = "results.csv",
+                         na_value = 999, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -733,9 +748,10 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- list(VTR = -Inf, NP = 10, itermax = 30, reltol = 0.07, cutoff = 0.5,
-               mutate = 0.1, parallel = TRUE, out_file = "results.csv",
-               na_value = 999, ncore = 2L)
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = TRUE, out_file = "results.csv",
+                         na_value = 999, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -757,5 +773,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
 
-})
+  sim_meta <- read_simulation_meta(ctrl = ctrl)
+  testthat::expect_true(is.data.frame(sim_meta))
 
+})
