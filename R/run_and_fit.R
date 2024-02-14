@@ -445,8 +445,8 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
       }
       # }
     } else {
-      plot(df_lvl$Date, df_lvl$model, type = "l")
-      graphics::points(df_lvl$Date, df_lvl$obs, col = "red")
+      # plot(df_lvl$Date, df_lvl$model, type = "l")
+      # graphics::points(df_lvl$Date, df_lvl$obs, col = "red")
       res1 <- FUN_list$LKE_lvlwtr(df_lvl) * wlev_weight
       return_list[["LKE_lvlwtr"]] <- ifelse(is.nan(res1), na_value, res1)
       return(return_list)
