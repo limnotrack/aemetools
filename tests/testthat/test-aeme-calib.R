@@ -259,6 +259,7 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
   testthat::expect_true(file_chk)
 
   utils::data("aeme_parameters", package = "aemetools")
+  param <- aeme_parameters
 
   # Function to calculate fitness
   fit <- function(df) {
@@ -485,8 +486,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
 
   testthat::expect_true(is.list(calib_res))
 
-  plist <- plot_calib(calib = calib_res, model = model,
-                      na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
@@ -555,8 +555,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
 
   testthat::expect_true(is.list(calib_res))
 
-  plist <- plot_calib(calib = calib_res, model = model,
-                      na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
@@ -626,8 +625,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
 
   testthat::expect_true(is.list(calib_res))
 
-  plist <- plot_calib(calib = calib_res, model = model,
-                      na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
@@ -679,7 +677,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GLM in para
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = FALSE, out_file = "results.csv",
+                         parallel = TRUE, out_file = "results.csv",
                          na_value = 999, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
@@ -697,8 +695,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GLM in para
 
   testthat::expect_true(is.list(calib_res))
 
-  plist <- plot_calib(calib = calib_res, model = model,
-                      na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
