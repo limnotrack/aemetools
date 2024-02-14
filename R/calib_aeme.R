@@ -538,5 +538,5 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                            best_pars = best_pars)
     }
   }
-  sim_id
+  ctrl$sim_id
 }
