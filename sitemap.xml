@@ -43,6 +43,9 @@
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/convert_era5_ncdf.html</loc>
   </url>
   <url>
+    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/create_control.html</loc>
+  </url>
+  <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/create_linz_key.html</loc>
   </url>
   <url>
@@ -110,6 +113,9 @@
   </url>
   <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_sa.html</loc>
+  </url>
+  <url>
+    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_simulation_meta.html</loc>
   </url>
   <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_simulation_output.html</loc>
