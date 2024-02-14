@@ -133,8 +133,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   testthat::expect_true(ggplot2::is.ggplot(pl1[[1]][[1]]))
 
   pl2 <- plot_sobol(sa = sa_res, add_errorbars = TRUE, use_dummy = TRUE)
-  testthat::expect_true(is.list(pl2))
-  testthat::expect_true(ggplot2::is.ggplot(pl2[[1]]))
+  testthat::expect_true(ggplot2::is.ggplot(pl2))
 
 })
 
