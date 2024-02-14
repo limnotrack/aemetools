@@ -60,20 +60,6 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
                                      Sigma = stats::cov(survivors2), tol = 1))
   }
 
-
-
-  # Improved targeting of outflow factor when no obs present ----
-  # if ("outflow" %in% names(g) & !ctrl$use_obs & "MET_pprain" %in% names(g)) {
-  #   message("No observations, using normal distribution for outflow.")
-  #   b_par <- param_df[which.min(param_df$fit), ]
-  #   g[["outflow"]] <- stats::rnorm(n = ctrl$NP, mean = best_pars[["outflow"]],
-  #                                  sd = stats::sd(g$outflow))
-  #   g[["MET_pprain"]] <- stats::rnorm(n = ctrl$NP,
-  #                                     mean = best_pars[["MET_pprain"]],
-  #                                     sd = stats::sd(g$MET_pprain))
-  #
-  # }
-
   # Correct parameters outside ranges ----
   for (p in names(g)) {
     g[[p]][g[[p]] < param$min[param$name == p]] <- param$min[param$name == p]
