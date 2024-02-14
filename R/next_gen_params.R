@@ -38,14 +38,14 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
     survivors2 <- data.frame(matrix(survivors2))
     names(survivors2) <- names(survivors1)[keep_cols]
   }
-  if (nrow(survivors2) == 1) {
-    message("Number of survivors is too low (n=", nrow(survivors1),
-            ")... using 2 * ctrl$cutoff.")
-    survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
-                                                               (ctrl$cutoff * 2)),
-                             keep_cols]
-  }
-  if (nrow(survivors2) == 0) {
+  # if (nrow(survivors2) == 1) {
+  #   message("Number of survivors is too low (n=", nrow(survivors1),
+  #           ")... using 2 * ctrl$cutoff.")
+  #   survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
+  #                                                              (ctrl$cutoff * 2)),
+  #                            keep_cols]
+  # }
+  if (nrow(survivors2) <= 1) {
     message("All parameter sets are NA. Generating base parameters...")
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
                                                                (ctrl$cutoff * 3)),
