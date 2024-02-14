@@ -40,12 +40,18 @@ create_control <- function(method, ...) {
   } else if (method == "sa") {
 
     N <- ifelse("N" %in% names(ls), ls$N, 2^2)
-    vars_sim <- ifelse("vars_sim" %in% names(ls), ls$vars_sim, list(
-      surf_temp = list(var = "HYD_temp",
-                       month = c(10:12, 1:3),
-                       depth_range = c(0, 2)
+    # print(ls$vars_sim)
+    if ("vars_sim" %in% names(ls)) {
+      vars_sim <- ls$vars_sim
+      names(vars_sim) <- names(ls$vars_sim) # ensure that the names are carried over
+    } else {
+      vars_sim <- list(
+        surf_temp = list(var = "HYD_temp",
+                         month = c(10:12, 1:3),
+                         depth_range = c(0, 2)
+        )
       )
-    ))
+    }
 
     ctrl <- list(N = N, parallel = parallel, ncore = ncore, na_value = na_value,
                  out_file = out_file,
