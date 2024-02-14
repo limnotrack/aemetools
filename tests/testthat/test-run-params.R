@@ -106,7 +106,7 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
 
   FUN_list <- list(HYD_temp = fit, PHY_tchla = fit)
 
-  ctrl <- create_control(method = "calib", N = 2^1, ncore = 14, na_value = 999,
+  ctrl <- create_control(method = "sa", N = 2^1, ncore = 14, na_value = 999,
                          parallel = TRUE, out_file = "results.db",
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
