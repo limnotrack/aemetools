@@ -60,9 +60,11 @@ read_sa <- function(ctrl, sim_id, R = NULL, boot = TRUE) {
     N <- ctrl$N
 
     sobol_indices <- lapply(vars, function(v) {
+      print(v)
       Y <- wid[[v]]
       # Y[Y > 100] <- 999
-      if (sd(Y) < 1e-3) return()
+      Y[is.na(Y)] <- ctrl$na_value
+      if (sd(Y, na.rm = TRUE) < 1e-3) return()
       sensobol::sobol_indices(Y = Y, N = N, params = params, boot = boot, R = R)
     })
 
