@@ -17,7 +17,7 @@
 get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
 
   # lapply(calib, \(x) {
-  if (!fit_col %in% calib$simulation_data$fit_type) stop("fit_col not in calib")
+  if (!all(fit_col %in% calib$simulation_data$fit_type)) stop("fit_col not in calib")
   # })
 
   sim_ids <- calib$simulation_metadata$sim_id
@@ -42,7 +42,7 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
       dplyr::filter(sim_id == x) |>
       dplyr::left_join(df_idx, by = c("gen", "run")) |>
       dplyr::filter(
-        fit_type == fit_col
+        fit_type %in% fit_col
       ) |>
       dplyr::mutate(
         model = model,
@@ -51,7 +51,7 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
           .default = fit_value
         )) |>
       dplyr::mutate(
-        param2 = abbrev_pars(parameter_name, model),
+        label = abbrev_pars(parameter_name, model),
         gen = factor(gen)
       )
   }) |>
@@ -64,42 +64,11 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
 
   all_pars |>
     dplyr::filter(fit_value != na_value) |>
-    dplyr::group_by(sim_id, model, param2) |>
+    dplyr::group_by(sim_id, model, label, fit_type) |>
     dplyr::summarise(parameter_value = parameter_value[which.min(fit_value)],
                      fit_value = min(fit_value),
-                     .groups = "drop") |>
+                     gen = gen[which.min(fit_value)], .groups = "drop") |>
     as.data.frame()
-
-
-
-  # all_pars <- lapply(model, \(m) {
-  #   df <- calib |>
-  #     dplyr::filter(model == m) |>
-  #     dplyr::mutate(fit2 = dplyr::case_when(
-  #       fit == na_value ~ NA,
-  #       .default = fit
-  #     )) |>
-  #     # filter(fit < na_value) |>
-  #     dplyr::mutate(model = m, fit = fit)
-  # }) |>
-  #   do.call(rbind, .) |>
-  #   dplyr::mutate(param = gsub("\\.", "/", param)) |>
-  #   dplyr::mutate(param2 = dplyr::case_when(
-  #     model == "glm_aed" ~ gsub("^.*/", "", param),
-  #     model == "gotm_wet" ~ stringr::str_replace(param, "^.*/([^/]+)/([^/]+)$",
-  #                                                "\\1/\\2"),
-  #     model == "dy_cd" ~ gsub("/.*", "", param)
-  #   ))
-  #
-  # if (best) {
-  #   summ <- all_pars |>
-  #     dplyr::filter(fit < na_value) |>
-  #     dplyr::group_by(model, param2) |>
-  #     dplyr::summarise(value = value[which.min(fit)], fit = min(fit))
-  #   return(summ)
-  # } else {
-  #   return(all_pars)
-  # }
 }
 
 
