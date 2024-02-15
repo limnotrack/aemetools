@@ -146,8 +146,11 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     if (ctrl$ncore > nrow(start_param)) ctrl$ncore <- nrow(start_param)
   }
 
+  # Correct N of splits if ncore is greater than number of parameters
+  splts <- min(ctrl$NP, ctrl$ncore)
+
   suppressWarnings({
-    param_list <- split(start_param, rep(1:ctrl$ncore))
+    param_list <- split(start_param, 1:splts)
   })
 
   # Calibrate in parallel
@@ -155,7 +158,7 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
     temp_dirs <- make_temp_dir(model, lake_dir, n = ctrl$ncore)
     # list.files(temp_dirs[1], recursive = TRUE)
-    ncores <- min((parallel::detectCores() - 1), ctrl$ncore)
+    ncores <- min((parallel::detectCores() - 1), ctrl$ncore, ctrl$NP)
     message("Calibrating in parallel using ", ncores, " cores...")
 
     cl <- parallel::makeCluster(ncores)
