@@ -141,7 +141,7 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
                          na_value = 999, ncore = 10)
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
-  weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
+  weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 0.5)
 
   # Calibrate AEME model
   sim_id <- sapply(model, \(m) {
@@ -154,6 +154,9 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
   calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
 
   testthat::expect_true(is.list(calib_res))
+
+  psum <- plot_calib(calib = calib_res, fit_col = vars_sim,
+                     na_value = ctrl$na_value)
 
   plist <- plot_calib(calib = calib_res, fit_col = "LKE_lvlwtr",
                       na_value = ctrl$na_value)
@@ -632,7 +635,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
 
 })
 
-test_that("can calibrate lake level w/ scaling outflow only for AEME-GLM in parallel", {
+test_that("can calibrate lake level w/ scaling outflow and level from wbal only for AEME-GLM in parallel", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -641,6 +644,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GLM in para
   aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
   obs <- AEME::observations(aeme_data)
   obs$lake <- NULL
+  obs$level <- NULL
   AEME::observations(aeme_data) <- obs
   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -670,8 +674,9 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GLM in para
   fit <- function(df) {
     O <- df$obs
     P <- df$model
-    -1 * (cor(x = O, y = P, method = "pearson") -
-            (mean(abs(O - P)) / (max(O) - min(O))))
+    mean(abs(O - P))
+    # -1 * (cor(x = O, y = P, method = "pearson") -
+    #         (mean(abs(O - P)) / (max(O) - min(O))))
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
@@ -682,6 +687,16 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GLM in para
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
+
+  fit <- run_and_fit(aeme_data = aeme_data, param = param,
+                             model = model, path = path, FUN_list = FUN_list,
+                             mod_ctrls = mod_ctrls, vars_sim = vars_sim,
+                             weights = weights,
+                             return_indices = F,
+                             include_wlev = TRUE,
+                             fit = TRUE)
+
+  testthat::expect_true(fit$LKE_lvlwtr < 0.25)
 
   # Calibrate AEME model
   sim_id <- sapply(model, \(m) {
