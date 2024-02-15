@@ -92,6 +92,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
     lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
     inp <- AEME::input(aeme_data)
     obs <- AEME::observations(aeme_data)
+    wbal <- AEME::water_balance(aeme_data)
     aeme_time <- AEME::time(aeme_data)
     if (!is.null(obs$lake))
       obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
@@ -366,8 +367,15 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
       } else if (any(balance[["lvl"]] <= 0) | any(is.na(balance[["lvl"]]))) {
         return(return_list)
       }
-      lvl_adj <- obs$level |>
-        dplyr::mutate(value = (value - min(inp$hypsograph$elev)))
+      if (!is.null(obs$level)) {
+        lvl_adj <- obs$level |>
+          dplyr::mutate(value = (value - min(inp$hypsograph$elev)))
+      } else {
+        lvl_adj <- wbal$data$wbal |>
+          dplyr::select(Date, value) |>
+          dplyr::mutate(value = (value - min(inp$hypsograph$elev)),
+                        var = "LKE_lvlwtr")
+      }
 
       df_lvl <- dplyr::left_join(balance, lvl_adj, by = "Date")
 
@@ -421,7 +429,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
             FUN_list[[v]](sub)
           })
           for (v in names(res)) {
-            return_list[[v]] <- res[[v]]
+            return_list[[v]] <- res[[v]]  * weights[[v]]
           }
         } else if (method == "sa") {
           nmes_present <- unique(tst$name)
