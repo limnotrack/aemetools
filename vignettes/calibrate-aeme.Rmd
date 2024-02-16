@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   warning = FALSE
 )
+library(printr)
 unlink("calib-test", recursive = TRUE, force = TRUE)
 ```
 
@@ -225,8 +226,8 @@ The weights are specified in a named vector. The names of the vector should be
 the same as the variable names.
 
 ```{r define-variables}
-vars_sim <- c("HYD_temp")
-weights <- c("HYD_temp" = 1)
+vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 0.1)
 ```
 
 ## Run calibration
@@ -252,9 +253,9 @@ updated values.
 
 ```{r run-calibration, cache=FALSE}
 sim_id <- calib_aeme(aeme_data = aeme_data, path = path,
-                   param = aeme_parameters, model = model,
-                   mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                   vars_sim = vars_sim, weights = weights)
+                     param = aeme_parameters, model = model,
+                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
+                     vars_sim = vars_sim, weights = weights)
 
 ```
 
@@ -325,4 +326,90 @@ each generation is shown as a solid horizontal black line.
 
 ```{r convergence-plot, fig.width = 8, fig.height = 6}
 plist$convergence
+```
+
+## Assess calibrated values
+
+The best parameter values can be extracted using the `get_param` function. This
+function takes the following arguments:
+
+-   `calib`: The calibration results as read in using the `read_calib` function.
+-   `na_value`: The value to use for missing values in the observed and
+    predicted data. This is used to indicate when the model crashes and then can
+    be easily removed from the calibration results.
+-   `fit_col`: The name of the column in the calibration results that contains
+    the fitness value. Defaults to `fit`.
+-   `best`: A logical indicating whether to return the best parameter values or
+    the entire calibration dataset. Defaults to `FALSE`.
+
+```{r extract-best-parameters}
+best_params <- get_param(calib_res, na_value = ctrl$na_value, fit_col = "fit", best = TRUE)
+best_params
+
+```
+
+The best parameter values can be used to run the model and compare the simulated
+values to the observed values. This can be done using the `run_aeme_param` function.
+
+```{r run-calibrated-model}
+aeme_data <- run_aeme_param(aeme_data = aeme_data, path = path,
+                            param = best_params, model = model,
+                            mod_ctrls = mod_ctrls, return_aeme = TRUE)
+
+```
+
+The simulated values can be compared to the observed values using the
+`assess_model` function. This function takes the following arguments:
+
+-   `aeme_data`: The `aeme_data` object which has observations and model
+    simulations.
+-   `model`: The model to assess.
+-   `var_sim`: The variables to use for the assessment.
+
+
+The `assess_model` function returns:
+
+```{r sa-aeme-args, tidy=FALSE, printr.help.sections=c('value'), comment=''}
+?assess_model
+```
+
+
+
+```{r assess-calibated-model}
+
+assess_model(aeme_data = aeme_data, model = model, var_sim = vars_sim)
+
+```
+
+### Visualise model performance
+
+The model performance can be visualised using the `plot_resid` function within 
+the AEME package. This returns a list of ggplot objects, a plot of residuals
+for each variable. This is a multi-panel plot displaying residuals for:
+
+-   Observed vs. predicted values
+-   Residuals vs. predicted values
+-   Residuals vs. day of year
+-   Residuals vs. quantiles of the observed values
+
+
+```{r plot-residuals}
+pl <- plot_resid(aeme_data = aeme_data, model = model, var_sim = vars_sim)
+
+```
+
+#### Water temperature residuals
+
+```{r plot-residuals-plot, fig.width = 8, fig.height = 6}
+
+pl$HYD_temp
+  
+```
+
+#### Lake level residuals
+
+```{r plot-residuals-plot-2, fig.width = 8, fig.height = 6}
+
+pl$LKE_lvlwtr
+
 ```
