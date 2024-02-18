@@ -18,22 +18,76 @@ plot_scatter <- function(sa) {
   }) |>
     dplyr::bind_rows()
 
+  # Generate summary statistics
+  # summ <- df |>
+  #   dplyr::group_by(sim_id, fit_type) |>
+  #   dplyr::summarise(mean = mean(fit_value, na.rm = TRUE), median = median(fit_value, na.rm = TRUE),
+  #                    sd = sd(fit_value, na.rm = TRUE),
+  #                    .groups = "keep") |>
+  #   as.data.frame()
+  # summ
+
+
+  # Check for parameters to remove ----
+  rem_pars <- df |>
+    dplyr::group_by(label, fit_type, sim_id) |>
+    dplyr::summarise(na = all(is.na(fit_value)),
+                     no_range = max(parameter_value, na.rm = TRUE) ==
+                       min(parameter_value, na.rm = TRUE), .groups = "keep") |>
+    dplyr::ungroup() |>
+    dplyr::filter(na | no_range) |>
+    dplyr::pull(label) |>
+    unique()
+
+  df <- df |>
+    dplyr::filter(!label %in% rem_pars)
+
+
   mean_y <- df |>
     dplyr::group_by(label, fit_type, sim_id) |>
-    dplyr::do(
-      dplyr::tibble(
-        value = seq(min(.$parameter_value), max(.$parameter_value), length.out = 30),
-        mean_y = suppressWarnings(approx(.$parameter_value, .$fit_value, xout = value)$y)
-      )
+    dplyr::reframe(
+      value = seq(min(parameter_value, na.rm = TRUE),
+                  max(parameter_value, na.rm = TRUE), length.out = 30),
+      mean_y = suppressWarnings(approx(parameter_value, fit_value, xout = value)$y)
     )
 
-  ggplot2::ggplot() +
-    ggplot2::geom_point(data = df, ggplot2::aes(x = parameter_value, y = fit_value)) +
-    ggplot2::geom_point(data = mean_y, ggplot2::aes(x = value, y = mean_y,
-                                                    colour = "Mean")) +
-    # ggplot2::facet_wrap(fit_type ~ label, scales = "free") +
-    ggplot2::facet_grid(fit_type ~ sim_id * label, scales = "free") +
-    ggplot2::xlab("Value") +
-    ggplot2::ylab("y") +
-    ggplot2::theme_bw()
+  uni_pars <- df |>
+    dplyr::group_by(sim_id) |>
+    dplyr::summarise(n_pars = length(unique(label)), .groups = "keep")
+  n_pars <- sum(uni_pars$n_pars)
+
+  # If number of parameters greater than 20 create a list of plots
+  plist <- list()
+  if (n_pars > 20) {
+    for (sid in names(sa)) {
+      sub <- df |> dplyr::filter(sim_id == sid)
+      param_list <- split(unique(sub$label),
+                          ceiling(seq_along(unique(sub$label)) / 20))
+      plist[[sid]] <- lapply(param_list, \(x) {
+        sub2 <- sub |>  dplyr::filter(label %in% x)
+        my <- mean_y |> dplyr::filter(label %in% x & sid == sim_id)
+
+        ggplot2::ggplot() +
+          ggplot2::geom_point(data = sub2, ggplot2::aes(x = parameter_value, y = fit_value)) +
+          ggplot2::geom_point(data = my, ggplot2::aes(x = value, y = mean_y,
+                                                          colour = "Mean")) +
+          # ggplot2::facet_wrap(fit_type ~ label, scales = "free") +
+          ggplot2::facet_grid(fit_type ~ label, scales = "free") +
+          ggplot2::xlab("Value") +
+          ggplot2::ylab("y") +
+          ggplot2::theme_bw(base_size = 8)
+      })
+    }
+    return(plist)
+  } else {
+    ggplot2::ggplot() +
+      ggplot2::geom_point(data = df, ggplot2::aes(x = parameter_value, y = fit_value)) +
+      ggplot2::geom_point(data = mean_y, ggplot2::aes(x = value, y = mean_y,
+                                                      colour = "Mean")) +
+      # ggplot2::facet_wrap(fit_type ~ label, scales = "free") +
+      ggplot2::facet_grid(fit_type ~ sim_id * label, scales = "free") +
+      ggplot2::xlab("Value") +
+      ggplot2::ylab("y") +
+      ggplot2::theme_bw()
+  }
 }
