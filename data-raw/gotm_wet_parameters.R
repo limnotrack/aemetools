@@ -576,16 +576,22 @@ summary(wet)
 wet |>
   dplyr::filter(is.na(min))
 
+wet |>
+  dplyr::filter(min == max)
+
 gotm_wet_parameters <- wet |>
   dplyr::filter(!is.na(value) & (!logical | is.na(logical)) &
                   !grepl("nPrey", par)) |>
+  dplyr::filter(min != max) |>
   dplyr::mutate(
     min = dplyr::case_when(
       is.na(min) ~ value - (0.5 * abs(value)),
+      # par == "fDOMS" ~ 0,
       .default = min
     ),
     max = dplyr::case_when(
       is.na(max) ~ value + (0.5 * abs(value)),
+      # par == "fDOMS" ~ 0.5,
       .default = max
     )
   )
