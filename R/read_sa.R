@@ -60,7 +60,6 @@ read_sa <- function(ctrl, sim_id, R = NULL, boot = TRUE) {
     N <- ctrl$N
 
     sobol_indices <- lapply(vars, function(v) {
-      print(v)
       Y <- wid[[v]]
       # Y[Y > 100] <- 999
       Y[is.na(Y)] <- ctrl$na_value
