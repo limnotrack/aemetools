@@ -25,8 +25,8 @@ calib_aeme(
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
 
-\item{model}{string; for which model. Options are c("dy_cd", "glm_aed" and
-"gotm_wet")}
+\item{model}{string; for which model to calibrate. Only one model can be
+passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
 
 \item{mod_ctrls}{dataframe; of configuration loaded from
 "mod_ctrls.csv".}
@@ -38,46 +38,19 @@ model fit. Currently only supports using one variable.}
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
 to calculate model fit. If NULL, uses mean absolute error (MAE).}
 
-\item{ctrl}{list; of controls for calibration function.
-\itemize{
-\item \code{VTR} Value to be reached. The optimization process will stop if
-either the maximum number of iterations itermax is reached or the best
-parameter vector bestmem has found a value fn(bestmem) <= VTR. Default to
--Inf.
-\item \code{NP} number of population members. Defaults to NA; if the user does not
-change the value of NP from NA it is reset as
-\code{10 * sum(param$model == model)}. For many  problems it is best to set NP
-to be at least 10 times the length of the parameter vector.
-\item \code{itermax} the maximum iteration (population generation) allowed.
-Default is 200.
-\item \code{reltol} relative convergence tolerance. The algorithm stops if it is
-unable to reduce the value by a factor of \code{reltol * (abs(val) + reltol)}.
-Default = 0.07
-\item \code{cutoff}: The quantile cutoff used to select the parents for the next
-generation. For example, if \code{cutoff = 0.25}, the best 25\% of the population
-will be used as parents for the next generation.
-\item \code{mutate} fraction of population to undergo mutation (0-1).
-\item \code{parallel} boolean; run calibration in parallel. Default to TRUE
-\item \code{out_file} filepath; to csv for calibration output to be written to.
-Defaults to "results.csv"
-\item \code{na_value} value to replace NA values with in observations. Default to
-}
-\enumerate{
-\item 
-}
-\itemize{
-\item \code{ncore}: The number of cores to use for the calibration. This is only used
-if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
-}}
+\item{ctrl}{list; of controls for sensitivity analysis function created using
+the \code{\link{create_control}} function. See \link{create_control} for
+more details.}
 
 \item{weights}{vector; of weights for each variable in vars_sim. Default to
 c(1).}
 
-\item{param_df}{dataframe; of parameters read in from a csv file. Requires
-the columns c("model", "file", "name", "value", "min", "max").}
+\item{param_df}{dataframe; of parameters to be used in the calibration.
+Requires the columns c("model", "file", "name", "value", "min", "max"). This
+is used to restart from a previous calibration.}
 }
 \value{
-list; ctrl which was supplied with updated arguments if missing.
+string of simulation id to be used to read the simulation output.
 }
 \description{
 \code{calib_model()} runs the model and compares it against observations provided.

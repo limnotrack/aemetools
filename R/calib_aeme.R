@@ -7,45 +7,24 @@
 #' to run quicker.
 #'
 #'
+#' @inheritParams AEME::build_ensemble
 #' @param param dataframe; of parameters read in from a csv file. Requires the
 #' columns c("model", "file", "name", "value", "min", "max", "log")
-#' @param model string; for which model. Options are c("dy_cd", "glm_aed" and
-#'  "gotm_wet")
+#' @param model string; for which model to calibrate. Only one model can be
+#' passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").
 #' @param vars_sim vector; of variables names to be used in the calculation of
 #' model fit. Currently only supports using one variable.
 #' @param FUN_list list of functions; named according to the variables in the
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If NULL, uses mean absolute error (MAE).
-#' @param ctrl list; of controls for calibration function.
-#' * `VTR` Value to be reached. The optimization process will stop if
-#' either the maximum number of iterations itermax is reached or the best
-#' parameter vector bestmem has found a value fn(bestmem) <= VTR. Default to
-#'  -Inf.
-#' * `NP` number of population members. Defaults to NA; if the user does not
-#'  change the value of NP from NA it is reset as
-#'   `10 * sum(param$model == model)`. For many  problems it is best to set NP
-#'   to be at least 10 times the length of the parameter vector.
-#' * `itermax` the maximum iteration (population generation) allowed.
-#' Default is 200.
-#' * `reltol` relative convergence tolerance. The algorithm stops if it is
-#'  unable to reduce the value by a factor of `reltol * (abs(val) + reltol)`.
-#'  Default = 0.07
-#'  * `cutoff`: The quantile cutoff used to select the parents for the next
-#'  generation. For example, if `cutoff = 0.25`, the best 25% of the population
-#'  will be used as parents for the next generation.
-#'  * `mutate` fraction of population to undergo mutation (0-1).
-#'  * `parallel` boolean; run calibration in parallel. Default to TRUE
-#'  * `out_file` filepath; to csv for calibration output to be written to.
-#'  Defaults to "results.csv"
-#'  * `na_value` value to replace NA values with in observations. Default to
-#'   999.
-#'  * `ncore`: The number of cores to use for the calibration. This is only used
-#'  if `parallel = TRUE`. Default to `parallel::detectCores() - 1`.
-#' @inheritParams AEME::build_ensemble
+#' @param ctrl list; of controls for sensitivity analysis function created using
+#'  the \code{\link{create_control}} function. See \link{create_control} for
+#'  more details.
 #' @param weights vector; of weights for each variable in vars_sim. Default to
 #' c(1).
-#' @param param_df dataframe; of parameters read in from a csv file. Requires
-#' the columns c("model", "file", "name", "value", "min", "max").
+#' @param param_df dataframe; of parameters to be used in the calibration.
+#' Requires the columns c("model", "file", "name", "value", "min", "max"). This
+#' is used to restart from a previous calibration.
 #'
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom utils write.csv write.table
@@ -53,7 +32,7 @@
 #' @importFrom FME Latinhyper
 #' @importFrom dplyr mutate
 #'
-#' @return list; ctrl which was supplied with updated arguments if missing.
+#' @return string of simulation id to be used to read the simulation output.
 #'
 #' @export
 
@@ -69,14 +48,12 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     stop("FUN_list must have names that match vars_sim")
 
   if (is.null(ctrl)) {
-    ctrl <- create_control(method = "calib", VTR = -Inf, NP = NA, itermax = 200,
-                           reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                           parallel = TRUE, out_file = "results.csv",
-                           na_value = 999)
+    ctrl <- create_control(method = "calib", NP = NA, itermax = 200)
   }
   if (is.null(ctrl$na_value)) {
     ctrl$na_value <- 999
   }
+  nsim <- 0 # Counter for number of simulations
 
   include_wlev <- ifelse("LKE_lvlwtr" %in% vars_sim, TRUE, FALSE)
 
@@ -91,12 +68,11 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
             format(Sys.time()), "]")
     suppressMessages(
       var_indices <- run_and_fit(aeme_data = aeme_data, param = param,
-                                 model = model, path = path, FUN_list = FUN_list,
-                                 mod_ctrls = mod_ctrls, vars_sim = vars_sim,
-                                 weights = weights,
+                                 model = model, path = path,
+                                 FUN_list = FUN_list, mod_ctrls = mod_ctrls,
+                                 vars_sim = vars_sim, weights = weights,
                                  return_indices = TRUE,
-                                 include_wlev = include_wlev,
-                                 fit = FALSE)
+                                 include_wlev = include_wlev, fit = FALSE)
     )
     message("Complete! [", format(Sys.time()), "]")
   }
@@ -239,11 +215,11 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     g1$gen <- 1
     best_pars <- g1[which.min(g1$fit), ]
     out_df <- apply(g1, 2, signif, digits = 6)
+    nsim <- nsim + nrow(out_df)
     sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
                                       FUN_list = FUN_list,
                                       aeme_data = aeme_data, model = model,
-                                      param = param, method = "calib",
-                                      append_metadata = TRUE)
+                                      param = param, append_metadata = TRUE)
     ctrl$sim_id <- sim_id
 
     if (min(g1$fit) < ctrl$VTR) {
@@ -328,8 +304,9 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
       g$gen <- gen_n
 
       out_df <- apply(g, 2, signif, digits = 6)
+      nsim <- nsim + nrow(out_df)
       write_simulation_output(x = out_df, ctrl = ctrl, aeme_data = aeme_data,
-                              model = model, param = param, method = "calib",
+                              model = model, param = param,
                               FUN_list = FUN_list, sim_id = ctrl$sim_id,
                               append_metadata = FALSE)
 
@@ -425,12 +402,13 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                                    collapse = ", "), "]")
     g1$gen <- gen_n
     out_df <- apply(g1, 2, signif, digits = 6)
+    nsim <- nsim + nrow(out_df)
     best_pars <- g1[which.min(g1$fit), ]
 
     ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
                                            FUN_list = FUN_list,
                                            aeme_data = aeme_data, model = model,
-                                           param = param, method = "calib",
+                                           param = param,
                                            append_metadata = TRUE)
 
     if (min(g1$fit) < ctrl$VTR) {
@@ -517,10 +495,10 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
       g$gen <- gen_n
       out_df <- apply(g, 2, signif, digits = 6)
 
+      nsim <- nsim + nrow(out_df)
       write_simulation_output(x = out_df, ctrl = ctrl, aeme_data = aeme_data,
-                              model = model, param = param, method = "calib",
-                              FUN_list = FUN_list, sim_id = ctrl$sim_id,
-                              append_metadata = FALSE)
+                              model = model, param = param, FUN_list = FUN_list,
+                              sim_id = ctrl$sim_id, append_metadata = FALSE)
 
       message("Best fit: ", signif(min(g$fit), 5), " (sd: ",
               signif(sd(g$fit), 5), ")")
@@ -541,5 +519,6 @@ calib_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
                            best_pars = best_pars)
     }
   }
+  write_calib_metadata(ctrl = ctrl, nsim = nsim)
   ctrl$sim_id
 }
