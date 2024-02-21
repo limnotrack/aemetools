@@ -2,42 +2,17 @@
 % Please edit documentation in R/read_simulation_output.R
 \name{read_simulation_output}
 \alias{read_simulation_output}
+\alias{read_calib}
 \title{Read calibration output}
 \usage{
-read_simulation_output(ctrl, file = NULL, sim_id = NULL, method = "calib")
+read_simulation_output(ctrl, file = NULL, sim_id = NULL)
+
+read_calib(ctrl, file = NULL, sim_id = NULL)
 }
 \arguments{
-\item{ctrl}{list; of controls for calibration function.
-\itemize{
-\item \code{VTR} Value to be reached. The optimization process will stop if
-either the maximum number of iterations itermax is reached or the best
-parameter vector bestmem has found a value fn(bestmem) <= VTR. Default to
--Inf.
-\item \code{NP} number of population members. Defaults to NA; if the user does not
-change the value of NP from NA it is reset as
-\code{10 * sum(param$model == model)}. For many  problems it is best to set NP
-to be at least 10 times the length of the parameter vector.
-\item \code{itermax} the maximum iteration (population generation) allowed.
-Default is 200.
-\item \code{reltol} relative convergence tolerance. The algorithm stops if it is
-unable to reduce the value by a factor of \code{reltol * (abs(val) + reltol)}.
-Default = 0.07
-\item \code{cutoff}: The quantile cutoff used to select the parents for the next
-generation. For example, if \code{cutoff = 0.25}, the best 25\% of the population
-will be used as parents for the next generation.
-\item \code{mutate} fraction of population to undergo mutation (0-1).
-\item \code{parallel} boolean; run calibration in parallel. Default to TRUE
-\item \code{out_file} filepath; to csv for calibration output to be written to.
-Defaults to "results.csv"
-\item \code{na_value} value to replace NA values with in observations. Default to
-}
-\enumerate{
-\item 
-}
-\itemize{
-\item \code{ncore}: The number of cores to use for the calibration. This is only used
-if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
-}}
+\item{ctrl}{list; of controls for sensitivity analysis function created using
+the \code{\link{create_control}} function. See \link{create_control} for
+more details.}
 
 \item{raw}{logical. If TRUE, return the raw calibration output as a dataframe
 with the "fit" and "gen" columns. This is generally used when restarting a

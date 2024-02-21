@@ -17,21 +17,22 @@
 #' @return A data frame with the calibration results.
 #' @export
 
-read_simulation_output <- function(ctrl, file = NULL, sim_id = NULL,
-                                   method = "calib") {
+read_simulation_output <- function(ctrl, file = NULL, sim_id = NULL) {
 
   meta_tables <- c("lake_metadata", "simulation_metadata",
                    "function_metadata", "parameter_metadata",
                    "simulation_data")
-  if (method == "sa") {
+  if (ctrl$method == "sa") {
     meta_tables <- c(meta_tables, "sensitivity_metadata")
+  } else if (ctrl$method == "calib") {
+    meta_tables <- c(meta_tables, "calibration_metadata")
   }
   sim_vec <- sim_id
 
   if (is.null(file)) {
-    type <- tools::file_ext(ctrl$out_file)
+    type <- ctrl$file_type
     if (type == "db") {
-      file <- ctrl$out_file
+      file <- ctrl$file_name
     } else if (type == "csv") {
       file <- paste0(meta_tables, ".csv")
     }
@@ -91,43 +92,9 @@ read_simulation_output <- function(ctrl, file = NULL, sim_id = NULL,
     })
   }
   return(out)
-  # })
-
-  # return(all)
-
-  # ngen <- ceiling(nrow(out) / ctrl$NP)
-  # if (length(ngen) == 0) {
-  #   ngen <- 1
-  # }
-  # if ("gen" %in% names(out)) {
-  #   out$gen <- factor(out$gen)
-  # } else {
-  #   out$gen <- factor(rep(1:ngen, each = ctrl$NP, length.out = nrow(out)))
-  # }
-  # out$index <- 1:nrow(out)
-  # if (raw) {
-  #   out <- out |>
-  #     dplyr::mutate(gen = as.numeric(as.character(gen))) |>
-  #     dplyr::select(c(1:fit, gen))
-  #   names(out) <- gsub("NA.", "", names(out))
-  #   names(out) <- gsub("\\.", "/", names(out))
-  #   return(out)
-  # }
-  # mlt <- tidyr::pivot_longer(out, cols = -c(fit:index),
-  #                            names_to = "parameter", values_to = "value") |>
-  #   as.data.frame() |>
-  #   dplyr::mutate(parameter = gsub("NA.", "", parameter))
-  #
-  # gen_fit <- mlt |>
-  #   dplyr::group_by(gen, parameter) |>
-  #   dplyr::summarise(gen_fit = stats::median(fit), .groups = "drop")
-  #
-  # mlt |>
-  #   dplyr::left_join(gen_fit, by = c("gen", "parameter")) |>
-  #   dplyr::mutate(fit = dplyr::case_when(
-  #     fit == ctrl$na_value ~ NA,
-  #     .default = fit
-  #   ),
-  #   model = model) |>
-  #   dplyr::select(model, gen, index, parameter, value, dplyr::everything())
 }
+
+#' @rdname read_simulation_output
+#' @export
+read_calib <- read_simulation_output
+
