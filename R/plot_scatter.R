@@ -51,10 +51,10 @@ plot_scatter <- function(sa, cutoff = NA) {
       # dplyr::ungroup()
   }
   # Remove values > prob percentile for each parameter
-  df <- df |>
-    dplyr::group_by(label, fit_type, sim_id) |>
-    dplyr::filter(fit_value <= quantile(fit_value, prob, na.rm = TRUE)) |>
-    dplyr::ungroup()
+  # df <- df |>
+  #   dplyr::group_by(label, fit_type, sim_id) |>
+  #   dplyr::filter(fit_value <= quantile(fit_value, prob, na.rm = TRUE)) |>
+  #   dplyr::ungroup()
 
 
   mean_y <- df |>
