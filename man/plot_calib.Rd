@@ -10,7 +10,8 @@ plot_calib(
   fit_col = "fit",
   nrow = 2,
   base_size = 8,
-  return_pars = FALSE
+  return_pars = FALSE,
+  log_y = TRUE
 )
 }
 \arguments{
