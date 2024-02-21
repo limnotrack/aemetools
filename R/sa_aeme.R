@@ -7,33 +7,11 @@
 #' to run quicker.
 #'
 #'
-#' @param param dataframe; of parameters read in from a csv file. Requires the
-#' columns c("model", "file", "name", "value", "min", "max", "log")
-#' @param model string; for which model. Options are c("dy_cd", "glm_aed" and
-#'  "gotm_wet")
+#' @inheritParams calib_aeme
+#' @inheritParams AEME::build_ensemble
 #' @param FUN_list list of functions; named according to the variables in the
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If NULL, uses mean absolute error (MAE).
-#' @param ctrl list; of controls for calibration function. The control
-#' parameters are as follows:
-#' -   `N`: The initial sample size of the base sample matrix.
-#' -   `ncore`: The number of cores to use for the calibration. This is only
-#' used if parallel = `TRUE`. Default to `parallel::detectCores() - 1.`
-#' -   `na_value`: value to replace NA value when returned.
-#' -   `parallel`: Logical value. If `TRUE`, the sensitivity analysis will be
-#'  run in parallel. If `FALSE`, it will be run in series.
-#' -   `out_file`: A character string naming a file for writing. Currently it
-#'   can write to a .csv file or a database (.db; using the duckDB package)
-#'   file. If writing to a database, it creates a table named "sa_output".
-#' -   `vars_sim`: A named list of output variables for sensitivity analysis.
-#'   The name is user defined but each list must contain:
-#'     - `var`: The variable name to use for the sensitivity analysis.
-#'     - `month`: A vector of months to use for the sensitivity analysis.
-#'     - `depth_range`: A vector of length 2 with the minimum and maximum depth
-#'   range to use for the sensitivity analysis.
-#' @inheritParams AEME::build_ensemble
-#' @param param_df dataframe; of parameters read in from a csv file. Requires
-#' the columns c("model", "file", "name", "value", "min", "max").
 #'
 #' @importFrom AEME lake
 #' @importFrom parallel makeCluster stopCluster detectCores
@@ -43,7 +21,7 @@
 #' @importFrom dplyr mutate
 #' @importFrom sensobol sobol_matrices
 #'
-#' @return list; ctrl which was supplied with updated arguments if missing.
+#' @return string of simulation id to be used to read the simulation output.
 #'
 #' @examples
 #' \dontrun{
@@ -77,8 +55,8 @@
 #'   FUN_list <- list(HYD_temp = fit)
 #'
 #'   # Set up control parameters for surface and bottom temperature
-#'   ctrl <- create_control(method = "sa", N = 2^3, ncore = 2L, na_value = 999,
-#'                          parallel = TRUE, out_file = "results.db",
+#'   ctrl <- create_control(method = "sa", N = 2^3, ncore = 2L,
+#'                          parallel = TRUE,
 #'                          vars_sim = list(
 #'                                    surf_temp = list(var = "HYD_temp",
 #'                                                     month = c(10:12, 1:3),
@@ -258,11 +236,8 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
                                            FUN_list = FUN_list,
                                            aeme_data = aeme_data, model = model,
-                                           param = param, method = "sa",
+                                           param = param,
                                            append_metadata = TRUE)
-    # write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
-    #                    name = "sa_output")
-
   } else {
     # Run in serial ----
     message("Running sensitivity analysis in serial with ", nrow(param_df),
@@ -324,12 +299,7 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
         }
 
         pars[[i]][["fit"]][p] <- res1
-        # print(pars[[i]][["fit"]][p])
-        # print(pars[[i]][p, ])
       }
-      # out_df <- apply(pars[[i]], 2, signif, digits = 6)
-      # write_calib_output(x = out_df, file = file.path(path, ctrl$out_file),
-      #                    name = "sa_output")
 
       return(pars[[i]])
     }, pars = param_list)
@@ -339,7 +309,7 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
     ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
                                            FUN_list = FUN_list,
                                            aeme_data = aeme_data, model = model,
-                                           param = param, method = "sa",
+                                           param = param,
                                            append_metadata = TRUE)
 
     message("Complete! [", format(Sys.time()), "]")

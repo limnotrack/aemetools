@@ -16,9 +16,9 @@
 
 read_simulation_meta <- function(ctrl) {
 
-  type <- tools::file_ext(ctrl$out_file)
+  type <- ctrl$file_type
   if (type == "db") {
-    file <- ctrl$out_file
+    file <- ctrl$file_name
   } else if (type == "csv") {
     file <- "simulation_metadata.csv"
   }
