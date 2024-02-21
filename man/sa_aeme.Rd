@@ -23,8 +23,8 @@ sa_aeme(
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
 
-\item{model}{string; for which model. Options are c("dy_cd", "glm_aed" and
-"gotm_wet")}
+\item{model}{string; for which model to calibrate. Only one model can be
+passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
 
 \item{mod_ctrls}{dataframe; of configuration loaded from
 "mod_ctrls.csv".}
@@ -33,33 +33,16 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
 to calculate model fit. If NULL, uses mean absolute error (MAE).}
 
-\item{ctrl}{list; of controls for calibration function. The control
-parameters are as follows:
-\itemize{
-\item \code{N}: The initial sample size of the base sample matrix.
-\item \code{ncore}: The number of cores to use for the calibration. This is only
-used if parallel = \code{TRUE}. Default to \code{parallel::detectCores() - 1.}
-\item \code{na_value}: value to replace NA value when returned.
-\item \code{parallel}: Logical value. If \code{TRUE}, the sensitivity analysis will be
-run in parallel. If \code{FALSE}, it will be run in series.
-\item \code{out_file}: A character string naming a file for writing. Currently it
-can write to a .csv file or a database (.db; using the duckDB package)
-file. If writing to a database, it creates a table named "sa_output".
-\item \code{vars_sim}: A named list of output variables for sensitivity analysis.
-The name is user defined but each list must contain:
-\itemize{
-\item \code{var}: The variable name to use for the sensitivity analysis.
-\item \code{month}: A vector of months to use for the sensitivity analysis.
-\item \code{depth_range}: A vector of length 2 with the minimum and maximum depth
-range to use for the sensitivity analysis.
-}
-}}
+\item{ctrl}{list; of controls for sensitivity analysis function created using
+the \code{\link{create_control}} function. See \link{create_control} for
+more details.}
 
-\item{param_df}{dataframe; of parameters read in from a csv file. Requires
-the columns c("model", "file", "name", "value", "min", "max").}
+\item{param_df}{dataframe; of parameters to be used in the calibration.
+Requires the columns c("model", "file", "name", "value", "min", "max"). This
+is used to restart from a previous calibration.}
 }
 \value{
-list; ctrl which was supplied with updated arguments if missing.
+string of simulation id to be used to read the simulation output.
 }
 \description{
 \code{calib_model()} runs the model and compares it against observations provided.
@@ -98,8 +81,8 @@ to run quicker.
   FUN_list <- list(HYD_temp = fit)
 
   # Set up control parameters for surface and bottom temperature
-  ctrl <- create_control(method = "sa", N = 2^3, ncore = 2L, na_value = 999,
-                         parallel = TRUE, out_file = "results.db",
+  ctrl <- create_control(method = "sa", N = 2^3, ncore = 2L,
+                         parallel = TRUE,
                          vars_sim = list(
                                    surf_temp = list(var = "HYD_temp",
                                                     month = c(10:12, 1:3),
