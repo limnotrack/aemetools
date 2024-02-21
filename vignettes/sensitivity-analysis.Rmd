@@ -54,7 +54,7 @@ aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
 mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
 inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-model <- c("glm_aed")
+model <- c("gotm_wet")
 aeme_data <- build_ensemble(path = path, aeme_data = aeme_data,
                             model = model, mod_ctrls = mod_ctrls,
                             inf_factor = inf_factor, ext_elev = 5,
@@ -151,29 +151,9 @@ control parameters are generated using `create_control` and are then passed to
 the `sa_aeme` function. The control parameters for the sensitivity analysis are 
 as follows:
 
--   `N`: The initial sample size of the base sample matrix.
-
--   `ncore`: The number of cores to use for the calibration. This is only used
-if parallel = `TRUE`. Default to `parallel::detectCores() - 1.`
-
--   `na_value`: value to replace NA value when returned.
-
--   `parallel`: Logical value. If `TRUE`, the sensitivity analysis will be run
-in parallel. If `FALSE`, it will be run in series.
-
--   `out_file`: A character string naming a file for writing. Currently it can
-write to a .csv file or a database (.db; using the duckDB package) file. If
-writing to a database, it creates a table named "sa_output".
-
--   `vars_sim`: A named list of output variables for sensitivity analysis. The
-name is user defined but each list must contain:
-
--   `var`: The variable name to use for the sensitivity analysis.
-
--   `month`: A vector of months to use for the sensitivity analysis.
-
--   `depth_range`: A vector of length 2 with the minimum and maximum depth
-range to use for the sensitivity analysis.
+```{r create-control-args, tidy=FALSE, printr.help.sections=c('arguments'), comment=''}
+?create_control
+```
 
 Here is an example for examining surface temperature (surf_temp) in the months
 December to February, bottom temperature (bot_temp), (10 - 13 m) and also total
@@ -181,7 +161,8 @@ chlorophyll-a (PHY_tchla) at the surface (0 - 2 m) during the summer period.
 
 ```{r define-control-parameters}
 ctrl <- create_control(method = "sa", N = 2^4, ncore = 10, na_value = 999,
-                       parallel = TRUE, out_file = "results.db",
+                       parallel = TRUE, file_type = "db", 
+                       file_name = "file_type",
                        vars_sim = list(
                          surf_temp = list(var = "HYD_temp",
                                           month = c(12, 1:2),
@@ -230,9 +211,9 @@ function takes the following arguments:
 -   `model`: The model used for the sensitivity analysis.
 -   `path`: The path to the directory where the model is configuration is.
 
-```{r read-sensitivity-analysis}
+```{r read-sensitivity-analysis, warning=FALSE}
 # Read in sensitivity analysis results
-sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
+sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 10^3)
 names(sa_res)
 ```
 
