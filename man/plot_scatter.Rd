@@ -4,10 +4,13 @@
 \alias{plot_scatter}
 \title{Plot the scatter of the output of a sensitivity analysis}
 \usage{
-plot_scatter(sa)
+plot_scatter(sa, cutoff = NA)
 }
 \arguments{
 \item{sa}{list; of sensitivity analysis results read in with \code{\link{read_sa}}}
+
+\item{cutoff}{numeric. The maximum value of the fit to include in the plot.
+This can be useful to remove outliers.}
 }
 \value{
 \code{ggplot} object
