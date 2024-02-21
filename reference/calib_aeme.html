@@ -92,8 +92,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")</p></dd>
 
 
 <dt>model</dt>
-<dd><p>string; for which model. Options are c("dy_cd", "glm_aed" and
-"gotm_wet")</p></dd>
+<dd><p>string; for which model to calibrate. Only one model can be
+passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").</p></dd>
 
 
 <dt>mod_ctrls</dt>
@@ -113,31 +113,9 @@ to calculate model fit. If NULL, uses mean absolute error (MAE).</p></dd>
 
 
 <dt>ctrl</dt>
-<dd><p>list; of controls for calibration function.</p><ul><li><p><code>VTR</code> Value to be reached. The optimization process will stop if
-either the maximum number of iterations itermax is reached or the best
-parameter vector bestmem has found a value fn(bestmem) &lt;= VTR. Default to
--Inf.</p></li>
-<li><p><code>NP</code> number of population members. Defaults to NA; if the user does not
-change the value of NP from NA it is reset as
-<code>10 * sum(param$model == model)</code>. For many  problems it is best to set NP
-to be at least 10 times the length of the parameter vector.</p></li>
-<li><p><code>itermax</code> the maximum iteration (population generation) allowed.
-Default is 200.</p></li>
-<li><p><code>reltol</code> relative convergence tolerance. The algorithm stops if it is
-unable to reduce the value by a factor of <code>reltol * (abs(val) + reltol)</code>.
-Default = 0.07</p></li>
-<li><p><code>cutoff</code>: The quantile cutoff used to select the parents for the next
-generation. For example, if <code>cutoff = 0.25</code>, the best 25% of the population
-will be used as parents for the next generation.</p></li>
-<li><p><code>mutate</code> fraction of population to undergo mutation (0-1).</p></li>
-<li><p><code>parallel</code> boolean; run calibration in parallel. Default to TRUE</p></li>
-<li><p><code>out_file</code> filepath; to csv for calibration output to be written to.
-Defaults to "results.csv"</p></li>
-<li><p><code>na_value</code> value to replace NA values with in observations. Default to</p></li>
-</ul><ol><li><p></p></li>
-</ol><ul><li><p><code>ncore</code>: The number of cores to use for the calibration. This is only used
-if <code>parallel = TRUE</code>. Default to <code>parallel::detectCores() - 1</code>.</p></li>
-</ul></dd>
+<dd><p>list; of controls for sensitivity analysis function created using
+the <code><a href="create_control.html">create_control</a></code> function. See <a href="create_control.html">create_control</a> for
+more details.</p></dd>
 
 
 <dt>weights</dt>
@@ -146,15 +124,16 @@ c(1).</p></dd>
 
 
 <dt>param_df</dt>
-<dd><p>dataframe; of parameters read in from a csv file. Requires
-the columns c("model", "file", "name", "value", "min", "max").</p></dd>
+<dd><p>dataframe; of parameters to be used in the calibration.
+Requires the columns c("model", "file", "name", "value", "min", "max"). This
+is used to restart from a previous calibration.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>list; ctrl which was supplied with updated arguments if missing.</p>
+<p>string of simulation id to be used to read the simulation output.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

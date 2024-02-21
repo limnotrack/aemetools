@@ -90,8 +90,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")</p></dd>
 
 
 <dt>model</dt>
-<dd><p>string; for which model. Options are c("dy_cd", "glm_aed" and
-"gotm_wet")</p></dd>
+<dd><p>string; for which model to calibrate. Only one model can be
+passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").</p></dd>
 
 
 <dt>mod_ctrls</dt>
@@ -106,35 +106,22 @@ to calculate model fit. If NULL, uses mean absolute error (MAE).</p></dd>
 
 
 <dt>ctrl</dt>
-<dd><p>list; of controls for calibration function. The control
-parameters are as follows:</p><ul><li><p><code>N</code>: The initial sample size of the base sample matrix.</p></li>
-<li><p><code>ncore</code>: The number of cores to use for the calibration. This is only
-used if parallel = <code>TRUE</code>. Default to <code>parallel::detectCores() - 1.</code></p></li>
-<li><p><code>na_value</code>: value to replace NA value when returned.</p></li>
-<li><p><code>parallel</code>: Logical value. If <code>TRUE</code>, the sensitivity analysis will be
-run in parallel. If <code>FALSE</code>, it will be run in series.</p></li>
-<li><p><code>out_file</code>: A character string naming a file for writing. Currently it
-can write to a .csv file or a database (.db; using the duckDB package)
-file. If writing to a database, it creates a table named "sa_output".</p></li>
-<li><p><code>vars_sim</code>: A named list of output variables for sensitivity analysis.
-The name is user defined but each list must contain:</p><ul><li><p><code>var</code>: The variable name to use for the sensitivity analysis.</p></li>
-<li><p><code>month</code>: A vector of months to use for the sensitivity analysis.</p></li>
-<li><p><code>depth_range</code>: A vector of length 2 with the minimum and maximum depth
-range to use for the sensitivity analysis.</p></li>
-</ul></li>
-</ul></dd>
+<dd><p>list; of controls for sensitivity analysis function created using
+the <code><a href="create_control.html">create_control</a></code> function. See <a href="create_control.html">create_control</a> for
+more details.</p></dd>
 
 
 <dt>param_df</dt>
-<dd><p>dataframe; of parameters read in from a csv file. Requires
-the columns c("model", "file", "name", "value", "min", "max").</p></dd>
+<dd><p>dataframe; of parameters to be used in the calibration.
+Requires the columns c("model", "file", "name", "value", "min", "max"). This
+is used to restart from a previous calibration.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>list; ctrl which was supplied with updated arguments if missing.</p>
+<p>string of simulation id to be used to read the simulation output.</p>
     </div>
 
     <div class="section level2">
@@ -170,8 +157,8 @@ the columns c("model", "file", "name", "value", "min", "max").</p></dd>
 <span class="r-in"><span>  <span class="va">FUN_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>HYD_temp <span class="op">=</span> <span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># Set up control parameters for surface and bottom temperature</span></span></span>
-<span class="r-in"><span>  <span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_control.html">create_control</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"sa"</span>, N <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="fl">3</span>, ncore <span class="op">=</span> <span class="fl">2L</span>, na_value <span class="op">=</span> <span class="fl">999</span>,</span></span>
-<span class="r-in"><span>                         parallel <span class="op">=</span> <span class="cn">TRUE</span>, out_file <span class="op">=</span> <span class="st">"results.db"</span>,</span></span>
+<span class="r-in"><span>  <span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_control.html">create_control</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"sa"</span>, N <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="fl">3</span>, ncore <span class="op">=</span> <span class="fl">2L</span>,</span></span>
+<span class="r-in"><span>                         parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                         vars_sim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>                                   surf_temp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"HYD_temp"</span>,</span></span>
 <span class="r-in"><span>                                                    month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>,</span></span>

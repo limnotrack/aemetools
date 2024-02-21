@@ -56,13 +56,18 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_scatter</span><span class="op">(</span><span class="va">sa</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_scatter</span><span class="op">(</span><span class="va">sa</span>, cutoff <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>sa</dt>
 <dd><p>list; of sensitivity analysis results read in with <code><a href="read_sa.html">read_sa</a></code></p></dd>
+
+
+<dt>cutoff</dt>
+<dd><p>numeric. The maximum value of the fit to include in the plot.
+This can be useful to remove outliers.</p></dd>
 
 </dl></div>
     <div class="section level2">

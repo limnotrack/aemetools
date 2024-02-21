@@ -67,7 +67,41 @@ or "sa" for sensitivity analysis.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>Additional arguments to be passed to the function.</p></dd>
+<dd><p>Additional arguments to be passed to the function
+<code>create_control</code>. The arguments are different for calibration and
+sensitivity analysis. There are arguments which are common to both methods:</p><ul><li><p><code>file_type</code> string; file type to write the output to. Options are c("csv",
+"db"). Defaults to "db".</p></li>
+<li><p><code>file_name</code> string; file name to write the output to. Only used if <code>file_type</code>
+is "db". Defaults to "results.db"</p></li>
+<li><p><code>na_value</code> value to replace NA values with in observations. Defaults to 999.</p></li>
+<li><p><code>parallel</code> boolean; run calibration in parallel. Default to TRUE</p></li>
+<li><p><code>ncore</code>: The number of cores to use for the calibration. This is only used
+if <code>parallel = TRUE</code>. Default to <code>parallel::detectCores() - 1</code>.</p></li>
+</ul><p>For calibration, the arguments are:</p><ul><li><p><code>VTR</code> Value to be reached. The optimization process will stop if
+either the maximum number of iterations itermax is reached or the best
+parameter vector bestmem has found a value fn(bestmem) &lt;= VTR. Default to
+-Inf.</p></li>
+<li><p><code>NP</code> number of population members. Defaults to NA; if the user does not
+change the value of NP from NA it is reset as
+<code>10 * sum(param$model == model)</code>. For many  problems it is best to set NP
+to be at least 10 times the length of the parameter vector.</p></li>
+<li><p><code>itermax</code> the maximum iteration (population generation) allowed.
+Default is 200.</p></li>
+<li><p><code>reltol</code> relative convergence tolerance. The algorithm stops if it is
+unable to reduce the value by a factor of <code>reltol * (abs(val) + reltol)</code>.
+Default = 0.07</p></li>
+<li><p><code>cutoff</code>: The quantile cutoff used to select the parents for the next
+generation. For example, if <code>cutoff = 0.25</code>, the best 25% of the population
+will be used as parents for the next generation.</p></li>
+<li><p><code>mutate</code> fraction of population to undergo mutation (0-1).</p></li>
+</ul><p>For sensitivity analysis, the arguments are:</p><ul><li><p><code>N</code>: The initial sample size of the base sample matrix.</p></li>
+<li><p><code>vars_sim</code>: A named list of output variables for sensitivity analysis.
+The name is user defined but each list must contain:</p><ul><li><p><code>var</code>: The variable name to use for the sensitivity analysis.</p></li>
+<li><p><code>month</code>: A vector of months to use for the sensitivity analysis.</p></li>
+<li><p><code>depth_range</code>: A vector of length 2 with the minimum and maximum depth
+range to use for the sensitivity analysis.</p></li>
+</ul></li>
+</ul></dd>
 
 </dl></div>
     <div class="section level2">
@@ -79,10 +113,25 @@ or "sa" for sensitivity analysis.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu">create_control</span><span class="op">(</span><span class="st">"calib"</span>, VTR <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>, NP <span class="op">=</span> <span class="fl">10</span>, itermax <span class="op">=</span> <span class="fl">30</span>,</span></span>
-<span class="r-in"><span>                        reltol <span class="op">=</span> <span class="fl">0.07</span>, cutoff <span class="op">=</span> <span class="fl">0.25</span>, mutate <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
-<span class="r-in"><span>                        parallel <span class="op">=</span> <span class="cn">TRUE</span>, out_file <span class="op">=</span> <span class="st">"results.db"</span>,</span></span>
-<span class="r-in"><span>                        na_value <span class="op">=</span> <span class="fl">999</span>, ncore <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">calib_ctrl</span> <span class="op">&lt;-</span> <span class="fu">create_control</span><span class="op">(</span><span class="st">"calib"</span>, VTR <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>, NP <span class="op">=</span> <span class="fl">10</span>, itermax <span class="op">=</span> <span class="fl">30</span>,</span></span>
+<span class="r-in"><span>                              reltol <span class="op">=</span> <span class="fl">0.07</span>, cutoff <span class="op">=</span> <span class="fl">0.25</span>, mutate <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
+<span class="r-in"><span>                              parallel <span class="op">=</span> <span class="cn">TRUE</span>, file_type <span class="op">=</span> <span class="st">"db"</span>,</span></span>
+<span class="r-in"><span>                              file_name <span class="op">=</span> <span class="st">"results.db"</span>, na_value <span class="op">=</span> <span class="fl">999</span>,</span></span>
+<span class="r-in"><span>                              ncore <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">sa_ctrl</span> <span class="op">&lt;-</span> <span class="fu">create_control</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"sa"</span>, N <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="fl">2</span>, ncore <span class="op">=</span> <span class="fl">2L</span>, na_value <span class="op">=</span> <span class="fl">999</span>,</span></span>
+<span class="r-in"><span>                          parallel <span class="op">=</span> <span class="cn">TRUE</span>, file_type <span class="op">=</span> <span class="st">"db"</span>,</span></span>
+<span class="r-in"><span>                          file_name <span class="op">=</span> <span class="st">"results.db"</span>,</span></span>
+<span class="r-in"><span>                          vars_sim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>surf_temp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"HYD_temp"</span>,</span></span>
+<span class="r-in"><span>                                                           month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                                           depth_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                                           <span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                          bot_temp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"HYD_temp"</span>,</span></span>
+<span class="r-in"><span>                                                          month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                                          depth_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">13</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                                          <span class="op">)</span></span></span>
+<span class="r-in"><span>                                          <span class="op">)</span></span></span>
+<span class="r-in"><span>                        <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

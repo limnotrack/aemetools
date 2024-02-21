@@ -136,9 +136,9 @@ make sure the current model setup is working.</p>
 <code class="sourceCode R"><span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AEME/man/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                      verbose <span class="op">=</span> <span class="cn">FALSE</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>,</span>
 <span>                      path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-02-18 22:55:08]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-02-18 22:55:09]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-02-18 22:55:09]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-02-21 04:33:43]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-02-21 04:33:45]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-02-21 04:33:45]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme_data</span><span class="op">)</span></span></code></pre></div>
@@ -743,9 +743,9 @@ but the model output is generate within the lake folder.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, param <span class="op">=</span> <span class="va">aeme_parameters</span>,</span>
 <span>                 model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>, mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-02-18 22:55:21]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-02-18 22:55:22]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-02-18 22:55:22]</span></span></code></pre></div>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-02-21 04:33:53]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-02-21 04:33:54]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-02-21 04:33:54]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="calibration-setup">Calibration setup<a class="anchor" aria-label="anchor" href="#calibration-setup"></a>
@@ -790,51 +790,124 @@ according to the target variable.</p>
 control parameters are generated using the <code>create_control</code>
 funtion and are then passed to the <code>calib_aeme</code> function. The
 control parameters for calibration are as follows:</p>
-<ul>
-<li>
-<code>VTR</code>: The value to reach. The calibration will stop when
-the fitness value is less than or equal to this value. For this
-example</li>
-<li>
-<code>NP</code>: The number of individuals in the population. Best
-practice is to use 10 times the number of parameters.</li>
-<li>
-<code>itermax</code>: The maximum number of iterations to run the
-calibration for. The calibration will stop when this number of
-iterations is reached. The number of generations used is equal to
-<code>itermax / NP</code>. Therefore, through adjusting <code>NP</code>
-and <code>itermax</code> the number of generations can be adjusted.</li>
-<li>
-<code>reltol</code>: The relative tolerance for the calibration. The
-calibration will stop when the relative change in the fitness value is
-less than this value.</li>
-<li>
-<code>p</code>: The quantile used to select the parents for the next
-generation. For example, if <code>p = 0.25</code>, the best 25% of the
-population will be used as parents for the next generation.</li>
-<li>
-<code>mutate</code>: The mutation rate for the calibration. This is
-the probability of a parameter being mutated.</li>
-<li>
-<code>parallel</code>: Whether to run the calibration in parallel.
-This will decrease the time taken to run the calibration.</li>
-<li>
-<code>out_file</code>: The file to write the calibration results
-to.</li>
-<li>
-<code>na_value</code>: The value to use for missing values in the
-observed and predicted data. This is used to indicate when the model
-crashes and then can be easily removed from the calibration
-results.</li>
-<li>
-<code>ncore</code>: The number of cores to use for the calibration.
-This is only used if <code>parallel = TRUE</code>.</li>
-</ul>
-<p>Here is an example of the control parameters:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">?</span><span class="va">create_control</span></span></code></pre></div>
+<div class="r-help-page">
+<div class="container">
+
+<table style="width: 100%;" class="table"><tr>
+<td>create_control</td>
+<td style="text-align: right;">R Documentation</td>
+</tr></table>
+<h2 id="create_control">Create control list for calibration or sensitivity analysis</h2>
+
+<h3>Arguments</h3>
+
+<table class="table">
+<tr>
+<td><code id="create_control_:_method">method</code></td>
+<td>
+<p>The method to be used. It can be either "calib" for calibration
+or "sa" for sensitivity analysis.</p>
+</td>
+</tr>
+<tr>
+<td><code id="create_control_:_...">...</code></td>
+<td>
+<p>Additional arguments to be passed to the function
+<code>create_control</code>. The arguments are different for calibration and
+sensitivity analysis. There are arguments which are common to both methods:
+</p>
+
+<ul>
+<li> <p><code>file_type</code> string; file type to write the output to. Options are c("csv",
+"db"). Defaults to "db".
+</p>
+</li>
+<li> <p><code>file_name</code> string; file name to write the output to. Only used if <code>file_type</code>
+is "db". Defaults to "results.db"
+</p>
+</li>
+<li> <p><code>na_value</code> value to replace NA values with in observations. Defaults to 999.
+</p>
+</li>
+<li> <p><code>parallel</code> boolean; run calibration in parallel. Default to TRUE
+</p>
+</li>
+<li> <p><code>ncore</code>: The number of cores to use for the calibration. This is only used
+if <code>parallel = TRUE</code>. Default to <code>parallel::detectCores() - 1</code>.
+</p>
+</li>
+</ul>
+<p>For calibration, the arguments are:
+</p>
+
+<ul>
+<li> <p><code>VTR</code> Value to be reached. The optimization process will stop if
+either the maximum number of iterations itermax is reached or the best
+parameter vector bestmem has found a value fn(bestmem) &lt;= VTR. Default to
+-Inf.
+</p>
+</li>
+<li> <p><code>NP</code> number of population members. Defaults to NA; if the user does not
+change the value of NP from NA it is reset as
+<code>10 * sum(param$model == model)</code>. For many  problems it is best to set NP
+to be at least 10 times the length of the parameter vector.
+</p>
+</li>
+<li> <p><code>itermax</code> the maximum iteration (population generation) allowed.
+Default is 200.
+</p>
+</li>
+<li> <p><code>reltol</code> relative convergence tolerance. The algorithm stops if it is
+unable to reduce the value by a factor of <code>reltol * (abs(val) + reltol)</code>.
+Default = 0.07
+</p>
+</li>
+<li> <p><code>cutoff</code>: The quantile cutoff used to select the parents for the next
+generation. For example, if <code>cutoff = 0.25</code>, the best 25% of the population
+will be used as parents for the next generation.
+</p>
+</li>
+<li> <p><code>mutate</code> fraction of population to undergo mutation (0-1).
+</p>
+</li>
+</ul>
+<p>For sensitivity analysis, the arguments are:
+</p>
+
+<ul>
+<li> <p><code>N</code>: The initial sample size of the base sample matrix.
+</p>
+</li>
+<li> <p><code>vars_sim</code>: A named list of output variables for sensitivity analysis.
+The name is user defined but each list must contain:
+</p>
+
+<ul>
+<li> <p><code>var</code>: The variable name to use for the sensitivity analysis.
+</p>
+</li>
+<li> <p><code>month</code>: A vector of months to use for the sensitivity analysis.
+</p>
+</li>
+<li> <p><code>depth_range</code>: A vector of length 2 with the minimum and maximum depth
+range to use for the sensitivity analysis.
+</p>
+</li>
+</ul>
+</li>
+</ul>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<p>Here is an example of the control parameters:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_control.html">create_control</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"calib"</span>, VTR <span class="op">=</span> <span class="fl">1</span>, NP <span class="op">=</span> <span class="fl">40</span>, itermax <span class="op">=</span> <span class="fl">400</span>, </span>
 <span>                       reltol <span class="op">=</span> <span class="fl">0.07</span>, cutoff <span class="op">=</span> <span class="fl">0.25</span>, mutate <span class="op">=</span> <span class="fl">0.1</span>, </span>
-<span>                       parallel <span class="op">=</span> <span class="cn">TRUE</span>, out_file <span class="op">=</span> <span class="st">"results.csv"</span>, </span>
+<span>                       parallel <span class="op">=</span> <span class="cn">TRUE</span>, file_type <span class="op">=</span> <span class="st">"csv"</span>, </span>
 <span>                       na_value <span class="op">=</span> <span class="fl">999</span>, ncore <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -851,7 +924,7 @@ fitness value. Therefore, the weight for the water level should be much
 smaller than the weight for the temperature.</p>
 <p>The weights are specified in a named vector. The names of the vector
 should be the same as the variable names.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vars_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span>, <span class="st">"LKE_lvlwtr"</span><span class="op">)</span></span>
 <span><span class="va">weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"LKE_lvlwtr"</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -862,205 +935,268 @@ should be the same as the variable names.</p>
 <p>Once we have defined the fitness function, control parameters and
 variables, we can run the calibration. The <code>calib_aeme</code>
 function takes the following arguments:</p>
-<ul>
-<li>
-<code>aeme_data</code>: The <code>aeme_data</code> object to use for
-the calibration.</li>
-<li>
-<code>path</code>: The path to the lake folder.</li>
-<li>
-<code>param</code>: The parameters to calibrate.</li>
-<li>
-<code>model</code>: The model to calibrate.</li>
-<li>
-<code>mod_ctrls</code>: The model controls to use for the
-calibration.</li>
-<li>
-<code>FUN_list</code>: The list of functions to use for each
-variable within the calibration.</li>
-<li>
-<code>ctrl</code>: The control parameters to use for the
-calibration.</li>
-<li>
-<code>vars_sim</code>: The variables to use for the
-calibration.</li>
-<li>
-<code>weights</code>: The weights to use for the calibration.</li>
-</ul>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">?</span><span class="va">calib_aeme</span></span></code></pre></div>
+<div class="r-help-page">
+<div class="container">
+
+<table style="width: 100%;" class="table"><tr>
+<td>calib_aeme</td>
+<td style="text-align: right;">R Documentation</td>
+</tr></table>
+<h2 id="calib_aeme">Calibrate AEME model parameters using observations</h2>
+
+<h3>Arguments</h3>
+
+<table class="table">
+<tr>
+<td><code id="calib_aeme_:_aeme_data">aeme_data</code></td>
+<td>
+<p>aeme; data object.</p>
+</td>
+</tr>
+<tr>
+<td><code id="calib_aeme_:_path">path</code></td>
+<td>
+<p>filepath; where input files are located relative to 'config'.</p>
+</td>
+</tr>
+<tr>
+<td><code id="calib_aeme_:_param">param</code></td>
+<td>
+<p>dataframe; of parameters read in from a csv file. Requires the
+columns c("model", "file", "name", "value", "min", "max", "log")</p>
+</td>
+</tr>
+<tr>
+<td><code id="calib_aeme_:_model">model</code></td>
+<td>
+<p>string; for which model to calibrate. Only one model can be
+passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").</p>
+</td>
+</tr>
+<tr>
+<td><code id="calib_aeme_:_mod_ctrls">mod_ctrls</code></td>
+<td>
+<p>dataframe; of configuration loaded from
+"mod_ctrls.csv".</p>
+</td>
+</tr>
+<tr>
+<td><code id="calib_aeme_:_vars_sim">vars_sim</code></td>
+<td>
+<p>vector; of variables names to be used in the calculation of
+model fit. Currently only supports using one variable.</p>
+</td>
+</tr>
+<tr>
+<td><code id="calib_aeme_:_FUN_list">FUN_list</code></td>
+<td>
+<p>list of functions; named according to the variables in the
+<code>vars_sim</code>. Funtions are of the form <code style="white-space: pre;">⁠function(df)⁠</code> which will be used
+to calculate model fit. If NULL, uses mean absolute error (MAE).</p>
+</td>
+</tr>
+<tr>
+<td><code id="calib_aeme_:_ctrl">ctrl</code></td>
+<td>
+<p>list; of controls for sensitivity analysis function created using
+the <code>create_control</code> function. See create_control for
+more details.</p>
+</td>
+</tr>
+<tr>
+<td><code id="calib_aeme_:_weights">weights</code></td>
+<td>
+<p>vector; of weights for each variable in vars_sim. Default to
+c(1).</p>
+</td>
+</tr>
+<tr>
+<td><code id="calib_aeme_:_param_df">param_df</code></td>
+<td>
+<p>dataframe; of parameters to be used in the calibration.
+Requires the columns c("model", "file", "name", "value", "min", "max"). This
+is used to restart from a previous calibration.</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
 <p>The <code>calib_aeme</code> function writes the calibration results
 to the file specified after each generation. This allows the calibration
 to be stopped and restarted at any time. The <code>calib_aeme</code>
 function returns the <code>ctrl</code> object with any updated
 values.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calib_aeme.html">calib_aeme</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
 <span>                     param <span class="op">=</span> <span class="va">aeme_parameters</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                     mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, FUN_list <span class="op">=</span> <span class="va">FUN_list</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>,</span>
 <span>                     vars_sim <span class="op">=</span> <span class="va">vars_sim</span>, weights <span class="op">=</span> <span class="va">weights</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for modelled variables [2024-02-18 22:55:23]</span></span>
-<span><span class="co">#&gt; Complete! [2024-02-18 22:55:24]</span></span>
+<span><span class="co">#&gt; Extracting indices for modelled variables [2024-02-21 04:33:55]</span></span>
+<span><span class="co">#&gt; Complete! [2024-02-21 04:33:56]</span></span>
 <span><span class="co">#&gt; Calibrating in parallel using 1 cores...</span></span>
-<span><span class="co">#&gt; Starting generation 1/10, 40 members. [2024-02-18 22:55:24]</span></span>
+<span><span class="co">#&gt; Starting generation 1/10, 40 members. [2024-02-21 04:33:56]</span></span>
 <span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
-<span><span class="co">#&gt; mean      2.810     0.9997      1.001              0.14990</span></span>
-<span><span class="co">#&gt; median    2.826     0.9943      1.004              0.15000</span></span>
-<span><span class="co">#&gt; sd        1.587     0.1743      0.175              0.02947</span></span>
+<span><span class="co">#&gt; mean      2.809     1.0000     1.0000              0.15010</span></span>
+<span><span class="co">#&gt; median    2.816     0.9956     1.0040              0.15000</span></span>
+<span><span class="co">#&gt; sd        1.594     0.1756     0.1757              0.02916</span></span>
 <span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
-<span><span class="co">#&gt; mean                 0.25000               0.15010               0.4504</span></span>
-<span><span class="co">#&gt; median               0.25120               0.14890               0.4501</span></span>
-<span><span class="co">#&gt; sd                   0.02927               0.02939               0.1466</span></span>
+<span><span class="co">#&gt; mean                 0.25000               0.15000               0.4505</span></span>
+<span><span class="co">#&gt; median               0.25050               0.14940               0.4530</span></span>
+<span><span class="co">#&gt; sd                   0.02936               0.02901               0.1461</span></span>
 <span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
-<span><span class="co">#&gt; mean                0.5998            -0.005003  1.5040</span></span>
-<span><span class="co">#&gt; median              0.6018            -0.005006  1.4980</span></span>
-<span><span class="co">#&gt; sd                  0.1173             0.002938  0.5868</span></span>
-<span><span class="co">#&gt; Best fit: 2.3 (sd: 481.34)</span></span>
-<span><span class="co">#&gt;             Parameters: [1.62, 1.17, 0.93, 0.105, 0.299, 0.174, 0.313, 0.508, -0.00654, 0.931]</span></span>
-<span><span class="co">#&gt; Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-18 22:55:59]</span></span>
+<span><span class="co">#&gt; mean                0.6003            -0.005006  1.4990</span></span>
+<span><span class="co">#&gt; median              0.6010            -0.005074  1.5010</span></span>
+<span><span class="co">#&gt; sd                  0.1171             0.002917  0.5826</span></span>
+<span><span class="co">#&gt; Best fit: 2.27 (sd: 481.32)</span></span>
+<span><span class="co">#&gt;             Parameters: [2.41, 1.09, 1.07, 0.143, 0.214, 0.193, 0.596, 0.705, -0.00722, 0.905]</span></span>
+<span><span class="co">#&gt; Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-21 04:34:32]</span></span>
 <span><span class="co">#&gt; Survival rate: 0.35</span></span>
-<span><span class="co">#&gt; Starting generation 2/10, 40 members. [2024-02-18 22:55:59]</span></span>
+<span><span class="co">#&gt; Starting generation 2/10, 40 members. [2024-02-21 04:34:33]</span></span>
 <span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
-<span><span class="co">#&gt; mean      2.446    1.11100     1.0820              0.12400</span></span>
-<span><span class="co">#&gt; median    2.353    1.11400     1.0780              0.12170</span></span>
-<span><span class="co">#&gt; sd        1.267    0.09946     0.1486              0.01916</span></span>
+<span><span class="co">#&gt; mean      2.880     0.9369     1.1200              0.15430</span></span>
+<span><span class="co">#&gt; median    3.005     0.9266     1.1160              0.15170</span></span>
+<span><span class="co">#&gt; sd        1.731     0.1457     0.1128              0.02088</span></span>
 <span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
-<span><span class="co">#&gt; mean                  0.2681               0.14700               0.5395</span></span>
-<span><span class="co">#&gt; median                0.2697               0.14260               0.6123</span></span>
-<span><span class="co">#&gt; sd                    0.0238               0.02358               0.1630</span></span>
+<span><span class="co">#&gt; mean                 0.22970                0.1637               0.5106</span></span>
+<span><span class="co">#&gt; median               0.22930                0.1701               0.5130</span></span>
+<span><span class="co">#&gt; sd                   0.01752                0.0282               0.1052</span></span>
 <span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
-<span><span class="co">#&gt; mean                0.5180            -0.005864  0.9575</span></span>
-<span><span class="co">#&gt; median              0.5005            -0.005980  0.8515</span></span>
-<span><span class="co">#&gt; sd                  0.1035             0.001394  0.4033</span></span>
-<span><span class="co">#&gt; Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-18 22:56:36]</span></span>
-<span><span class="co">#&gt; Best fit: 2.2245 (sd: 302.79)</span></span>
-<span><span class="co">#&gt; Survival rate: 0.9</span></span>
-<span><span class="co">#&gt; Starting generation 3/10, 40 members. [2024-02-18 22:56:36]</span></span>
-<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
-<span><span class="co">#&gt; mean      3.103    1.14300     1.0440              0.12450</span></span>
-<span><span class="co">#&gt; median    2.786    1.14200     1.0610              0.11880</span></span>
-<span><span class="co">#&gt; sd        1.181    0.07498     0.1141              0.02151</span></span>
-<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
-<span><span class="co">#&gt; mean                 0.27460                0.1562               0.4602</span></span>
-<span><span class="co">#&gt; median               0.27820                0.1551               0.4657</span></span>
-<span><span class="co">#&gt; sd                   0.02086                0.0208               0.1284</span></span>
-<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
-<span><span class="co">#&gt; mean                0.4610            -0.006093  0.9280</span></span>
-<span><span class="co">#&gt; median              0.4450            -0.006397  0.9086</span></span>
-<span><span class="co">#&gt; sd                  0.0636             0.001416  0.1594</span></span>
-<span><span class="co">#&gt; Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-18 22:57:13]</span></span>
-<span><span class="co">#&gt; Best fit: 2.2124 (sd: 157.59)</span></span>
-<span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 4/10, 40 members. [2024-02-18 22:57:13]</span></span>
-<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
-<span><span class="co">#&gt; mean     2.3340    1.12700    1.06000              0.11570</span></span>
-<span><span class="co">#&gt; median   2.4240    1.14300    1.06500              0.11550</span></span>
-<span><span class="co">#&gt; sd       0.9431    0.08773    0.06571              0.01408</span></span>
-<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
-<span><span class="co">#&gt; mean                 0.27570               0.16240               0.4650</span></span>
-<span><span class="co">#&gt; median               0.27880               0.16750               0.4637</span></span>
-<span><span class="co">#&gt; sd                   0.01574               0.02123               0.0734</span></span>
-<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
-<span><span class="co">#&gt; mean               0.45040            -0.005280  1.0190</span></span>
-<span><span class="co">#&gt; median             0.43570            -0.005363  0.9054</span></span>
-<span><span class="co">#&gt; sd                 0.05243             0.001216  0.3610</span></span>
-<span><span class="co">#&gt; Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-18 22:57:49]</span></span>
-<span><span class="co">#&gt; Best fit: 2.1704 (sd: 302.84)</span></span>
-<span><span class="co">#&gt; Survival rate: 0.9</span></span>
-<span><span class="co">#&gt; Starting generation 5/10, 40 members. [2024-02-18 22:57:49]</span></span>
-<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
-<span><span class="co">#&gt; mean     1.4300    1.14900    1.07400              0.11090</span></span>
-<span><span class="co">#&gt; median   1.4970    1.14400    1.09400              0.10690</span></span>
-<span><span class="co">#&gt; sd       0.8458    0.09631    0.09879              0.01608</span></span>
-<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
-<span><span class="co">#&gt; mean                 0.27660               0.17490              0.40530</span></span>
-<span><span class="co">#&gt; median               0.28160               0.17540              0.39440</span></span>
-<span><span class="co">#&gt; sd                   0.01968               0.01474              0.06089</span></span>
-<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
-<span><span class="co">#&gt; mean               0.46300            -0.003878  0.9978</span></span>
-<span><span class="co">#&gt; median             0.44320            -0.003849  0.9293</span></span>
-<span><span class="co">#&gt; sd                 0.07624             0.001770  0.2427</span></span>
-<span><span class="co">#&gt; Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-18 22:58:25]</span></span>
-<span><span class="co">#&gt; Best fit: 2.1656 (sd: 265.87)</span></span>
+<span><span class="co">#&gt; mean               0.68090            -0.007142  0.9354</span></span>
+<span><span class="co">#&gt; median             0.69590            -0.007405  0.9048</span></span>
+<span><span class="co">#&gt; sd                 0.06488             0.001636  0.2423</span></span>
+<span><span class="co">#&gt; Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-21 04:35:09]</span></span>
+<span><span class="co">#&gt; Best fit: 2.2449 (sd: 265.84)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.92</span></span>
-<span><span class="co">#&gt; Starting generation 6/10, 40 members. [2024-02-18 22:58:25]</span></span>
+<span><span class="co">#&gt; Starting generation 3/10, 40 members. [2024-02-21 04:35:09]</span></span>
 <span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
-<span><span class="co">#&gt; mean     0.9005     1.1250    1.11700              0.11900</span></span>
-<span><span class="co">#&gt; median   0.8073     1.1490    1.11600              0.11130</span></span>
-<span><span class="co">#&gt; sd       0.7126     0.1225    0.06039              0.02106</span></span>
+<span><span class="co">#&gt; mean      3.071     1.0030     1.0530              0.14670</span></span>
+<span><span class="co">#&gt; median    2.982     1.0120     1.0650              0.14340</span></span>
+<span><span class="co">#&gt; sd        1.007     0.1498     0.1321              0.01754</span></span>
 <span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
-<span><span class="co">#&gt; mean                 0.28770               0.17170              0.36400</span></span>
-<span><span class="co">#&gt; median               0.28750               0.17700              0.36270</span></span>
-<span><span class="co">#&gt; sd                   0.01019               0.02269              0.04063</span></span>
+<span><span class="co">#&gt; mean                 0.22360               0.17580               0.5430</span></span>
+<span><span class="co">#&gt; median               0.21390               0.17730               0.5517</span></span>
+<span><span class="co">#&gt; sd                   0.02512               0.02081               0.1002</span></span>
 <span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
-<span><span class="co">#&gt; mean                0.4854            -0.003103  0.9819</span></span>
-<span><span class="co">#&gt; median              0.4383            -0.002807  0.9410</span></span>
-<span><span class="co">#&gt; sd                  0.1023             0.001042  0.1647</span></span>
-<span><span class="co">#&gt; Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-18 22:59:02]</span></span>
-<span><span class="co">#&gt; Best fit: 2.1654 (sd: 265.89)</span></span>
-<span><span class="co">#&gt; Survival rate: 0.92</span></span>
-<span><span class="co">#&gt; Starting generation 7/10, 40 members. [2024-02-18 22:59:02]</span></span>
-<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
-<span><span class="co">#&gt; mean     0.7271    1.16500    1.13500              0.12670</span></span>
-<span><span class="co">#&gt; median   0.5857    1.19100    1.14000              0.11860</span></span>
-<span><span class="co">#&gt; sd       0.8175    0.09537    0.03888              0.02663</span></span>
-<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
-<span><span class="co">#&gt; mean                 0.28900               0.17490              0.38660</span></span>
-<span><span class="co">#&gt; median               0.29210               0.17930              0.37800</span></span>
-<span><span class="co">#&gt; sd                   0.01462               0.01267              0.04319</span></span>
-<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
-<span><span class="co">#&gt; mean               0.48570            -0.003084  1.0040</span></span>
-<span><span class="co">#&gt; median             0.45510            -0.002897  0.9452</span></span>
-<span><span class="co">#&gt; sd                 0.09815             0.001180  0.1851</span></span>
-<span><span class="co">#&gt; Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-18 22:59:38]</span></span>
-<span><span class="co">#&gt; Best fit: 2.1634 (sd: 302.85)</span></span>
-<span><span class="co">#&gt; Survival rate: 0.9</span></span>
-<span><span class="co">#&gt; Starting generation 8/10, 40 members. [2024-02-18 22:59:38]</span></span>
-<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
-<span><span class="co">#&gt; mean     0.5934    1.17400    1.12100              0.12260</span></span>
-<span><span class="co">#&gt; median   0.4246    1.18000    1.13500              0.11910</span></span>
-<span><span class="co">#&gt; sd       0.5814    0.06484    0.07465              0.02095</span></span>
-<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
-<span><span class="co">#&gt; mean                 0.28910               0.17020               0.4153</span></span>
-<span><span class="co">#&gt; median               0.29430               0.17290               0.4077</span></span>
-<span><span class="co">#&gt; sd                   0.01841               0.01861               0.0725</span></span>
-<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
-<span><span class="co">#&gt; mean                0.5665            -0.002958  1.0020</span></span>
-<span><span class="co">#&gt; median              0.5642            -0.002718  0.9443</span></span>
-<span><span class="co">#&gt; sd                  0.1283             0.001253  0.2004</span></span>
-<span><span class="co">#&gt; Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-18 23:00:15]</span></span>
-<span><span class="co">#&gt; Best fit: 2.1611 (sd: 265.89)</span></span>
-<span><span class="co">#&gt; Survival rate: 0.92</span></span>
-<span><span class="co">#&gt; Starting generation 9/10, 40 members. [2024-02-18 23:00:15]</span></span>
-<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
-<span><span class="co">#&gt; mean     0.6666    1.19300    1.12800              0.11850</span></span>
-<span><span class="co">#&gt; median   0.3868    1.21200    1.14700              0.11720</span></span>
-<span><span class="co">#&gt; sd       1.0490    0.09147    0.08382              0.01314</span></span>
-<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
-<span><span class="co">#&gt; mean                 0.28420               0.17200              0.40360</span></span>
-<span><span class="co">#&gt; median               0.29060               0.17740              0.39140</span></span>
-<span><span class="co">#&gt; sd                   0.01969               0.02332              0.06371</span></span>
-<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
-<span><span class="co">#&gt; mean                0.5185            -0.003061  0.9823</span></span>
-<span><span class="co">#&gt; median              0.4990            -0.002796  0.9490</span></span>
-<span><span class="co">#&gt; sd                  0.1039             0.001241  0.1569</span></span>
-<span><span class="co">#&gt; Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-18 23:00:52]</span></span>
-<span><span class="co">#&gt; Best fit: 2.1518 (sd: 220.02)</span></span>
+<span><span class="co">#&gt; mean               0.68550           -0.0073550  0.9598</span></span>
+<span><span class="co">#&gt; median             0.69550           -0.0075250  0.8977</span></span>
+<span><span class="co">#&gt; sd                 0.05837            0.0009189  0.2447</span></span>
+<span><span class="co">#&gt; Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-21 04:35:46]</span></span>
+<span><span class="co">#&gt; Best fit: 2.1624 (sd: 219.99)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.95</span></span>
-<span><span class="co">#&gt; Starting generation 10/10, 40 members. [2024-02-18 23:00:52]</span></span>
+<span><span class="co">#&gt; Starting generation 4/10, 40 members. [2024-02-21 04:35:47]</span></span>
 <span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
-<span><span class="co">#&gt; mean     0.5743     1.1320    1.16600              0.12210</span></span>
-<span><span class="co">#&gt; median   0.3771     1.1600    1.17300              0.11970</span></span>
-<span><span class="co">#&gt; sd       0.7152     0.1292    0.04718              0.01543</span></span>
+<span><span class="co">#&gt; mean      2.796     1.0020    1.08900              0.15400</span></span>
+<span><span class="co">#&gt; median    2.995     1.0230    1.07700              0.15360</span></span>
+<span><span class="co">#&gt; sd        1.232     0.1583    0.06736              0.01698</span></span>
 <span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
-<span><span class="co">#&gt; mean                 0.28890               0.16910              0.38600</span></span>
-<span><span class="co">#&gt; median               0.29380               0.17070              0.38920</span></span>
-<span><span class="co">#&gt; sd                   0.01726               0.02394              0.05405</span></span>
+<span><span class="co">#&gt; mean                 0.22990                0.1717               0.4753</span></span>
+<span><span class="co">#&gt; median               0.23080                0.1784               0.4643</span></span>
+<span><span class="co">#&gt; sd                   0.02012                0.0244               0.1144</span></span>
 <span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
-<span><span class="co">#&gt; mean               0.52940            -0.002988  0.9893</span></span>
-<span><span class="co">#&gt; median             0.52640            -0.002690  0.9484</span></span>
-<span><span class="co">#&gt; sd                 0.08866             0.001374  0.1986</span></span>
-<span><span class="co">#&gt; Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-18 23:01:29]</span></span>
-<span><span class="co">#&gt; Best fit: 2.1515 (sd: 265.9)</span></span>
-<span><span class="co">#&gt; Survival rate: 0.92</span></span></code></pre></div>
+<span><span class="co">#&gt; mean               0.66410            -0.007358  0.9705</span></span>
+<span><span class="co">#&gt; median             0.68590            -0.007507  0.8873</span></span>
+<span><span class="co">#&gt; sd                 0.09242             0.001289  0.3249</span></span>
+<span><span class="co">#&gt; Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-21 04:36:23]</span></span>
+<span><span class="co">#&gt; Best fit: 2.1624 (sd: 265.88)</span></span>
+<span><span class="co">#&gt; Survival rate: 0.92</span></span>
+<span><span class="co">#&gt; Starting generation 5/10, 40 members. [2024-02-21 04:36:23]</span></span>
+<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
+<span><span class="co">#&gt; mean      2.169     0.9564    1.10900              0.15750</span></span>
+<span><span class="co">#&gt; median    2.240     0.9244    1.11200              0.15940</span></span>
+<span><span class="co">#&gt; sd        1.021     0.1405    0.03922              0.01584</span></span>
+<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
+<span><span class="co">#&gt; mean                  0.2332               0.15590              0.45450</span></span>
+<span><span class="co">#&gt; median                0.2318               0.15550              0.44950</span></span>
+<span><span class="co">#&gt; sd                    0.0137               0.02234              0.09386</span></span>
+<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
+<span><span class="co">#&gt; mean               0.61940            -0.007206  0.9477</span></span>
+<span><span class="co">#&gt; median             0.62780            -0.007504  0.8803</span></span>
+<span><span class="co">#&gt; sd                 0.09526             0.001165  0.2181</span></span>
+<span><span class="co">#&gt; Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-21 04:37:00]</span></span>
+<span><span class="co">#&gt; Best fit: 2.1624 (sd: 302.83)</span></span>
+<span><span class="co">#&gt; Survival rate: 0.9</span></span>
+<span><span class="co">#&gt; Starting generation 6/10, 40 members. [2024-02-21 04:37:00]</span></span>
+<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
+<span><span class="co">#&gt; mean      1.410     0.9727    1.11000             0.163800</span></span>
+<span><span class="co">#&gt; median    1.162     0.9419    1.13700             0.163700</span></span>
+<span><span class="co">#&gt; sd        1.035     0.1881    0.08706             0.007793</span></span>
+<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
+<span><span class="co">#&gt; mean                 0.23440               0.15050              0.43530</span></span>
+<span><span class="co">#&gt; median               0.23090               0.15070              0.41790</span></span>
+<span><span class="co">#&gt; sd                   0.01816               0.02555              0.09513</span></span>
+<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
+<span><span class="co">#&gt; mean               0.64740            -0.007308  0.9390</span></span>
+<span><span class="co">#&gt; median             0.65980            -0.007544  0.8787</span></span>
+<span><span class="co">#&gt; sd                 0.08951             0.001186  0.2768</span></span>
+<span><span class="co">#&gt; Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-21 04:37:37]</span></span>
+<span><span class="co">#&gt; Best fit: 2.1624 (sd: 220)</span></span>
+<span><span class="co">#&gt; Survival rate: 0.95</span></span>
+<span><span class="co">#&gt; Starting generation 7/10, 40 members. [2024-02-21 04:37:37]</span></span>
+<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
+<span><span class="co">#&gt; mean     0.8803     0.9315    1.14700               0.1611</span></span>
+<span><span class="co">#&gt; median   0.7311     0.8962    1.14900               0.1640</span></span>
+<span><span class="co">#&gt; sd       0.9193     0.1506    0.03974               0.0125</span></span>
+<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
+<span><span class="co">#&gt; mean                 0.23360                0.1504               0.4691</span></span>
+<span><span class="co">#&gt; median               0.23280                0.1498               0.4623</span></span>
+<span><span class="co">#&gt; sd                   0.01913                0.0236               0.1101</span></span>
+<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
+<span><span class="co">#&gt; mean               0.69120            -0.007325  0.9329</span></span>
+<span><span class="co">#&gt; median             0.69250            -0.007648  0.8801</span></span>
+<span><span class="co">#&gt; sd                 0.06512             0.001660  0.2542</span></span>
+<span><span class="co">#&gt; Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-21 04:38:14]</span></span>
+<span><span class="co">#&gt; Best fit: 2.1624 (sd: 265.89)</span></span>
+<span><span class="co">#&gt; Survival rate: 0.92</span></span>
+<span><span class="co">#&gt; Starting generation 8/10, 40 members. [2024-02-21 04:38:14]</span></span>
+<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
+<span><span class="co">#&gt; mean     0.5968     0.8712    1.14700              0.16420</span></span>
+<span><span class="co">#&gt; median   0.4756     0.8731    1.15900              0.16500</span></span>
+<span><span class="co">#&gt; sd       0.6160     0.1127    0.06013              0.01422</span></span>
+<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
+<span><span class="co">#&gt; mean                  0.2412               0.14320               0.4084</span></span>
+<span><span class="co">#&gt; median                0.2402               0.14150               0.4196</span></span>
+<span><span class="co">#&gt; sd                    0.0200               0.01803               0.1036</span></span>
+<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
+<span><span class="co">#&gt; mean               0.68630            -0.007095  0.9549</span></span>
+<span><span class="co">#&gt; median             0.70610            -0.007355  0.8786</span></span>
+<span><span class="co">#&gt; sd                 0.07475             0.001372  0.2820</span></span>
+<span><span class="co">#&gt; Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-21 04:38:51]</span></span>
+<span><span class="co">#&gt; Best fit: 2.1624 (sd: 220.01)</span></span>
+<span><span class="co">#&gt; Survival rate: 0.95</span></span>
+<span><span class="co">#&gt; Starting generation 9/10, 40 members. [2024-02-21 04:38:51]</span></span>
+<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
+<span><span class="co">#&gt; mean     0.7291     0.8975     1.1490              0.16500</span></span>
+<span><span class="co">#&gt; median   0.4072     0.8713     1.1650              0.16490</span></span>
+<span><span class="co">#&gt; sd       1.0380     0.1268     0.0618              0.01862</span></span>
+<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
+<span><span class="co">#&gt; mean                 0.24210               0.14160               0.4467</span></span>
+<span><span class="co">#&gt; median               0.24120               0.14450               0.4265</span></span>
+<span><span class="co">#&gt; sd                   0.01228               0.02302               0.1135</span></span>
+<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
+<span><span class="co">#&gt; mean               0.70020           -0.0074520 0.89910</span></span>
+<span><span class="co">#&gt; median             0.71130           -0.0074790 0.88050</span></span>
+<span><span class="co">#&gt; sd                 0.08012            0.0008062 0.08302</span></span>
+<span><span class="co">#&gt; Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-21 04:39:28]</span></span>
+<span><span class="co">#&gt; Best fit: 2.1624 (sd: 157.61)</span></span>
+<span><span class="co">#&gt; Survival rate: 0.98</span></span>
+<span><span class="co">#&gt; Starting generation 10/10, 40 members. [2024-02-21 04:39:28]</span></span>
+<span><span class="co">#&gt;        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span></span>
+<span><span class="co">#&gt; mean     0.5862     0.9223    1.15300              0.16730</span></span>
+<span><span class="co">#&gt; median   0.3568     0.9391    1.16800              0.16420</span></span>
+<span><span class="co">#&gt; sd       0.9473     0.1537    0.07176              0.01818</span></span>
+<span><span class="co">#&gt;        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span></span>
+<span><span class="co">#&gt; mean                 0.24040               0.16300               0.4601</span></span>
+<span><span class="co">#&gt; median               0.23810               0.16610               0.4547</span></span>
+<span><span class="co">#&gt; sd                   0.01654               0.02586               0.1316</span></span>
+<span><span class="co">#&gt;        mixing/coef_mix_hyp outflow/seepage_rate outflow</span></span>
+<span><span class="co">#&gt; mean                0.6664            -0.007383  0.9131</span></span>
+<span><span class="co">#&gt; median              0.6918            -0.007438  0.8852</span></span>
+<span><span class="co">#&gt; sd                  0.1001             0.000974  0.2050</span></span>
+<span><span class="co">#&gt; Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-02-21 04:40:05]</span></span>
+<span><span class="co">#&gt; Best fit: 2.1624 (sd: 157.61)</span></span>
+<span><span class="co">#&gt; Survival rate: 0.98</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualise-calibration-results">Visualise calibration results<a class="anchor" aria-label="anchor" href="#visualise-calibration-results"></a>
@@ -1068,13 +1204,39 @@ values.</p>
 <p>The calibrations results can be read in using the
 <code>read_calib</code> function. This function takes the following
 arguments:</p>
-<ul>
-<li>
-<code>ctrl</code>: The control parameters used for the
-calibration.</li>
-<li>
-<code>model</code>: The model used for the calibration.</li>
-</ul>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">?</span><span class="va">read_calib</span></span></code></pre></div>
+<div class="r-help-page">
+<div class="container">
+
+<table style="width: 100%;" class="table"><tr>
+<td>read_simulation_output</td>
+<td style="text-align: right;">R Documentation</td>
+</tr></table>
+<h2 id="read_simulation_output">Read calibration output</h2>
+
+<h3>Arguments</h3>
+
+<table class="table">
+<tr>
+<td><code id="read_simulation_output_:_ctrl">ctrl</code></td>
+<td>
+<p>list; of controls for sensitivity analysis function created using
+the <code>create_control</code> function. See create_control for
+more details.</p>
+</td>
+</tr>
+<tr>
+<td><code id="read_simulation_output_:_raw">raw</code></td>
+<td>
+<p>logical. If TRUE, return the raw calibration output as a dataframe
+with the "fit" and "gen" columns. This is generally used when restarting a
+calibration.</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
 <p>The <code>read_calib</code> function returns a dataframe with the
 calibration results. The calibration results include the model,
 generation, index (model run), parameter name, parameter value, fitness
@@ -1093,10 +1255,10 @@ calibration.</li>
 </ul>
 <p>And returns a list of ggplot objects: a dotty plot, density plot and
 convergence plot.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">calib_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_simulation_output.html">read_simulation_output</a></span><span class="op">(</span>ctrl <span class="op">=</span> <span class="va">ctrl</span>, sim_id <span class="op">=</span> <span class="va">sim_id</span><span class="op">)</span></span>
-<span><span class="va">plist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_calib.html">plot_calib</a></span><span class="op">(</span>calib <span class="op">=</span> <span class="va">calib_res</span>, na_value <span class="op">=</span> <span class="va">ctrl</span><span class="op">$</span><span class="va">na_value</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">calib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_simulation_output.html">read_calib</a></span><span class="op">(</span>ctrl <span class="op">=</span> <span class="va">ctrl</span>, sim_id <span class="op">=</span> <span class="va">sim_id</span><span class="op">)</span></span>
+<span><span class="va">plist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_calib.html">plot_calib</a></span><span class="op">(</span>calib <span class="op">=</span> <span class="va">calib</span>, na_value <span class="op">=</span> <span class="va">ctrl</span><span class="op">$</span><span class="va">na_value</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="dotty-plot">Dotty plot<a class="anchor" aria-label="anchor" href="#dotty-plot"></a>
 </h3>
@@ -1106,7 +1268,7 @@ generation. The fitness value is on the y-axis and the parameter value
 is on the x-axis. It is faceted by the parameter name. The parameter
 values are coloured by the generation. The best fitness value for each
 generation is shown as a black line with a red dot.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plist</span><span class="op">$</span><span class="va">dotty</span></span></code></pre></div>
 <p><img src="calibrate-aeme_files/figure-html/dotty-plot-1.png" width="768"></p>
 </div>
@@ -1121,7 +1283,7 @@ name.</p>
 <p>If a parameter is converging on a value, then the histogram will show
 a peak around that value. If a parameter is not converging on a value,
 then the histogram will show a flat distribution.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plist</span><span class="op">$</span><span class="va">hist</span></span></code></pre></div>
 <p><img src="calibrate-aeme_files/figure-html/histogram-plot-1.png" width="768"></p>
 </div>
@@ -1134,7 +1296,7 @@ value is on the y-axis and the iteration is on the x-axis. It is faceted
 by the parameter name. The parameter values are coloured by the
 generation. The best fitness value for each generation is shown as a
 solid horizontal black line.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plist</span><span class="op">$</span><span class="va">convergence</span></span></code></pre></div>
 <p><img src="calibrate-aeme_files/figure-html/convergence-plot-1.png" width="768"></p>
 </div>
@@ -1163,8 +1325,8 @@ results that contains the fitness value. Defaults to
 parameter values or the entire calibration dataset. Defaults to
 <code>FALSE</code>.</li>
 </ul>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">best_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_param.html">get_param</a></span><span class="op">(</span><span class="va">calib_res</span>, na_value <span class="op">=</span> <span class="va">ctrl</span><span class="op">$</span><span class="va">na_value</span>, fit_col <span class="op">=</span> <span class="st">"fit"</span>, best <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">best_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_param.html">get_param</a></span><span class="op">(</span><span class="va">calib</span>, na_value <span class="op">=</span> <span class="va">ctrl</span><span class="op">$</span><span class="va">na_value</span>, fit_col <span class="op">=</span> <span class="st">"fit"</span>, best <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">best_params</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
@@ -1191,8 +1353,8 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">Kw</td>
 <td align="left">fit</td>
-<td align="right">0.3355550</td>
-<td align="right">2.15154</td>
+<td align="right">0.356530</td>
+<td align="right">2.16243</td>
 <td align="left">1</td>
 </tr>
 <tr class="even">
@@ -1200,8 +1362,8 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">coef_mix_conv</td>
 <td align="left">fit</td>
-<td align="right">0.1283330</td>
-<td align="right">2.15154</td>
+<td align="right">0.172472</td>
+<td align="right">2.16243</td>
 <td align="left">1</td>
 </tr>
 <tr class="odd">
@@ -1209,8 +1371,8 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">coef_mix_hyp</td>
 <td align="left">fit</td>
-<td align="right">0.5260640</td>
-<td align="right">2.15154</td>
+<td align="right">0.681749</td>
+<td align="right">2.16243</td>
 <td align="left">1</td>
 </tr>
 <tr class="even">
@@ -1218,8 +1380,8 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">coef_mix_shear</td>
 <td align="left">fit</td>
-<td align="right">0.1514400</td>
-<td align="right">2.15154</td>
+<td align="right">0.121013</td>
+<td align="right">2.16243</td>
 <td align="left">1</td>
 </tr>
 <tr class="odd">
@@ -1227,8 +1389,8 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">coef_mix_turb</td>
 <td align="left">fit</td>
-<td align="right">0.4565750</td>
-<td align="right">2.15154</td>
+<td align="right">0.344771</td>
+<td align="right">2.16243</td>
 <td align="left">1</td>
 </tr>
 <tr class="even">
@@ -1236,8 +1398,8 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">coef_wind_stir</td>
 <td align="left">fit</td>
-<td align="right">0.3000000</td>
-<td align="right">2.15154</td>
+<td align="right">0.251496</td>
+<td align="right">2.16243</td>
 <td align="left">1</td>
 </tr>
 <tr class="odd">
@@ -1245,8 +1407,8 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">outflow</td>
 <td align="left">fit</td>
-<td align="right">0.9449910</td>
-<td align="right">2.15154</td>
+<td align="right">0.874844</td>
+<td align="right">2.16243</td>
 <td align="left">1</td>
 </tr>
 <tr class="even">
@@ -1254,8 +1416,8 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">radswd</td>
 <td align="left">fit</td>
-<td align="right">1.1771900</td>
-<td align="right">2.15154</td>
+<td align="right">1.167600</td>
+<td align="right">2.16243</td>
 <td align="left">1</td>
 </tr>
 <tr class="odd">
@@ -1263,8 +1425,8 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">seepage_rate</td>
 <td align="left">fit</td>
-<td align="right">-0.0026633</td>
-<td align="right">2.15154</td>
+<td align="right">-0.007718</td>
+<td align="right">2.16243</td>
 <td align="left">1</td>
 </tr>
 <tr class="even">
@@ -1272,8 +1434,8 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">wndspd</td>
 <td align="left">fit</td>
-<td align="right">1.1734800</td>
-<td align="right">2.15154</td>
+<td align="right">0.700000</td>
+<td align="right">2.16243</td>
 <td align="left">1</td>
 </tr>
 </tbody>
@@ -1281,13 +1443,13 @@ parameter values or the entire calibration dataset. Defaults to
 <p>The best parameter values can be used to run the model and compare
 the simulated values to the observed values. This can be done using the
 <code>run_aeme_param</code> function.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
 <span>                            param <span class="op">=</span> <span class="va">best_params</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                            mod_ctrls <span class="op">=</span> <span class="va">mod_ctrls</span>, return_aeme <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-02-18 23:01:35]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-02-18 23:01:36]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-02-18 23:01:36]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-02-21 04:40:12]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-02-21 04:40:13]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-02-21 04:40:13]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span></code></pre></div>
 <p>The simulated values can be compared to the observed values using the
@@ -1303,7 +1465,7 @@ observations and model simulations.</li>
 <code>var_sim</code>: The variables to use for the assessment.</li>
 </ul>
 <p>The <code>assess_model</code> function returns:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">?</span><span class="va">assess_model</span></span></code></pre></div>
 <div class="r-help-page">
 <div class="container">
@@ -1368,7 +1530,7 @@ variable. These include:
 </ul>
 </div>
 </div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/AEME/man/assess_model.html" class="external-link">assess_model</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="va">vars_sim</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1448,12 +1610,12 @@ multi-panel plot displaying residuals for:</p>
 <li>Residuals vs. day of year</li>
 <li>Residuals vs. quantiles of the observed values</li>
 </ul>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AEME/man/plot_resid.html" class="external-link">plot_resid</a></span><span class="op">(</span>aeme_data <span class="op">=</span> <span class="va">aeme_data</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="va">vars_sim</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="water-temperature-residuals">Water temperature residuals<a class="anchor" aria-label="anchor" href="#water-temperature-residuals"></a>
 </h4>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">pl</span><span class="op">$</span><span class="va">HYD_temp</span></span></code></pre></div>
 <p><img src="calibrate-aeme_files/figure-html/plot-residuals-plot-1.png" width="768"></p>
@@ -1461,7 +1623,7 @@ multi-panel plot displaying residuals for:</p>
 <div class="section level4">
 <h4 id="lake-level-residuals">Lake level residuals<a class="anchor" aria-label="anchor" href="#lake-level-residuals"></a>
 </h4>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">pl</span><span class="op">$</span><span class="va">LKE_lvlwtr</span></span></code></pre></div>
 <p><img src="calibrate-aeme_files/figure-html/plot-residuals-plot-2-1.png" width="768"></p>
