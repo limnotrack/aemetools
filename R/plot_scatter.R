@@ -1,6 +1,8 @@
 #' Plot the scatter of the output of a sensitivity analysis
 #'
 #' @inheritParams plot_uncertainty
+#' @param cutoff numeric. The maximum value of the fit to include in the plot.
+#' This can be useful to remove outliers.
 #'
 #' @return \code{ggplot} object
 #' @export
@@ -9,7 +11,7 @@
 #' @importFrom dplyr group_by do tibble
 #'
 
-plot_scatter <- function(sa) {
+plot_scatter <- function(sa, cutoff = NA) {
 
   df <- lapply(names(sa), \(x) {
     sa[[x]]$df |>
@@ -41,6 +43,18 @@ plot_scatter <- function(sa) {
 
   df <- df |>
     dplyr::filter(!label %in% rem_pars)
+
+  if (!is.na(cutoff)) {
+    df <- df |>
+      # dplyr::group_by(label, fit_type, sim_id) |>
+      dplyr::filter(fit_value <= cutoff)
+      # dplyr::ungroup()
+  }
+  # Remove values > prob percentile for each parameter
+  df <- df |>
+    dplyr::group_by(label, fit_type, sim_id) |>
+    dplyr::filter(fit_value <= quantile(fit_value, prob, na.rm = TRUE)) |>
+    dplyr::ungroup()
 
 
   mean_y <- df |>
