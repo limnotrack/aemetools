@@ -74,7 +74,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.5, mutate = 0.1,
-                         parallel = TRUE, out_file = "results.csv",
+                         parallel = TRUE, file_type = "csv",
                          na_value = 999, ncore = 10)
 
   testthat::expect_true(is.list(ctrl))
@@ -91,11 +91,11 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
@@ -135,10 +135,9 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
 
   FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
-                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = FALSE, out_file = "results.db",
-                         na_value = 999, ncore = 10)
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30,
+                         parallel = FALSE, file_type = "db",
+                         file_name = "results.db")
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 0.5)
@@ -151,14 +150,14 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  psum <- plot_calib(calib = calib_res, fit_col = vars_sim,
+  psum <- plot_calib(calib = calib, fit_col = vars_sim,
                      na_value = ctrl$na_value)
 
-  plist <- plot_calib(calib = calib_res, fit_col = "LKE_lvlwtr",
+  plist <- plot_calib(calib = calib, fit_col = "LKE_lvlwtr",
                       na_value = ctrl$na_value)
 
   testthat::expect_true(is.list(plist))
@@ -206,8 +205,8 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, out_file = "results.db",
-                         na_value = 999, ncore = 2)
+                         parallel = TRUE, file_type = "db",
+                         file_name = "results.db", na_value = 999, ncore = 2)
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c("HYD_temp" = 10, "LKE_lvlwtr" = 1)
@@ -220,11 +219,11 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib_res, fit_col = "LKE_lvlwtr",
+  plist <- plot_calib(calib = calib, fit_col = "LKE_lvlwtr",
                       na_value = ctrl$na_value)
 
   testthat::expect_true(is.list(plist))
@@ -275,7 +274,7 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, out_file = "results.csv",
+                         parallel = TRUE, file_type = "csv",
                          na_value = 999, ncore = 2L)
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
@@ -290,11 +289,11 @@ test_that("can calibrate temperature for AEME-GOTM in parallel", {
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
@@ -341,7 +340,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, out_file = "results.csv",
+                         parallel = TRUE, file_type = "csv",
                          na_value = 999, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
@@ -355,15 +354,14 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
-
 })
 
 test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
@@ -406,7 +404,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, out_file = "results.csv",
+                         parallel = TRUE, file_type = "csv",
                          na_value = 999, ncore = 2)
 
   vars_sim <- c("LKE_lvlwtr")
@@ -420,11 +418,11 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
@@ -471,7 +469,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, out_file = "results.csv",
+                         parallel = TRUE, file_type = "csv",
                          na_value = 999, ncore = 2)
 
   vars_sim <- c("LKE_lvlwtr")
@@ -485,11 +483,11 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
@@ -538,10 +536,8 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
-                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, out_file = "results.csv",
-                         na_value = 999, ncore = 2L)
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30,
+                         file_type = "csv")
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -554,11 +550,11 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
@@ -610,7 +606,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, out_file = "results.csv",
+                         parallel = TRUE, file_type = "csv",
                          na_value = 999, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
@@ -624,11 +620,11 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
@@ -682,7 +678,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, out_file = "results.csv",
+                         parallel = TRUE, file_type = "csv",
                          na_value = 999, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
@@ -706,11 +702,11 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
@@ -762,7 +758,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, out_file = "results.csv",
+                         parallel = TRUE, file_type = "csv",
                          na_value = 999, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
@@ -776,11 +772,11 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
                vars_sim = vars_sim, weights = weights)
   })
 
-  calib_res <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib_res))
+  testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib_res, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
