@@ -5,17 +5,17 @@ test_that("running GLM-AED works with bgc_params", {
   # unlink(tmpdir, recursive = TRUE)
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
-  mod_ctrls <- mod_ctrls |>
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
+  model_controls <- model_controls |>
     dplyr::mutate(simulate = dplyr::case_when(
-      name == "ZOO_zoo1" ~ 1,
+      var_aeme == "ZOO_zoo1" ~ TRUE,
       .default = simulate
     ))
   model <- c("glm_aed")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    ext_elev = 5, use_bgc = TRUE)
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               ext_elev = 5, use_bgc = TRUE)
 
   # utils::data("aeme_parameters_bgc", package = "aemetools")
   utils::data("glm_aed_parameters", package = "aemetools")
@@ -25,17 +25,17 @@ test_that("running GLM-AED works with bgc_params", {
   #   glm_aed_parameters
   # ) |>
   #   dplyr::filter(model == "glm_aed")
-  # run_aeme_shiny(aeme_data = aeme_data, param = param, path = path,
-  #                mod_ctrls = mod_ctrls)
+  # run_aeme_shiny(aeme = aeme, param = param, path = path,
+  #                model_controls = model_controls)
 
-  aeme_data <- run_aeme_param(aeme_data = aeme_data,
-                              model = model,
-                              param = param, path = path,
-                              mod_ctrls = mod_ctrls,
-                              na_value = 999, return_aeme = TRUE)
+  aeme <- run_aeme_param(aeme = aeme,
+                         model = model,
+                         param = param, path = path,
+                         model_controls = model_controls,
+                         na_value = 999, return_aeme = TRUE)
 
-  # AEME::plot_output(aeme_data, model = "glm_aed", var_sim = "PHY_tchla")
-  lke <- AEME::lake(aeme_data)
+  # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
@@ -49,30 +49,30 @@ test_that("running GOTM-WET works with bgc_params", {
   # unlink(tmpdir, recursive = TRUE)
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
-  mod_ctrls <- mod_ctrls |>
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
+  model_controls <- model_controls |>
     dplyr::mutate(simulate = dplyr::case_when(
-      name == "ZOO_zoo1" ~ 1,
+      var_aeme == "ZOO_zoo1" ~ TRUE,
       .default = simulate
     ))
   model <- c("gotm_wet")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data, model = model,
-                                    mod_ctrls = mod_ctrls,
-                                    ext_elev = 5, use_bgc = TRUE)
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme, model = model,
+                               model_controls = model_controls,
+                               ext_elev = 5, use_bgc = TRUE)
 
   utils::data("gotm_wet_parameters", package = "aemetools")
   param <- gotm_wet_parameters
 
 
-  aeme_data <- run_aeme_param(aeme_data = aeme_data,
-                              model = model,
-                              param = param, path = path,
-                              mod_ctrls = mod_ctrls,
-                              na_value = 999, return_aeme = TRUE)
+  aeme <- run_aeme_param(aeme = aeme,
+                         model = model,
+                         param = param, path = path,
+                         model_controls = model_controls,
+                         na_value = 999, return_aeme = TRUE)
 
-  # AEME::plot_output(aeme_data, model = "gotm_wet")
-  lke <- AEME::lake(aeme_data)
+  # AEME::plot_output(aeme, model = "gotm_wet")
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
@@ -85,15 +85,15 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = TRUE)
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = TRUE)
 
   utils::data("gotm_wet_parameters", package = "aemetools")
   param <- gotm_wet_parameters |>
@@ -126,8 +126,8 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
   )
 
   # Run sensitivity analysis AEME model
-  sim_id <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                    model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+  sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
+                    model = model, ctrl = ctrl, model_controls = model_controls,
                     FUN_list = FUN_list)
 
   sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, boot = FALSE)
