@@ -8,7 +8,8 @@ get_era5_point(
   lat,
   lon,
   years,
-  variables,
+  variables = c("MET_tmpair", "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", "MET_pprain",
+    "MET_ppsnow", "MET_prsttn", "MET_radswd"),
   format = "aeme",
   parallel = FALSE,
   ncores
@@ -21,7 +22,10 @@ get_era5_point(
 
 \item{years}{numeric; vector of years in numeric form to be extracted}
 
-\item{variables}{vector; with lookup table for variable names}
+\item{variables}{vector; with AEME meteorological variable names to be
+downloaded. Defaults to all available variables: c("MET_tmpair",
+"MET_tmpdew", "MET_wnduvu", "MET_wnduvv", "MET_pprain", "MET_ppsnow",
+"MET_prsttn", "MET_radswd").}
 
 \item{format}{string; the format for column headers. Can be "aeme" or "ler".
 Defaults to "aeme".}

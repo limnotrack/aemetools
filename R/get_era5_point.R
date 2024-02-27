@@ -5,7 +5,10 @@
 #' @param lat numeric; Latitude
 #' @param lon numeric; Longitude
 #' @param years numeric; vector of years in numeric form to be extracted
-#' @param variables vector; with lookup table for variable names
+#' @param variables vector; with AEME meteorological variable names to be
+#' downloaded. Defaults to all available variables: c("MET_tmpair",
+#'  "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", "MET_pprain", "MET_ppsnow",
+#'  "MET_prsttn", "MET_radswd").
 #' @param format string; the format for column headers. Can be "aeme" or "ler".
 #' Defaults to "aeme".
 #' @param parallel boolean; parallelise the download of ERA5 variables. Defaults
@@ -24,8 +27,15 @@
 #'
 #' @export
 
-get_era5_point <- function(lat, lon, years, variables, format = "aeme",
-                           parallel = FALSE, ncores) {
+get_era5_point <- function(lat, lon, years, variables = c("MET_tmpair",
+                                                          "MET_tmpdew",
+                                                          "MET_wnduvu",
+                                                          "MET_wnduvv",
+                                                          "MET_pprain",
+                                                          "MET_ppsnow",
+                                                          "MET_prsttn",
+                                                          "MET_radswd"),
+                           format = "aeme", parallel = FALSE, ncores) {
 
   token_file <- system.file("extdata/token.rds", package = "aemetools")
   dtoken <- readRDS(token_file)
@@ -234,6 +244,8 @@ download_era5_point <- function(years, lat, lon, variable, db_path, dtoken) {
 #' @noRd
 check_point_in_grid <- function(lat, lon, dtoken, db_path) {
 
+  message("Checking if lat/lon point is in the grid...")
+
   db1 <- paste0(db_path, "nz_era5-land_2020_2m_temperature_1234_daily.rds")
   f1 <- tempfile()
   rdrop2::drop_download(path = db1, local_path = f1, dtoken = dtoken,
@@ -241,7 +253,6 @@ check_point_in_grid <- function(lat, lon, dtoken, db_path) {
 
 
   coords <- data.frame(lat = lat, lon = lon)
-  coords <- data.frame(lat = lat, lon = lon +0.09)
 
   coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
 
