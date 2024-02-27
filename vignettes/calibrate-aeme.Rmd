@@ -50,15 +50,15 @@ example, we will use the `glm_aed` model. The `build_ensemble` function will
 
 ```{r build-aeme-example, warning=FALSE, message=FALSE}
 
-aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
-mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+model_controls <- AEME::get_model_controls()
 inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("glm_aed")
-aeme_data <- build_ensemble(path = path, aeme_data = aeme_data,
-                            model = model, mod_ctrls = mod_ctrls,
-                            inf_factor = inf_factor, ext_elev = 5,
-                            use_bgc = FALSE)
+aeme <- build_ensemble(path = path, aeme = aeme,
+                       model = model, model_controls = model_controls,
+                       inf_factor = inf_factor, ext_elev = 5,
+                       use_bgc = FALSE)
 
 ```
 
@@ -73,10 +73,10 @@ model setup is working.
 #| fig.cap: "Simple plots of surface and bottom water temperarure
 #| an lake level after running AEME with the glm_aed model."
 
-aeme_data <- run_aeme(aeme_data = aeme_data, model = model,
-                      verbose = FALSE, mod_ctrls = mod_ctrls,
-                      path = path)
-plot(aeme_data)
+aeme <- run_aeme(aeme = aeme, model = model,
+                 verbose = FALSE, model_controls = model_controls,
+                 path = path)
+plot(aeme)
 ```
 
 ## Load parameters to be used for the calibration
@@ -117,12 +117,12 @@ aeme_parameters
 
 This dataframe can be passed to the `run_aeme_param` function to run AEME with
 the parameter values specified in the dataframe. This function is different to
-the `run_aeme` function in that it does not return an `aeme_data` object, but
+the `run_aeme` function in that it does not return an `aeme` object, but
 the model output is generate within the lake folder.
 
 ```{r run-aeme-param}
-run_aeme_param(aeme_data = aeme_data, param = aeme_parameters,
-                 model = model, path = path, mod_ctrls = mod_ctrls)
+run_aeme_param(aeme = aeme, param = aeme_parameters,
+                 model = model, path = path, model_controls = model_controls)
 
 ```
 
@@ -227,10 +227,10 @@ at any time. The `calib_aeme` function returns the `ctrl` object with any
 updated values.
 
 ```{r run-calibration, cache=FALSE}
-sim_id <- calib_aeme(aeme_data = aeme_data, path = path,
+sim_id <- calib_aeme(aeme = aeme, path = path,
                      param = aeme_parameters, model = model,
-                     mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-                     vars_sim = vars_sim, weights = weights)
+                     model_controls = model_controls, FUN_list = FUN_list,
+                     ctrl = ctrl, vars_sim = vars_sim, weights = weights)
 
 ```
 
@@ -319,25 +319,27 @@ function takes the following arguments:
     the entire calibration dataset. Defaults to `FALSE`.
 
 ```{r extract-best-parameters}
-best_params <- get_param(calib, na_value = ctrl$na_value, fit_col = "fit", best = TRUE)
+best_params <- get_param(calib, na_value = ctrl$na_value, fit_col = "fit", 
+                         best = TRUE)
 best_params
 
 ```
 
 The best parameter values can be used to run the model and compare the simulated
-values to the observed values. This can be done using the `run_aeme_param` function.
+values to the observed values. This can be done using the `run_aeme_param` 
+function.
 
 ```{r run-calibrated-model}
-aeme_data <- run_aeme_param(aeme_data = aeme_data, path = path,
+aeme <- run_aeme_param(aeme = aeme, path = path,
                             param = best_params, model = model,
-                            mod_ctrls = mod_ctrls, return_aeme = TRUE)
+                            model_controls = model_controls, return_aeme = TRUE)
 
 ```
 
 The simulated values can be compared to the observed values using the
 `assess_model` function. This function takes the following arguments:
 
--   `aeme_data`: The `aeme_data` object which has observations and model
+-   `aeme`: The `aeme` object which has observations and model
     simulations.
 -   `model`: The model to assess.
 -   `var_sim`: The variables to use for the assessment.
@@ -353,7 +355,7 @@ The `assess_model` function returns:
 
 ```{r assess-calibated-model}
 
-assess_model(aeme_data = aeme_data, model = model, var_sim = vars_sim)
+assess_model(aeme = aeme, model = model, var_sim = vars_sim)
 
 ```
 
@@ -370,7 +372,7 @@ for each variable. This is a multi-panel plot displaying residuals for:
 
 
 ```{r plot-residuals}
-pl <- plot_resid(aeme_data = aeme_data, model = model, var_sim = vars_sim)
+pl <- plot_resid(aeme = aeme, model = model, var_sim = vars_sim)
 
 ```
 
