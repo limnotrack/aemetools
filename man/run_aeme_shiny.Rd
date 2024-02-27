@@ -4,15 +4,15 @@
 \alias{run_aeme_shiny}
 \title{Run AEME in a Shiny app}
 \usage{
-run_aeme_shiny(aeme_data, param, path, mod_ctrls)
+run_aeme_shiny(aeme, param, path, model_controls)
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
-\item{mod_ctrls}{dataframe; of configuration loaded from
-"mod_ctrls.csv".}
+\item{model_controls}{dataframe; of configuration loaded from
+"model_controls.csv".}
 }
 \value{
 Launches shiny app

@@ -39,7 +39,7 @@
 #'
 #' @export
 
-run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
+run_and_fit <- function(aeme, param, model, vars_sim, path, model_controls,
                         FUN_list = NULL, weights, na_value = 999,
                         var_indices = NULL, return_indices = FALSE,
                         include_wlev = FALSE, return_df = FALSE,
@@ -48,8 +48,8 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
 
   return_nc <- ifelse(fit | return_indices, TRUE, FALSE)
 
-  nc <- run_aeme_param(aeme_data = aeme_data, param = param, model = model,
-                       path = path, mod_ctrls = mod_ctrls,
+  nc <- run_aeme_param(aeme = aeme, param = param, model = model,
+                       path = path, model_controls = model_controls,
                        na_value = na_value, return_nc = return_nc)
 
   # Create a list for the return values
@@ -87,13 +87,13 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
     utils::data("key_naming", package = "AEME", envir = environment())
 
     # Load AEME data
-    lke <- AEME::lake(aeme_data)
+    lke <- AEME::lake(aeme)
     lakename <- tolower(lke[["name"]])
     lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
-    inp <- AEME::input(aeme_data)
-    obs <- AEME::observations(aeme_data)
-    wbal <- AEME::water_balance(aeme_data)
-    aeme_time <- AEME::time(aeme_data)
+    inp <- AEME::input(aeme)
+    obs <- AEME::observations(aeme)
+    wbal <- AEME::water_balance(aeme)
+    aeme_time <- AEME::time(aeme)
     if (!is.null(obs$lake))
       obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
 
@@ -182,7 +182,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         # }
         var_indices <- lapply(nmes, \(n) {
           obs_v <- obs$lake |>
-            dplyr::filter(var == sa_ctrl[["vars_sim"]][[n]][["var"]] &
+            dplyr::filter(var_aeme == sa_ctrl[["vars_sim"]][[n]][["var"]] &
                             Date %in% dates)
           deps <- seq(min(sa_ctrl[["vars_sim"]][[n]][["depth_range"]]),
                       max(sa_ctrl[["vars_sim"]][[n]][["depth_range"]]), by = 0.5)
@@ -194,7 +194,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
       } else if (method == "calib") {
         var_indices <- lapply(vars_sim, \(v) {
           obs_v <- obs$lake |>
-            dplyr::filter(var == v & Date %in% dates)
+            dplyr::filter(var_aeme == v & Date %in% dates)
           deps <- unique(obs_v$depth_mid)
           deps <- deps[order(deps)]
 
@@ -265,7 +265,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
           out2 <- reshape2::melt(out, value.name = "model",
                                  varnames = c("depth_mid", "Date"))
           out2$Date <- as.Date(out2$Date)
-          out2$var <- v
+          out2$var_aeme <- v
           return(out2)
         })
       } else if (method == "sa") {
@@ -295,7 +295,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
             df <- data.frame(depth_mid = NA,
                              Date = var_indices[[n]][["dates"]],
                              model = depth[var_indices[[n]][["time"]]],
-                             var = "LKE_lvlwtr",
+                             var_aeme = "LKE_lvlwtr",
                              name = n)
             return(df)
           }
@@ -345,7 +345,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
           out2 <- reshape2::melt(out, value.name = "model",
                                  varnames = c("depth_mid", "Date"))
           out2$Date <- as.Date(out2$Date)
-          out2$var <- sa_ctrl$vars_sim[[n]]$var
+          out2$var_aeme <- sa_ctrl$vars_sim[[n]]$var
           out2$name <- n
           return(out2)
         })
@@ -374,7 +374,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
         lvl_adj <- wbal$data$wbal |>
           dplyr::select(Date, value) |>
           dplyr::mutate(value = (value - min(inp$hypsograph$elev)),
-                        var = "LKE_lvlwtr")
+                        var_aeme = "LKE_lvlwtr")
       }
 
       df_lvl <- dplyr::left_join(balance, lvl_adj, by = "Date")
@@ -385,10 +385,10 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
           is.na(model) ~ 0,
           .default = model
         ),
-        LID = NA, var = "DEPTH", depth_mid = NA,
+        LID = NA, var_aeme = "DEPTH", depth_mid = NA,
         depth_from = NA, diff = model - value) |>
         dplyr::filter(!is.na(diff)) |>
-        dplyr::select(LID, Date, value, var, depth_mid, depth_from, model,
+        dplyr::select(LID, Date, value, var_aeme, depth_mid, depth_from, model,
                       diff) |>
         dplyr::rename(obs = value)
     }
@@ -405,7 +405,7 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
           return(return_list)
         } #else {
         tst <- dplyr::left_join(obs_sub, mod_out,
-                                by = c("Date", "depth_mid", "var")) |>
+                                by = c("Date", "depth_mid", "var_aeme")) |>
           dplyr::filter(!is.na(model)) |>
           dplyr::mutate(diff = model - obs)
       } else {
@@ -421,11 +421,11 @@ run_and_fit <- function(aeme_data, param, model, vars_sim, path, mod_ctrls,
       } else {
 
         if (method == "calib") {
-          vars_present <- unique(tst$var)
+          vars_present <- unique(tst$var_aeme)
           names(vars_present) <- vars_present
           res <- lapply(vars_present, \(v) {
             sub <- tst |>
-              dplyr::filter(var == v)
+              dplyr::filter(var_aeme == v)
             FUN_list[[v]](sub)
           })
           for (v in names(res)) {

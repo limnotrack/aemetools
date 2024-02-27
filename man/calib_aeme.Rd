@@ -5,11 +5,11 @@
 \title{Calibrate AEME model parameters using observations}
 \usage{
 calib_aeme(
-  aeme_data,
+  aeme,
   path = ".",
   param,
   model,
-  mod_ctrls,
+  model_controls,
   vars_sim = "HYD_temp",
   FUN_list = NULL,
   ctrl = NULL,
@@ -18,7 +18,7 @@ calib_aeme(
 )
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
@@ -28,8 +28,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \item{model}{string; for which model to calibrate. Only one model can be
 passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
 
-\item{mod_ctrls}{dataframe; of configuration loaded from
-"mod_ctrls.csv".}
+\item{model_controls}{dataframe; of configuration loaded from
+"model_controls.csv".}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
 model fit. Currently only supports using one variable.}

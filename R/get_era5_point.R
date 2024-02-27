@@ -1,4 +1,4 @@
-#' Extract data from ERA5 RDS and format for `LakeEnsemblR```
+#' Extract data from ERA5 RDS and format for `AEME`
 #'
 #' Extract met data frame from closest grid to lat & lon
 #'

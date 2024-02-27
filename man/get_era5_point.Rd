@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_era5_point.R
 \name{get_era5_point}
 \alias{get_era5_point}
-\title{Extract data from ERA5 RDS and format for `LakeEnsemblR```}
+\title{Extract data from ERA5 RDS and format for \code{AEME}}
 \usage{
 get_era5_point(
   lat,

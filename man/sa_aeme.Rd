@@ -5,18 +5,18 @@
 \title{Run sensitivity analysis on AEME model parameters}
 \usage{
 sa_aeme(
-  aeme_data,
+  aeme,
   path = ".",
   param,
   model,
-  mod_ctrls,
+  model_controls,
   FUN_list = NULL,
   ctrl = NULL,
   param_df = NULL
 )
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
@@ -26,8 +26,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \item{model}{string; for which model to calibrate. Only one model can be
 passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
 
-\item{mod_ctrls}{dataframe; of configuration loaded from
-"mod_ctrls.csv".}
+\item{model_controls}{dataframe; of configuration loaded from
+"model_controls.csv".}
 
 \item{FUN_list}{list of functions; named according to the variables in the
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
@@ -57,13 +57,13 @@ to run quicker.
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                                    model = model, model_controls = model_controls,
                                     inf_factor = inf_factor, ext_elev = 5,
                                     use_bgc = FALSE)
 
@@ -96,8 +96,8 @@ to run quicker.
   )
 
   # Run sensitivity analysis AEME model
-  ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                  model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+  ctrl <- sa_aeme(aeme = aeme, path = path, param = param,
+                  model = model, ctrl = ctrl, model_controls = model_controls,
                   FUN_list = FUN_list)
 }
 

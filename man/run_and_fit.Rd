@@ -5,12 +5,12 @@
 \title{Run a model and calculate model fit.}
 \usage{
 run_and_fit(
-  aeme_data,
+  aeme,
   param,
   model,
   vars_sim,
   path,
-  mod_ctrls,
+  model_controls,
   FUN_list = NULL,
   weights,
   na_value = 999,
@@ -24,7 +24,7 @@ run_and_fit(
 )
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
@@ -37,8 +37,8 @@ model fit. Currently only supports using one variable.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
-\item{mod_ctrls}{dataframe; of configuration loaded from
-"mod_ctrls.csv".}
+\item{model_controls}{dataframe; of configuration loaded from
+"model_controls.csv".}
 
 \item{FUN_list}{function; of the form \verb{function(O, P)} which will be used in
 to calculate model fit. If NULL, uses mean absolute error (MAE).}

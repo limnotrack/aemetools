@@ -10,13 +10,13 @@
 #' @noRd
 #'
 
-write_simulation_output <- function(x, ctrl, aeme_data, model, param, FUN_list,
+write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
                                     sim_id = NULL, append_metadata = TRUE) {
 
   # Extract meta information
-  lke <- AEME::lake(aeme_data)
-  tme <- AEME::time(aeme_data)
-  cfg <- AEME::configuration(aeme_data)
+  lke <- AEME::lake(aeme)
+  tme <- AEME::time(aeme)
+  cfg <- AEME::configuration(aeme)
   use_bgc <- !is.null(cfg[[model]]$ecosystem)
 
   # Create function string
