@@ -4,30 +4,30 @@ test_that("can run AEME-GLM with parameters", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
 
   utils::data("aeme_parameters", package = "aemetools")
   param <- aeme_parameters
 
-  run_aeme_param(aeme_data = aeme_data, param = param,
-                       model = model, path = path, mod_ctrls = mod_ctrls)
-  lke <- AEME::lake(aeme_data)
+  run_aeme_param(aeme = aeme, param = param,
+                 model = model, path = path, model_controls = model_controls)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 
-  nc <- run_aeme_param(aeme_data = aeme_data, param = param,
-                 model = model, path = path, mod_ctrls = mod_ctrls,
-                 return_nc = TRUE)
+  nc <- run_aeme_param(aeme = aeme, param = param,
+                       model = model, path = path, model_controls = model_controls,
+                       return_nc = TRUE)
   testthat::expect_true(is(nc, "ncdf4"))
 
   ncdf4::nc_close(nc)
@@ -40,21 +40,21 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path, parallel = FALSE)
-  # AEME::plot(aeme_data, model = model, path = path, plot = "calib",
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path, parallel = FALSE)
+  # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "DYsim.nc"))
@@ -84,12 +84,10 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
   names(weights) <- vars_sim
 
   # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
@@ -108,16 +106,16 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
   # model <- c("gotm_wet", "glm_aed")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
 
   utils::data("aeme_parameters", package = "aemetools")
   param <- aeme_parameters
@@ -143,12 +141,10 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
   weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 0.5)
 
   # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
@@ -166,30 +162,30 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
 
 })
 
-test_that("can calibrate temperature for AEME-GLM in parallel", {
+test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
-  # AEME::plot(aeme_data, model = model)
-  lke <- AEME::lake(aeme_data)
+  model <- c("glm_aed", "gotm_wet")
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
+  # AEME::plot(aeme, model = model)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
+  testthat::expect_true(all(file_chk))
 
   utils::data("aeme_parameters", package = "aemetools")
   param <- aeme_parameters
@@ -203,21 +199,18 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
-                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+  ctrl <- create_control(method = "calib",NP = 10, itermax = 30,
                          parallel = TRUE, file_type = "db",
-                         file_name = "results.db", na_value = 999, ncore = 2)
+                         file_name = "results.db")
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c("HYD_temp" = 10, "LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
@@ -235,92 +228,27 @@ test_that("can calibrate temperature for AEME-GLM in parallel", {
 
 })
 
-test_that("can calibrate temperature for AEME-GOTM in parallel", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("gotm_wet")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
-  # AEME::plot(aeme_data, model = model)
-  lke <- AEME::lake(aeme_data)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
-
-  utils::data("aeme_parameters", package = "aemetools")
-  param <- aeme_parameters
-
-  # Function to calculate fitness
-  fit <- function(df) {
-    O <- df$obs
-    P <- df$model
-    -1 * (cor(x = O, y = P, method = "pearson") -
-            (mean(abs(O - P)) / (max(O) - min(O))))
-  }
-  FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
-
-  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
-                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, file_type = "csv",
-                         na_value = 999, ncore = 2L)
-
-  vars_sim <- c("HYD_temp", "LKE_lvlwtr")
-  weights <- c(1, 10)
-  names(weights) <- vars_sim
-
-  # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
-
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
-
-  testthat::expect_true(is.list(calib))
-
-  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
-  testthat::expect_true(is.list(plist))
-
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
-
-})
-
 test_that("can calibrate lake level for AEME-GOTM in parallel", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
-  # AEME::plot(aeme_data, model = model, path = path, plot = "calib",
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
+  # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
@@ -338,21 +266,17 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
-                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, file_type = "csv",
-                         na_value = 999, ncore = 2L)
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30,
+                         parallel = TRUE, file_type = "csv")
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
@@ -370,21 +294,21 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
-  # AEME::plot(aeme_data, model = model, path = path, plot = "calib",
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
+  # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "DYsim.nc"))
@@ -411,12 +335,10 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
@@ -435,21 +357,21 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
-  # AEME::plot(aeme_data, model = model, path = path, plot = "calib",
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
+  # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
@@ -476,12 +398,10 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
@@ -501,24 +421,24 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  obs <- AEME::observations(aeme_data)
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  obs <- AEME::observations(aeme)
   obs$lake <- NULL
-  AEME::observations(aeme_data) <- obs
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  AEME::observations(aeme) <- obs
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
-  # AEME::plot(aeme_data, model = model, path = path, plot = "calib",
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
+  # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
@@ -543,12 +463,10 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
@@ -567,24 +485,24 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  obs <- AEME::observations(aeme_data)
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  obs <- AEME::observations(aeme)
   obs$lake <- NULL
-  AEME::observations(aeme_data) <- obs
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  AEME::observations(aeme) <- obs
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
-  # AEME::plot(aeme_data, model = model, path = path, plot = "calib",
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
+  # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "DYsim.nc"))
@@ -613,12 +531,10 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
@@ -637,25 +553,25 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  obs <- AEME::observations(aeme_data)
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  obs <- AEME::observations(aeme)
   obs$lake <- NULL
   obs$level <- NULL
-  AEME::observations(aeme_data) <- obs
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  AEME::observations(aeme) <- obs
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
-  # AEME::plot(aeme_data, model = model, path = path, plot = "calib",
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
+  # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
@@ -684,23 +600,21 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
 
-  fit <- run_and_fit(aeme_data = aeme_data, param = param,
-                             model = model, path = path, FUN_list = FUN_list,
-                             mod_ctrls = mod_ctrls, vars_sim = vars_sim,
-                             weights = weights,
-                             return_indices = F,
-                             include_wlev = TRUE,
-                             fit = TRUE)
+  fit <- run_and_fit(aeme = aeme, param = param,
+                     model = model, path = path, FUN_list = FUN_list,
+                     model_controls = model_controls, vars_sim = vars_sim,
+                     weights = weights,
+                     return_indices = F,
+                     include_wlev = TRUE,
+                     fit = TRUE)
 
   testthat::expect_true(fit$LKE_lvlwtr < 0.25)
 
   # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
@@ -719,24 +633,24 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  obs <- AEME::observations(aeme_data)
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  obs <- AEME::observations(aeme)
   obs$lake <- NULL
-  AEME::observations(aeme_data) <- obs
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  AEME::observations(aeme) <- obs
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
-  # AEME::plot(aeme_data, model = model, path = path, plot = "calib",
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
+  # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
@@ -765,12 +679,10 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   weights <- c("LKE_lvlwtr" = 1)
 
   # Calibrate AEME model
-  sim_id <- sapply(model, \(m) {
-    calib_aeme(aeme_data = aeme_data, path = path,
-               param = param, model = m,
-               mod_ctrls = mod_ctrls, FUN_list = FUN_list, ctrl = ctrl,
-               vars_sim = vars_sim, weights = weights)
-  })
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 

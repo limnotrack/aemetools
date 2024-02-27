@@ -5,22 +5,22 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
 
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
 
-  # AEME::plot(aeme_data, model = model)
-  lke <- AEME::lake(aeme_data)
+  # AEME::plot(aeme, model = model)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "DYsim.nc"))
@@ -37,8 +37,8 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- create_control(method = "sa", N = 2^2, ncore = 2L, na_value = 999,
-                         parallel = TRUE, file_type = "db", file_name = "results.db",
+  ctrl <- create_control(method = "sa", N = 2^2, parallel = TRUE,
+                         file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
                                             month = c(10:12, 1:3),
@@ -52,8 +52,8 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
   )
 
   # Run sensitivity analysis AEME model
-  sim_id <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                    model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+  sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
+                    model = model, ctrl = ctrl, model_controls = model_controls,
                     FUN_list = FUN_list)
 
   sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
@@ -68,21 +68,21 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
 
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
 
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
@@ -99,8 +99,8 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- create_control(method = "sa", N = 2^2, ncore = 12, na_value = 999,
-                         parallel = TRUE, file_type = "db", file_name = "results.db",
+  ctrl <- create_control(method = "sa", N = 2^2, parallel = TRUE,
+                         file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
                                             month = c(10:12, 1:3),
@@ -114,8 +114,8 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   )
 
   # Run sensitivity analysis AEME model
-  sim_id <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                    model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+  sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
+                    model = model, ctrl = ctrl, model_controls = model_controls,
                     FUN_list = FUN_list)
 
   sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
@@ -144,21 +144,21 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-                                    model = model, mod_ctrls = mod_ctrls,
-                                    inf_factor = inf_factor, ext_elev = 5,
-                                    use_bgc = FALSE)
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               inf_factor = inf_factor, ext_elev = 5,
+                               use_bgc = FALSE)
 
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model,
-                              verbose = FALSE, mod_ctrls = mod_ctrls,
-                              path = path)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, model_controls = model_controls,
+                         path = path)
 
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
@@ -175,8 +175,8 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- create_control(method = "sa", N = 2^2, ncore = 12, na_value = 999,
-                         parallel = TRUE, file_type = "db", file_name = "results.db",
+  ctrl <- create_control(method = "sa", N = 2^2, parallel = TRUE,
+                         file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
                                             month = c(10:12, 1:3),
@@ -190,8 +190,8 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   )
 
   # Run sensitivity analysis AEME model
-  sim_id <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                    model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+  sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
+                    model = model, ctrl = ctrl, model_controls = model_controls,
                     FUN_list = FUN_list)
 
   sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
