@@ -61,26 +61,26 @@ aeme_dir <- system.file("extdata/lake/", package = "AEME")
 # Copy files from package into tempdir
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
 path <- file.path(tmpdir, "lake")
-aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
+aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 
 # Remove observations and outflow from example data
-obs <- observations(aeme_data)
+obs <- observations(aeme)
 obs$lake <- NULL # Remove all observations except lake level
-observations(aeme_data) <- obs
-outf <- outflows(aeme_data)
+observations(aeme) <- obs
+outf <- outflows(aeme)
 outf$data <- NULL # Remove all outflows
-outflows(aeme_data) <- outf
+outflows(aeme) <- outf
 
-mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+model_controls <- AEME::get_model_controls()
 inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("gotm_wet")
 
 # Build the ensemble - this includes lake level estimation
-aeme_data <- build_ensemble(path = path, aeme_data = aeme_data,
-                            model = model, mod_ctrls = mod_ctrls,
-                            inf_factor = inf_factor, ext_elev = 5,
-                            use_bgc = FALSE)
+aeme <- build_ensemble(path = path, aeme = aeme,
+                       model = model, model_controls = model_controls,
+                       inf_factor = inf_factor, ext_elev = 5,
+                       use_bgc = FALSE)
 
 ```
 
@@ -88,8 +88,8 @@ Let's look at the lake level calculated and the estimated outflows (wbal) for th
 
 ```{r plot-level, results = "hold", fig.width = 8, fig.height = 6}
 par(mfrow = c(2, 1))
-plot(aeme_data, "observations")
-plot(aeme_data, "outflows")
+plot(aeme, "observations")
+plot(aeme, "outflows")
 ```
 
 Now we will run the model and plot the model outputs against the observations.
@@ -100,10 +100,10 @@ Now we will run the model and plot the model outputs against the observations.
 #| fig.height: 6
 library(ggplot2)
 
-aeme_data <- run_aeme(aeme_data = aeme_data, model = model,
-                      verbose = FALSE, mod_ctrls = mod_ctrls,
-                      path = path)
-p1 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
+aeme <- run_aeme(aeme = aeme, model = model,
+                 verbose = FALSE, model_controls = model_controls,
+                 path = path)
+p1 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
                   print_plots = FALSE, ylim = c(12.8, 14)) +
   scale_size_manual(values = c("Obs" = 0.1)) +
   ggtitle("Uncalibrated model")
@@ -159,9 +159,9 @@ vars_sim <- c("LKE_lvlwtr")
 weights <- c("LKE_lvlwtr" = 10)
 
 # Calibrate AEME model
-ctrl <- calib_aeme(aeme_data = aeme_data, path = path,
+ctrl <- calib_aeme(aeme = aeme, path = path,
                    param = param, model = model,
-                   mod_ctrls = mod_ctrls, FUN = fit, ctrl = ctrl,
+                   model_controls = model_controls, FUN = fit, ctrl = ctrl,
                    vars_sim = vars_sim, weights = weights)
 
 calib_res <- read_calib(ctrl = ctrl, model = model)
@@ -192,11 +192,11 @@ best_pars <- get_param(calib = calib_res, model = model,
 
 param <- update_param(param = param, best_pars = best_pars)
 
-aeme_data <- run_aeme_param(aeme_data = aeme_data, model = model, 
-                            mod_ctrls = mod_ctrls, path = path, param = param,
+aeme <- run_aeme_param(aeme = aeme, model = model, 
+                            model_controls = model_controls, path = path, param = param,
                             return_aeme = TRUE)
 
-p2 <- plot_output(aeme_data = aeme_data, model = model, var_sim = "LKE_lvlwtr",
+p2 <- plot_output(aeme = aeme, model = model, var_sim = "LKE_lvlwtr",
                   print_plots = FALSE, ylim = c(12.8, 14)) +
   scale_size_manual(values = c("Obs" = 0.1)) +
   ggtitle("Calibrated model")

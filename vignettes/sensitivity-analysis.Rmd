@@ -50,15 +50,15 @@ example, we will use the `glm_aed` model. The `build_ensemble` function will
 
 ```{r build-aeme-example, warning=FALSE, message=FALSE}
 
-aeme_data <- yaml_to_aeme(path = path, "aeme.yaml")
-mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+aeme <- yaml_to_aeme(path = path, "aeme.yaml")
+model_controls <- AEME::get_model_controls()
 inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("gotm_wet")
-aeme_data <- build_ensemble(path = path, aeme_data = aeme_data,
-                            model = model, mod_ctrls = mod_ctrls,
-                            inf_factor = inf_factor, ext_elev = 5,
-                            use_bgc = TRUE)
+aeme <- build_ensemble(path = path, aeme = aeme,
+                       model = model, model_controls = model_controls,
+                       inf_factor = inf_factor, ext_elev = 5,
+                       use_bgc = TRUE)
 
 ```
 
@@ -196,8 +196,8 @@ The `sa_aeme` function writes the results to the file specified.  The
 
 ```{r run-sensitivity-analysis, cache=FALSE}
 # Run sensitivity analysis AEME model
-sim_id <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-                  model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
+                  model = model, ctrl = ctrl, model_controls = model_controls,
                   FUN_list = FUN_list)
 
 ```
