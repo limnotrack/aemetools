@@ -5,18 +5,18 @@
 \title{Run AEME with parameter dataframe}
 \usage{
 run_aeme_param(
-  aeme_data,
+  aeme,
   param,
   model,
   path,
-  mod_ctrls,
+  model_controls,
   na_value = 999,
   return_nc = FALSE,
   return_aeme = FALSE
 )
 }
 \arguments{
-\item{aeme_data}{aeme; data object.}
+\item{aeme}{aeme; data object.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
@@ -26,8 +26,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
-\item{mod_ctrls}{dataframe; of configuration loaded from
-"mod_ctrls.csv".}
+\item{model_controls}{dataframe; of configuration loaded from
+"model_controls.csv".}
 
 \item{na_value}{numeric; value to return if model run is unsuccessful}
 

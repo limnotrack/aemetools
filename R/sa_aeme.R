@@ -31,13 +31,13 @@
 #'   # Copy files from package into tempdir
 #'   file.copy(aeme_dir, tmpdir, recursive = TRUE)
 #'   path <- file.path(tmpdir, "lake")
-#'   aeme_data <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-#'   mod_ctrls <- read.csv(file.path(path, "model_controls.csv"))
+#'   aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+#'   model_controls <- AEME::get_model_controls()
 #'   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 #'   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 #'   model <- c("glm_aed")
-#'   aeme_data <- AEME::build_ensemble(path = path, aeme_data = aeme_data,
-#'                                     model = model, mod_ctrls = mod_ctrls,
+#'   aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+#'                                     model = model, model_controls = model_controls,
 #'                                     inf_factor = inf_factor, ext_elev = 5,
 #'                                     use_bgc = FALSE)
 #'
@@ -70,14 +70,14 @@
 #'   )
 #'
 #'   # Run sensitivity analysis AEME model
-#'   ctrl <- sa_aeme(aeme_data = aeme_data, path = path, param = param,
-#'                   model = model, ctrl = ctrl, mod_ctrls = mod_ctrls,
+#'   ctrl <- sa_aeme(aeme = aeme, path = path, param = param,
+#'                   model = model, ctrl = ctrl, model_controls = model_controls,
 #'                   FUN_list = FUN_list)
 #' }
 #'
 #' @export
 
-sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
+sa_aeme <- function(aeme, path = ".", param, model, model_controls,
                     FUN_list = NULL, ctrl = NULL, param_df = NULL) {
 
   # Check if vars_sim and weights are the same length
@@ -100,219 +100,222 @@ sa_aeme <- function(aeme_data, path = ".", param, model, mod_ctrls,
 
   include_wlev <- ifelse("LKE_lvlwtr" %in% vars_sim, TRUE, FALSE)
 
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   lakename <- tolower(lke[["name"]])
   lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
 
-  var_indices <- list()
-  if (any(vars_sim != "LKE_lvlwtr")) {
-    # Extract indices for modelled variables
-    message("Extracting indices for modelled variables [",
-            format(Sys.time()), "]")
-    suppressMessages(
-      var_indices <- run_and_fit(aeme_data = aeme_data, param = param,
-                                 model = model, path = path, FUN_list = FUN_list,
-                                 mod_ctrls = mod_ctrls, vars_sim = vars_sim,
-                                 weights = weights,
-                                 return_indices = TRUE,
-                                 include_wlev = include_wlev,
-                                 method = "sa", sa_ctrl = ctrl,
-                                 fit = FALSE)
-    )
-    message("Complete! [", format(Sys.time()), "]")
-  }
-
-  # Extract parameters for the model ----
-  param <- param[param$model == model, ]
-  # par_idx <- which(param$model %in% c(model))
-
-  # Generate parameters for sensitivity analysis ----
-  if (is.null(param_df)) {
-    ## Create sample matrix to compute first and total-order indices:
-    mat <- sensobol::sobol_matrices(N = ctrl$N, params = param$name)
-    param_df <- mat
-    for (i in 1:ncol(mat)) {
-      param_df[, i] <- param$min[i] + (param$max[i] - param$min[i]) * mat[, i]
+  names(model) <- model
+  sapply(model, \(m) {
+    var_indices <- list()
+    if (any(vars_sim != "LKE_lvlwtr")) {
+      # Extract indices for modelled variables
+      message("Extracting indices for ", m, " modelled variables [",
+              format(Sys.time()), "]")
+      suppressMessages(
+        var_indices <- run_and_fit(aeme = aeme, param = param,
+                                   model = m, path = path, FUN_list = FUN_list,
+                                   model_controls = model_controls, vars_sim = vars_sim,
+                                   weights = weights,
+                                   return_indices = TRUE,
+                                   include_wlev = include_wlev,
+                                   method = "sa", sa_ctrl = ctrl,
+                                   fit = FALSE)
+      )
+      message("Complete! [", format(Sys.time()), "]")
     }
-    colnames(param_df) <- paste0(param$group, "/", param$name)
-    param_df <- as.data.frame(param_df)
-  }
-  if (is.null(ctrl$ncore)) {
-    ctrl$ncore <- parallel::detectCores() - 1
-    if (ctrl$ncore > nrow(param_df)) ctrl$ncore <- nrow(param_df)
-  }
 
-  suppressWarnings({
-    param_list <- split(param_df, rep(1:ctrl$ncore))
+    # Extract parameters for the model ----
+    param <- param[param$model == m, ]
+    # par_idx <- which(param$model %in% c(m))
+
+    # Generate parameters for sensitivity analysis ----
+    if (is.null(param_df)) {
+      ## Create sample matrix to compute first and total-order indices:
+      mat <- sensobol::sobol_matrices(N = ctrl$N, params = param$name)
+      param_df <- mat
+      for (i in 1:ncol(mat)) {
+        param_df[, i] <- param$min[i] + (param$max[i] - param$min[i]) * mat[, i]
+      }
+      colnames(param_df) <- paste0(param$group, "/", param$name)
+      param_df <- as.data.frame(param_df)
+    }
+    if (is.null(ctrl$ncore)) {
+      ctrl$ncore <- parallel::detectCores() - 1
+      if (ctrl$ncore > nrow(param_df)) ctrl$ncore <- nrow(param_df)
+    }
+
+    suppressWarnings({
+      param_list <- split(param_df, rep(1:ctrl$ncore))
+    })
+
+    # Run in parallel
+    if (ctrl$parallel) {
+
+      temp_dirs <- make_temp_dir(m, lake_dir, n = ctrl$ncore)
+      # list.files(temp_dirs[1], recursive = TRUE)
+      ncores <- min((parallel::detectCores() - 1), ctrl$ncore)
+      nmes <- names(ctrl$vars_sim)
+      message("Running sensitivity analysis in parallel for ", m, " using ",
+              ncores, " cores with ", nrow(param_df), " parameter sets [",
+              format(Sys.time()), "]")
+
+      cl <- parallel::makeCluster(ncores)
+      on.exit(parallel::stopCluster(cl))
+      varlist <- list("param", "aeme", "path", "m", "vars_sim",
+                      "FUN_list", "model_controls", "var_indices", "temp_dirs",
+                      "ctrl", "weights", "var_indices", "include_wlev", "nmes")
+      parallel::clusterExport(cl, varlist = varlist,
+                              envir = environment())
+      pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
+                                signif(apply(param_df, 2, median), 4),
+                                signif(apply(param_df, 2, sd), 4)),
+                          row.names = c("mean", "median", "sd"))
+      names(pr_df) <- gsub("NA/", "", names(param_df))
+      print(pr_df)
+
+      # model_out <- lapply(seq_along(param_list), \(pars, i) {
+      model_out <- parallel::parLapply(cl, seq_along(param_list), \(pars, i) {
+
+        path <- temp_dirs[i]
+        # Add columns to pars
+        pars[[i]][["fit"]] <- NA
+        for (n in nmes) {
+          pars[[i]][[n]] <- NA
+        }
+
+        # Loop through each of the parameters
+        for (p in seq_len(nrow(pars[[i]]))) {
+
+          # Update the parameter value in the parameter table
+          for(n in names(pars[[i]])) {
+            grp <- strsplit(n, "/")[[1]][1]
+            nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
+            if (grp != "NA") {
+              param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
+            } else {
+              param$value[param$name == nme] <- pars[[i]][p, n]
+            }
+          }
+          # message(i, ", ", p)
+
+          # Save the fit value
+          res <- aemetools::run_and_fit(aeme = aeme,
+                                        param = param,
+                                        model = m,
+                                        path = path,
+                                        vars_sim = vars_sim,
+                                        FUN_list = FUN_list,
+                                        model_controls = model_controls,
+                                        na_value = ctrl$na_value,
+                                        var_indices = var_indices,
+                                        return_indices = FALSE,
+                                        include_wlev = include_wlev,
+                                        fit = TRUE,
+                                        method = "sa", sa_ctrl = ctrl,
+                                        weights = weights)
+
+          for (n in nmes) {
+            pars[[i]][[n]][p] <- res[[n]]
+          }
+
+          if (ctrl$na_value %in% unlist(res)) {
+            res1 <- ctrl$na_value
+          } else {
+            res1 <- sum(unlist(res))
+            res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
+          }
+
+          pars[[i]][["fit"]][p] <- res1
+          # print(pars[[i]][["fit"]][p])
+        }
+        return(pars[[i]])
+      }, pars = param_list)
+
+      message("Completed ", m, "! [", format(Sys.time()), "]")
+
+      g1 <- do.call(rbind, model_out)
+      out_df <- apply(g1, 2, signif, digits = 6)
+      ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
+                                             FUN_list = FUN_list,
+                                             aeme = aeme, model = m,
+                                             param = param,
+                                             append_metadata = TRUE)
+    } else {
+      # Run in serial ----
+      message("Running sensitivity analysis in serial for ", m, " with ",
+              nrow(param_df), " parameter sets [", format(Sys.time()), "]")
+      pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
+                                signif(apply(param_df, 2, median), 4),
+                                signif(apply(param_df, 2, sd), 4)),
+                          row.names = c("mean", "median", "sd"))
+      names(pr_df) <- gsub("NA/", "", names(param_df))
+      print(pr_df)
+      nmes <- names(ctrl$vars_sim)
+      model_out <- lapply(seq_along(param_list), \(pars, i) {
+
+        # Add columns to pars
+        pars[[i]][["fit"]] <- NA
+        for (n in nmes) {
+          pars[[i]][[n]] <- NA
+        }
+
+        # Loop through each of the parameters
+        for (p in seq_len(nrow(pars[[i]]))) {
+
+          # Update the parameter value in the parameter table
+          for(n in names(pars[[i]])) {
+            grp <- strsplit(n, "/")[[1]][1]
+            nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
+            if (grp != "NA") {
+              param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
+            } else {
+              param$value[param$name == nme] <- pars[[i]][p, n]
+            }
+          }
+          # message(i, ", ", p)
+
+          # Save the fit value
+          res <- run_and_fit(aeme = aeme,
+                             param = param,
+                             model = m,
+                             path = path,
+                             vars_sim = vars_sim,
+                             FUN_list = FUN_list,
+                             model_controls = model_controls,
+                             na_value = ctrl$na_value,
+                             var_indices = var_indices,
+                             return_indices = FALSE,
+                             include_wlev = include_wlev,
+                             fit = TRUE, method = "sa", sa_ctrl = ctrl,
+                             weights = weights)
+
+          for (n in nmes) {
+            pars[[i]][[n]][p] <- res[[n]]
+          }
+
+          if (ctrl$na_value %in% unlist(res)) {
+            res1 <- ctrl$na_value
+          } else {
+            res1 <- sum(unlist(res))
+            res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
+          }
+
+          pars[[i]][["fit"]][p] <- res1
+        }
+
+        return(pars[[i]])
+      }, pars = param_list)
+
+      g1 <- do.call(rbind, model_out)
+      out_df <- apply(g1, 2, signif, digits = 6)
+      ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
+                                             FUN_list = FUN_list,
+                                             aeme = aeme, model = m,
+                                             param = param,
+                                             append_metadata = TRUE)
+
+      message("Completed ", m, "! [", format(Sys.time()), "]")
+    }
+    ctrl$sim_id
   })
-
-  # Run in parallel
-  if (ctrl$parallel) {
-
-    temp_dirs <- make_temp_dir(model, lake_dir, n = ctrl$ncore)
-    # list.files(temp_dirs[1], recursive = TRUE)
-    ncores <- min((parallel::detectCores() - 1), ctrl$ncore)
-    nmes <- names(ctrl$vars_sim)
-    message("Running sensitivity analysis in parallel using ", ncores,
-            " cores with ", nrow(param_df), " parameter sets [",
-            format(Sys.time()), "]")
-
-    cl <- parallel::makeCluster(ncores)
-    on.exit(parallel::stopCluster(cl))
-    varlist <- list("param", "aeme_data", "path", "model", "vars_sim",
-                    "FUN_list", "mod_ctrls", "var_indices", "temp_dirs",
-                    "ctrl", "weights", "var_indices", "include_wlev", "nmes")
-    parallel::clusterExport(cl, varlist = varlist,
-                            envir = environment())
-    pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
-                              signif(apply(param_df, 2, median), 4),
-                              signif(apply(param_df, 2, sd), 4)),
-                        row.names = c("mean", "median", "sd"))
-    names(pr_df) <- gsub("NA/", "", names(param_df))
-    print(pr_df)
-
-    # model_out <- lapply(seq_along(param_list), \(pars, i) {
-    model_out <- parallel::parLapply(cl, seq_along(param_list), \(pars, i) {
-
-      path <- temp_dirs[i]
-      # Add columns to pars
-      pars[[i]][["fit"]] <- NA
-      for (n in nmes) {
-        pars[[i]][[n]] <- NA
-      }
-
-      # Loop through each of the parameters
-      for (p in seq_len(nrow(pars[[i]]))) {
-
-        # Update the parameter value in the parameter table
-        for(n in names(pars[[i]])) {
-          grp <- strsplit(n, "/")[[1]][1]
-          nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
-          if (grp != "NA") {
-            param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
-          } else {
-            param$value[param$name == nme] <- pars[[i]][p, n]
-          }
-        }
-        # message(i, ", ", p)
-
-        # Save the fit value
-        res <- aemetools::run_and_fit(aeme_data = aeme_data,
-                                      param = param,
-                                      model = model,
-                                      path = path,
-                                      vars_sim = vars_sim,
-                                      FUN_list = FUN_list,
-                                      mod_ctrls = mod_ctrls,
-                                      na_value = ctrl$na_value,
-                                      var_indices = var_indices,
-                                      return_indices = FALSE,
-                                      include_wlev = include_wlev,
-                                      fit = TRUE,
-                                      method = "sa", sa_ctrl = ctrl,
-                                      weights = weights)
-
-        for (n in nmes) {
-          pars[[i]][[n]][p] <- res[[n]]
-        }
-
-        if (ctrl$na_value %in% unlist(res)) {
-          res1 <- ctrl$na_value
-        } else {
-          res1 <- sum(unlist(res))
-          res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
-        }
-
-        pars[[i]][["fit"]][p] <- res1
-        # print(pars[[i]][["fit"]][p])
-      }
-      return(pars[[i]])
-    }, pars = param_list)
-
-    message("Complete! [", format(Sys.time()), "]")
-
-    g1 <- do.call(rbind, model_out)
-    out_df <- apply(g1, 2, signif, digits = 6)
-    ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
-                                           FUN_list = FUN_list,
-                                           aeme_data = aeme_data, model = model,
-                                           param = param,
-                                           append_metadata = TRUE)
-  } else {
-    # Run in serial ----
-    message("Running sensitivity analysis in serial with ", nrow(param_df),
-            " parameter sets [", format(Sys.time()), "]")
-    pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
-                              signif(apply(param_df, 2, median), 4),
-                              signif(apply(param_df, 2, sd), 4)),
-                        row.names = c("mean", "median", "sd"))
-    names(pr_df) <- gsub("NA/", "", names(param_df))
-    print(pr_df)
-    nmes <- names(ctrl$vars_sim)
-    model_out <- lapply(seq_along(param_list), \(pars, i) {
-
-      # Add columns to pars
-      pars[[i]][["fit"]] <- NA
-      for (n in nmes) {
-        pars[[i]][[n]] <- NA
-      }
-
-      # Loop through each of the parameters
-      for (p in seq_len(nrow(pars[[i]]))) {
-
-        # Update the parameter value in the parameter table
-        for(n in names(pars[[i]])) {
-          grp <- strsplit(n, "/")[[1]][1]
-          nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
-          if (grp != "NA") {
-            param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
-          } else {
-            param$value[param$name == nme] <- pars[[i]][p, n]
-          }
-        }
-        # message(i, ", ", p)
-
-        # Save the fit value
-        res <- run_and_fit(aeme_data = aeme_data,
-                           param = param,
-                           model = model,
-                           path = path,
-                           vars_sim = vars_sim,
-                           FUN_list = FUN_list,
-                           mod_ctrls = mod_ctrls,
-                           na_value = ctrl$na_value,
-                           var_indices = var_indices,
-                           return_indices = FALSE,
-                           include_wlev = include_wlev,
-                           fit = TRUE, method = "sa", sa_ctrl = ctrl,
-                           weights = weights)
-
-        for (n in nmes) {
-          pars[[i]][[n]][p] <- res[[n]]
-        }
-
-        if (ctrl$na_value %in% unlist(res)) {
-          res1 <- ctrl$na_value
-        } else {
-          res1 <- sum(unlist(res))
-          res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
-        }
-
-        pars[[i]][["fit"]][p] <- res1
-      }
-
-      return(pars[[i]])
-    }, pars = param_list)
-
-    g1 <- do.call(rbind, model_out)
-    out_df <- apply(g1, 2, signif, digits = 6)
-    ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
-                                           FUN_list = FUN_list,
-                                           aeme_data = aeme_data, model = model,
-                                           param = param,
-                                           append_metadata = TRUE)
-
-    message("Complete! [", format(Sys.time()), "]")
-  }
-  ctrl$sim_id
 }

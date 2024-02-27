@@ -13,7 +13,7 @@
 #' @return Launches shiny app
 #' @export
 
-run_aeme_shiny <- function(aeme_data, param, path, mod_ctrls) {
+run_aeme_shiny <- function(aeme, param, path, model_controls) {
 
   # data("aeme_parameters")
   data("key_naming", package = "AEME")
@@ -23,7 +23,7 @@ run_aeme_shiny <- function(aeme_data, param, path, mod_ctrls) {
   out_vars <- grep("HYD|LKE|PHY|CHM|PHS|NIT", out_vars, value = TRUE)
 
   # param <- aeme_parameters
-  cfg <- AEME::configuration(aeme_data)
+  cfg <- AEME::configuration(aeme)
   # Which models are not NULL in cfg
   models <- names(cfg)
   names(models) <- c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET")
@@ -65,7 +65,7 @@ run_aeme_shiny <- function(aeme_data, param, path, mod_ctrls) {
   # Server ----
   server <- function(input, output) {
 
-    reac <- shiny::reactiveValues(df = NULL, aeme = aeme_data,
+    reac <- shiny::reactiveValues(df = NULL, aeme = aeme,
                                   update_tab = TRUE, tabs = NULL)
 
     # Exit button ----
@@ -113,9 +113,9 @@ run_aeme_shiny <- function(aeme_data, param, path, mod_ctrls) {
     shiny::observeEvent(input$build, {
       shiny::withProgress(message = "Building AEME", value = 0, {
         shiny::incProgress(amount = 0.5)
-        reac$aeme <- AEME::build_ensemble(path = path, aeme_data = reac$aeme,
+        reac$aeme <- AEME::build_ensemble(path = path, aeme = reac$aeme,
                                           model = input$model,
-                                          mod_ctrls = mod_ctrls,
+                                          model_controls = model_controls,
                                           inf_factor = inf_factor,
                                           ext_elev = 5,
                                           use_bgc = input$use_bgc)
@@ -130,10 +130,10 @@ run_aeme_shiny <- function(aeme_data, param, path, mod_ctrls) {
         shiny::incProgress(amount = 0.5)
         outp <- AEME::output(reac$aeme)
         mod_res <- lapply(input$model, \(m) {
-          out <- run_aeme_param(aeme_data = reac$aeme,
+          out <- run_aeme_param(aeme = reac$aeme,
                                 model = input$model,
                                 param = reac$df, path = path,
-                                mod_ctrls = mod_ctrls,
+                                model_controls = model_controls,
                                 na_value = 999, return_aeme = TRUE) |>
             AEME::output()
           out[[m]]
@@ -173,7 +173,7 @@ run_aeme_shiny <- function(aeme_data, param, path, mod_ctrls) {
       shiny::validate(
         shiny::need(length(input$model) > 0, "Please select a model")
       )
-      v <- AEME::get_var(aeme_data = reac$aeme, var_sim = input$out_var,
+      v <- AEME::get_var(aeme = reac$aeme, var_sim = input$out_var,
                          model = input$model)
       shiny::validate(
         shiny::need(any(!is.na(v[["value"]])),
@@ -185,7 +185,7 @@ run_aeme_shiny <- function(aeme_data, param, path, mod_ctrls) {
         shiny::need(input$out_var %in% names(outp[[input$model]]),
                     "This variable is not available.")
       )
-      AEME::plot_output(aeme_data = reac$aeme, model = input$model,
+      AEME::plot_output(aeme = reac$aeme, model = input$model,
                         var_sim = input$out_var, level = FALSE) +
         ggplot2::theme_bw(base_size = 16)
     }

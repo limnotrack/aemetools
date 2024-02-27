@@ -15,7 +15,7 @@
 #' @return `na_value` if model run is unsuccessful
 #' @export
 
-run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
+run_aeme_param <- function(aeme, param, model, path, model_controls,
                            na_value = 999, return_nc = FALSE,
                            return_aeme = FALSE) {
 
@@ -30,11 +30,11 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
     stop("Only one model can be run at a time.")
 
   # Load AEME data
-  lke <- AEME::lake(aeme_data)
+  lke <- AEME::lake(aeme)
   lakename <- tolower(lke[["name"]])
   lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
-  inp <- AEME::input(aeme_data)
-  obs <- AEME::observations(aeme_data)
+  inp <- AEME::input(aeme)
+  obs <- AEME::observations(aeme)
   obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
 
   # Path for model
@@ -93,7 +93,7 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
     # Read in wdr data ----
     wdr_idx <- which(param$model == model & param$file == "wdr")
     col_id <- paste0(param$name[wdr_idx], "_", model)
-    aeme_outf <- AEME::outflows(aeme_data)
+    aeme_outf <- AEME::outflows(aeme)
     wdr <- aeme_outf[["data"]]
     for (c in names(wdr)) {
       if (c == "wbal") {
@@ -249,9 +249,9 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
   }
 
   # Run model ----
-  aeme_data <- AEME::run_aeme(aeme_data = aeme_data, model = model, path = path,
+  aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path,
                               check_output = FALSE, parallel = FALSE,
-                              mod_ctrls = mod_ctrls, return = return_aeme)
+                              model_controls = model_controls, return = return_aeme)
 
 
   # Check if model output is produced ----
@@ -280,6 +280,6 @@ run_aeme_param <- function(aeme_data, param, model, path, mod_ctrls,
   }
 
   if (return_aeme) {
-    return(aeme_data)
+    return(aeme)
   }
 }
