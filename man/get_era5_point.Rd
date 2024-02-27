@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_era5_point.R
 \name{get_era5_point}
 \alias{get_era5_point}
-\title{Extract data from ERA5 RDS and format for \code{AEME}}
+\title{Get ERA5 data for a coordinate}
 \usage{
 get_era5_point(
   lat,
@@ -11,7 +11,7 @@ get_era5_point(
   variables = c("MET_tmpair", "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", "MET_pprain",
     "MET_ppsnow", "MET_prsttn", "MET_radswd"),
   format = "aeme",
-  parallel = FALSE,
+  parallel = TRUE,
   ncores
 )
 }
@@ -20,7 +20,8 @@ get_era5_point(
 
 \item{lon}{numeric; Longitude}
 
-\item{years}{numeric; vector of years in numeric form to be extracted}
+\item{years}{numeric; vector of years in numeric form to be extracted.
+Currently years are limited to 1980-2022.}
 
 \item{variables}{vector; with AEME meteorological variable names to be
 downloaded. Defaults to all available variables: c("MET_tmpair",
@@ -31,7 +32,7 @@ downloaded. Defaults to all available variables: c("MET_tmpair",
 Defaults to "aeme".}
 
 \item{parallel}{boolean; parallelise the download of ERA5 variables. Defaults
-to FALSE.}
+to TRUE.}
 
 \item{ncores}{integer; number of cores to use for parallelisation. If
 missing, defaults to \code{min(c(parallel::detectCores() - 1, length(variables)))}}
@@ -40,5 +41,7 @@ missing, defaults to \code{min(c(parallel::detectCores() - 1, length(variables))
 dataframe of daily ERA5 data.
 }
 \description{
-Extract met data frame from closest grid to lat & lon
+Extract \href{https://www.ecmwf.int/en/era5-land}{ERA5-Land} meteorological data
+for the closest grid to a particular latitude and longitude for a selected
+number of years.
 }

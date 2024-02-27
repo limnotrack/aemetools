@@ -1,10 +1,13 @@
-#' Extract data from ERA5 RDS and format for `AEME`
+#' Get ERA5 data for a coordinate
 #'
-#' Extract met data frame from closest grid to lat & lon
+#' Extract [ERA5-Land](https://www.ecmwf.int/en/era5-land) meteorological data
+#' for the closest grid to a particular latitude and longitude for a selected
+#' number of years.
 #'
 #' @param lat numeric; Latitude
 #' @param lon numeric; Longitude
-#' @param years numeric; vector of years in numeric form to be extracted
+#' @param years numeric; vector of years in numeric form to be extracted.
+#' Currently years are limited to 1980-2022.
 #' @param variables vector; with AEME meteorological variable names to be
 #' downloaded. Defaults to all available variables: c("MET_tmpair",
 #'  "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", "MET_pprain", "MET_ppsnow",
@@ -12,7 +15,7 @@
 #' @param format string; the format for column headers. Can be "aeme" or "ler".
 #' Defaults to "aeme".
 #' @param parallel boolean; parallelise the download of ERA5 variables. Defaults
-#' to FALSE.
+#' to TRUE.
 #' @param ncores integer; number of cores to use for parallelisation. If
 #' missing, defaults to `min(c(parallel::detectCores() - 1, length(variables)))`
 #'
@@ -35,7 +38,7 @@ get_era5_point <- function(lat, lon, years, variables = c("MET_tmpair",
                                                           "MET_ppsnow",
                                                           "MET_prsttn",
                                                           "MET_radswd"),
-                           format = "aeme", parallel = FALSE, ncores) {
+                           format = "aeme", parallel = TRUE, ncores) {
 
   token_file <- system.file("extdata/token.rds", package = "aemetools")
   dtoken <- readRDS(token_file)
