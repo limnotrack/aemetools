@@ -4,10 +4,12 @@
 \alias{get_raster_tile}
 \title{Get a raster tile from LINZ}
 \usage{
-get_raster_tile(shape, layer_id, zoom = 15, key = NULL, verbose = FALSE)
+get_raster_tile(x, layer_id, zoom = 15, key = NULL, verbose = FALSE)
 }
 \arguments{
-\item{shape}{sf object with a single point or polygon.}
+\item{x}{sf, sfc, bbox, SpatRaster, SpatVector or SpatExtent object.
+If \code{x} is a SpatExtent it
+must express coordinates in lon/lat WGS84 (epsg:4326).}
 
 \item{layer_id}{numeric; layer ID value for the raster layer on the LINZ
 data service. See \url{https://data.linz.govt.nz/}}
@@ -20,6 +22,9 @@ Use the \code{add_linz_key} function to set the key.
 
 @importFrom maptiles create_provider get_tiles
 @importFrom terra subset}
+
+\item{verbose}{if TRUE, tiles filepaths, zoom level and
+attribution are displayed.}
 }
 \value{
 a raster object

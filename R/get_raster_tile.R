@@ -1,6 +1,6 @@
 #' Get a raster tile from LINZ
 #'
-#' @param shape sf object with a single point or polygon.
+#' @inheritParams maptiles::get_tiles
 #' @inheritParams get_raster_layer_value
 #' @param zoom numeric; zoom level for the tile. Default is 15.
 #' @param key character; LINZ API key. If NULL, will look for the key in the
@@ -14,7 +14,7 @@
 #' @export
 #'
 
-get_raster_tile <- function(shape, layer_id, zoom = 15, key = NULL,
+get_raster_tile <- function(x, layer_id, zoom = 15, key = NULL,
                             verbose = FALSE) {
 
 
@@ -31,8 +31,8 @@ get_raster_tile <- function(shape, layer_id, zoom = 15, key = NULL,
                                                  "/EPSG:3857/{z}/{x}/{y}.png"),
                                     citation = "LINZ")
   catch <- tryCatch({
-    tiles <- maptiles::get_tiles(x = shape, provider = prov, zoom = zoom,
-                                 verbose = verbose)
+    tiles <- maptiles::get_tiles(x = x, provider = prov, zoom = zoom,
+                                 verbose = verbose, forceDownload = TRUE)
     TRUE
   }, error = function(e) {
     FALSE
