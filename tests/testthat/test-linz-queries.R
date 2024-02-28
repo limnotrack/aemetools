@@ -31,11 +31,11 @@ test_that("can get DEM raster tile", {
   lat <- coords[2]
 
   # Make an sf object
-  shape <- sf::st_point(x = c(lon, lat), dim = "XY") |>
+  x <- sf::st_point(x = c(lon, lat), dim = "XY") |>
     sf::st_sfc(crs = 4326) |>
     sf::st_as_sf()
 
-  ras <- get_raster_tile(shape = shape, layer_id = nz_dem_metadata$layer_id[2])
+  ras <- get_raster_tile(x = x, layer_id = nz_dem_metadata$layer_id[2])
 
   testthat::expect_true(is(ras, "SpatRaster"))
   testthat::expect_equal(mean(terra::values(ras), na.rm = T), 19.592725)
@@ -53,11 +53,11 @@ test_that("can get aerial image raster tile", {
   lat <- coords[2]
 
   # Make an sf object
-  shape <- sf::st_point(x = c(lon, lat), dim = "XY") |>
+  x <- sf::st_point(x = c(lon, lat), dim = "XY") |>
     sf::st_sfc(crs = 4326) |>
     sf::st_as_sf()
 
-  ras <- get_raster_tile(shape = shape,
+  ras <- get_raster_tile(x = x,
                          layer_id = nz_aerial_imagery_metadata$layer_id[1])
 
   testthat::expect_true(is(ras, "SpatRaster"))
