@@ -1,0 +1,139 @@
+---
+title: "Access LINZ data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Access LINZ data}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(aemetools)
+library(tmap) # Used for spatial plotting
+library(terra) # Used for raster data
+```
+
+# Lake data
+
+The first step is to define the lake data. This includes the location of the
+lake, the depth and area of the lake, and the elevation of the lake.
+
+
+```{r lake-location}
+# Define the location of the lake
+lat <- -36.8898
+lon <- 174.46898
+lake <- "Wainamu Lake"
+
+
+# C
+pnt <- sf::st_point(c(lon, lat)) |> 
+  sf::st_sfc(crs = 4326) |> 
+  sf::st_sf() |> 
+  sf::st_set_geometry(value = "geometry") |> 
+  dplyr::mutate(title = lake)
+pnt
+
+```
+
+
+```{r view-in tmap}
+# View the location of the lake in a map
+library(tmap)
+tmap_mode("view")
+tmap_options(basemaps = "Esri.WorldImagery")
+
+map <- tm_shape(pnt) +
+  tm_markers(popup.vars = "title") 
+
+map +
+  tm_view(set.view = 16)
+
+
+```
+
+## Query DEM database for elevation
+
+We will need to 
+
+```{r query-dem}
+# Query the DEM database for the elevation of the lake  
+pnt_nz <- pnt |>
+  sf::st_transform(crs = 2193)
+
+# Subset the DEM layers that intersect with the lake
+dem_layers <- nz_dem_metadata[sf::st_intersects(pnt_nz, nz_dem_metadata, 
+                                                sparse = FALSE), ]
+
+```
+
+There are two layers that intersect with the lake. We will do a quick visual
+inspection of the layers to see which one is the most suitable for our
+lake.
+
+```{r view-dem-tmap}
+# View the layers
+dem_84 <- dem_layers |> 
+  sf::st_transform(crs = 4326) 
+
+tm_shape(dem_84) +
+  tm_polygons(col = "red", border.col = "black", popup.vars = "title", alpha = 0.3) +
+  # tm_borders(col = "red", popup.vars = "title") +
+  tm_shape(pnt) +
+  tm_markers(clustering = FALSE, popup.vars = "title") +
+  tm_view(set.view = c(lon, lat, 7))
+
+```
+
+## Querying the elevation values
+
+We can query the elevation values for the lake from the different layers using 
+the `get_raster_layer_value` function. This function takes the latitude and
+longitude of the point, and the layer id of the raster layer. We will compare
+the elevation values from the different layers.
+
+```{r query-elevation-values}
+# Compare the lake elevation values from the different layers
+
+val1 <- get_raster_layer_value(lat = lat, lon = lon, 
+                               layer = dem_layers$layer_id[1])
+
+val2 <- get_raster_layer_value(lat = lat, lon = lon, 
+                               layer = dem_layers$layer_id[2])
+
+data.frame(layer = dem_layers$title[1:2], elevation = c(val1, val2))
+
+```
+
+There is a discrepancy between the elevation values from the two layers. We will
+use the layer from the second layer as it is the most recent.
+
+We can load in the LiDAR raster data for this layer and plot this over the lake
+to see which one works
+
+```{r plot-dem}
+
+dem <- get_raster_tile(x = pnt, layer_id = dem_layers$layer_id[2],
+                       zoom = 18) |> 
+  terra::subset(1) # All colours are the same, so we will subset the first layer
+names(dem) <- "Elevation"
+
+tm_shape(dem, raster.downsample = FALSE) +
+  tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE) +
+  tm_scale_bar() +
+  tm_basemap("Esri.WorldImagery")
+
+```
+
+
+
+
