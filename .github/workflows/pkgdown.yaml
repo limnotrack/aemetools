@@ -7,6 +7,7 @@ jobs:
     runs-on: windows-latest # The first job utilizes windows-latest
     env:
       GITHUB_PAT: ${{ secrets.GH_ACTIONS }}
+      LINZ_BASEMAP_KEY: ${{ secrets.LINZ_BASEMAP_KEY }}
       LINZ_KEY: ${{ secrets.LINZ_KEY }}
     steps:
       - name: Checkout 🛎️
