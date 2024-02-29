@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, warning=FALSE, message=FALSE}
 library(aemetools)
 library(terra) # Used for raster data
 library(tmap) # Used for spatial plotting
