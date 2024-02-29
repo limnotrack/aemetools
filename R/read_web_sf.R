@@ -68,7 +68,7 @@ read_web_sf <- function(url, layer_id, key = NULL) {
     tmpfile <- tempfile(fileext = ".shp")
     tmpfile2 <- tempfile(fileext = ".shp")
 
-    sf::st_write(f, tmpfile, append = FALSE)
+    sf::st_write(f, tmpfile, append = FALSE, quiet = TRUE)
 
     # Convert CURVEPOLYGON -> POLYGON
     sf::gdal_utils(util = "vectortranslate", source = tmpfile,
