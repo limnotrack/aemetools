@@ -38,13 +38,13 @@ test_that("can get DEM raster tile", {
   ras <- get_raster_tile(x = x, layer_id = nz_dem_metadata$layer_id[2])
 
   testthat::expect_true(is(ras, "SpatRaster"))
-  testthat::expect_equal(mean(terra::values(ras), na.rm = T), 19.592725)
+  testthat::expect_equal(mean(terra::values(ras), na.rm = TRUE), 14.171946)
 
 })
 
 test_that("can get aerial image raster tile", {
 
-  coords <- nz_aerial_imagery_metadata[1, ] |>
+  coords <- nz_aerial_imagery_metadata[2, ] |>
     sf::st_transform(crs = 4326) |>
     sf::st_centroid() |>
     sf::st_coordinates() |>
@@ -58,10 +58,11 @@ test_that("can get aerial image raster tile", {
     sf::st_as_sf()
 
   ras <- get_raster_tile(x = x,
-                         layer_id = nz_aerial_imagery_metadata$layer_id[1])
+                         layer_id = nz_aerial_imagery_metadata$layer_id[2],
+                         zoom = 16)
 
   testthat::expect_true(is(ras, "SpatRaster"))
-  testthat::expect_equal(mean(terra::values(ras), na.rm = T), 71.196337)
+  testthat::expect_equal(mean(terra::values(ras), na.rm = T), 122.2362)
 
 })
 
