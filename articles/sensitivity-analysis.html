@@ -679,9 +679,9 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="va">sim_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sa_aeme.html">sa_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>, param <span class="op">=</span> <span class="va">param</span>,</span>
 <span>                  model <span class="op">=</span> <span class="va">model</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
 <span>                  FUN_list <span class="op">=</span> <span class="va">FUN_list</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for gotm_wet modelled variables [2024-02-29 03:55:13]</span></span>
-<span><span class="co">#&gt; Complete! [2024-02-29 03:55:19]</span></span>
-<span><span class="co">#&gt; Running sensitivity analysis in parallel for gotm_wet using 1 cores with 128 parameter sets [2024-02-29 03:55:19]</span></span>
+<span><span class="co">#&gt; Extracting indices for gotm_wet modelled variables [2024-02-29 06:12:57]</span></span>
+<span><span class="co">#&gt; Complete! [2024-02-29 06:13:01]</span></span>
+<span><span class="co">#&gt; Running sensitivity analysis in parallel for gotm_wet using 1 cores with 128 parameter sets [2024-02-29 06:13:01]</span></span>
 <span><span class="co">#&gt;        turbulence/turb_param/k_min light_extinction/A/constant_value</span></span>
 <span><span class="co">#&gt; mean                     4.815e-06                           0.52800</span></span>
 <span><span class="co">#&gt; median                   5.000e-06                           0.52700</span></span>
@@ -694,8 +694,8 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="co">#&gt; mean       0.9930     0.9988</span></span>
 <span><span class="co">#&gt; median     0.9812     1.0000</span></span>
 <span><span class="co">#&gt; sd         0.1601     0.1609</span></span>
-<span><span class="co">#&gt; Completed gotm_wet! [2024-02-29 04:05:55]</span></span>
-<span><span class="co">#&gt; Writing output for generation 1 to file_type with sim ID: 45819_gotmwet_S_001 [2024-02-29 04:05:56]</span></span></code></pre></div>
+<span><span class="co">#&gt; Completed gotm_wet! [2024-02-29 06:21:21]</span></span>
+<span><span class="co">#&gt; Writing output for generation 1 to file_type with sim ID: 45819_gotmwet_S_001 [2024-02-29 06:21:21]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-sensitivity-analysis-results">Reading sensitivity analysis results<a class="anchor" aria-label="anchor" href="#reading-sensitivity-analysis-results"></a>
@@ -837,18 +837,18 @@ variable an it’s senstivity to the parameters.</li>
 <span><span class="co">#&gt; Sum of first order indices: 14.39681 </span></span>
 <span><span class="co">#&gt;       original        bias std.error      low.ci   high.ci sensitivity</span></span>
 <span><span class="co">#&gt;          &lt;num&gt;       &lt;num&gt;     &lt;num&gt;       &lt;num&gt;     &lt;num&gt;      &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:  3.9126587 -0.13253143 7.7320375 -11.1093249 19.199705          Si</span></span>
-<span><span class="co">#&gt;  2: -1.8052005 -0.47467169 7.9950179 -17.0004760 14.339418          Si</span></span>
-<span><span class="co">#&gt;  3: -0.8166843  0.01602951 6.0077589 -12.6077048 10.942277          Si</span></span>
-<span><span class="co">#&gt;  4:  1.0868618  0.47541042 5.9698004 -11.0891424 12.312045          Si</span></span>
-<span><span class="co">#&gt;  5:  4.3065705  0.36178456 8.1760146 -12.0799081 19.969480          Si</span></span>
-<span><span class="co">#&gt;  6:  7.7126079  0.41523786 7.1677110  -6.7510853 21.345825          Si</span></span>
-<span><span class="co">#&gt;  7:  1.1835371 -0.01166915 0.3303243   0.5477825  1.842630          Ti</span></span>
-<span><span class="co">#&gt;  8:  1.2468173  0.01346461 0.2487540   0.7458037  1.720902          Ti</span></span>
-<span><span class="co">#&gt;  9:  0.6139609  0.02119160 0.2472468   0.1081744  1.077364          Ti</span></span>
-<span><span class="co">#&gt; 10:  0.7274097  0.03238851 0.2635100   0.1785511  1.211491          Ti</span></span>
-<span><span class="co">#&gt; 11:  1.2906949  0.04675910 0.3258701   0.6052421  1.882630          Ti</span></span>
-<span><span class="co">#&gt; 12:  0.9199719  0.03915699 0.3209660   0.2517330  1.509897          Ti</span></span>
+<span><span class="co">#&gt;  1:  3.9126587  0.17868824 7.5729752 -11.1087882 18.576729          Si</span></span>
+<span><span class="co">#&gt;  2: -1.8052005 -0.13648445 7.6981336 -16.7567807 13.419349          Si</span></span>
+<span><span class="co">#&gt;  3: -0.8166843  0.08396530 5.6164200 -11.9086305 10.107331          Si</span></span>
+<span><span class="co">#&gt;  4:  1.0868618  0.30158475 5.9746771 -10.9248749 12.495429          Si</span></span>
+<span><span class="co">#&gt;  5:  4.3065705  0.14491746 7.9142829 -11.3500563 19.673362          Si</span></span>
+<span><span class="co">#&gt;  6:  7.7126079  0.38254262 6.8902929  -6.1746605 20.834791          Si</span></span>
+<span><span class="co">#&gt;  7:  1.1835371  0.01067023 0.3100060   0.5652663  1.780467          Ti</span></span>
+<span><span class="co">#&gt;  8:  1.2468173  0.01798371 0.2399534   0.7585336  1.699134          Ti</span></span>
+<span><span class="co">#&gt;  9:  0.6139609  0.01117565 0.2362611   0.1397221  1.065848          Ti</span></span>
+<span><span class="co">#&gt; 10:  0.7274097  0.02321171 0.2561888   0.2020771  1.206319          Ti</span></span>
+<span><span class="co">#&gt; 11:  1.2906949  0.03308770 0.3135830   0.6429958  1.872219          Ti</span></span>
+<span><span class="co">#&gt; 12:  0.9199719  0.03072958 0.3079924   0.2855883  1.492896          Ti</span></span>
 <span><span class="co">#&gt;     parameters</span></span>
 <span><span class="co">#&gt;         &lt;char&gt;</span></span>
 <span><span class="co">#&gt;  1:      k_min</span></span>
@@ -873,18 +873,18 @@ variable an it’s senstivity to the parameters.</li>
 <span><span class="co">#&gt; Sum of first order indices: 14.38665 </span></span>
 <span><span class="co">#&gt;       original         bias std.error       low.ci   high.ci sensitivity</span></span>
 <span><span class="co">#&gt;          &lt;num&gt;        &lt;num&gt;     &lt;num&gt;        &lt;num&gt;     &lt;num&gt;      &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:  3.9083815  0.087734386 7.4077831 -10.69834102 18.339635          Si</span></span>
-<span><span class="co">#&gt;  2: -1.8070081 -0.483246565 7.6712101 -16.35905695 13.711534          Si</span></span>
-<span><span class="co">#&gt;  3: -0.8180154 -0.154753524 5.8010859 -12.03318140 10.706658          Si</span></span>
-<span><span class="co">#&gt;  4:  1.0824747  0.119500195 6.0306750 -10.85693136 12.782880          Si</span></span>
-<span><span class="co">#&gt;  5:  4.3091471  0.131318002 8.0774121 -11.65360768 20.009266          Si</span></span>
-<span><span class="co">#&gt;  6:  7.7116695  0.377119071 6.6942612  -5.78596038 20.455061          Si</span></span>
-<span><span class="co">#&gt;  7:  1.1836055 -0.009616006 0.3216506   0.56279778  1.823645          Ti</span></span>
-<span><span class="co">#&gt;  8:  1.2470495  0.020876300 0.2546425   0.72708312  1.725263          Ti</span></span>
-<span><span class="co">#&gt;  9:  0.6138809  0.028509957 0.2564063   0.08282379  1.087918          Ti</span></span>
-<span><span class="co">#&gt; 10:  0.7274158  0.035677439 0.2461769   0.20924047  1.174236          Ti</span></span>
-<span><span class="co">#&gt; 11:  1.2906033  0.022902166 0.3074234   0.66516232  1.870240          Ti</span></span>
-<span><span class="co">#&gt; 12:  0.9203189  0.039588884 0.3347129   0.22470470  1.536755          Ti</span></span>
+<span><span class="co">#&gt;  1:  3.9083815 -0.049806704 7.1938909 -10.14157896 18.057955          Si</span></span>
+<span><span class="co">#&gt;  2: -1.8070081  0.214396030 7.1551452 -16.04523104 12.002423          Si</span></span>
+<span><span class="co">#&gt;  3: -0.8180154 -0.464780712 5.6914555 -11.50828255 10.801813          Si</span></span>
+<span><span class="co">#&gt;  4:  1.0824747  0.682291435 6.0601434 -11.47747960 12.277846          Si</span></span>
+<span><span class="co">#&gt;  5:  4.3091471  0.049616790 7.9557974 -11.33354608 19.852607          Si</span></span>
+<span><span class="co">#&gt;  6:  7.7116695  0.766001254 7.0089939  -6.79170732 20.683044          Si</span></span>
+<span><span class="co">#&gt;  7:  1.1836055 -0.003139397 0.3243415   0.55104719  1.822443          Ti</span></span>
+<span><span class="co">#&gt;  8:  1.2470495 -0.006093945 0.2413606   0.78008531  1.726202          Ti</span></span>
+<span><span class="co">#&gt;  9:  0.6138809  0.047629207 0.2528881   0.07060003  1.061903          Ti</span></span>
+<span><span class="co">#&gt; 10:  0.7274158  0.032780005 0.2569961   0.19093267  1.198339          Ti</span></span>
+<span><span class="co">#&gt; 11:  1.2906033  0.022380649 0.3149949   0.65084401  1.885601          Ti</span></span>
+<span><span class="co">#&gt; 12:  0.9203189  0.043062044 0.3370483   0.21665429  1.537859          Ti</span></span>
 <span><span class="co">#&gt;     parameters</span></span>
 <span><span class="co">#&gt;         &lt;char&gt;</span></span>
 <span><span class="co">#&gt;  1:      k_min</span></span>
@@ -909,18 +909,18 @@ variable an it’s senstivity to the parameters.</li>
 <span><span class="co">#&gt; Sum of first order indices: 0.8704898 </span></span>
 <span><span class="co">#&gt;       original       bias std.error     low.ci  high.ci sensitivity parameters</span></span>
 <span><span class="co">#&gt;          &lt;num&gt;      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;    &lt;num&gt;      &lt;char&gt;     &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:  0.4989960  0.5647168 2.2117883 -4.4007463 4.269305          Si      k_min</span></span>
-<span><span class="co">#&gt;  2: -0.2843428 -0.1658191 1.0394384 -2.1557855 1.918738          Si          A</span></span>
-<span><span class="co">#&gt;  3:  1.4947298  1.0025398 2.8680565 -5.1290974 6.113477          Si         g1</span></span>
-<span><span class="co">#&gt;  4: -0.7482017 -0.2461346 1.4049859 -3.2557889 2.251655          Si         g2</span></span>
-<span><span class="co">#&gt;  5:  0.3542099  0.3872325 2.0760841 -4.1020727 4.036028          Si     wndspd</span></span>
-<span><span class="co">#&gt;  6: -0.4449014  0.5418606 1.6582476 -4.2368676 2.263343          Si     radswd</span></span>
-<span><span class="co">#&gt;  7:  1.1728295  0.7814415 2.3376669 -4.1903550 4.973131          Ti      k_min</span></span>
-<span><span class="co">#&gt;  8:  0.4021113  0.1952390 0.5337061 -0.8391726 1.252917          Ti          A</span></span>
-<span><span class="co">#&gt;  9:  1.3433796  0.7782380 2.2072981 -3.7610831 4.891366          Ti         g1</span></span>
-<span><span class="co">#&gt; 10:  0.3862816  0.1452574 0.4481907 -0.6374134 1.119462          Ti         g2</span></span>
-<span><span class="co">#&gt; 11:  0.9042089  0.6084201 2.0702752 -3.7618759 4.353454          Ti     wndspd</span></span>
-<span><span class="co">#&gt; 12:  0.7305774  0.1484520 0.4796069 -0.3578868 1.522137          Ti     radswd</span></span></code></pre></div>
+<span><span class="co">#&gt;  1:  0.4989960  0.5379679 2.3969477 -4.7369030 4.658959          Si      k_min</span></span>
+<span><span class="co">#&gt;  2: -0.2843428 -0.1619596 2.0198116 -4.0811412 3.836375          Si          A</span></span>
+<span><span class="co">#&gt;  3:  1.4947298  0.9068955 2.8107479 -4.9211304 6.096799          Si         g1</span></span>
+<span><span class="co">#&gt;  4: -0.7482017 -0.1892311 1.3168447 -3.1399388 2.021997          Si         g2</span></span>
+<span><span class="co">#&gt;  5:  0.3542099  0.3131940 1.8953894 -3.6738791 3.755911          Si     wndspd</span></span>
+<span><span class="co">#&gt;  6: -0.4449014  0.5795342 1.9844607 -4.9139071 2.865036          Si     radswd</span></span>
+<span><span class="co">#&gt;  7:  1.1728295  0.7374923 3.1751348 -5.7878127 6.658487          Ti      k_min</span></span>
+<span><span class="co">#&gt;  8:  0.4021113  0.1910342 0.9464520 -1.6439347 2.066089          Ti          A</span></span>
+<span><span class="co">#&gt;  9:  1.3433796  0.7206718 2.2064883 -3.7019298 4.947345          Ti         g1</span></span>
+<span><span class="co">#&gt; 10:  0.3862816  0.1355224 0.4327206 -0.5973577 1.098876          Ti         g2</span></span>
+<span><span class="co">#&gt; 11:  0.9042089  0.5384896 1.7059406 -2.9778628 3.709301          Ti     wndspd</span></span>
+<span><span class="co">#&gt; 12:  0.7305774  0.1580994 0.6967949 -0.7932149 1.938171          Ti     radswd</span></span></code></pre></div>
 <ul>
 <li>
 <code>sobol_dummy</code>: list of the Sobol indices for the dummy
@@ -929,19 +929,19 @@ parameter.</li>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sa_res</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">sobol_dummy</span></span>
 <span><span class="co">#&gt; $surf_temp</span></span>
-<span><span class="co">#&gt;   original        bias  std.error   low.ci   high.ci sensitivity parameters</span></span>
-<span><span class="co">#&gt; 1 1.817471 0.001598914 0.05620747 1.705708 1.9260370          Si      dummy</span></span>
-<span><span class="co">#&gt; 2 0.000000 0.007786556 0.67900426 0.000000 0.2578564          Ti      dummy</span></span>
+<span><span class="co">#&gt;   original         bias  std.error   low.ci   high.ci sensitivity parameters</span></span>
+<span><span class="co">#&gt; 1 1.817471 0.0002100458 0.05530391 1.708868 1.9256549          Si      dummy</span></span>
+<span><span class="co">#&gt; 2 0.000000 0.0076274766 0.66892286 0.000000 0.2382563          Ti      dummy</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $bot_temp</span></span>
 <span><span class="co">#&gt;   original         bias  std.error   low.ci   high.ci sensitivity parameters</span></span>
-<span><span class="co">#&gt; 1 1.817371  0.001092643 0.05497438 1.708531 1.9240264          Si      dummy</span></span>
-<span><span class="co">#&gt; 2 0.000000 -0.018168268 0.66908924 0.000000 0.2646845          Ti      dummy</span></span>
+<span><span class="co">#&gt; 1 1.817371  0.001512424 0.05503446 1.707993 1.9237244          Si      dummy</span></span>
+<span><span class="co">#&gt; 2 0.000000 -0.018566437 0.69911723 0.000000 0.3239365          Ti      dummy</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $surf_chla</span></span>
 <span><span class="co">#&gt;    original       bias std.error low.ci   high.ci sensitivity parameters</span></span>
-<span><span class="co">#&gt; 1 0.3222801 0.04968565 0.1802394      0 0.6258572          Si      dummy</span></span>
-<span><span class="co">#&gt; 2 0.0000000 0.12417218 0.8484589      0 0.5549084          Ti      dummy</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 0.3222801 0.05533782 0.1747708      0 0.6094867          Si      dummy</span></span>
+<span><span class="co">#&gt; 2 0.0000000 0.10652315 0.8506252      0 0.5768035          Ti      dummy</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualising-sensitivity-analysis-results">Visualising sensitivity analysis results<a class="anchor" aria-label="anchor" href="#visualising-sensitivity-analysis-results"></a>
