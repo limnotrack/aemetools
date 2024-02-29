@@ -1,6 +1,6 @@
 # Regional shapefiles ----
 # Source: https://datafinder.stats.govt.nz/layer/111182-regional-council-2023-generalised/
-reg_shp <- get_linz_sf(url = "https://datafinder.stats.govt.nz/",
+reg_shp <- read_web_sf(url = "https://datafinder.stats.govt.nz/",
                        layer_id = 111182)
 reg_shp <- reg_shp |>
   dplyr::filter(C2023_V != "Area Outside Region")
@@ -161,14 +161,14 @@ aerial_sf2 <- lapply(1:nrow(aerial_sf), \(i) {
     dplyr::last()
   print(layer_id)
 
-  f <- get_linz_sf(url = "https://data.linz.govt.nz", layer_id = layer_id)
+  f <- read_web_sf(url = "https://data.linz.govt.nz", layer_id = layer_id)
 
   if (is.null(f)) {
     return()
   }
 
   poly <- sf::st_union(f) |>
-    sf::st_cast("POLYGON") |>
+    # sf::st_cast("POLYGON") |>
     sf::st_as_sf() |>
     dplyr::rename(geometry = x) |>
     dplyr::mutate(
