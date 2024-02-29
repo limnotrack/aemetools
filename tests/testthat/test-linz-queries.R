@@ -68,7 +68,7 @@ test_that("can get aerial image raster tile", {
 
 test_that("can get LINZ sf object", {
 
-  reg_council <- get_linz_sf(url = "https://datafinder.stats.govt.nz/",
+  reg_council <- read_web_sf(url = "https://datafinder.stats.govt.nz/",
                              layer_id = 111182)
 
   testthat::expect_true(is(reg_council, "sf"))
