@@ -1,6 +1,6 @@
-#' Get LINZ data as sf object
+#' Read data from online databases as sf object
 #'
-#' @param url character, URL to LINZ API
+#' @param url character, URL of the web service
 #' @inheritParams get_raster_layer_value
 #'
 #' @importFrom httr parse_url build_url
@@ -10,7 +10,7 @@
 #' @export
 #'
 
-get_linz_sf <- function(url, layer_id, key = NULL) {
+read_web_sf <- function(url, layer_id, key = NULL) {
 
   if (is.null(key)) {
     key <- Sys.getenv("LINZ_KEY")
