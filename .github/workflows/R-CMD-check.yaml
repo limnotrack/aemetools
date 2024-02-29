@@ -23,6 +23,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GH_ACTIONS }}
       LINZ_KEY: ${{ secrets.LINZ_KEY }}
+      LINZ_BASEMAP_KEY: ${{ secrets.LINZ_BASEMAP_KEY }}
       R_KEEP_PKG_SOURCE: yes
 
     steps:
