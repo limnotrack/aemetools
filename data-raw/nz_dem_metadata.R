@@ -1,6 +1,6 @@
 # Regional shapefiles ----
 # Source: https://datafinder.stats.govt.nz/layer/111182-regional-council-2023-generalised/
-reg_shp <- get_linz_sf(url = "https://datafinder.stats.govt.nz/",
+reg_shp <- read_web_sf(url = "https://datafinder.stats.govt.nz/",
                        layer_id = 111182)
 reg_shp <- reg_shp |>
   dplyr::filter(C2023_V != "Area Outside Region")
@@ -34,13 +34,14 @@ i = 1745
 
 # Extract all features with rectangular bounding box
 features <- lapply(1:length(records), \(i) {
+  print(i)
   x <- records[[i]]
 
   if (grepl("Taranaki LiDAR", x$title, ignore.case = TRUE)) {
-    if (layer_id == 107436) {
-      print("Taranaki")
-      print(x$title)
-    }
+    # if (layer_id == 107436) {
+    #   print("Taranaki")
+    #   print(x$title)
+    # }
 
   }
 
@@ -184,6 +185,7 @@ dem_sf <- dplyr::bind_rows(features) |>
 # dplyr::distinct(layer_id, .keep_all = TRUE)
 dem_sf
 
+# Create polygons aroun each layer
 dem_sf2 <- lapply(1:nrow(dem_sf), \(i) {
 
   if (grepl("DEM|Digital", dem_sf$title[i])) {
@@ -206,20 +208,14 @@ dem_sf2 <- lapply(1:nrow(dem_sf), \(i) {
     if (dem_sf$region[i] == "New Zealand") {
       f <- reg_shp
     } else {
-      f <- get_linz_sf(url = "https://data.linz.govt.nz", layer_id = layer_id)
+      f <- read_web_sf(url = "https://data.linz.govt.nz", layer_id = layer_id)
     }
-
-
 
     if (is.null(f)) {
       return()
     }
-
-
-    # f2 <- read_sf(tmpfile2) #|>
-    # sf::st_transform(4326)
     poly <- sf::st_union(f) |>
-      sf::st_cast("POLYGON") |>
+      # sf::st_cast("POLYGON") |>
       sf::st_as_sf() |>
       dplyr::rename(geometry = x) |>
       dplyr::mutate(
@@ -232,34 +228,28 @@ dem_sf2 <- lapply(1:nrow(dem_sf), \(i) {
         year = dem_sf$year[i]
       )
     return(poly)
-
-    # library(leaflet)
-    # poly_84 <- poly |>
-    #   sf::st_transform(4326)
-    # leaflet() |>
-    #   addWMSTiles(baseUrl = "https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.webp?api=c01hbexn54aeskebvrbthr8e2vf", layers = "Basemap", group = "basemap", options = list(maxZoom = 18)) |>
-    #   addPolygons(data = poly_84, group = "aerial", color = "red", weight = 1, opacity = 1, fillOpacity = 0.5)
-
-
-
-
   } else {
     return()
   }
-
 })
 
+sapply(dem_sf2, nrow)
+
 nz_dem_metadata <- dplyr::bind_rows(dem_sf2) |>
+  dplyr::filter(!duplicated(layer_id)) |>
   dplyr::select(layer_id, title, abstract, region, res, units, year, geometry)
 
 dem_metadata_84 <- nz_dem_metadata |>
   sf::st_transform(4326)
 
+poly <- poly |>
+  sf::st_transform(4326)
 
 library(leaflet)
 leaflet() |>
   addWMSTiles(baseUrl = "https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.webp?api=c01hbexn54aeskebvrbthr8e2vf", layers = "Basemap", group = "basemap", options = list(maxZoom = 18)) |>
   addPolygons(data = dem_metadata_84, fillOpacity = 0.2, label = ~title)
+  # addPolygons(data = poly, fillOpacity = 0.2)
 
 
 # saveRDS(dem_sf3, "data/dem_metadata.rds")
