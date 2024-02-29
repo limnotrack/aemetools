@@ -4,7 +4,7 @@
     <loc>https://special-enigma-8p9lgre.pages.github.io/404.html</loc>
   </url>
   <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/articles/access-linz.html</loc>
+    <loc>https://special-enigma-8p9lgre.pages.github.io/articles/access-geospatial.html</loc>
   </url>
   <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/articles/calibrate-aeme.html</loc>
@@ -64,7 +64,7 @@
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_era5_point.html</loc>
   </url>
   <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_linz_sf.html</loc>
+    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_linz_basemap_tile.html</loc>
   </url>
   <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_param.html</loc>
@@ -122,6 +122,9 @@
   </url>
   <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_simulation_output.html</loc>
+  </url>
+  <url>
+    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_web_sf.html</loc>
   </url>
   <url>
     <loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_aeme_param.html</loc>
