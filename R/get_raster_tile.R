@@ -30,18 +30,6 @@ get_raster_tile <- function(x, layer_id, zoom = 15, key = NULL,
                                                  key, "/tiles/v4/layer=", layer_id,
                                                  "/EPSG:3857/{z}/{x}/{y}.png"),
                                     citation = "LINZ")
-  catch <- tryCatch({
-    tiles <- maptiles::get_tiles(x = x, provider = prov, zoom = zoom,
-                                 verbose = verbose, forceDownload = TRUE)
-    TRUE
-  }, error = function(e) {
-    FALSE
-  })
-
-  if (!catch) {
-    message("No tiles found for this location and layer id. Returning NULL.")
-    return(invisible(NULL))
-  }
-
-  return(tiles)
+  maptiles::get_tiles(x = x, provider = prov, zoom = zoom,
+                      verbose = verbose, forceDownload = TRUE)
 }
