@@ -77,3 +77,35 @@ test_that("can get LINZ sf object", {
 
 })
 
+test_that("can get LINZ lakes sf object", {
+
+  lakes <- read_web_sf(url = "https://data.linz.govt.nz",
+                         layer_id = 50293)
+
+  lake <- lakes |>
+    dplyr::filter(grepl("Pupuke", name)) |>
+    dplyr::slice(1)
+
+  dem <- get_dem_raster(x = lake)
+
+  testthat::expect_true(is(dem, "SpatRaster"))
+
+  qu_elev <- query_elev(lake, dem)
+
+  testthat::expect_equal(qu_elev, 5.5300002)
+})
+
+test_that("can get layer ids for a lake sf object", {
+
+  lakes <- read_web_sf(url = "https://data.linz.govt.nz",
+                       layer_id = 50293)
+
+  lake <- lakes |>
+    dplyr::filter(grepl("Pupuke", name)) |>
+    dplyr::slice(1)
+
+  layer_ids <- get_layer_ids(x = lake)
+
+  testthat::expect_true(nrow(layer_ids) == 4)
+})
+
