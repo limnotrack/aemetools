@@ -43,5 +43,5 @@ dataframe of daily ERA5 data.
 \description{
 Extract \href{https://www.ecmwf.int/en/era5-land}{ERA5-Land} meteorological data
 for the closest grid to a particular latitude and longitude for a selected
-number of years.
+number of years (1980-2023).
 }

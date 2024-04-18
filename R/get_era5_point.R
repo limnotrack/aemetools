@@ -2,7 +2,7 @@
 #'
 #' Extract [ERA5-Land](https://www.ecmwf.int/en/era5-land) meteorological data
 #' for the closest grid to a particular latitude and longitude for a selected
-#' number of years.
+#' number of years (1980-2023).
 #'
 #' @param lat numeric; Latitude
 #' @param lon numeric; Longitude
@@ -180,14 +180,14 @@ download_era5_point <- function(years, lat, lon, variable, db_path, dtoken) {
 
     if (!all(c(chk1, chk2, chk3))) {
       message()
-      if (y %in% 1999:2021) {
+      if (y %in% 1980:2023) {
         err_msg <- paste0("Files:\n",
                           paste0(c(db1, db2, db3)[!c(chk1, chk2, chk3)],
                                  collapse = "\n"),
                           "\nare currently not available on Dropbox.")
       } else {
         err_msg <- "Files for selected years are not present currently in
-                     dropbox. Current available years are 1999-2021."
+                     dropbox. Current available years are 1980-2023."
       }
       stop(strwrap(err_msg))
     }
