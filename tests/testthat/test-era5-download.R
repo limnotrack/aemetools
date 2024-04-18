@@ -5,7 +5,7 @@ test_that("can download ERA5 point data", {
   data("era5_ref_table", package = "aemetools")
   variables <- c("MET_tmpair", "MET_tmpdew", "MET_wnduvu")
 
-  met <- get_era5_point(lat = lat, lon = lon, years = 2000,
+  met <- get_era5_point(lat = lat, lon = lon, years = 2023,
                         variables = variables, format = "aeme",
                         parallel = TRUE, ncores = 2)
 

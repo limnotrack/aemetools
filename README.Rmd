@@ -42,7 +42,7 @@ devtools::install_github("limnotrack/aemetools")
 
 ### Download NZ point meteorological data
 
-Currently, there is ERA5-Land data (\~9km grid spacing) archived for New Zealand (166.5/-46.6/178.6/-34.5) for the time period 1999-2022 with the main meteorological variables (`r era5_names`) required to drive hydrological and hydrodynamic models. This can be easily downloaded using the example below. There is a `parallel` switch which allows you to use multiple cores on your computer to speed up the download.
+Currently, there is ERA5-Land data (\~9km grid spacing) archived for New Zealand (166.5/-46.6/178.6/-34.5) for the time period 1980-2023 with the main meteorological variables (`r era5_names`) required to drive hydrological and hydrodynamic models. This can be easily downloaded using the example below. There is a `parallel` switch which allows you to use multiple cores on your computer to speed up the download.
 
 ```{r download-era5}
 library(aemetools)

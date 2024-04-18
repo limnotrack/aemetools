@@ -36,7 +36,7 @@ devtools::install_github("limnotrack/aemetools")
 ### Download NZ point meteorological data
 
 Currently, there is ERA5-Land data (~9km grid spacing) archived for New
-Zealand (166.5/-46.6/178.6/-34.5) for the time period 1999-2022 with the
+Zealand (166.5/-46.6/178.6/-34.5) for the time period 1980-2023 with the
 main meteorological variables (air temperature, dewpoint temperature,
 wind u-vector at 10m, wind v-vector at 10m, total precipitation,
 snowfall, surface level pressure, downwelling shortwave radiation,
@@ -54,17 +54,18 @@ variables <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
                       variables = variables, format = "aeme", parallel = TRUE)
+#> Checking if lat/lon point is in the grid...
 #> Point is in the grid.
-#> Downloading ERA5 variables in parallel... [2024-01-23 15:51:11]
-#> Finished downloading ERA5 variables! [2024-01-23 15:51:25]
+#> Downloading ERA5 variables in parallel... [2024-04-19 11:46:34]
+#> Finished downloading ERA5 variables! [2024-04-19 11:46:45]
 summary(met)
 #>       Date              MET_tmpair       MET_pprain     
-#>  Min.   :2000-01-01   Min.   : 3.983   Min.   : 0.0000  
-#>  1st Qu.:2000-07-01   1st Qu.: 9.594   1st Qu.: 0.2037  
-#>  Median :2000-12-30   Median :12.509   Median : 2.0076  
-#>  Mean   :2000-12-30   Mean   :12.391   Mean   : 6.8159  
-#>  3rd Qu.:2001-06-30   3rd Qu.:15.299   3rd Qu.: 8.4171  
-#>  Max.   :2001-12-30   Max.   :20.396   Max.   :92.9834
+#>  Min.   :2000-01-01   Min.   : 3.407   Min.   : 0.0000  
+#>  1st Qu.:2000-07-01   1st Qu.: 9.129   1st Qu.: 0.2188  
+#>  Median :2000-12-30   Median :12.032   Median : 2.0354  
+#>  Mean   :2000-12-30   Mean   :11.957   Mean   : 6.7384  
+#>  3rd Qu.:2001-06-30   3rd Qu.:14.815   3rd Qu.: 8.3548  
+#>  Max.   :2001-12-30   Max.   :19.970   Max.   :86.6961
 ```
 
 ### Run GR4J model
