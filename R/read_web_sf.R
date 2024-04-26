@@ -22,12 +22,13 @@ read_web_sf <- function(url, layer_id, key = NULL) {
   url_req <- paste0(url, "/services;key=", key,
                     "/wfs/layer-", layer_id, "/")
   url <- httr::parse_url(url_req)
-  url$query <- list(service = "wfs",
+  url$query <- list(service = "WFS",
                     #version = "2.0.0", # facultative
                     request = "GetCapabilities"
   )
   request <- httr::build_url(url)
   request
+  # print(request)
   chk <- tryCatch({
     f <- sf::read_sf(request) |>
       sf::st_as_sf() |>
