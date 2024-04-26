@@ -328,7 +328,7 @@ use this service.
 
 ```{r linz-basemap}
 # Get the LINZ basemap
-linz_basemap <- get_linz_basemap_tile(x = pnt, zoom = 17)
+linz_basemap <- get_linz_basemap_tile(x = pnt, zoom = 16)
 
 tm_shape(linz_basemap, name = "LINZ Aerial Basemap") +
   tm_rgb()
