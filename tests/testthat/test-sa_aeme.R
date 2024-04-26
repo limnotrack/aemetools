@@ -37,7 +37,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- create_control(method = "sa", N = 2^2, parallel = TRUE,
+  ctrl <- create_control(method = "sa", N = 2^1, ncore = 2, parallel = TRUE,
                          file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
@@ -56,7 +56,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
                     model = model, ctrl = ctrl, model_controls = model_controls,
                     FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, boot = FALSE)
 
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 })
@@ -99,7 +99,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- create_control(method = "sa", N = 2^2, parallel = TRUE,
+  ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
                          file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
@@ -175,7 +175,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- create_control(method = "sa", N = 2^2, parallel = TRUE,
+  ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
                          file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",

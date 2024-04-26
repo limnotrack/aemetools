@@ -35,68 +35,68 @@ test_that("can run AEME-GLM with parameters", {
 })
 
 test_that("can calibrate temperature for AEME-DYRESM in parallel", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("dy_cd")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
-                               model = model, model_controls = model_controls,
-                               inf_factor = inf_factor, ext_elev = 5,
-                               use_bgc = FALSE)
-  aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path, parallel = FALSE)
-  # AEME::plot(aeme, model = model, path = path, plot = "calib",
-  #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "DYsim.nc"))
-  testthat::expect_true(file_chk)
+    tmpdir <- tempdir()
+    aeme_dir <- system.file("extdata/lake/", package = "AEME")
+    # Copy files from package into tempdir
+    file.copy(aeme_dir, tmpdir, recursive = TRUE)
+    path <- file.path(tmpdir, "lake")
+    aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+    model_controls <- AEME::get_model_controls()
+    inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+    outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+    model <- c("dy_cd")
+    aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                                 model = model, model_controls = model_controls,
+                                 inf_factor = inf_factor, ext_elev = 5,
+                                 use_bgc = FALSE)
+    aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                           verbose = FALSE, model_controls = model_controls,
+                           path = path, parallel = FALSE)
+    # AEME::plot(aeme, model = model, path = path, plot = "calib",
+    #            obs = "temp", save = FALSE, show = FALSE)
+    lke <- AEME::lake(aeme)
+    file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                   tolower(lke$name)),
+                                      model, "DYsim.nc"))
+    testthat::expect_true(file_chk)
 
-  utils::data("aeme_parameters", package = "aemetools")
-  param <- aeme_parameters
+    utils::data("aeme_parameters", package = "aemetools")
+    param <- aeme_parameters
 
-  # Function to calculate fitness
-  fit <- function(df) {
-    O <- df$obs
-    P <- df$model
-    -1 * (cor(x = O, y = P, method = "pearson") -
-            (mean(abs(O - P)) / (max(O) - min(O))))
-  }
-  FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
+    # Function to calculate fitness
+    fit <- function(df) {
+      O <- df$obs
+      P <- df$model
+      -1 * (cor(x = O, y = P, method = "pearson") -
+              (mean(abs(O - P)) / (max(O) - min(O))))
+    }
+    FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
-                         reltol = 0.07, cutoff = 0.5, mutate = 0.1,
-                         parallel = TRUE, file_type = "csv",
-                         na_value = 999, ncore = 10)
+    ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                           reltol = 0.07, cutoff = 0.5, mutate = 0.1,
+                           parallel = TRUE, file_type = "csv",
+                           na_value = 999, ncore = 2)
 
-  testthat::expect_true(is.list(ctrl))
+    testthat::expect_true(is.list(ctrl))
 
-  vars_sim <- c("HYD_temp", "LKE_lvlwtr")
-  weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 10)
-  names(weights) <- vars_sim
+    vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+    weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 10)
+    names(weights) <- vars_sim
 
-  # Calibrate AEME model
-  sim_id <- calib_aeme(aeme = aeme, path = path,
-                       param = param, model = model,
-                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
-                       vars_sim = vars_sim, weights = weights)
+    # Calibrate AEME model
+    sim_id <- calib_aeme(aeme = aeme, path = path,
+                         param = param, model = model,
+                         model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                         vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+    calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
 
-  testthat::expect_true(is.list(calib))
+    testthat::expect_true(is.list(calib))
 
-  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
-  testthat::expect_true(is.list(plist))
+    plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
+    testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+    testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
 
 })
 
@@ -133,7 +133,7 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
 
   FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib", NP = 10, itermax = 30,
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
                          parallel = FALSE, file_type = "db",
                          file_name = "results.db")
 
@@ -199,7 +199,7 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib",NP = 10, itermax = 30,
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
                          parallel = TRUE, file_type = "db",
                          file_name = "results.db")
 
@@ -266,7 +266,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib", NP = 10, itermax = 30,
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
                          parallel = TRUE, file_type = "csv")
 
   vars_sim <- c("LKE_lvlwtr")
@@ -414,7 +414,6 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
 
 })
 
-
 test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
@@ -456,7 +455,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib", NP = 10, itermax = 30,
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
                          file_type = "csv")
 
   vars_sim <- c("LKE_lvlwtr")
