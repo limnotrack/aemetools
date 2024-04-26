@@ -160,7 +160,7 @@ December to February, bottom temperature (bot_temp), (10 - 13 m) and also total
 chlorophyll-a (PHY_tchla) at the surface (0 - 2 m) during the summer period.
 
 ```{r define-control-parameters}
-ctrl <- create_control(method = "sa", N = 2^4, ncore = 10, na_value = 999,
+ctrl <- create_control(method = "sa", N = 2^4, ncore = 2, na_value = 999,
                        parallel = TRUE, file_type = "db", 
                        file_name = "file_type",
                        vars_sim = list(
