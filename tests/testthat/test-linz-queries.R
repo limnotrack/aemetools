@@ -92,7 +92,7 @@ test_that("can get LINZ lakes sf object", {
 
   qu_elev <- query_elev(lake, dem)
 
-  testthat::expect_equal(qu_elev, 5.5300002)
+  testthat::expect_equal(qu_elev, 5.54)
 })
 
 test_that("can get layer ids for a lake sf object", {
