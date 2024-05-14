@@ -18,7 +18,7 @@ test_that("can run AEME-GLM with parameters", {
   param <- aeme_parameters
 
   run_aeme_param(aeme = aeme, param = param,
-                 model = model, path = path, model_controls = model_controls)
+                 model = model, path = path)
   lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -26,7 +26,7 @@ test_that("can run AEME-GLM with parameters", {
   testthat::expect_true(file_chk)
 
   nc <- run_aeme_param(aeme = aeme, param = param,
-                       model = model, path = path, model_controls = model_controls,
+                       model = model, path = path,
                        return_nc = TRUE)
   testthat::expect_true(is(nc, "ncdf4"))
 
@@ -50,8 +50,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
                                  inf_factor = inf_factor, ext_elev = 5,
                                  use_bgc = FALSE)
     aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                           verbose = FALSE, model_controls = model_controls,
-                           path = path, parallel = FALSE)
+                           verbose = FALSE, path = path, parallel = FALSE)
     # AEME::plot(aeme, model = model, path = path, plot = "calib",
     #            obs = "temp", save = FALSE, show = FALSE)
     lke <- AEME::lake(aeme)
@@ -86,7 +85,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
     # Calibrate AEME model
     sim_id <- calib_aeme(aeme = aeme, path = path,
                          param = param, model = model,
-                         model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                         FUN_list = FUN_list, ctrl = ctrl,
                          vars_sim = vars_sim, weights = weights)
 
     calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
@@ -143,7 +142,7 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
-                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
@@ -178,8 +177,7 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model)
   lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -209,7 +207,7 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
-                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
@@ -244,8 +242,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
@@ -275,7 +272,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
-                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
@@ -304,8 +301,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
@@ -337,7 +333,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
-                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
@@ -367,8 +363,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
@@ -400,7 +395,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
-                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
@@ -433,8 +428,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
@@ -464,7 +458,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
-                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
@@ -497,8 +491,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
@@ -532,7 +525,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
-                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
@@ -566,8 +559,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
@@ -601,9 +593,8 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
 
   fit <- run_and_fit(aeme = aeme, param = param,
                      model = model, path = path, FUN_list = FUN_list,
-                     model_controls = model_controls, vars_sim = vars_sim,
-                     weights = weights,
-                     return_indices = F,
+                     vars_sim = vars_sim, weights = weights,
+                     return_indices = FALSE,
                      include_wlev = TRUE,
                      fit = TRUE)
 
@@ -612,7 +603,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
-                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
@@ -645,8 +636,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
@@ -680,7 +670,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
-                       model_controls = model_controls, FUN_list = FUN_list, ctrl = ctrl,
+                       FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
