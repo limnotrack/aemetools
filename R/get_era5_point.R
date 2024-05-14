@@ -212,16 +212,16 @@ download_era5_point <- function(years, lat, lon, variable, db_path, dtoken) {
     coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
 
     d1 <- readRDS(f1) |>
-      stars::st_extract(coords_sf) |>
+      stars::st_extract(coords_sf, bilinear = FALSE) |>
       as.data.frame() |>
       dplyr::select(-geometry)
     d1
     d2 <- readRDS(f2) |>
-      stars::st_extract(coords_sf) |>
+      stars::st_extract(coords_sf, bilinear = FALSE) |>
       as.data.frame() |>
       dplyr::select(-geometry)
     d3 <- readRDS(f3) |>
-      stars::st_extract(coords_sf) |>
+      stars::st_extract(coords_sf, bilinear = FALSE) |>
       as.data.frame() |>
       dplyr::select(-geometry)
 
