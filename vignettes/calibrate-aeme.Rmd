@@ -187,7 +187,7 @@ Here is an example of the control parameters:
 ```{r define-control-parameters}
 ctrl <- create_control(method = "calib", VTR = 1, NP = 40, itermax = 400, 
                        reltol = 0.07, cutoff = 0.25, mutate = 0.1, 
-                       parallel = TRUE, file_type = "csv", 
+                       parallel = FALSE, file_type = "csv", 
                        na_value = 999, ncore = 2)
 ```
 
