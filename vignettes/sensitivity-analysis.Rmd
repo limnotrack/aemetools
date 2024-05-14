@@ -161,7 +161,7 @@ chlorophyll-a (PHY_tchla) at the surface (0 - 2 m) during the summer period.
 
 ```{r define-control-parameters}
 ctrl <- create_control(method = "sa", N = 2^4, ncore = 2, na_value = 999,
-                       parallel = TRUE, file_type = "db", 
+                       parallel = FALSE, file_type = "db", 
                        file_name = "file_type",
                        vars_sim = list(
                          surf_temp = list(var = "HYD_temp",
