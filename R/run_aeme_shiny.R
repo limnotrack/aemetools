@@ -13,7 +13,7 @@
 #' @return Launches shiny app
 #' @export
 
-run_aeme_shiny <- function(aeme, param, path, model_controls) {
+run_aeme_shiny <- function(aeme, param, path = ".", model_controls) {
 
   # data("aeme_parameters")
   data("key_naming", package = "AEME")
