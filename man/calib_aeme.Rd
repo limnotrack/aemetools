@@ -9,7 +9,7 @@ calib_aeme(
   path = ".",
   param,
   model,
-  model_controls,
+  model_controls = NULL,
   vars_sim = "HYD_temp",
   FUN_list = NULL,
   ctrl = NULL,

@@ -10,7 +10,7 @@ run_and_fit(
   model,
   vars_sim,
   path,
-  model_controls,
+  model_controls = NULL,
   FUN_list = NULL,
   weights,
   na_value = 999,
