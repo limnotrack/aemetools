@@ -4,7 +4,7 @@
 \alias{run_aeme_shiny}
 \title{Run AEME in a Shiny app}
 \usage{
-run_aeme_shiny(aeme, param, path = ".", model_controls)
+run_aeme_shiny(aeme, param, path = ".", model_controls = NULL)
 }
 \arguments{
 \item{aeme}{aeme; data object.}

@@ -77,12 +77,16 @@
 #'
 #' @export
 
-sa_aeme <- function(aeme, path = ".", param, model, model_controls,
+sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                     FUN_list = NULL, ctrl = NULL, param_df = NULL) {
 
   # Check if vars_sim and weights are the same length
   if (is.null(ctrl)) {
     stop("ctrl must be supplied")
+  }
+  if (is.null(model_controls)) {
+    config <- AEME::configuration(aeme = aeme)
+    model_controls <- config$model_controls
   }
   vars_sim <- sapply(ctrl$vars_sim, \(v) v$var) |>
     unique()

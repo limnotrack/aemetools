@@ -39,7 +39,8 @@
 #'
 #' @export
 
-run_and_fit <- function(aeme, param, model, vars_sim, path, model_controls,
+run_and_fit <- function(aeme, param, model, vars_sim, path,
+                        model_controls = NULL,
                         FUN_list = NULL, weights, na_value = 999,
                         var_indices = NULL, return_indices = FALSE,
                         include_wlev = FALSE, return_df = FALSE,
@@ -47,6 +48,10 @@ run_and_fit <- function(aeme, param, model, vars_sim, path, model_controls,
                         fit = TRUE) {
 
   return_nc <- ifelse(fit | return_indices, TRUE, FALSE)
+  if (is.null(model_controls)) {
+    config <- AEME::configuration(aeme = aeme)
+    model_controls <- config$model_controls
+  }
 
   nc <- run_aeme_param(aeme = aeme, param = param, model = model,
                        path = path, model_controls = model_controls,

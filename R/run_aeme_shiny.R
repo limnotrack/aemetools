@@ -13,7 +13,7 @@
 #' @return Launches shiny app
 #' @export
 
-run_aeme_shiny <- function(aeme, param, path = ".", model_controls) {
+run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
 
   # data("aeme_parameters")
   data("key_naming", package = "AEME")
@@ -21,6 +21,10 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls) {
   names(out_vars) <- key_naming$name_full
   out_vars <- out_vars[-1]
   out_vars <- grep("HYD|LKE|PHY|CHM|PHS|NIT", out_vars, value = TRUE)
+  if (is.null(model_controls)) {
+    config <- AEME::configuration(aeme = aeme)
+    model_controls <- config$model_controls
+  }
 
   # param <- aeme_parameters
   cfg <- AEME::configuration(aeme)

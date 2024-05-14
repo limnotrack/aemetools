@@ -15,7 +15,8 @@
 #' @return `na_value` if model run is unsuccessful
 #' @export
 
-run_aeme_param <- function(aeme, param, model, path = ".", model_controls,
+run_aeme_param <- function(aeme, param, model, path = ".",
+                           model_controls = NULL,
                            na_value = 999, return_nc = FALSE,
                            return_aeme = FALSE) {
 
@@ -28,6 +29,10 @@ run_aeme_param <- function(aeme, param, model, path = ".", model_controls,
     stop("Only one of 'return_nc' and 'return_aeme' can be TRUE.")
   # if (length(model) != 1)
   #   stop("Only one model can be run at a time.")
+  if (is.null(model_controls)) {
+    config <- AEME::configuration(aeme = aeme)
+    model_controls <- config$model_controls
+  }
 
   # Load AEME data
   lke <- AEME::lake(aeme)

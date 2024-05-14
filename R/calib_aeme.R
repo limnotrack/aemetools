@@ -36,7 +36,7 @@
 #'
 #' @export
 
-calib_aeme <- function(aeme, path = ".", param, model, model_controls,
+calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                        vars_sim = "HYD_temp", FUN_list = NULL, ctrl = NULL,
                        weights = c(1), param_df = NULL) {
 
@@ -46,6 +46,11 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls,
 
   if (!all(vars_sim %in% names(FUN_list)))
     stop("FUN_list must have names that match vars_sim")
+
+  if (is.null(model_controls)) {
+    config <- AEME::configuration(aeme = aeme)
+    model_controls <- config$model_controls
+  }
 
   if (is.null(ctrl)) {
     ctrl <- create_control(method = "calib", NP = NA, itermax = 200)
