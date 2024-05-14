@@ -197,8 +197,7 @@ The `sa_aeme` function writes the results to the file specified.  The
 ```{r run-sensitivity-analysis, cache=FALSE}
 # Run sensitivity analysis AEME model
 sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
-                  model = model, ctrl = ctrl, model_controls = model_controls,
-                  FUN_list = FUN_list)
+                  model = model, ctrl = ctrl, FUN_list = FUN_list)
 
 ```
 

@@ -16,8 +16,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
                                use_bgc = FALSE)
 
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
 
   # AEME::plot(aeme, model = model)
   lke <- AEME::lake(aeme)
@@ -53,8 +52,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 
   # Run sensitivity analysis AEME model
   sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
-                    model = model, ctrl = ctrl, model_controls = model_controls,
-                    FUN_list = FUN_list)
+                    model = model, ctrl = ctrl, FUN_list = FUN_list)
 
   sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, boot = FALSE)
 
@@ -79,8 +77,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
                                use_bgc = FALSE)
 
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
 
   lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -115,8 +112,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
 
   # Run sensitivity analysis AEME model
   sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
-                    model = model, ctrl = ctrl, model_controls = model_controls,
-                    FUN_list = FUN_list)
+                    model = model, ctrl = ctrl, FUN_list = FUN_list)
 
   sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 
@@ -155,8 +151,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
                                use_bgc = FALSE)
 
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, model_controls = model_controls,
-                         path = path)
+                         verbose = FALSE, path = path)
 
   lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
@@ -191,8 +186,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
 
   # Run sensitivity analysis AEME model
   sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
-                    model = model, ctrl = ctrl, model_controls = model_controls,
-                    FUN_list = FUN_list)
+                    model = model, ctrl = ctrl, FUN_list = FUN_list)
 
   sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 

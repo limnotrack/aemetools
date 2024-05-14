@@ -73,8 +73,7 @@ model setup is working.
 #| fig.cap: "Simple plots of surface and bottom water temperarure
 #| an lake level after running AEME with the glm_aed model."
 
-aeme <- run_aeme(aeme = aeme, model = model,
-                 verbose = FALSE, model_controls = model_controls,
+aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
                  path = path)
 plot(aeme)
 ```
@@ -122,7 +121,7 @@ the model output is generate within the lake folder.
 
 ```{r run-aeme-param}
 run_aeme_param(aeme = aeme, param = aeme_parameters,
-                 model = model, path = path, model_controls = model_controls)
+                 model = model, path = path)
 
 ```
 
@@ -229,8 +228,8 @@ updated values.
 ```{r run-calibration, cache=FALSE}
 sim_id <- calib_aeme(aeme = aeme, path = path,
                      param = aeme_parameters, model = model,
-                     model_controls = model_controls, FUN_list = FUN_list,
-                     ctrl = ctrl, vars_sim = vars_sim, weights = weights)
+                     FUN_list = FUN_list, ctrl = ctrl, 
+                     vars_sim = vars_sim, weights = weights)
 
 ```
 
@@ -331,8 +330,8 @@ function.
 
 ```{r run-calibrated-model}
 aeme <- run_aeme_param(aeme = aeme, path = path,
-                            param = best_params, model = model,
-                            model_controls = model_controls, return_aeme = TRUE)
+                       param = best_params, model = model,
+                       return_aeme = TRUE)
 
 ```
 
