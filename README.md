@@ -14,14 +14,19 @@ coverage](https://codecov.io/gh/limnotrack/aemetools/branch/main/graph/badge.svg
 
 aemetools is designed to work with
 [AEME](https://github.com/limnotrack/AEME/). It contains a range of
-functions to assist in setting up simulations for a new lake site.
+functions to assist in setting up simulations for a lake site.
 
-Currently, you can use this to download meteorological data from
-[ERA5-Land](https://www.ecmwf.int/en/era5-land) for any point in New
-Zealand from 1999-2022, or download ERA5-Land netCDF files for any area
-in the world. It can set up and run hydrological simulations using the
-suite of models from the [`airGR`](https://hydrogr.github.io/airGR/)
-package using catchment, reach and lake data.
+Currently, you can use this to:
+
+- Download meteorological data from
+  [ERA5-Land](https://www.ecmwf.int/en/era5-land) for any point in New
+  Zealand from 1999-2022, or download ERA5-Land netCDF files for any
+  area in the world.
+- Set up and run hydrological simulations using the suite of models from
+  the [`airGR`](https://hydrogr.github.io/airGR/) package using
+  catchment, reach and lake data.
+- Conduct a sensitivity analysis on the parameters for the AEME models.
+- Calibrate the AEME models using lake observational data.
 
 ## Installation
 
@@ -52,23 +57,48 @@ lon <- 176.2717
 lat <- -38.079
 variables <- c("MET_tmpair", "MET_pprain")
 
-met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
+met <- get_era5_point(lat = lat, lon = lon, years = 2020:2021,
                       variables = variables, format = "aeme", parallel = TRUE)
 #> Checking if lat/lon point is in the grid...
 #> Point is in the grid.
-#> Downloading ERA5 variables in parallel... [2024-04-19 11:46:34]
-#> Finished downloading ERA5 variables! [2024-04-19 11:46:45]
+#> Downloading ERA5 variables in parallel... [2024-05-14 14:22:37]
+#> Finished downloading ERA5 variables! [2024-05-14 14:22:47]
 summary(met)
-#>       Date              MET_tmpair       MET_pprain     
-#>  Min.   :2000-01-01   Min.   : 3.407   Min.   : 0.0000  
-#>  1st Qu.:2000-07-01   1st Qu.: 9.129   1st Qu.: 0.2188  
-#>  Median :2000-12-30   Median :12.032   Median : 2.0354  
-#>  Mean   :2000-12-30   Mean   :11.957   Mean   : 6.7384  
-#>  3rd Qu.:2001-06-30   3rd Qu.:14.815   3rd Qu.: 8.3548  
-#>  Max.   :2001-12-30   Max.   :19.970   Max.   :86.6961
+#>       Date              MET_tmpair       MET_pprain      
+#>  Min.   :2020-01-01   Min.   : 4.848   Min.   : 0.00000  
+#>  1st Qu.:2020-07-01   1st Qu.: 9.699   1st Qu.: 0.08203  
+#>  Median :2020-12-31   Median :12.729   Median : 0.83959  
+#>  Mean   :2020-12-31   Mean   :12.845   Mean   : 5.10542  
+#>  3rd Qu.:2021-07-01   3rd Qu.:15.782   3rd Qu.: 5.73168  
+#>  Max.   :2021-12-31   Max.   :22.176   Max.   :53.44960
 ```
 
-### Run GR4J model
+``` r
+
+library(ggplot2)
+library(tidyr)
+
+met |> 
+  pivot_longer(cols = c(MET_tmpair, MET_pprain)) |> 
+  ggplot(aes(x = Date, y = value)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  theme_bw()
+```
+
+<img src="man/figures/README-plot-era5-1.png" width="100%" />
+
+### Calibrate AEME model
+
+See the vignette
+[here](https://special-enigma-8p9lgre.pages.github.io/articles/calibrate-aeme.html)
+
+### Sensitivity analysis for AEME models
+
+See the vignette
+[here](https://special-enigma-8p9lgre.pages.github.io/articles/sensitivity-analysis.html)
+
+### Hydrological modelling - Run GR4J model
 
 Here is simple example set up for one of the lake inflows into Lake
 Rotorua. First, the input for the model are generated using the stream
