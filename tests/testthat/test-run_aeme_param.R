@@ -1,3 +1,47 @@
+test_that("running GLM & GOTM works with params", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  # unlink(tmpdir, recursive = TRUE)
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
+  model_controls <- model_controls |>
+    dplyr::mutate(simulate = dplyr::case_when(
+      var_aeme == "ZOO_zoo1" ~ TRUE,
+      .default = simulate
+    ))
+  model <- c("glm_aed", "gotm_wet")
+  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+                               model = model, model_controls = model_controls,
+                               ext_elev = 5, use_bgc = FALSE)
+
+  # utils::data("aeme_parameters_bgc", package = "aemetools")
+  utils::data("aeme_parameters", package = "aemetools")
+  param <- aeme_parameters
+  # param <- dplyr::bind_rows(
+  #   # aeme_parameters_bgc,
+  #   glm_aed_parameters
+  # ) |>
+  #   dplyr::filter(model == "glm_aed")
+  # run_aeme_shiny(aeme = aeme, param = param, path = path,
+  #                model_controls = model_controls)
+
+  aeme <- run_aeme_param(aeme = aeme,
+                         model = model,
+                         param = param, path = path,
+                         model_controls = model_controls,
+                         na_value = 999, return_aeme = TRUE)
+
+  # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
+  lke <- AEME::lake(aeme)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "output", "output.nc"))
+  testthat::expect_true(all(file_chk))
+})
+
 test_that("running GLM-AED works with bgc_params", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
