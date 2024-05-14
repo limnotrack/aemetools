@@ -21,9 +21,15 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/limnotrack/aemetools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/limnotrack/aemetools?branch=main)
 <!-- badges: end -->
 
-aemetools is designed to work with [AEME](https://github.com/limnotrack/AEME/). It contains a range of functions to assist in setting up simulations for a new lake site.
+aemetools is designed to work with [AEME](https://github.com/limnotrack/AEME/). It contains a range of functions to assist in setting up simulations for a lake site.
 
-Currently, you can use this to download meteorological data from [ERA5-Land](https://www.ecmwf.int/en/era5-land) for any point in New Zealand from 1999-2022, or download ERA5-Land netCDF files for any area in the world. It can set up and run hydrological simulations using the suite of models from the [`airGR`](https://hydrogr.github.io/airGR/) package using catchment, reach and lake data.
+Currently, you can use this to:
+
+  - Download meteorological data from [ERA5-Land](https://www.ecmwf.int/en/era5-land) for any point in New Zealand from 1999-2022, or download ERA5-Land netCDF files for any area in the world.
+  - Set up and run hydrological simulations using the suite of models from the [`airGR`](https://hydrogr.github.io/airGR/) package using catchment, reach and lake data.
+  - Conduct a sensitivity analysis on the parameters for the AEME models.
+  - Calibrate the AEME models using lake observational data.
+
 
 ```{r include=FALSE, echo=FALSE}
 data("era5_ref_table", package = "aemetools")
@@ -51,12 +57,38 @@ lon <- 176.2717
 lat <- -38.079
 variables <- c("MET_tmpair", "MET_pprain")
 
-met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
+met <- get_era5_point(lat = lat, lon = lon, years = 2020:2021,
                       variables = variables, format = "aeme", parallel = TRUE)
 summary(met)
 ```
 
-### Run GR4J model 
+```{r plot-era5}
+
+library(ggplot2)
+library(tidyr)
+
+met |> 
+  pivot_longer(cols = c(MET_tmpair, MET_pprain)) |> 
+  ggplot(aes(x = Date, y = value)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  theme_bw()
+
+```
+
+
+
+### Calibrate AEME model
+
+See the vignette [here](https://special-enigma-8p9lgre.pages.github.io/articles/calibrate-aeme.html)
+
+### Sensitivity analysis for AEME models
+
+See the vignette [here](https://special-enigma-8p9lgre.pages.github.io/articles/sensitivity-analysis.html)
+
+
+
+### Hydrological modelling - Run GR4J model 
 
 Here is simple example set up for one of the lake inflows into Lake Rotorua. First, the input for the model are generated using the stream ID (nzsegment), and spatial features (sf objects) of the reaches, lake and catchment (including sub-catchments), observed discharge (if available) meteorological data (air temperature and precipitation).
 It recursively creates an upstream network using the nzsegment, then combines the subcatchments of all the upstream reaches (`sf::st_union()`) to calculate the area of the catchment.
