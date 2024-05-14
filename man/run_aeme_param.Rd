@@ -8,7 +8,7 @@ run_aeme_param(
   aeme,
   param,
   model,
-  path,
+  path = ".",
   model_controls,
   na_value = 999,
   return_nc = FALSE,
