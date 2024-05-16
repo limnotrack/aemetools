@@ -1,6 +1,7 @@
 #' Get parameter values from calibration results
 #'
-#' @param calib A data frame with the calibration results.
+#' @param calib A list with the calibration results loaded using
+#' \code{\link{read_calib}}.
 #' @param model A character vector with the model name.
 #' @param na_value A numeric value which corresponds to the NA value used in
 #' the calibration.
@@ -52,7 +53,8 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
         )) |>
       dplyr::mutate(
         label = abbrev_pars(parameter_name, model),
-        gen = factor(gen)
+        gen = factor(gen),
+        name = gsub("NA.", "", parameter_name)
       )
   }) |>
     dplyr::bind_rows() |>
@@ -67,7 +69,9 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
     dplyr::group_by(sim_id, model, label, fit_type) |>
     dplyr::summarise(parameter_value = parameter_value[which.min(fit_value)],
                      fit_value = min(fit_value),
-                     gen = gen[which.min(fit_value)], .groups = "drop") |>
+                     gen = gen[which.min(fit_value)],
+                     name = name[which.min(fit_value)],
+                     .groups = "drop") |>
     as.data.frame()
 }
 

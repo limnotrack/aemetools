@@ -7,7 +7,8 @@
 get_param(calib, na_value, fit_col = "fit", best = FALSE)
 }
 \arguments{
-\item{calib}{A data frame with the calibration results.}
+\item{calib}{A list with the calibration results loaded using
+\code{\link{read_calib}}.}
 
 \item{na_value}{A numeric value which corresponds to the NA value used in
 the calibration.}
