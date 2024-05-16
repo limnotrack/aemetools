@@ -378,7 +378,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
       } else {
         lvl_adj <- wbal$data$wbal |>
           dplyr::select(Date, value) |>
-          dplyr::mutate(value = (value - min(inp$hypsograph$elev)),
+          dplyr::mutate(value = abs(min(inp$hypsograph$depth)),
                         var_aeme = "LKE_lvlwtr")
       }
 
