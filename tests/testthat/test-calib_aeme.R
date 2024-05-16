@@ -279,6 +279,16 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
 
   testthat::expect_true(is.list(calib))
 
+  param2 <- update_param(param = param, calib = calib, na_value = ctrl$na_value)
+
+  testthat::expect_true(is.data.frame(param2))
+  testthat::expect_true(!all(param2$value == param$value))
+
+  best_pars <- get_param(calib = calib, na_value = ctrl$na_value, best = TRUE)
+
+  testthat::expect_true(is.data.frame(best_pars))
+  testthat::expect_true(all(best_pars$parameter_value %in% param2$value))
+
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
