@@ -65,7 +65,8 @@
 <span>  model_controls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  na_value <span class="op">=</span> <span class="fl">999</span>,</span>
 <span>  return_nc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  return_aeme <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  return_aeme <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -104,6 +105,10 @@ columns c("model", "file", "name", "value", "min", "max", "log")</p></dd>
 
 <dt>return_aeme</dt>
 <dd><p>boolean; return AEME object</p></dd>
+
+
+<dt>parallel</dt>
+<dd><p>logical; run models in parallel. Defaults to FALSE.</p></dd>
 
 </dl></div>
     <div class="section level2">
