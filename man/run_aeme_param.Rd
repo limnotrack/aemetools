@@ -12,7 +12,8 @@ run_aeme_param(
   model_controls = NULL,
   na_value = 999,
   return_nc = FALSE,
-  return_aeme = FALSE
+  return_aeme = FALSE,
+  parallel = FALSE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \item{return_nc}{boolean; return netCDF file connection}
 
 \item{return_aeme}{boolean; return AEME object}
+
+\item{parallel}{logical; run models in parallel. Defaults to FALSE.}
 }
 \value{
 \code{na_value} if model run is unsuccessful

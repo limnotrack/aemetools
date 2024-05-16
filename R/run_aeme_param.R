@@ -18,7 +18,7 @@
 run_aeme_param <- function(aeme, param, model, path = ".",
                            model_controls = NULL,
                            na_value = 999, return_nc = FALSE,
-                           return_aeme = FALSE) {
+                           return_aeme = FALSE, parallel = FALSE) {
 
   # Function checks ----
   if (!is.data.frame(param))
@@ -258,7 +258,7 @@ run_aeme_param <- function(aeme, param, model, path = ".",
 
   # Run model ----
   aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path,
-                         check_output = FALSE, parallel = FALSE,
+                         check_output = FALSE, parallel = parallel,
                          model_controls = model_controls, return = return_aeme)
 
 
