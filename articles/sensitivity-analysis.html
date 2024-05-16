@@ -103,8 +103,9 @@ package:</p>
 <span><span class="va">aeme_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/lake/"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span>
 <span><span class="co"># Copy files from package into tempdir</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="va">aeme_dir</span>, <span class="va">tmpdir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span>
-<span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmpdir</span>, <span class="st">"lake"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmpdir</span>, <span class="st">"lake"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">path</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "aeme.yaml"            "data/catchment.dbf"   "data/catchment.prj"  </span></span>
@@ -120,7 +121,7 @@ package:</p>
 <p>Using the <code>AEME</code> functions, we will build the AEME model
 setup. For this example, we will use the <code>glm_aed</code> model. The
 <code>build_ensemble</code> function will</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AEME/man/yaml_to_aeme.html" class="external-link">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
 <span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AEME/man/get_model_controls.html" class="external-link">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -162,7 +163,7 @@ file</p></li>
 <li><p><code>max</code>: The maximum value of the parameter</p></li>
 </ul>
 <p>Parameters to be used for the calibration. (man)</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"aeme_parameters"</span>, package <span class="op">=</span> <span class="st">"aemetools"</span><span class="op">)</span></span>
 <span><span class="va">param</span> <span class="op">&lt;-</span> <span class="va">aeme_parameters</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">file</span> <span class="op">!=</span> <span class="st">"wdr"</span><span class="op">)</span></span>
@@ -424,7 +425,7 @@ takes a dataframe as an argument. The dataframe contains the observed
 data (<code>obs</code>) and the modelled data (<code>model</code>). The
 function should return a single value.</p>
 <p>Here we use the model mean.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Function to calculate mean model output</span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span>
@@ -432,7 +433,7 @@ function should return a single value.</p>
 <p>Different functions can be applied to different variables. For
 example, we can use the mean for water temperature and median for
 chloophyll-a.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Function to calculate median model output</span></span>
 <span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">median</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span>
@@ -440,7 +441,7 @@ chloophyll-a.</p>
 <p>Then these would be combined into a named list of functions which
 will be passed to the <code>sa_aeme</code> function. They are named
 according to the target variable.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Create list of functions</span></span>
 <span><span class="va">FUN_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>HYD_temp <span class="op">=</span> <span class="va">fit</span>, PHY_tchla <span class="op">=</span> <span class="va">fit2</span><span class="op">)</span></span></code></pre></div>
@@ -453,7 +454,7 @@ analysis. The control parameters are generated using
 <code>create_control</code> and are then passed to the
 <code>sa_aeme</code> function. The control parameters for the
 sensitivity analysis are as follows:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">?</span><span class="va">create_control</span></span></code></pre></div>
 <div class="r-help-page">
 <div class="container"><main><table style="width: 100%;" class="table"><tr>
@@ -567,7 +568,7 @@ range to use for the sensitivity analysis.
 the months December to February, bottom temperature (bot_temp), (10 - 13
 m) and also total chlorophyll-a (PHY_tchla) at the surface (0 - 2 m)
 during the summer period.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_control.html">create_control</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"sa"</span>, N <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="fl">4</span>, ncore <span class="op">=</span> <span class="fl">2</span>, na_value <span class="op">=</span> <span class="fl">999</span>,</span>
 <span>                       parallel <span class="op">=</span> <span class="cn">FALSE</span>, file_type <span class="op">=</span> <span class="st">"db"</span>, </span>
 <span>                       file_name <span class="op">=</span> <span class="st">"file_type"</span>,</span>
@@ -594,7 +595,7 @@ during the summer period.</p>
 <p>Once we have defined the fitness function, control parameters and
 variables, we can run the sensitivity analysis. The <code>sa_aeme</code>
 function takes the following arguments:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">?</span><span class="va">sa_aeme</span></span></code></pre></div>
 <div class="r-help-page">
 <div class="container"><main><table style="width: 100%;" class="table"><tr>
@@ -668,13 +669,13 @@ is used to restart from a previous calibration.</p>
 <p>The <code>sa_aeme</code> function writes the results to the file
 specified. The <code>sa_aeme</code> function returns the
 <code>sim_id</code> of the run.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run sensitivity analysis AEME model</span></span>
 <span><span class="va">sim_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sa_aeme.html">sa_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>, param <span class="op">=</span> <span class="va">param</span>,</span>
 <span>                  model <span class="op">=</span> <span class="va">model</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, FUN_list <span class="op">=</span> <span class="va">FUN_list</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for gotm_wet modelled variables [2024-05-14 18:43:23]</span></span>
-<span><span class="co">#&gt; Complete! [2024-05-14 18:43:27]</span></span>
-<span><span class="co">#&gt; Running sensitivity analysis in serial for gotm_wet with 128 parameter sets [2024-05-14 18:43:27]</span></span>
+<span><span class="co">#&gt; Extracting indices for gotm_wet modelled variables [2024-05-16 18:41:01]</span></span>
+<span><span class="co">#&gt; Complete! [2024-05-16 18:41:05]</span></span>
+<span><span class="co">#&gt; Running sensitivity analysis in serial for gotm_wet with 128 parameter sets [2024-05-16 18:41:05]</span></span>
 <span><span class="co">#&gt;        turbulence/turb_param/k_min light_extinction/A/constant_value</span></span>
 <span><span class="co">#&gt; mean                     4.815e-06                           0.52800</span></span>
 <span><span class="co">#&gt; median                   5.000e-06                           0.52700</span></span>
@@ -687,392 +688,392 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="co">#&gt; mean       0.9930     0.9988</span></span>
 <span><span class="co">#&gt; median     0.9812     1.0000</span></span>
 <span><span class="co">#&gt; sd         0.1601     0.1609</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:43:27]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:43:30]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:43:30]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:43:31]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:43:34]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:43:34]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:43:35]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:43:38]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:43:38]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:43:39]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:43:42]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:43:42]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:43:43]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:43:46]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:43:46]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:43:47]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:43:50]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:43:50]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:43:51]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:43:53]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:43:53]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:43:54]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:43:57]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:43:57]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:43:58]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:01]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:01]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:02]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:05]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:05]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:06]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:09]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:09]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:10]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:13]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:13]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:14]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:17]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:17]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:18]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:20]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:20]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:21]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:24]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:24]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:25]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:28]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:28]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:29]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:32]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:32]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:33]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:36]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:36]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:37]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:40]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:40]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:41]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:43]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:43]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:44]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:47]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:47]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:48]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:51]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:51]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:52]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:55]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:55]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:44:56]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:44:59]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:44:59]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:00]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:03]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:03]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:04]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:07]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:07]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:07]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:10]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:10]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:11]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:14]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:14]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:15]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:18]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:18]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:19]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:22]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:22]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:23]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:26]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:26]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:27]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:30]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:30]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:31]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:34]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:34]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:34]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:37]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:37]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:38]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:41]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:41]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:42]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:45]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:45]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:46]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:49]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:49]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:50]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:53]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:53]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:54]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:45:57]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:45:57]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:45:57]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:00]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:00]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:01]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:04]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:04]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:05]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:08]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:08]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:09]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:12]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:12]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:13]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:16]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:16]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:17]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:20]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:20]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:20]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:23]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:23]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:24]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:27]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:27]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:28]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:31]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:31]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:32]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:35]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:35]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:36]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:39]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:39]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:40]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:43]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:43]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:43]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:46]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:46]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:47]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:50]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:50]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:51]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:54]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:54]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:55]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:46:58]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:46:58]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:46:59]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:02]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:02]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:03]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:06]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:06]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:07]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:10]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:10]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:10]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:13]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:13]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:14]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:17]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:17]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:18]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:21]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:21]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:22]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:25]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:25]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:26]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:29]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:29]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:30]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:32]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:32]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:33]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:36]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:36]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:37]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:40]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:40]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:41]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:44]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:44]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:45]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:48]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:48]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:49]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:51]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:51]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:52]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:55]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:55]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:47:56]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:47:59]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:47:59]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:00]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:03]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:03]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:04]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:07]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:07]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:08]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:11]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:11]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:12]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:15]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:15]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:16]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:19]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:19]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:20]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:23]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:23]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:23]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:26]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:26]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:27]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:30]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:30]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:31]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:34]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:34]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:35]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:38]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:38]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:39]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:42]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:42]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:43]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:46]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:46]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:47]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:50]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:50]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:51]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:53]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:53]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:54]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:48:57]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:48:57]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:48:58]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:01]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:01]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:02]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:05]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:05]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:06]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:09]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:09]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:10]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:13]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:13]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:14]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:17]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:17]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:17]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:20]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:20]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:22]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:24]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:24]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:25]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:28]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:28]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:29]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:32]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:32]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:33]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:36]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:36]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:37]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:40]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:40]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:41]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:44]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:44]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:45]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:48]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:48]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:49]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:51]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:51]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:52]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:55]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:55]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:49:56]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:49:59]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:49:59]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:00]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:03]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:03]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:04]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:07]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:07]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:08]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:11]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:11]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:11]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:14]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:14]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:15]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:18]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:18]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:19]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:22]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:22]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:23]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:26]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:26]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:27]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:30]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:30]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:31]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:34]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:34]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:35]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:38]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:38]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:39]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:42]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:42]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:42]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:45]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:45]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:46]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:49]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:49]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:50]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:53]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:53]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:54]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:50:57]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:50:57]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:50:58]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:01]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:01]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:51:02]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:05]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:05]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:51:06]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:09]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:09]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:51:10]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:12]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:12]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:51:13]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:16]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:16]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:51:17]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:20]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:20]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:51:21]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:24]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:24]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:51:25]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:28]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:28]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:51:29]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:32]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:32]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:51:33]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:36]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:36]</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-14 18:51:37]</span></span>
-<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-14 18:51:40]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-05-14 18:51:40]</span></span>
-<span><span class="co">#&gt; Writing output for generation 1 to file_type with sim ID: 45819_gotmwet_S_001 [2024-05-14 18:51:40]</span></span>
-<span><span class="co">#&gt; Completed gotm_wet! [2024-05-14 18:51:40]</span></span></code></pre></div>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:06]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:08]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:08]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:09]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:12]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:12]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:14]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:17]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:17]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:17]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:20]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:20]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:21]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:24]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:24]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:25]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:28]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:28]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:29]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:32]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:32]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:33]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:36]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:36]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:37]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:40]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:40]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:41]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:44]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:44]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:44]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:47]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:47]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:48]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:51]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:51]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:52]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:55]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:55]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:41:56]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:41:59]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:41:59]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:00]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:03]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:03]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:04]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:07]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:07]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:08]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:11]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:11]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:12]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:15]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:15]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:16]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:19]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:19]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:19]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:22]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:22]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:23]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:26]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:26]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:27]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:30]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:30]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:31]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:34]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:34]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:35]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:38]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:38]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:39]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:42]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:42]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:43]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:46]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:46]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:47]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:50]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:50]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:50]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:53]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:53]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:54]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:42:57]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:42:57]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:42:58]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:01]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:01]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:02]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:05]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:05]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:06]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:09]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:09]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:10]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:13]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:13]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:14]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:16]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:16]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:17]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:20]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:20]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:21]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:24]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:24]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:25]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:28]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:28]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:29]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:32]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:32]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:33]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:36]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:36]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:37]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:39]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:39]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:40]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:43]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:43]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:44]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:47]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:47]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:48]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:51]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:51]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:52]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:55]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:55]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:43:56]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:43:59]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:43:59]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:00]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:03]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:03]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:03]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:06]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:06]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:07]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:10]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:10]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:11]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:14]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:14]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:15]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:18]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:18]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:19]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:22]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:22]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:23]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:25]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:25]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:26]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:29]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:29]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:30]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:33]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:33]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:34]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:37]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:37]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:38]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:41]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:41]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:42]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:45]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:45]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:46]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:49]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:49]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:50]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:53]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:53]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:54]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:44:56]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:44:56]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:44:57]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:00]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:00]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:01]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:04]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:04]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:05]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:08]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:08]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:09]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:12]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:12]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:13]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:16]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:16]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:17]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:20]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:20]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:21]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:24]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:24]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:25]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:28]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:28]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:28]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:31]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:31]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:32]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:35]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:35]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:36]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:39]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:39]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:40]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:43]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:43]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:44]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:47]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:47]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:48]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:51]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:51]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:52]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:55]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:55]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:56]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:45:59]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:45:59]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:45:59]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:02]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:02]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:03]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:06]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:06]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:07]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:10]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:10]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:11]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:14]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:14]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:15]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:18]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:18]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:19]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:22]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:22]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:23]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:26]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:26]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:27]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:29]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:29]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:30]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:33]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:33]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:34]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:37]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:37]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:38]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:41]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:41]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:42]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:45]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:45]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:46]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:49]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:49]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:50]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:53]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:53]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:54]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:46:57]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:46:57]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:46:58]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:01]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:01]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:02]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:05]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:05]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:05]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:08]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:08]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:09]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:12]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:12]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:13]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:16]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:16]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:17]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:20]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:20]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:21]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:24]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:24]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:25]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:28]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:28]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:29]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:32]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:32]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:33]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:36]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:36]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:37]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:39]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:39]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:40]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:43]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:43]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:44]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:47]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:47]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:48]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:51]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:51]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:52]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:55]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:55]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:47:56]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:47:59]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:47:59]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:00]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:03]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:03]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:04]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:06]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:06]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:07]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:10]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:10]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:11]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:14]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:14]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:15]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:18]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:18]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:19]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:22]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:22]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:23]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:26]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:26]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:27]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:30]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:30]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:31]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:34]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:34]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:35]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:38]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:38]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:38]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:41]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:41]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:42]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:45]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:45]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:46]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:49]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:49]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:50]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:53]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:53]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:54]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:48:57]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:48:57]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:48:58]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:49:01]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:49:01]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:49:02]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:49:05]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:49:05]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:49:06]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:49:09]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:49:09]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:49:09]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:49:13]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:49:13]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:49:14]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:49:17]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:49:17]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-05-16 18:49:17]</span></span>
+<span><span class="co">#&gt; GOTM-WET run successful! [2024-05-16 18:49:20]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-05-16 18:49:20]</span></span>
+<span><span class="co">#&gt; Writing output for generation 1 to file_type with sim ID: 45819_gotmwet_S_001 [2024-05-16 18:49:21]</span></span>
+<span><span class="co">#&gt; Completed gotm_wet! [2024-05-16 18:49:21]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-sensitivity-analysis-results">Reading sensitivity analysis results<a class="anchor" aria-label="anchor" href="#reading-sensitivity-analysis-results"></a>
@@ -1090,7 +1091,7 @@ analysis.</li>
 <code>path</code>: The path to the directory where the model is
 configuration is.</li>
 </ul>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Read in sensitivity analysis results</span></span>
 <span><span class="va">sa_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_sa.html">read_sa</a></span><span class="op">(</span>ctrl <span class="op">=</span> <span class="va">ctrl</span>, sim_id <span class="op">=</span> <span class="va">sim_id</span>, R <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sa_res</span><span class="op">)</span></span>
@@ -1104,7 +1105,7 @@ dataframe contains the model, generation, index (model run), parameter
 name, parameter value, fitness value and the median fitness value for
 each generation.</li>
 </ul>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sa_res</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
@@ -1203,7 +1204,7 @@ each generation.</li>
 <code>sobol_indices</code>: list of the Sobol indices for each
 variable an it’s senstivity to the parameters.</li>
 </ul>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sa_res</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">sobol_indices</span></span>
 <span><span class="co">#&gt; $surf_temp</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1317,7 +1318,7 @@ variable an it’s senstivity to the parameters.</li>
 <code>sobol_dummy</code>: list of the Sobol indices for the dummy
 parameter.</li>
 </ul>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sa_res</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">sobol_dummy</span></span>
 <span><span class="co">#&gt; $surf_temp</span></span>
 <span><span class="co">#&gt;   original         bias  std.error   low.ci  high.ci sensitivity parameters</span></span>
@@ -1353,7 +1354,7 @@ the <code>read_sa</code> function.</li>
 </h3>
 <p>The <code>plot_uncertainty</code> function plots the distribution of
 the model output for each variable.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot sensitivity analysis results</span></span>
 <span><span class="fu"><a href="../reference/plot_uncertainty.html">plot_uncertainty</a></span><span class="op">(</span><span class="va">sa_res</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sensitivity-analysis_files/figure-html/plot-sa-uncertainty-1.png" width="768"></p>
@@ -1370,7 +1371,7 @@ scaling factor for shortwave radiation (MET_radswd), and also for
 surface chlorophyll-a (surf_chla) and the light extinction coefficient
 (light.Kw). When there is a low parameter value for Kw, the model
 chlorophyll-a is higher.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_scatter.html">plot_scatter</a></span><span class="op">(</span><span class="va">sa_res</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sensitivity-analysis_files/figure-html/plot-sa-scatter-1.png" width="768"></p>
 </div>
@@ -1381,18 +1382,18 @@ chlorophyll-a is higher.</p>
 against each other for each variable. The parameter on top is the x-axis
 and the parameter below is the y-axis. This is useful for identifying
 relationships between the parameters and response variable.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_multiscatter.html">plot_multiscatter</a></span><span class="op">(</span><span class="va">sa_res</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pl</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $surf_temp</span></span></code></pre></div>
 <p><img src="sensitivity-analysis_files/figure-html/plot-sa-multiscatter-1.png" width="768"></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">pl</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $bot_temp</span></span></code></pre></div>
 <p><img src="sensitivity-analysis_files/figure-html/plot-sa-multiscatter-2.png" width="768"></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">pl</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $surf_chla</span></span></code></pre></div>
