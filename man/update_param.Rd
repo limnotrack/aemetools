@@ -4,12 +4,23 @@
 \alias{update_param}
 \title{Update parameter values in param based on best_pars}
 \usage{
-update_param(param, best_pars)
+update_param(param, calib, na_value, fit_col = "fit", best_pars = NULL)
 }
 \arguments{
 \item{param}{A data frame with parameters to update}
 
-\item{best_pars}{A data frame with the best parameters from \code{get_param}}
+\item{calib}{A list with the calibration results loaded using
+\code{\link{read_calib}}.}
+
+\item{na_value}{A numeric value which corresponds to the NA value used in
+the calibration.}
+
+\item{fit_col}{character; name of column containing fit values. Default is
+\code{"fit"}.}
+
+\item{best_pars}{A data frame with the best parameters from \code{get_param}.
+Defaults to NULL. When NULL, \code{get_param} is called to get the best
+parameters.}
 }
 \value{
 data frame with updated parameter values for running the model with
