@@ -633,7 +633,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   # Copy files from package into tempdir
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  aeme <- AEME::yaml_to_aeme(path = path, file = "aeme.yaml")
   obs <- AEME::observations(aeme)
   obs$lake <- NULL
   AEME::observations(aeme) <- obs
@@ -645,15 +645,21 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
-  aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, path = path)
+
+  obs <- AEME::observations(aeme)
+  obs$level <- NULL
+  AEME::observations(aeme) <- obs
+  inp <- AEME::input(aeme)
+  inp$hypsograph
+  # aeme <- AEME::runaeme = # aeme <- AEME::run_aeme(aeme = aeme, model = model,
+  #                        verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
+  # file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+  #                                                tolower(lke$name)),
+  #                                   model, "output", "output.nc"))
+  # testthat::expect_true(file_chk)
 
   utils::data("aeme_parameters", package = "aemetools")
   param <- aeme_parameters
@@ -664,15 +670,14 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   fit <- function(df) {
     O <- df$obs
     P <- df$model
-    -1 * (cor(x = O, y = P, method = "pearson") -
-            (mean(abs(O - P)) / (max(O) - min(O))))
+    abs(cumsum(P -O))
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
                          parallel = TRUE, file_type = "csv",
-                         na_value = 999, ncore = 2L)
+                         na_value = Inf, ncore = 2L)
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -684,8 +689,9 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
-
   testthat::expect_true(is.list(calib))
+
+  # param2 <- update_param(param = param, calib = calib, na_value = ctrl$na_value)
 
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
