@@ -13,13 +13,43 @@ test_that("running GLM & GOTM works with params", {
       .default = simulate
     ))
   model <- c("glm_aed", "gotm_wet")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                ext_elev = 5, use_bgc = FALSE)
 
+  lke <- AEME::lake(aeme)
+
+  # GLM
+  glm_met_file <- file.path(path, paste0(lke$id, "_", lke$name), "glm_aed",
+                        "bcs", "meteo_glm.csv")
+  glm_inf_file <- file.path(path, paste0(lke$id, "_", lke$name), "glm_aed",
+                        "bcs", "inflow_FWMT.csv")
+  glm_outf_file <- file.path(path, paste0(lke$id, "_", lke$name), "glm_aed",
+                            "bcs", "outflow_outflow.csv")
+  glm_met1 <- read.csv(glm_met_file)
+  glm_inf1 <- read.csv(glm_inf_file)
+  glm_outf1 <- read.csv(glm_outf_file)
+
+  # GOTM
+  gotm_met_file <- file.path(path, paste0(lke$id, "_", lke$name), "gotm_wet",
+                            "inputs", "meteo.dat")
+  gotm_inf_file <- file.path(path, paste0(lke$id, "_", lke$name), "gotm_wet",
+                            "inputs", "inf_flow_FWMT.dat")
+  gotm_outf_file <- file.path(path, paste0(lke$id, "_", lke$name), "gotm_wet",
+                             "inputs", "outf_outflow.dat")
+  gotm_met1 <- read.delim(gotm_met_file, header = FALSE)
+  gotm_inf1 <- read.delim(gotm_inf_file, header = FALSE)
+  gotm_outf1 <- read.delim(gotm_outf_file, header = FALSE)
+
   # utils::data("aeme_parameters_bgc", package = "aemetools")
   utils::data("aeme_parameters", package = "aemetools")
-  param <- aeme_parameters
+  param <- aeme_parameters |>
+    dplyr::mutate(value = dplyr::case_when(
+      name == "MET_wndspd" ~ 0,
+      name == "inflow" ~ 0,
+      name == "outflow" ~ 0,
+      .default = value
+    ))
   # param <- dplyr::bind_rows(
   #   # aeme_parameters_bgc,
   #   glm_aed_parameters
@@ -33,6 +63,33 @@ test_that("running GLM & GOTM works with params", {
                          param = param, path = path,
                          model_controls = model_controls,
                          na_value = 999, return_aeme = TRUE)
+
+  # GLM
+  glm_met2 <- read.csv(glm_met_file)
+  testthat::expect_true(all(glm_met1$WindSpeed > 0))
+  testthat::expect_true(all(glm_met2$WindSpeed == 0))
+
+  glm_inf2 <- read.csv(glm_inf_file)
+  testthat::expect_true(any(glm_inf1$flow > 0))
+  testthat::expect_true(all(glm_inf2$flow == 0))
+
+  glm_outf2 <- read.csv(glm_outf_file)
+  testthat::expect_true(any(glm_outf1$flow > 0))
+  testthat::expect_true(all(glm_outf2$flow == 0))
+
+
+  # GOTM
+  gotm_met2 <- read.delim(gotm_met_file, header = FALSE)
+  testthat::expect_true(any(gotm_met1[, 3] > 0 | gotm_met1[, 4] > 0))
+  testthat::expect_true(all(gotm_met2[, 3] == 0 & gotm_met2[, 4] == 0))
+
+  gotm_inf2 <- read.delim(gotm_inf_file, header = FALSE)
+  testthat::expect_true(any(gotm_inf1[, 3] > 0))
+  testthat::expect_true(all(gotm_inf2[, 3] == 0))
+
+  gotm_outf2 <- read.delim(gotm_outf_file, header = FALSE)
+  testthat::expect_true(any(gotm_outf1[, 3] < 0))
+  testthat::expect_true(all(gotm_outf2[, 3] == 0))
 
   # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
   lke <- AEME::lake(aeme)
@@ -57,7 +114,7 @@ test_that("running GLM-AED works with bgc_params", {
       .default = simulate
     ))
   model <- c("glm_aed")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                ext_elev = 5, use_bgc = TRUE)
 
@@ -101,7 +158,7 @@ test_that("running GOTM-WET works with bgc_params", {
       .default = simulate
     ))
   model <- c("gotm_wet")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme, model = model,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme, model = model,
                                model_controls = model_controls,
                                ext_elev = 5, use_bgc = TRUE)
 
@@ -134,7 +191,7 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = TRUE)
