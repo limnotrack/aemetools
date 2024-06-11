@@ -74,9 +74,8 @@ run_aeme_param <- function(aeme, param, model, path = ".",
         if (param$name[v] == "MET_wndspd") {
           met[["MET_wnduvu"]] <- met[["MET_wnduvu"]] * param[["value"]][v]
           met[["MET_wnduvv"]] <- met[["MET_wnduvv"]] * param[["value"]][v]
-        } else {
-          met[[param$name[v]]] <- met[[param$name[v]]] * param[["value"]][v]
         }
+        met[[param$name[v]]] <- met[[param$name[v]]] * param[["value"]][v]
       }
 
       if(m == "glm_aed") {
@@ -138,6 +137,31 @@ run_aeme_param <- function(aeme, param, model, path = ".",
       } else if(m == "dy_cd") {
         AEME:::make_DYwdr(lakename = lakename, wdrData = wdr, filePath = model_path, info = "test")
         # make_DYwdr(lakename = lakename, wdrData = wdr, filePath = model_path, info = "built for calibration")
+      }
+    }
+
+    # Scale inf data ----
+    if ("inf" %in% all_p[["file"]]) {
+
+      # Read in inf data ----
+      inf_idx <- which(param$model == m & param$file == "inf")
+      col_id <- paste0(param$name[inf_idx], "_", m)
+      aeme_inf <- AEME::inflows(aeme)
+      inf <- aeme_inf[["data"]]
+      inf_factor <- param[["value"]][inf_idx]
+
+      if (m == "glm_aed") {
+        AEME:::make_infGLM(path_glm = model_path, list_inf = inf,
+                           update_nml = FALSE, inf_factor = inf_factor)
+      } else if(m == "gotm_wet") {
+        cfg <- AEME::configuration(aeme)
+        use_bgc <-!is.null(cfg[["gotm_wet"]][["ecosystem"]])
+        AEME:::make_infGOTM(inf_list = inf, inf_factor = inf_factor,
+                            use_bgc = use_bgc, path_gotm = model_path,
+                            update_gotm = FALSE)
+      } else if(m == "dy_cd") {
+        AEME:::make_DYinf(lakename = lakename, infList = inf,
+                          filePath = model_path, inf_factor = inf_factor)
       }
     }
 
