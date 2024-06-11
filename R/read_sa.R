@@ -1,7 +1,7 @@
 #' Read sensitivity analysis output
 #'
 #' @inheritParams calib_aeme
-#' @inheritParams AEME::build_ensemble
+#' @inheritParams AEME::build_aeme
 #' @inheritParams sensobol::sobol_indices
 #'
 #' @importFrom dplyr case_when left_join mutate select summarise group_by

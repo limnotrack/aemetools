@@ -1,7 +1,7 @@
 #' Read calibration output
 #'
 #' @inheritParams calib_aeme
-#' @inheritParams AEME::build_ensemble
+#' @inheritParams AEME::build_aeme
 #' @param raw logical. If TRUE, return the raw calibration output as a dataframe
 #' with the "fit" and "gen" columns. This is generally used when restarting a
 #' calibration.

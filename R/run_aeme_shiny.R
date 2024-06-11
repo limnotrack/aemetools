@@ -117,7 +117,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
     shiny::observeEvent(input$build, {
       shiny::withProgress(message = "Building AEME", value = 0, {
         shiny::incProgress(amount = 0.5)
-        reac$aeme <- AEME::build_ensemble(path = path, aeme = reac$aeme,
+        reac$aeme <- AEME::build_aeme(path = path, aeme = reac$aeme,
                                           model = input$model,
                                           model_controls = model_controls,
                                           inf_factor = inf_factor,

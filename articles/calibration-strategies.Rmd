@@ -77,7 +77,7 @@ outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("gotm_wet")
 
 # Build the ensemble - this includes lake level estimation
-aeme <- build_ensemble(path = path, aeme = aeme,
+aeme <- build_aeme(path = path, aeme = aeme,
                        model = model, model_controls = model_controls,
                        inf_factor = inf_factor, ext_elev = 5,
                        use_bgc = FALSE)
