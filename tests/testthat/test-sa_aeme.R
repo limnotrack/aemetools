@@ -10,7 +10,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -71,7 +71,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -145,7 +145,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)

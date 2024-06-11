@@ -8,7 +8,7 @@
 #'
 #'
 #' @inheritParams calib_aeme
-#' @inheritParams AEME::build_ensemble
+#' @inheritParams AEME::build_aeme
 #' @param FUN_list list of functions; named according to the variables in the
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If NULL, uses mean absolute error (MAE).
@@ -36,7 +36,7 @@
 #'   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 #'   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 #'   model <- c("glm_aed")
-#'   aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+#'   aeme <- AEME::build_aeme(path = path, aeme = aeme,
 #'                                     model = model, model_controls = model_controls,
 #'                                     inf_factor = inf_factor, ext_elev = 5,
 #'                                     use_bgc = FALSE)

@@ -7,7 +7,7 @@
 #' to run quicker.
 #'
 #'
-#' @inheritParams AEME::build_ensemble
+#' @inheritParams AEME::build_aeme
 #' @param param dataframe; of parameters read in from a csv file. Requires the
 #' columns c("model", "file", "name", "value", "min", "max", "log")
 #' @param model string; for which model to calibrate. Only one model can be

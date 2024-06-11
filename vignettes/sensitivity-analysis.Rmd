@@ -46,7 +46,7 @@ list.files(path, recursive = TRUE)
 ## Build AEME ensemble
 
 Using the `AEME` functions, we will build the AEME model setup. For this
-example, we will use the `glm_aed` model. The `build_ensemble` function will
+example, we will use the `glm_aed` model. The `build_aeme` function will
 
 ```{r build-aeme-example, warning=FALSE, message=FALSE}
 
@@ -55,7 +55,7 @@ model_controls <- AEME::get_model_controls()
 inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("gotm_wet")
-aeme <- build_ensemble(path = path, aeme = aeme,
+aeme <- build_aeme(path = path, aeme = aeme,
                        model = model, model_controls = model_controls,
                        inf_factor = inf_factor, ext_elev = 5,
                        use_bgc = TRUE)

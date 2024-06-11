@@ -9,7 +9,7 @@ test_that("can run AEME-GLM with parameters", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -45,7 +45,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
     inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
     outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
     model <- c("dy_cd")
-    aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+    aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                  model = model, model_controls = model_controls,
                                  inf_factor = inf_factor, ext_elev = 5,
                                  use_bgc = FALSE)
@@ -111,7 +111,7 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
   # model <- c("gotm_wet", "glm_aed")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -172,7 +172,7 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -237,7 +237,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -306,7 +306,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -368,7 +368,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -433,7 +433,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -496,7 +496,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -564,7 +564,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
@@ -641,7 +641,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme <- AEME::build_ensemble(path = path, aeme = aeme,
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
                                model = model, model_controls = model_controls,
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = FALSE)
