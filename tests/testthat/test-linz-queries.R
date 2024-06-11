@@ -66,6 +66,22 @@ test_that("can get aerial image raster tile", {
 
 })
 
+test_that("can get LINZ basemap raster tile", {
+
+  lon <- 175.337788
+  lat <- -37.860736
+
+  # Make an sf object
+  x <- sf::st_point(x = c(lon, lat), dim = "XY") |>
+    sf::st_sfc(crs = 4326) |>
+    sf::st_as_sf()
+  ras <- get_linz_basemap_tile(x = x, zoom = 14)
+
+  testthat::expect_true(is(ras, "SpatRaster"))
+  testthat::expect_equal(mean(terra::values(ras), na.rm = T), 81.120357)
+
+})
+
 
 test_that("can get LINZ sf object", {
 
