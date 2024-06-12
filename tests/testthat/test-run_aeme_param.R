@@ -128,7 +128,7 @@ test_that("running DYRESM works with params", {
   dy_outf_file <- file.path(path, paste0(lke$id, "_", lke$name), "dy_cd",
                              "wainamu.wdr")
   dy_met1 <- read.delim(dy_met_file, skip = 5)
-  dy_inf1 <- read.delim(dy_inf_file, skip = 4)
+  dy_inf1 <- read.delim(dy_inf_file, skip = 3)
   dy_outf1 <- read.delim(dy_outf_file, skip = 2)
 
 
@@ -161,32 +161,18 @@ test_that("running DYRESM works with params", {
   testthat::expect_true(all(dy_met2$WindSpeed == 0))
 
   dy_inf2 <- read.delim(dy_inf_file, skip = 3)
-  testthat::expect_true(any(dy_inf1$flow > 0))
-  testthat::expect_true(all(dy_inf2$flow == 0))
+  testthat::expect_true(any(dy_inf1$VOL > 0))
+  testthat::expect_true(all(dy_inf2$VOL == 0))
 
-  dy_outf2 <- read.csv(dy_outf_file)
-  testthat::expect_true(any(dy_outf1$flow > 0))
+  dy_outf2 <- read.delim(dy_outf_file, skip = 2)
+  testthat::expect_true(any(dy_outf1$outflow > 0))
   testthat::expect_true(all(dy_outf2$flow == 0))
-
-
-  # GOTM
-  gotm_met2 <- read.delim(gotm_met_file, header = FALSE)
-  testthat::expect_true(any(gotm_met1[, 3] > 0 | gotm_met1[, 4] > 0))
-  testthat::expect_true(all(gotm_met2[, 3] == 0 & gotm_met2[, 4] == 0))
-
-  gotm_inf2 <- read.delim(gotm_inf_file, header = FALSE)
-  testthat::expect_true(any(gotm_inf1[, 3] > 0))
-  testthat::expect_true(all(gotm_inf2[, 3] == 0))
-
-  gotm_outf2 <- read.delim(gotm_outf_file, header = FALSE)
-  testthat::expect_true(any(gotm_outf1[, 3] < 0))
-  testthat::expect_true(all(gotm_outf2[, 3] == 0))
 
   # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
   lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
-                                    model, "output", "output.nc"))
+                                    model, "DYsim.nc"))
   testthat::expect_true(all(file_chk))
 })
 
