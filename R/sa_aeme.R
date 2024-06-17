@@ -110,7 +110,7 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
 
   names(model) <- model
   sapply(model, \(m) {
-    var_indices <- list()
+    var_indices <- NULL
     if (any(vars_sim != "LKE_lvlwtr")) {
       # Extract indices for modelled variables
       message("Extracting indices for ", m, " modelled variables [",
