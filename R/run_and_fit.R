@@ -376,10 +376,17 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
         lvl_adj <- obs$level |>
           dplyr::mutate(value = (value - min(inp$hypsograph$elev)))
       } else {
-        lvl_adj <- wbal$data$wbal |>
-          dplyr::select(Date, value) |>
-          dplyr::mutate(value = abs(min(inp$hypsograph$depth)),
-                        var_aeme = "LKE_lvlwtr")
+        if (!is.null(wbal$data$wbal)) {
+          lvl_adj <- wbal$data$wbal |>
+            dplyr::select(Date, value) |>
+            dplyr::mutate(value = abs(min(inp$hypsograph$depth)),
+                          var_aeme = "LKE_lvlwtr")
+        } else {
+          lvl_adj <- balance |>
+            dplyr::select(Date) |>
+            dplyr::mutate(value = (inp$init_depth),
+                          var_aeme = "LKE_lvlwtr")
+        }
       }
 
       df_lvl <- dplyr::left_join(balance, lvl_adj, by = "Date")
