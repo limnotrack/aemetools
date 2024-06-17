@@ -225,7 +225,7 @@ after each generation. This allows the calibration to be stopped and restarted
 at any time. The `calib_aeme` function returns the `ctrl` object with any
 updated values.
 
-```{r run-calibration, cache=FALSE}
+```{r run-calibration, cache=FALSE, results='hide'}
 sim_id <- calib_aeme(aeme = aeme, path = path,
                      param = aeme_parameters, model = model,
                      FUN_list = FUN_list, ctrl = ctrl, 
