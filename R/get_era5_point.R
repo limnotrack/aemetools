@@ -144,6 +144,12 @@ get_era5_point <- function(lat, lon, years, variables = c("MET_tmpair",
   df <- df |>
     dplyr::mutate(dplyr::across(!dplyr::contains("date"), signif))
 
+  if (any(names(df) %in% c("MET_pprain", "MET_ppsnow"))) {
+    df <- df |>
+      dplyr::mutate(MET_pprain = ifelse(MET_pprain < 0, 0, MET_pprain),
+                    MET_ppsnow = ifelse(MET_ppsnow < 0, 0, MET_ppsnow))
+  }
+
   na_rows <- which(!stats::complete.cases(df))
   if(length(na_rows) > 0) {
     message("Removing NA's on ", paste0(df[na_rows, 1], collapse = ", "))
