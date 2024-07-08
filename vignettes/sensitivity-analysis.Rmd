@@ -100,7 +100,7 @@ Parameters to be used for the calibration. (man)
 ```{r}
 #| label: load-parameters
 #| tbl-captions: "Parameters to be used for the calibration."
-utils::data("aeme_parameters", package = "aemetools")
+utils::data("aeme_parameters", package = "AEME")
 param <- aeme_parameters |>
   dplyr::filter(file != "wdr")
 param
