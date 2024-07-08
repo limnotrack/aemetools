@@ -42,7 +42,7 @@
 #'                                     use_bgc = FALSE)
 #'
 #'   # Load parameters
-#'   utils::data("aeme_parameters", package = "aemetools")
+#'   utils::data("aeme_parameters", package = "AEME")
 #'   param <- aeme_parameters |>
 #'     dplyr::filter(file != "wdr")
 #'
@@ -242,7 +242,7 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
       ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
                                              FUN_list = FUN_list,
                                              aeme = aeme, model = m,
-                                             param = param,
+                                             param = param, path = path,
                                              append_metadata = TRUE)
     } else {
       # Run in serial ----
@@ -315,7 +315,7 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
       ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
                                              FUN_list = FUN_list,
                                              aeme = aeme, model = m,
-                                             param = param,
+                                             param = param, path = path,
                                              append_metadata = TRUE)
 
       message("Completed ", m, "! [", format(Sys.time()), "]")

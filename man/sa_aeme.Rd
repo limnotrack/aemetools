@@ -16,7 +16,7 @@ sa_aeme(
 )
 }
 \arguments{
-\item{aeme}{aeme; data object.}
+\item{aeme}{aeme; object.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
@@ -68,7 +68,7 @@ to run quicker.
                                     use_bgc = FALSE)
 
   # Load parameters
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::filter(file != "wdr")
 

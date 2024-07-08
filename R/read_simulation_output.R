@@ -17,7 +17,8 @@
 #' @return A data frame with the calibration results.
 #' @export
 
-read_simulation_output <- function(ctrl, file = NULL, sim_id = NULL) {
+read_simulation_output <- function(ctrl, path = ".", file = NULL,
+                                   sim_id = NULL) {
 
   meta_tables <- c("lake_metadata", "simulation_metadata",
                    "function_metadata", "parameter_metadata",
@@ -39,6 +40,7 @@ read_simulation_output <- function(ctrl, file = NULL, sim_id = NULL) {
   } else {
     file <- file
   }
+  file <- file.path(path, file)
 
   if (!all(file.exists(file))) {
     stop("File not found: ", file)
@@ -58,16 +60,16 @@ read_simulation_output <- function(ctrl, file = NULL, sim_id = NULL) {
   if (type == "csv") {
     out <- lapply(meta_tables, function(x) {
       if (x == "lake_metadata") {
-        lake_id <- read.csv("simulation_metadata.csv") |>
+        lake_id <- read.csv(file.path(path, "simulation_metadata.csv")) |>
           # dplyr::filter(grepl(sid, sim_id)) |>
           dplyr::filter(sim_id %in% sim_vec) |>
           dplyr::pull(id)
-        read.csv(paste0(x, ".csv")) |>
+        read.csv(file.path(path, paste0(x, ".csv"))) |>
           # dplyr::filter(grepl(lake_id, id)) |>
           dplyr::filter(id %in% lake_id) |>
           as.data.frame()
       } else {
-        read.csv(paste0(x, ".csv")) |>
+        read.csv(file.path(path, paste0(x, ".csv"))) |>
           dplyr::filter(sim_id %in% sim_vec) |>
           as.data.frame()
       }

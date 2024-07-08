@@ -8,8 +8,9 @@
 #'
 #'  * `file_type` string; file type to write the output to. Options are c("csv",
 #'  "db"). Defaults to "db".
-#'  * `file_name` string; file name to write the output to. Only used if `file_type`
-#'  is "db". Defaults to "results.db"
+#'  * `file_name` string; file name to write the output to. Defaults to
+#'  "results.db" if `file_type` is "db" and "simulation_metadata.csv" if
+#'  `file_type` is "csv".
 #'  * `na_value` value to replace NA values with in observations. Defaults to 999.
 #'  * `parallel` boolean; run calibration in parallel. Default to TRUE
 #'  * `ncore`: The number of cores to use for the calibration. This is only used
@@ -89,7 +90,7 @@ create_control <- function(method, ...) {
   if (file_type == "db") {
     file_name <- ifelse("file_name" %in% names(ls), ls$file_name, "results.db")
   } else if (file_type == "csv") {
-    file_name <- NULL
+    file_name <- "simulation_metadata.csv"
   }
   parallel <- ifelse("parallel" %in% names(ls), ls$parallel, TRUE)
   ncore <- ifelse("ncore" %in% names(ls), ls$ncore,

@@ -223,15 +223,15 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
       best_pars <- g1[which.min(g1$fit), ]
       out_df <- apply(g1, 2, signif, digits = 6)
       nsim <- nsim + nrow(out_df)
-      sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
-                                        FUN_list = FUN_list,
-                                        aeme = aeme, model = m,
-                                        param = param, append_metadata = TRUE)
-      ctrl$sim_id <- sim_id
+      ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
+                                             FUN_list = FUN_list,
+                                             aeme = aeme, model = m,
+                                             param = param, path = path,
+                                             append_metadata = TRUE)
 
       if (min(g1$fit) < ctrl$VTR) {
         message("Model fitness is less than VTR. Stopping simulation.")
-        return(ctrl)
+        return(ctrl$sim_id)
       }
 
 
@@ -313,7 +313,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
         out_df <- apply(g, 2, signif, digits = 6)
         nsim <- nsim + nrow(out_df)
         write_simulation_output(x = out_df, ctrl = ctrl, aeme = aeme,
-                                model = m, param = param,
+                                model = m, param = param, path = path,
                                 FUN_list = FUN_list, sim_id = ctrl$sim_id,
                                 append_metadata = FALSE)
 
@@ -325,11 +325,11 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
 
         if (min(g$fit) < ctrl$VTR) {
           message("Model fitness is less than VTR. Stopping simulation.")
-          return(ctrl)
+          return(ctrl$sim_id)
         }
         if(sd(g$fit) < ctrl$reltol) {
           message("Model has converged. Stopping simulation.")
-          return(ctrl)
+          return(ctrl$sim_id)
         }
 
         g <- next_gen_params(param_df = g, param = param, ctrl = ctrl,
@@ -416,11 +416,12 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                                              FUN_list = FUN_list,
                                              aeme = aeme, model = m,
                                              param = param,
+                                             path = path,
                                              append_metadata = TRUE)
 
       if (min(g1$fit) < ctrl$VTR) {
         message("Model fitness is less than VTR. Stopping simulation.")
-        return(ctrl)
+        return(ctrl$sim_id)
       }
 
 
@@ -504,8 +505,9 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
 
         nsim <- nsim + nrow(out_df)
         write_simulation_output(x = out_df, ctrl = ctrl, aeme = aeme,
-                                model = m, param = param, FUN_list = FUN_list,
-                                sim_id = ctrl$sim_id, append_metadata = FALSE)
+                                path = path, model = m, param = param,
+                                FUN_list = FUN_list, sim_id = ctrl$sim_id,
+                                append_metadata = FALSE)
 
         message("Best fit: ", signif(min(g$fit), 5), " (sd: ",
                 signif(sd(g$fit), 5), ")")
@@ -515,18 +517,18 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
 
         if (min(g$fit) < ctrl$VTR) {
           message("Model fitness is less than VTR. Stopping simulation.")
-          return(ctrl)
+          return(ctrl$sim_id)
         }
         if(sd(g$fit) < ctrl$reltol) {
           message("Model has converged. Stopping simulation.")
-          return(ctrl)
+          return(ctrl$sim_id)
         }
 
         g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
                              best_pars = best_pars)
       }
     }
-    write_calib_metadata(ctrl = ctrl, nsim = nsim)
-    ctrl$sim_id
+    write_calib_metadata(ctrl = ctrl, nsim = nsim, path = path)
+    return(ctrl$sim_id)
   })
 }

@@ -4,11 +4,11 @@
 \alias{read_simulation_meta}
 \title{Read the simulation metadata}
 \usage{
-read_simulation_meta(ctrl)
+read_simulation_meta(file, path = ".")
 }
 \arguments{
-\item{ctrl}{A control object created by \code{\link{create_control}} and used
-to run a calibration or a sensitivity analysis.}
+\item{file}{The path to the output file. It can either be a DuckDB database
+or a CSV file.}
 }
 \value{
 A data frame with the simulation metadata

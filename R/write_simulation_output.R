@@ -2,6 +2,7 @@
 #'
 #' @inheritParams utils::write.csv
 #' @inheritParams DBI::dbWriteTable
+#' @inheritParams AEME::build_ensemble
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #' @importFrom duckdb duckdb
@@ -10,7 +11,7 @@
 #' @noRd
 #'
 
-write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
+write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list, path,
                                     sim_id = NULL, append_metadata = TRUE) {
 
   # Extract meta information
@@ -38,6 +39,7 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
 
   file_to_check <- ifelse(type == "db", ctrl$file_name,
                           "simulation_metadata.csv")
+  file_to_check <- file.path(path, file_to_check)
 
   sim_stem_chk <- data.frame()
   add_lake_meta <- TRUE
@@ -58,9 +60,9 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
       }
       DBI::dbDisconnect(con, shutdown = TRUE)
     } else if (type == "csv") {
-      sim_stem_chk <- read.csv("simulation_metadata.csv") |>
+      sim_stem_chk <- read.csv(file.path(path, "simulation_metadata.csv")) |>
         dplyr::filter(grepl(sim_stem, sim_id))
-      lke_ids <- read.csv("lake_metadata.csv") |>
+      lke_ids <- read.csv(file.path(path, "lake_metadata.csv")) |>
         dplyr::pull(id)
       add_lake_meta <- !lke$id %in% lke_ids
     }
@@ -163,9 +165,9 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
 
   if (type == "csv") {
     write_to_csv(output = output, sim_id = sim_id, gen_n = gen_n,
-                 add_lake_meta = add_lake_meta)
+                 add_lake_meta = add_lake_meta, path = path)
   } else if (type == "db") {
-    write_to_db(file = ctrl$file_name, output = output,
+    write_to_db(file = ctrl$file_name, output = output, path = path,
                 add_lake_meta = add_lake_meta)
   }
   sim_id
@@ -184,9 +186,9 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
 #' @noRd
 #'
 
-write_to_csv <- function(output, sim_id, gen_n, add_lake_meta = FALSE) {
+write_to_csv <- function(output, path, sim_id, gen_n, add_lake_meta = FALSE) {
   for (i in seq_along(output)) {
-    fname <- paste0(names(output)[i], ".csv")
+    fname <- file.path(path, paste0(names(output)[i], ".csv"))
     file_chk <- file.exists(fname)
     if (names(output)[i] == "lake_metadata") {
       if (!add_lake_meta) next
@@ -216,9 +218,10 @@ write_to_csv <- function(output, sim_id, gen_n, add_lake_meta = FALSE) {
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #'
 
-write_to_db <- function(file, output, add_lake_meta = FALSE) {
-  file_chk <- file.exists(file)
-  con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
+write_to_db <- function(file, path, output, add_lake_meta = FALSE) {
+  file_path <- file.path(path, file)
+  file_chk <- file.exists(file_path)
+  con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file_path)
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
 
   for (i in seq_along(output)) {
