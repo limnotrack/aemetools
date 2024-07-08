@@ -44,12 +44,12 @@ read_simulation_meta <- function(file, path = ".") {
       as.data.frame() |>
       dplyr::left_join(n_sim, by = "sim_id")
     } else if (type == "csv") {
-      n_sim <- read.csv("simulation_data.csv") |>
+      n_sim <- read.csv(file.path(path, "simulation_data.csv")) |>
         dplyr::group_by(sim_id, gen) |>
-        dplyr::summarise(nruns = max(run)) |>
+        dplyr::summarise(nruns = max(run), .groups = "drop") |>
         dplyr::group_by(sim_id) |>
-        dplyr::summarise(n_run = sum(nruns))
-      sim_meta <- read.csv("simulation_metadata.csv") |>
+        dplyr::summarise(n_run = sum(nruns), .groups = "drop")
+      sim_meta <- read.csv(file.path(path, "simulation_metadata.csv")) |>
         dplyr::left_join(n_sim, by = "sim_id")
     }
   return(sim_meta)
