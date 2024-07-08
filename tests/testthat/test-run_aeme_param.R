@@ -42,7 +42,7 @@ test_that("running GLM & GOTM works with params", {
   gotm_outf1 <- read.delim(gotm_outf_file, header = FALSE)
 
   # utils::data("aeme_parameters_bgc", package = "aemetools")
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::mutate(value = dplyr::case_when(
       name == "MET_wndspd" ~ 0,
@@ -133,7 +133,7 @@ test_that("running DYRESM works with params", {
 
 
   # utils::data("aeme_parameters_bgc", package = "aemetools")
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::mutate(value = dplyr::case_when(
       name == "MET_wndspd" ~ 0,
