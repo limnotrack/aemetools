@@ -54,7 +54,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
   sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
                     model = model, ctrl = ctrl, FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, boot = FALSE)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, path = path, boot = FALSE)
 
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 })
