@@ -776,7 +776,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
 
-  sim_meta <- read_simulation_meta(ctrl = ctrl)
+  sim_meta <- read_simulation_meta(file = ctrl$file_name, path = path)
   testthat::expect_true(is.data.frame(sim_meta))
 
 })
