@@ -3,7 +3,9 @@
 #' @param param_df dataframe; with parameters and fitness.
 #' @param param dataframe; with parameter names, min and max.
 #' @param ctrl list; with control parameters.
-#' @param best_pars dataframe; with best parameters.
+#' @param best_pars dataframe; with best parameters. Default is NULL.
+#' @param add_mutation logical; add mutation to parameters. Default is TRUE.
+#' @param keep_best_pars logical; keep best parameters. Default is TRUE.
 #'
 #' @importFrom MASS mvrnorm
 #' @importFrom stats cov rnorm sd quantile
@@ -11,7 +13,8 @@
 #' @return dataframe; with new parameters.
 #' @noRd
 
-next_gen_params <- function(param_df, param, ctrl, best_pars) {
+next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
+                            add_mutation = TRUE, keep_best_pars = TRUE) {
 
   if (is.null(best_pars)) {
     best_pars <- param_df[which.min(param_df$fit), ]
@@ -66,15 +69,19 @@ next_gen_params <- function(param_df, param, ctrl, best_pars) {
     g[[p]][g[[p]] > param$max[param$name == p]] <- param$max[param$name == p]
   }
   # Add mutation ----
-  n_mut <- round(ctrl$NP * ctrl$mutate)
-  for (p in names(g)) {
-    g[[p]][sample(ctrl$NP, n_mut)] <- runif(n_mut,
-                                            min = param$min[param$name == p],
-                                            max = param$max[param$name == p])
+  if (add_mutation) {
+    n_mut <- round(ctrl$NP * ctrl$mutate)
+    for (p in names(g)) {
+      g[[p]][sample(ctrl$NP, n_mut)] <- runif(n_mut,
+                                              min = param$min[param$name == p],
+                                              max = param$max[param$name == p])
+    }
   }
   # Replace last parameter rather than adding
-  g[nrow(g), ] <- best_pars[, keep_cols]
-  names(g) <- names(param_df)[keep_cols]
+  if (keep_best_pars) {
+    g[nrow(g), ] <- best_pars[, keep_cols]
+    names(g) <- names(param_df)[keep_cols]
+  }
 
   return(g)
 }
