@@ -129,7 +129,7 @@ ggplot2::update_geom_defaults("point", list(size = 1))
 ```
 
 ```{r}
-utils::data("aeme_parameters", package = "aemetools")
+utils::data("aeme_parameters", package = "AEME")
 
 param <- aeme_parameters[aeme_parameters$model == model, ]
 param
