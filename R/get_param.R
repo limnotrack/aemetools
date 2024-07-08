@@ -18,7 +18,9 @@
 get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
 
   # lapply(calib, \(x) {
-  if (!all(fit_col %in% calib$simulation_data$fit_type)) stop("fit_col not in calib")
+  if (!all(fit_col %in% calib$simulation_data$fit_type)) {
+    stop("fit_col not in calib")
+  }
   # })
 
   sim_ids <- calib$simulation_metadata$sim_id
