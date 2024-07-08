@@ -88,7 +88,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
   testthat::expect_true(is.list(calib))
 
@@ -145,7 +145,7 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
   testthat::expect_true(is.list(calib))
 
@@ -275,7 +275,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, path = path, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
   testthat::expect_true(is.list(calib))
 
@@ -346,7 +346,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
   testthat::expect_true(is.list(calib))
 
@@ -408,7 +408,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
   testthat::expect_true(is.list(calib))
 
@@ -471,7 +471,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
   testthat::expect_true(is.list(calib))
 
@@ -538,7 +538,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
   testthat::expect_true(is.list(calib))
 
@@ -616,7 +616,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
   testthat::expect_true(is.list(calib))
 
@@ -694,7 +694,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
   testthat::expect_true(is.list(calib))
 
@@ -766,7 +766,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
   testthat::expect_true(is.list(calib))
 
   # param2 <- update_param(param = param, calib = calib, na_value = ctrl$na_value)
