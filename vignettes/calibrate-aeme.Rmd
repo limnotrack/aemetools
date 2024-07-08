@@ -259,7 +259,7 @@ plot.
 
 ```{r visualise-calibration-results, cache = FALSE}
 
-calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
 ```
 
