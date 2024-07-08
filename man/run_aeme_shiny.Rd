@@ -7,7 +7,7 @@
 run_aeme_shiny(aeme, param, path = ".", model_controls = NULL)
 }
 \arguments{
-\item{aeme}{aeme; data object.}
+\item{aeme}{aeme; object.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 

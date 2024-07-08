@@ -16,8 +16,9 @@ sensitivity analysis. There are arguments which are common to both methods:
 \itemize{
 \item \code{file_type} string; file type to write the output to. Options are c("csv",
 "db"). Defaults to "db".
-\item \code{file_name} string; file name to write the output to. Only used if \code{file_type}
-is "db". Defaults to "results.db"
+\item \code{file_name} string; file name to write the output to. Defaults to
+"results.db" if \code{file_type} is "db" and "simulation_metadata.csv" if
+\code{file_type} is "csv".
 \item \code{na_value} value to replace NA values with in observations. Defaults to 999.
 \item \code{parallel} boolean; run calibration in parallel. Default to TRUE
 \item \code{ncore}: The number of cores to use for the calibration. This is only used
