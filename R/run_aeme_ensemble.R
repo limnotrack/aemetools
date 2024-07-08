@@ -8,7 +8,7 @@
 #' @export
 #'
 
-run_aeme_ensemble <- function(aeme, sim_id, param, calib = NULL,
+run_aeme_ensemble <- function(aeme, sim_id, param, calib = NULL, path = ".",
                               fit_col = "fit", ctrl) {
 
   # Check inputs
@@ -26,7 +26,7 @@ run_aeme_ensemble <- function(aeme, sim_id, param, calib = NULL,
   outp <- AEME::output(aeme)
   lke <- AEME::lake(aeme)
   lakename <- tolower(lke[["name"]])
-  lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
+  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
 
   mod_list <- lapply(model, \(m) {
   # Catch if calib is NULL

@@ -4,13 +4,23 @@
 \alias{run_aeme_ensemble}
 \title{Run AEME ensemble}
 \usage{
-run_aeme_ensemble(aeme, sim_id, param, calib = NULL, fit_col = "fit", ctrl)
+run_aeme_ensemble(
+  aeme,
+  sim_id,
+  param,
+  calib = NULL,
+  path = ".",
+  fit_col = "fit",
+  ctrl
+)
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
+
+\item{path}{filepath; where input files are located relative to `config`.}
 
 \item{ctrl}{list; of controls for sensitivity analysis function created using
 the \code{\link{create_control}} function. See \link{create_control} for
