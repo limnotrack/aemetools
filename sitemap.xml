@@ -1,147 +1,48 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/404.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/articles/access-geospatial.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/articles/calibrate-aeme.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/articles/download-era5.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/articles/sensitivity-analysis.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/index.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/add_linz_key.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/aeme_parameters.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/aeme_parameters_bgc.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/calib_aeme.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/calib_GR.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/convert_era5_ncdf.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/create_control.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/create_linz_key.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/download_era5_ncdf.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/era5_ref_table.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_dem_value.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_era5_point.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_linz_basemap_tile.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_param.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_raster_layer_value.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_raster_tile.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_upstream_rec.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_wlevel.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/glm_aed_parameters.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/gotm_wet_parameters.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/make_GR_inputs.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/nz_aerial_imagery_metadata.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/nz_dem_metadata.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_calib.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_multiscatter.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_scatter.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_sobol.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_uncertainty.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_sa.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_simulation_meta.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_simulation_output.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_web_sf.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_aeme_param.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_aeme_shiny.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_and_fit.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_GR.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/sa_aeme.html</loc>
-  </url>
-  <url>
-    <loc>https://special-enigma-8p9lgre.pages.github.io/reference/update_param.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/404.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/articles/access-geospatial.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/articles/calibrate-aeme.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/articles/download-era5.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/articles/index.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/articles/sensitivity-analysis.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/authors.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/index.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/LICENSE.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/add_linz_key.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/calib_aeme.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/calib_GR.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/convert_era5_ncdf.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/create_control.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/create_linz_key.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/download_era5_ncdf.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/era5_ref_table.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_dem_value.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_era5_point.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_linz_basemap_tile.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_param.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_raster_layer_value.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_raster_tile.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_upstream_rec.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_wlevel.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/index.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/make_GR_inputs.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/nz_aerial_imagery_metadata.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/nz_dem_metadata.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_calib.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_multiscatter.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_scatter.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_sobol.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_uncertainty.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_sa.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_simulation_meta.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_simulation_output.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_web_sf.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_aeme_ensemble.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_aeme_param.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_aeme_shiny.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_and_fit.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_GR.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/sa_aeme.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/update_param.html</loc></url>
 </urlset>
+
