@@ -17,7 +17,7 @@ run_aeme_param(
 )
 }
 \arguments{
-\item{aeme}{aeme; data object.}
+\item{aeme}{aeme; object.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
