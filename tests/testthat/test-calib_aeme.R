@@ -14,7 +14,7 @@ test_that("can run AEME-GLM with parameters", {
                            inf_factor = inf_factor, ext_elev = 5,
                            use_bgc = FALSE)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   run_aeme_param(aeme = aeme, param = param,
@@ -59,7 +59,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
                                     model, "DYsim.nc"))
   testthat::expect_true(file_chk)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   # Function to calculate fitness
@@ -116,7 +116,7 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
                            inf_factor = inf_factor, ext_elev = 5,
                            use_bgc = FALSE)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   # Function to calculate fitness
@@ -185,7 +185,7 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
                                     model, "output", "output.nc"))
   testthat::expect_true(all(file_chk))
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   # Function to calculate fitness
@@ -210,7 +210,7 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
   testthat::expect_true(is.list(calib))
 
@@ -221,7 +221,7 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
 
-  sim_meta <- read_simulation_meta(ctrl = ctrl)
+  sim_meta <- read_simulation_meta(file = ctrl$file_name, path = path)
   testthat::expect_true(is.data.frame(sim_meta))
 
 })
@@ -251,7 +251,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   # Function to calculate fitness
@@ -275,7 +275,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(ctrl = ctrl, path = path, sim_id = sim_id)
 
   testthat::expect_true(is.list(calib))
 
@@ -320,7 +320,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
                                     model, "DYsim.nc"))
   testthat::expect_true(file_chk)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   # Function to calculate fitness
@@ -382,7 +382,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   # Function to calculate fitness
@@ -447,7 +447,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   # Function to calculate fitness
@@ -510,7 +510,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
                                     model, "DYsim.nc"))
   testthat::expect_true(file_chk)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   param <- aeme_parameters[aeme_parameters$name == "outflow", ]
@@ -578,7 +578,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   param <- aeme_parameters[aeme_parameters$name == "outflow", ]
@@ -656,7 +656,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::filter(model %in% model & grepl("wdr|inf", file)) |>
     dplyr::mutate(min = 0, max = 2.5)
@@ -739,7 +739,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   #                                   model, "output", "output.nc"))
   # testthat::expect_true(file_chk)
 
-  utils::data("aeme_parameters", package = "aemetools")
+  utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   param <- aeme_parameters[aeme_parameters$name == "outflow", ]
