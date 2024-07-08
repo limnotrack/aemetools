@@ -10,16 +10,13 @@
 #' @noRd
 #'
 
-write_calib_metadata <- function(ctrl, nsim) {
+write_calib_metadata <- function(ctrl, path, nsim) {
 
   # Check output type
   type <- ctrl$file_type
 
   # Table names
   tbl_names <- c("calibration_metadata")
-
-  file_to_check <- ifelse(type == "db", ctrl$file_name,
-                          "calibration_metadata.csv")
 
   calibration_metadata <- data.frame(sim_id = ctrl$sim_id, n_sim = nsim,
                                      VTR = ctrl$VTR, NP = ctrl$NP,
@@ -31,9 +28,9 @@ write_calib_metadata <- function(ctrl, nsim) {
   output <- list(calibration_metadata = calibration_metadata)
 
   if (type == "csv") {
-    write_to_csv(output = output, sim_id = ctrl$sim_id, gen_n = 1)
+    write_to_csv(output = output, path = path, sim_id = ctrl$sim_id, gen_n = 1)
   } else if (type == "db") {
-    write_to_db(file = ctrl$file_name, output = output)
+    write_to_db(file = ctrl$file_name, path = path, output = output)
   }
   return(invisible())
 }

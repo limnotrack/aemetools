@@ -4,8 +4,8 @@
 #' file can be either a DuckDB database or a CSV file. The function reads the
 #' metadata and returns it as a data frame.
 #'
-#' @param ctrl A control object created by \code{\link{create_control}} and used
-#' to run a calibration or a sensitivity analysis.
+#' @param file The path to the output file. It can either be a DuckDB database
+#' or a CSV file.
 #'
 #' @return A data frame with the simulation metadata
 #' @export
@@ -14,16 +14,21 @@
 #' @importFrom DBI dbConnect dbDisconnect
 #'
 
-read_simulation_meta <- function(ctrl) {
+read_simulation_meta <- function(file, path = ".") {
 
-  type <- ctrl$file_type
-  if (type == "db") {
-    file <- ctrl$file_name
-  } else if (type == "csv") {
-    file <- "simulation_metadata.csv"
-  }
+  # type <- file_type
+  # if (!is.null(file_name)) {
+  #   file <- file_name
+  #   type <- tools::file_ext(file_name)
+  # } else if (type == "db") {
+  #   file <- file_name
+  # } else if (type == "csv") {
+  #   file <- "simulation_metadata.csv"
+  # }
+  file <- file.path(path, file)
 
   if (!file.exists(file)) stop("File not found: ", file)
+  type <- tools::file_ext(file)
 
   # Read the file
   if (type == "db") {

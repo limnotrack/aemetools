@@ -4,12 +4,14 @@
 \alias{read_sa}
 \title{Read sensitivity analysis output}
 \usage{
-read_sa(ctrl, sim_id, R = NULL, boot = TRUE)
+read_sa(ctrl, sim_id, path = ".", R = NULL, boot = TRUE)
 }
 \arguments{
 \item{ctrl}{list; of controls for sensitivity analysis function created using
 the \code{\link{create_control}} function. See \link{create_control} for
 more details.}
+
+\item{path}{filepath; where input files are located relative to `config`.}
 
 \item{R}{Positive integer, number of bootstrap replicas. Default is NULL.}
 
