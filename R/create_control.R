@@ -34,6 +34,8 @@
 #'  generation. For example, if `cutoff = 0.25`, the best 25% of the population
 #'  will be used as parents for the next generation.
 #'  * `mutate` fraction of population to undergo mutation (0-1).
+#'  * `c_method` character; the method to use for calibration. Options are
+#'  "CMAES" and "LHC". Defaults to "CMAES".
 #'
 #' For sensitivity analysis, the arguments are:
 #'
@@ -76,7 +78,7 @@ create_control <- function(method, ...) {
 
   check_names <- c("na_value", "file_type", "file_name", "parallel", "ncore",
                    "VTR", "NP", "itermax", "reltol", "cutoff", "mutate",
-                   "N", "vars_sim")
+                   "N", "vars_sim", "c_method")
 
   if (any(!names(ls) %in% check_names)) {
     stop(strwrap("Invalid argument(s) passed to create_control. Please check
@@ -105,11 +107,13 @@ create_control <- function(method, ...) {
     reltol <- ifelse("reltol" %in% names(ls), ls$reltol, 0.07)
     cutoff <- ifelse("cutoff" %in% names(ls), ls$cutoff, 0.25)
     mutate <- ifelse("mutate" %in% names(ls), ls$mutate, 0.1)
+    c_method <- ifelse("c_method" %in% names(ls), ls$c_method, "CMAES")
 
     ctrl <- list(VTR = VTR, NP = NP, itermax = itermax, reltol = reltol,
                  cutoff = cutoff, mutate = mutate, parallel = parallel,
                  file_type = file_type, file_name = file_name,
-                 na_value = na_value, ncore = ncore, method = method)
+                 na_value = na_value, ncore = ncore, method = method,
+                 c_method = c_method)
   } else if (method == "sa") {
 
     N <- ifelse("N" %in% names(ls), ls$N, 2^2)
