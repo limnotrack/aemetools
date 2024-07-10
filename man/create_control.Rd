@@ -44,6 +44,8 @@ Default = 0.07
 generation. For example, if \code{cutoff = 0.25}, the best 25\% of the population
 will be used as parents for the next generation.
 \item \code{mutate} fraction of population to undergo mutation (0-1).
+\item \code{c_method} character; the method to use for calibration. Options are
+"CMAES" and "LHC". Defaults to "CMAES".
 }
 
 For sensitivity analysis, the arguments are:

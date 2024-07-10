@@ -23,7 +23,8 @@ write_calib_metadata <- function(ctrl, path, nsim) {
                                      itermax = ctrl$itermax,
                                      reltol = ctrl$reltol, cutoff = ctrl$cutoff,
                                      mutate = ctrl$mutate,
-                                     na_value = ctrl$na_value)
+                                     na_value = ctrl$na_value,
+                                     c_method = ctrl$c_method)
 
   output <- list(calibration_metadata = calibration_metadata)
 

@@ -99,6 +99,10 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
     # Generate parameters for running calibration
     best_pars <- NULL
     if (is.null(param_df)) {
+      if (ctrl$c_method == "LHC") {
+        ctrl$NP <- ctrl$itermax
+        ctrl$ngen <- 1
+      }
       start_param <- FME::Latinhyper(param[, c("min", "max")],
                                      ctrl$NP)
       # start_param <- apply(param[, c("min", "max")], 1,
@@ -229,6 +233,11 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                                              param = param, path = path,
                                              append_metadata = TRUE)
 
+      if (ctrl$c_method == "LHC") {
+        write_calib_metadata(ctrl = ctrl, nsim = nsim, path = path)
+        message("Completed LHC calibration. [", format(Sys.time()), "]")
+        return(ctrl$sim_id)
+      }
       if (min(g1$fit) < ctrl$VTR) {
         message("Model fitness is less than VTR. Stopping simulation.")
         return(ctrl$sim_id)

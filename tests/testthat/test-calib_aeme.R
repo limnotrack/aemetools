@@ -780,3 +780,127 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   testthat::expect_true(is.data.frame(sim_meta))
 
 })
+
+
+test_that("can calibrate temperature with LHC for AEME-GLM in series with DB output", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed")
+  # model <- c("gotm_wet", "glm_aed")
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = FALSE)
+
+  utils::data("aeme_parameters", package = "AEME")
+  param <- aeme_parameters
+
+  # Function to calculate fitness
+  fit <- function(df) {
+    O <- df$obs
+    P <- df$model
+    -1 * (cor(x = O, y = P, method = "pearson") -
+            (mean(abs(O - P)) / (max(O) - min(O))))
+  }
+  mae <- function(df) {
+    mean(abs(df$obs - df$model))
+  }
+
+  FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = fit)
+
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
+                         parallel = FALSE, file_type = "db",
+                         file_name = "results.db", c_method = "LHC")
+
+  vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+  weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 0.5)
+
+  # Calibrate AEME model
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
+
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
+
+  testthat::expect_true(is.list(calib))
+
+  psum <- plot_calib(calib = calib, fit_col = vars_sim,
+                     na_value = ctrl$na_value)
+
+  plist <- plot_calib(calib = calib, fit_col = "LKE_lvlwtr",
+                      na_value = ctrl$na_value)
+
+  testthat::expect_true(is.list(plist))
+
+  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+
+})
+
+test_that("can calibrate temperature with LHC for AEME-GOTM in parallel with csv output", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("gotm_wet")
+  # model <- c("gotm_wet", "glm_aed")
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = FALSE)
+
+  utils::data("aeme_parameters", package = "AEME")
+  param <- aeme_parameters
+
+  # Function to calculate fitness
+  fit <- function(df) {
+    O <- df$obs
+    P <- df$model
+    -1 * (cor(x = O, y = P, method = "pearson") -
+            (mean(abs(O - P)) / (max(O) - min(O))))
+  }
+  mae <- function(df) {
+    mean(abs(df$obs - df$model))
+  }
+
+  FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = fit)
+
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
+                         parallel = TRUE, file_type = "csv", c_method = "LHC")
+
+  vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+  weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 0.5)
+
+  # Calibrate AEME model
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
+
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
+
+  testthat::expect_true(is.list(calib))
+
+  psum <- plot_calib(calib = calib, fit_col = vars_sim,
+                     na_value = ctrl$na_value)
+
+  plist <- plot_calib(calib = calib, fit_col = "LKE_lvlwtr",
+                      na_value = ctrl$na_value)
+
+  testthat::expect_true(is.list(plist))
+
+  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+
+})
