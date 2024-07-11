@@ -24,7 +24,8 @@ write_calib_metadata <- function(ctrl, path, nsim, t0) {
   time_elapsed <- round(as.numeric(difftime(Sys.time(), t0, units = "secs")))
 
   calibration_metadata <- data.frame(sim_id = ctrl$sim_id, n_sim = nsim,
-                                     VTR = ctrl$VTR, NP = ctrl$NP,
+                                     ncore = ctrl$ncore, VTR = ctrl$VTR,
+                                     NP = ctrl$NP, ngen = ctrl$ngen,
                                      itermax = ctrl$itermax,
                                      reltol = ctrl$reltol, cutoff = ctrl$cutoff,
                                      mutate = ctrl$mutate,
