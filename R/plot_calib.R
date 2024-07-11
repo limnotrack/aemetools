@@ -30,11 +30,12 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
                         best = FALSE)
   summ <- get_param(calib, na_value = na_value, fit_col = fit_col, best = TRUE)
   if (min(all_pars$fit2, na.rm = TRUE) <= 0 & log_y) {
-    message(strwrap("Negative fit values detected, adding 1 to all values to
-                    ensure log scale is possible.",
+    adj <- ceiling(abs(min(all_pars$fit2, na.rm = TRUE)))
+    message(strwrap(paste0("Negative fit values detected, adding ", adj,
+                           " to all values to ensure log scale is possible."),
                     exdent = 2))
-    all_pars$fit2 <- all_pars$fit2 + 1.01
-    summ$fit2 <- summ$fit_value + 1.01
+    all_pars$fit2 <- all_pars$fit2 + adj
+    summ$fit2 <- summ$fit_value + adj
   } else {
     summ$fit2 <- summ$fit_value
   }
@@ -48,9 +49,9 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
     err_bars <- summ |>
       dplyr::group_by(sim_id, label) |>
       dplyr::summarise(xmin = min(parameter_value, na.rm = TRUE),
-                      xmax = max(parameter_value, na.rm = TRUE),
-                      ymin = min(fit2, na.rm = TRUE),
-                      ymax = max(fit2, na.rm = TRUE), gen = dplyr::first(gen))
+                       xmax = max(parameter_value, na.rm = TRUE),
+                       ymin = min(fit2, na.rm = TRUE),
+                       ymax = max(fit2, na.rm = TRUE), gen = dplyr::first(gen))
     ylab <- "Fit"
     plist <- lapply(sim_ids, \(s) {
       ggplot2::ggplot() +
@@ -72,11 +73,11 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
         # ggplot2::stat_ellipse(data = summ[summ$sim_id == s, ], level = 0.9,
         #                       ggplot2::aes(parameter_value, fit2)) +
         ggplot2::geom_errorbar(data = err_bars[err_bars$sim_id == s, ],
-                              ggplot2::aes(x = (xmin + xmax) / 2, ymin = ymin,
-                                           ymax = ymax), width = 0) +
+                               ggplot2::aes(x = (xmin + xmax) / 2, ymin = ymin,
+                                            ymax = ymax), width = 0) +
         ggplot2::geom_errorbarh(data = err_bars[err_bars$sim_id == s, ],
-                               ggplot2::aes(y = (ymin + ymax) / 2, xmin = xmin,
-                                            xmax = xmax), height = 0) +
+                                ggplot2::aes(y = (ymin + ymax) / 2, xmin = xmin,
+                                             xmax = xmax), height = 0) +
         {if (log_y) ggplot2::scale_y_log10()} +
         ggplot2::scale_colour_viridis_d() +
         ggplot2::coord_cartesian(ylim = ylims) +
