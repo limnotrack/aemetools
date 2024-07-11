@@ -59,6 +59,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
     ctrl$na_value <- 999
   }
   nsim <- 0 # Counter for number of simulations
+  t0 <- Sys.time() # Time check for calibration
 
   include_wlev <- ifelse("LKE_lvlwtr" %in% vars_sim, TRUE, FALSE)
 
@@ -234,7 +235,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                                              append_metadata = TRUE)
 
       if (ctrl$c_method == "LHC") {
-        write_calib_metadata(ctrl = ctrl, nsim = nsim, path = path)
+        write_calib_metadata(ctrl = ctrl, nsim = nsim, path = path, t0 = t0)
         message("Completed LHC calibration. [", format(Sys.time()), "]")
         return(ctrl$sim_id)
       }
@@ -537,7 +538,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                              best_pars = best_pars)
       }
     }
-    write_calib_metadata(ctrl = ctrl, nsim = nsim, path = path)
+    write_calib_metadata(ctrl = ctrl, nsim = nsim, path = path, t0 = t0)
     return(ctrl$sim_id)
   })
 }
