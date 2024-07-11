@@ -45,9 +45,10 @@ from Stats NZ.
 # Read the shapefile data from Stats NZ
 url <- "https://datafinder.stats.govt.nz/" # Base URL
 layer_id <- 111182 # Layer ID for the regional shapefile
+key <- Sys.getenv("STATS_NZ_KEY") # Stats NZ API key
 
 # Read the shapefile data
-nz_shapefile <- read_web_sf(url = url, layer_id = layer_id)
+nz_shapefile <- read_web_sf(url = url, layer_id = layer_id, key = key)
 nz_shapefile
 ```
 
