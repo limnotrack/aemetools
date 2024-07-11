@@ -2,6 +2,7 @@
 #'
 #' @inheritParams utils::write.csv
 #' @inheritParams DBI::dbWriteTable
+#' @param t0 POSIXct; start time of the calibration
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #' @importFrom duckdb duckdb
@@ -10,7 +11,7 @@
 #' @noRd
 #'
 
-write_calib_metadata <- function(ctrl, path, nsim) {
+write_calib_metadata <- function(ctrl, path, nsim, t0) {
 
   # Check output type
   type <- ctrl$file_type
@@ -18,13 +19,20 @@ write_calib_metadata <- function(ctrl, path, nsim) {
   # Table names
   tbl_names <- c("calibration_metadata")
 
+  time_started <- format(t0, "%Y-%m-%d %H:%M:%S")
+  time_finished <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+  time_elapsed <- round(as.numeric(difftime(Sys.time(), t0, units = "secs")))
+
   calibration_metadata <- data.frame(sim_id = ctrl$sim_id, n_sim = nsim,
                                      VTR = ctrl$VTR, NP = ctrl$NP,
                                      itermax = ctrl$itermax,
                                      reltol = ctrl$reltol, cutoff = ctrl$cutoff,
                                      mutate = ctrl$mutate,
                                      na_value = ctrl$na_value,
-                                     c_method = ctrl$c_method)
+                                     c_method = ctrl$c_method,
+                                     time_started = time_started,
+                                     time_finished = time_finished,
+                                     time_elapsed = time_elapsed)
 
   output <- list(calibration_metadata = calibration_metadata)
 

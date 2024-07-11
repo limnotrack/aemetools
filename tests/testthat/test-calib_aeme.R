@@ -891,6 +891,8 @@ test_that("can calibrate temperature with LHC for AEME-GOTM in parallel with csv
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
 
+  testthat::expect_true("c_method" %in% names(calib$calibration_metadata))
+  testthat::expect_true("time_elapsed" %in% names(calib$calibration_metadata))
   testthat::expect_true(is.list(calib))
 
   psum <- plot_calib(calib = calib, fit_col = vars_sim,
