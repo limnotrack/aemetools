@@ -2,7 +2,7 @@
 title: "Sensitivity Analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Calibrate AEME}
+  %\VignetteIndexEntry{Sensitivity Analysis}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
