@@ -85,7 +85,9 @@ test_that("can get LINZ basemap raster tile", {
 
 test_that("can get LINZ sf object", {
 
+  key <- Sys.getenv("STATS_NZ_KEY")
   reg_council <- read_web_sf(url = "https://datafinder.stats.govt.nz/",
+                             key = key,
                              layer_id = 111182)
 
   testthat::expect_true(is(reg_council, "sf"))
