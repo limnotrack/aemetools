@@ -85,6 +85,8 @@ Default = 0.07</p></li>
 generation. For example, if <code>cutoff = 0.25</code>, the best 25% of the population
 will be used as parents for the next generation.</p></li>
 <li><p><code>mutate</code> fraction of population to undergo mutation (0-1).</p></li>
+<li><p><code>c_method</code> character; the method to use for calibration. Options are
+"CMAES" and "LHC". Defaults to "CMAES".</p></li>
 </ul><p>For sensitivity analysis, the arguments are:</p><ul><li><p><code>N</code>: The initial sample size of the base sample matrix.</p></li>
 <li><p><code>vars_sim</code>: A named list of output variables for sensitivity analysis.
 The name is user defined but each list must contain:</p><ul><li><p><code>var</code>: The variable name to use for the sensitivity analysis.</p></li>
