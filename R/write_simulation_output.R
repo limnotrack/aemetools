@@ -93,8 +93,7 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list, path,
                            spin_up = tme$spin_up[[model]], start = tme$start,
                            stop = tme$stop, use_bgc = use_bgc,
                            n_params = nrow(param), method = ctrl$method,
-                           time_started = as.POSIXct(Sys.time(),
-                                                     format = "%Y-%m-%d %H:%M:%S"))
+                           time_started = format(Sys.time()))
 
     # Function metadata
     fun_meta <- lapply(names(FUN_list), \(f) {
@@ -109,7 +108,6 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list, path,
 
     # Sensitivity analysis metadata
     if (ctrl$method == "sa") {
-
       sa_meta <- lapply(names(ctrl$vars_sim), \(n) {
         data.frame(sim_id = sim_id, variable = n, var = ctrl$vars_sim[[n]]$var,
                    depth_from = min(ctrl$vars_sim[[n]]$depth_range),
