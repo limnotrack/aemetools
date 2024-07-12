@@ -146,7 +146,7 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
-
+  testthat::expect_true("time_elapsed" %in% names(calib$calibration_metadata))
   testthat::expect_true(is.list(calib))
 
   psum <- plot_calib(calib = calib, fit_col = vars_sim,
@@ -279,10 +279,21 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
 
   testthat::expect_true(is.list(calib))
 
-  param2 <- update_param(param = param, calib = calib, na_value = ctrl$na_value)
+  calib_meta <- read_calib_meta(file = ctrl$file_name, path = path)
+  testthat::expect_true(is.data.frame(calib_meta))
+
+  param2 <- update_param(param = param, calib = calib,
+                         na_value = ctrl$na_value)
 
   testthat::expect_true(is.data.frame(param2))
   testthat::expect_true(!all(param2$value == param$value))
+  mod_pars1 <- param |>
+    dplyr::filter(model == "gotm_wet")
+  mod_pars2 <- param2 |>
+    dplyr::filter(model == "gotm_wet")
+
+  testthat::expect_true(all(mod_pars2$min > mod_pars1$min))
+  testthat::expect_true(all(mod_pars2$max < mod_pars1$max))
 
   best_pars <- get_param(calib = calib, na_value = ctrl$na_value, best = TRUE)
 
