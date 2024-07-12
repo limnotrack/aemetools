@@ -99,6 +99,41 @@ test_that("running GLM & GOTM works with params", {
   testthat::expect_true(all(file_chk))
 })
 
+test_that("running GOTM with different grid", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  # unlink(tmpdir, recursive = TRUE)
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
+  model_controls <- model_controls |>
+    dplyr::mutate(simulate = dplyr::case_when(
+      var_aeme == "ZOO_zoo1" ~ TRUE,
+      .default = simulate
+    ))
+  model <- c("gotm_wet")
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           ext_elev = 5, use_bgc = FALSE)
+  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
+
+  cfg <- AEME::configuration(aeme)
+  nlev <- cfg$gotm_wet$hydrodynamic$gotm$grid$nlev
+  depth <- cfg$gotm_wet$hydrodynamic$gotm$location$depth
+  method <- 1
+  AEME::set_gotm_grid(depth = depth, aeme = aeme, path = path,
+                      thickness_factor = 2)
+
+  aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path,
+                 model_controls = model_controls, verbose = TRUE)
+  nc <- ncdf4::nc_open(file.path(lake_dir, model, "output", "output.nc"))
+  h <- ncdf4::ncvar_get(nc, "h")
+  ncdf4::nc_close(nc)
+  testthat::expect_true(nrow(h))
+})
+
 test_that("running DYRESM works with params", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
