@@ -120,4 +120,11 @@ test_that("can run an ensemble of AEME-GLM in parallel and plot", {
   outp <- AEME::output(aeme)
   testthat::expect_true(outp$n_members == 5)
 
+  p <- plot_ensemble(aeme = aeme, model = model, depth = 0)
+
+  testthat::expect_true(ggplot2::is.ggplot(p))
+
+  p2 <- plot_ensemble(aeme = aeme, model = model, depth = 5, type = "line")
+  testthat::expect_true(ggplot2::is.ggplot(p2))
+
 })
