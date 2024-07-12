@@ -4,7 +4,14 @@
 \alias{update_param}
 \title{Update parameter values in param based on best_pars}
 \usage{
-update_param(param, calib, na_value, fit_col = "fit", best_pars = NULL)
+update_param(
+  param,
+  calib,
+  na_value,
+  prob = 0.1,
+  fit_col = "fit",
+  best_pars = NULL
+)
 }
 \arguments{
 \item{param}{A data frame with parameters to update}
