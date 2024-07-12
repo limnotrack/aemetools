@@ -6,25 +6,26 @@
 \usage{
 run_aeme_ensemble(
   aeme,
-  sim_id,
-  param,
-  calib = NULL,
+  model,
+  n = 10,
+  dist = "norm",
   path = ".",
-  fit_col = "fit",
-  ctrl
+  parallel = FALSE,
+  ncores = NULL,
+  param = NULL,
+  na_value = 999
 )
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{param}{dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")}
+\item{model}{string; for which model to calibrate. Only one model can be
+passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
-\item{ctrl}{list; of controls for sensitivity analysis function created using
-the \code{\link{create_control}} function. See \link{create_control} for
-more details.}
+\item{param}{dataframe; of parameters read in from a csv file. Requires the
+columns c("model", "file", "name", "value", "min", "max", "log")}
 }
 \value{
 an `aeme` object with model output loaded.
