@@ -104,8 +104,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
         ctrl$NP <- ctrl$itermax
         ctrl$ngen <- 1
       }
-      start_param <- FME::Latinhyper(param[, c("min", "max")],
-                                     ctrl$NP)
+      start_param <- FME::Latinhyper(param[, c("min", "max")], ctrl$NP)
       # start_param <- apply(param[, c("min", "max")], 1,
       #                      \(x) runif(ctrl$NP, x[1], x[2]))
       colnames(start_param) <- paste0(param$group, "/", param$name)
