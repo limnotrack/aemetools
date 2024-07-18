@@ -1,4 +1,4 @@
-#' Read data from online databases as sf object
+#' Read spatial feature (sf) data from online databases as sf object
 #'
 #' @param url character, URL of the web service
 #' @inheritParams get_raster_layer_value
