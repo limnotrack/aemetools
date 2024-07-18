@@ -239,6 +239,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
         return(ctrl$sim_id)
       }
       if (min(g1$fit) < ctrl$VTR) {
+        write_calib_metadata(ctrl = ctrl, nsim = nsim, path = path, t0 = t0)
         message("Model fitness is less than VTR. Stopping simulation.")
         return(ctrl$sim_id)
       }
