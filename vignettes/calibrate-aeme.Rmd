@@ -33,8 +33,9 @@ Create a folder for running the example calibration setup.
 
 ```{r create-folder}
 
-tmpdir <- "calib-test"
-dir.create(tmpdir, showWarnings = FALSE)
+# tmpdir <- "calib-test"
+# dir.create(tmpdir, showWarnings = FALSE)
+tmpdir <- tempdir()
 aeme_dir <- system.file("extdata/lake/", package = "AEME")
 # Copy files from package into tempdir
 file.copy(aeme_dir, tmpdir, recursive = TRUE)
@@ -55,10 +56,9 @@ model_controls <- AEME::get_model_controls()
 inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("glm_aed")
-aeme <- build_aeme(path = path, aeme = aeme,
-                       model = model, model_controls = model_controls,
-                       inf_factor = inf_factor, ext_elev = 5,
-                       use_bgc = FALSE)
+aeme <- build_aeme(path = path, aeme = aeme, model = model, 
+                   model_controls = model_controls, inf_factor = inf_factor, 
+                   ext_elev = 5, use_bgc = FALSE)
 
 ```
 
@@ -186,8 +186,8 @@ Here is an example of the control parameters:
 
 ```{r define-control-parameters}
 ctrl <- create_control(method = "calib", VTR = 1, NP = 40, itermax = 400, 
-                       reltol = 0.07, cutoff = 0.25, mutate = 0.1, 
-                       parallel = FALSE, file_type = "csv", 
+                       reltol = 0.07, cutoff = 0, mutate = 0.1, 
+                       parallel = TRUE, file_type = "csv", 
                        na_value = 999, ncore = 2)
 ```
 
