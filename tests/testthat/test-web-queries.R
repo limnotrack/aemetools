@@ -127,3 +127,29 @@ test_that("can get layer ids for a lake sf object", {
   testthat::expect_true(nrow(layer_ids) == 4)
 })
 
+test_that("can get LINZ lakes sf object", {
+
+  lakes <- read_web_sf(url = "https://data.linz.govt.nz",
+                       layer_id = 50293)
+
+  lake <- lakes |>
+    dplyr::filter(grepl("Pupuke", name)) |>
+    dplyr::slice(1)
+
+  dem <- get_dem_raster(x = lake)
+
+  testthat::expect_true(is(dem, "SpatRaster"))
+
+  qu_elev <- query_elev(lake, dem)
+
+  testthat::expect_equal(round(qu_elev, 1), 5.5)
+})
+
+test_that("can get tables from MfE", {
+
+  lake_wq_status <- read_web_table(url = "https://data.mfe.govt.nz/",
+                                   layer_id = 109652, Sys.getenv("MFE_KEY"))
+
+  testthat::expect_true(is.data.frame(lake_wq_status))
+  testthat::expect_equal(nrow(lake_wq_status), 53382)
+})
