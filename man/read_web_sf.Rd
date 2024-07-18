@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_web_sf.R
 \name{read_web_sf}
 \alias{read_web_sf}
-\title{Read data from online databases as sf object}
+\title{Read spatial feature (sf) data from online databases as sf object}
 \usage{
 read_web_sf(url, layer_id, key = NULL)
 }
@@ -20,5 +20,5 @@ See \code{?add_linz_key} for more information with setting up the API key.}
 sf object
 }
 \description{
-Read data from online databases as sf object
+Read spatial feature (sf) data from online databases as sf object
 }
