@@ -10,6 +10,7 @@ jobs:
       LINZ_BASEMAP_KEY: ${{ secrets.LINZ_BASEMAP_KEY }}
       LINZ_KEY: ${{ secrets.LINZ_KEY }}
       STATS_NZ_KEY: ${{ secrets.STATS_NZ_KEY }}
+      MFE_KEY: ${{ secrets.MFE_KEY }}
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
