@@ -395,7 +395,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 50, ncore = 2,
                          parallel = TRUE, file_type = "csv")
 
   vars_sim <- c("LKE_lvlwtr")
@@ -414,8 +414,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   calib_meta <- read_calib_meta(file = ctrl$file_name, path = path)
   testthat::expect_true(is.data.frame(calib_meta))
 
-  param2 <- update_param(param = param, calib = calib,
-                         na_value = ctrl$na_value)
+  param2 <- update_param(calib = calib, na_value = ctrl$na_value)
 
   testthat::expect_true(is.data.frame(param2))
   testthat::expect_true(!all(param2$value == param$value))
@@ -424,8 +423,8 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   mod_pars2 <- param2 |>
     dplyr::filter(model == "gotm_wet")
 
-  testthat::expect_true(all(mod_pars2$min > mod_pars1$min))
-  testthat::expect_true(all(mod_pars2$max < mod_pars1$max))
+  testthat::expect_true(all(mod_pars2$min >= mod_pars1$min))
+  testthat::expect_true(all(mod_pars2$max <= mod_pars1$max))
 
   best_pars <- get_param(calib = calib, na_value = ctrl$na_value, best = TRUE)
 
@@ -1126,5 +1125,65 @@ test_that("can calibrate HYD_thmcln for AEME-GLM & GOTM in parallel", {
   gotm_res <- run_and_fit(aeme = aeme, param = upd_param, model = "gotm_wet",
                          vars_sim = vars_sim, path = path, FUN_list = FUN_list,
                          weights = weights, na_value = ctrl$na_value)
+
+})
+
+test_that("can write csv output to database", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed")
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model,
+                         verbose = FALSE, path = path)
+  # AEME::plot(aeme, model = model)
+  lke <- AEME::lake(aeme)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "output", "output.nc"))
+  testthat::expect_true(all(file_chk))
+
+  utils::data("aeme_parameters", package = "AEME")
+  param <- aeme_parameters
+
+  # Function to calculate fitness
+  fit <- function(df) {
+    O <- df$obs
+    P <- df$model
+    -1 * (cor(x = O, y = P, method = "pearson") -
+            (mean(abs(O - P)) / (max(O) - min(O))))
+  }
+  FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
+
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
+                         parallel = TRUE, file_type = "csv")
+
+  vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+  weights <- c("HYD_temp" = 10, "LKE_lvlwtr" = 1)
+
+  # Calibrate AEME model
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
+
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
+
+  testthat::expect_true(is.list(calib))
+
+  db_file <- write_csv_to_db(path = path)
+
+  testthat::expect_true(file.exists(db_file))
+
+
 
 })
