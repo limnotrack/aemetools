@@ -63,15 +63,18 @@ more details.</p></dd>
 <dd><p>filepath; where input files are located relative to `config`.</p></dd>
 
 
-<dt id="arg-raw">raw<a class="anchor" aria-label="anchor" href="#arg-raw"></a></dt>
-<dd><p>logical. If TRUE, return the raw calibration output as a dataframe
-with the "fit" and "gen" columns. This is generally used when restarting a
-calibration.</p></dd>
+<dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
+<dd><p>file name; to read. Can be either a "csv" or "db" file and it
+must be located within the path.</p></dd>
+
+
+<dt id="arg-sim-id">sim_id<a class="anchor" aria-label="anchor" href="#arg-sim-id"></a></dt>
+<dd><p>A vector of simulation IDs to read.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame with the calibration results.</p>
+    <p>A list with the metadata and simulation data frames.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

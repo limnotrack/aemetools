@@ -39,6 +39,7 @@
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_simulation_meta.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_simulation_output.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_web_sf.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_web_table.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_aeme_ensemble.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_aeme_param.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_aeme_shiny.html</loc></url>
@@ -46,5 +47,6 @@
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/run_GR.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/sa_aeme.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/update_param.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/write_csv_to_db.html</loc></url>
 </urlset>
 
