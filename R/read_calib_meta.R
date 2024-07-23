@@ -22,6 +22,8 @@ read_calib_meta <- function(file, path = ".") {
   type <- tools::file_ext(file)
   # Read the file
   if (type == "db") {
+    con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
+    on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
     sim_meta <- dplyr::tbl(con, "calibration_metadata") |>
       as.data.frame()
   } else if (type == "csv") {
