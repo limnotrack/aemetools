@@ -2,9 +2,9 @@
 #'
 #' @inheritParams calib_aeme
 #' @inheritParams AEME::build_aeme
-#' @param raw logical. If TRUE, return the raw calibration output as a dataframe
-#' with the "fit" and "gen" columns. This is generally used when restarting a
-#' calibration.
+#' @param file file name; to read. Can be either a "csv" or "db" file and it
+#' must be located within the path.
+#' @param sim_id A vector of simulation IDs to read.
 #'
 #' @importFrom dplyr case_when left_join mutate select summarise group_by
 #' @importFrom tidyr pivot_longer
@@ -14,7 +14,7 @@
 #' @importFrom duckdb duckdb
 #' @importFrom tools file_ext
 #'
-#' @return A data frame with the calibration results.
+#' @return A list with the metadata and simulation data frames.
 #' @export
 
 read_simulation_output <- function(ctrl, path = ".", file = NULL,
@@ -27,6 +27,9 @@ read_simulation_output <- function(ctrl, path = ".", file = NULL,
     meta_tables <- c(meta_tables, "sensitivity_metadata")
   } else if (ctrl$method == "calib") {
     meta_tables <- c(meta_tables, "calibration_metadata")
+  } else if (ctrl$method == "all") {
+    meta_tables <- c(meta_tables, "sensitivity_metadata",
+                     "calibration_metadata")
   }
   sim_vec <- sim_id
 
@@ -42,44 +45,42 @@ read_simulation_output <- function(ctrl, path = ".", file = NULL,
   }
   file <- file.path(path, file)
 
-  if (!all(file.exists(file))) {
+  if (!all(file.exists(file)) & ctrl$method != "all") {
     stop("File not found: ", file)
+  } else if (ctrl$method == "all") {
+    not_found <- !file.exists(file)
+    message("File not present: ", file[not_found])
+    meta_tables <- meta_tables[!not_found]
   }
-
-  # if (is.null(sim_id)) {
-  #   simu_id <- ctrl$sim_id
-  # } else {
-  #   simu_id <- sim_id
-  # }
-
-  # type <- tools::file_ext(file)
 
   names(meta_tables) <- meta_tables
 
   # all <- lapply(sim_id, \(sid) {
   if (type == "csv") {
     out <- lapply(meta_tables, function(x) {
-      if (x == "lake_metadata") {
-        lake_id <- read.csv(file.path(path, "simulation_metadata.csv")) |>
-          # dplyr::filter(grepl(sid, sim_id)) |>
-          dplyr::filter(sim_id %in% sim_vec) |>
-          dplyr::pull(id)
-        read.csv(file.path(path, paste0(x, ".csv"))) |>
-          # dplyr::filter(grepl(lake_id, id)) |>
-          dplyr::filter(id %in% lake_id) |>
-          as.data.frame()
-      } else {
-        read.csv(file.path(path, paste0(x, ".csv"))) |>
-          dplyr::filter(sim_id %in% sim_vec) |>
-          as.data.frame()
+      df <- read.csv(file.path(path, paste0(x, ".csv")))
+      if (!is.null(sim_id)) {
+        if (x == "lake_metadata") {
+          lake_id <- read.csv(file.path(path, "simulation_metadata.csv")) |>
+            dplyr::filter(sim_id %in% sim_vec) |>
+            dplyr::pull(id)
+          df <- df |>
+            dplyr::filter(id %in% lake_id) |>
+            as.data.frame()
+        } else {
+          df <- df |>
+            dplyr::filter(sim_id %in% sim_vec) |>
+            as.data.frame()
+        }
       }
+      return(df)
     })
   } else if (type == "db") {
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
 
     out <- lapply(meta_tables, function(x) {
-      if (x == "lake_metadata") {
+      if (x == "lake_metadata" & !is.null(sim_id)) {
         lake_id <- dplyr::tbl(con, "simulation_metadata") |>
           dplyr::filter(sim_id %in% sim_vec) |>
           dplyr::pull(id)
@@ -87,9 +88,14 @@ read_simulation_output <- function(ctrl, path = ".", file = NULL,
           dplyr::filter(id %in% lake_id) |>
           as.data.frame()
       } else {
-        dplyr::tbl(con, x) |>
-          dplyr::filter(sim_id %in% sim_vec) |>
-          as.data.frame()
+        if (!is.null(sim_id)) {
+          df <- dplyr::tbl(con, x) |>
+            dplyr::filter(sim_id %in% sim_vec) |>
+            as.data.frame()
+        } else {
+          df <- dplyr::tbl(con, x) |>
+            as.data.frame()
+        }
       }
     })
   }
