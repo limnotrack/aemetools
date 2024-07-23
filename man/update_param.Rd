@@ -5,8 +5,8 @@
 \title{Update parameter values in param based on best_pars}
 \usage{
 update_param(
-  param,
   calib,
+  param = NULL,
   na_value,
   prob = 0.1,
   fit_col = "fit",
@@ -14,10 +14,11 @@ update_param(
 )
 }
 \arguments{
-\item{param}{A data frame with parameters to update}
-
 \item{calib}{A list with the calibration results loaded using
 \code{\link{read_calib}}.}
+
+\item{param}{A data frame with parameters to update. Defaults to NULL. When
+NULL, the parameter values are extracted from \code{calib$parameter_metadata}.}
 
 \item{na_value}{A numeric value which corresponds to the NA value used in
 the calibration.}
