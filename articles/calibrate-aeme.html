@@ -115,9 +115,9 @@ make sure the current model setup is working.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AEME/man/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                 path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-07-23 01:17:11]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-07-23 01:17:11]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-07-23 01:17:11]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-07-23 09:25:57]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-07-23 09:25:58]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-07-23 09:25:58]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
@@ -690,9 +690,9 @@ model output is generate within the lake folder.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, param <span class="op">=</span> <span class="va">aeme_parameters</span>,</span>
 <span>                 model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-07-23 01:17:24]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-07-23 01:17:25]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-07-23 01:17:25]</span></span></code></pre></div>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-07-23 09:26:15]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-07-23 09:26:15]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-07-23 09:26:15]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="calibration-setup">Calibration setup<a class="anchor" aria-label="anchor" href="#calibration-setup"></a>
@@ -978,48 +978,48 @@ values.</p>
 <span>                     param <span class="op">=</span> <span class="va">aeme_parameters</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                     FUN_list <span class="op">=</span> <span class="va">FUN_list</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, </span>
 <span>                     vars_sim <span class="op">=</span> <span class="va">vars_sim</span>, weights <span class="op">=</span> <span class="va">weights</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for glm_aed modelled variables [2024-07-23 01:17:25]</span></span>
-<span><span class="co">#&gt; Completed glm_aed! [2024-07-23 01:17:26]</span></span>
+<span><span class="co">#&gt; Extracting indices for glm_aed modelled variables [2024-07-23 09:26:16]</span></span>
+<span><span class="co">#&gt; Completed glm_aed! [2024-07-23 09:26:17]</span></span>
 <span><span class="co">#&gt; Calibrating in parallel for glm_aed using 1 cores...</span></span>
-<span><span class="co">#&gt; Starting generation 1/10, 40 members. [2024-07-23 01:17:26]</span></span>
+<span><span class="co">#&gt; Starting generation 1/10, 40 members. [2024-07-23 09:26:17]</span></span>
 <span><span class="co">#&gt; Best fit: 1.02 (sd: 437.27)</span></span>
 <span><span class="co">#&gt;             Parameters: [2.01, 0.881, 1.01, 0.122, 0.27, 0.158, 0.42, 0.631, 1.79, 1.93]</span></span>
-<span><span class="co">#&gt; Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 01:18:05]</span></span>
+<span><span class="co">#&gt; Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 09:26:55]</span></span>
 <span><span class="co">#&gt; Survival rate: 0.75</span></span>
-<span><span class="co">#&gt; Starting generation 2/10, 40 members. [2024-07-23 01:18:05]</span></span>
-<span><span class="co">#&gt; Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 01:18:41]</span></span>
+<span><span class="co">#&gt; Starting generation 2/10, 40 members. [2024-07-23 09:26:55]</span></span>
+<span><span class="co">#&gt; Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 09:27:31]</span></span>
 <span><span class="co">#&gt; Best fit: 0.87519 (sd: 220.2)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.95</span></span>
-<span><span class="co">#&gt; Starting generation 3/10, 40 members. [2024-07-23 01:18:41]</span></span>
-<span><span class="co">#&gt; Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 01:19:16]</span></span>
+<span><span class="co">#&gt; Starting generation 3/10, 40 members. [2024-07-23 09:27:31]</span></span>
+<span><span class="co">#&gt; Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 09:28:07]</span></span>
 <span><span class="co">#&gt; Best fit: 0.79337 (sd: 157.77)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 4/10, 40 members. [2024-07-23 01:19:16]</span></span>
-<span><span class="co">#&gt; Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 01:19:51]</span></span>
+<span><span class="co">#&gt; Starting generation 4/10, 40 members. [2024-07-23 09:28:07]</span></span>
+<span><span class="co">#&gt; Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 09:28:41]</span></span>
 <span><span class="co">#&gt; Best fit: 0.67572 (sd: 266.2)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.92</span></span>
-<span><span class="co">#&gt; Starting generation 5/10, 40 members. [2024-07-23 01:19:51]</span></span>
-<span><span class="co">#&gt; Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 01:20:26]</span></span>
+<span><span class="co">#&gt; Starting generation 5/10, 40 members. [2024-07-23 09:28:41]</span></span>
+<span><span class="co">#&gt; Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 09:29:15]</span></span>
 <span><span class="co">#&gt; Best fit: 0.67572 (sd: 266.22)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.92</span></span>
-<span><span class="co">#&gt; Starting generation 6/10, 40 members. [2024-07-23 01:20:26]</span></span>
-<span><span class="co">#&gt; Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 01:20:59]</span></span>
+<span><span class="co">#&gt; Starting generation 6/10, 40 members. [2024-07-23 09:29:15]</span></span>
+<span><span class="co">#&gt; Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 09:29:49]</span></span>
 <span><span class="co">#&gt; Best fit: 0.67572 (sd: 220.31)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.95</span></span>
-<span><span class="co">#&gt; Starting generation 7/10, 40 members. [2024-07-23 01:20:59]</span></span>
-<span><span class="co">#&gt; Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 01:21:33]</span></span>
+<span><span class="co">#&gt; Starting generation 7/10, 40 members. [2024-07-23 09:29:49]</span></span>
+<span><span class="co">#&gt; Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 09:30:23]</span></span>
 <span><span class="co">#&gt; Best fit: 0.67504 (sd: 157.81)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 8/10, 40 members. [2024-07-23 01:21:33]</span></span>
-<span><span class="co">#&gt; Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 01:22:08]</span></span>
+<span><span class="co">#&gt; Starting generation 8/10, 40 members. [2024-07-23 09:30:23]</span></span>
+<span><span class="co">#&gt; Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 09:30:57]</span></span>
 <span><span class="co">#&gt; Best fit: 0.65459 (sd: 220.31)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.95</span></span>
-<span><span class="co">#&gt; Starting generation 9/10, 40 members. [2024-07-23 01:22:08]</span></span>
-<span><span class="co">#&gt; Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 01:22:42]</span></span>
+<span><span class="co">#&gt; Starting generation 9/10, 40 members. [2024-07-23 09:30:57]</span></span>
+<span><span class="co">#&gt; Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 09:31:32]</span></span>
 <span><span class="co">#&gt; Best fit: 0.64641 (sd: 157.83)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 10/10, 40 members. [2024-07-23 01:22:42]</span></span>
-<span><span class="co">#&gt; Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 01:23:16]</span></span>
+<span><span class="co">#&gt; Starting generation 10/10, 40 members. [2024-07-23 09:31:32]</span></span>
+<span><span class="co">#&gt; Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-07-23 09:32:06]</span></span>
 <span><span class="co">#&gt; Best fit: 0.64449 (sd: 266.27)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.92</span></span></code></pre></div>
 </div>
@@ -1293,9 +1293,9 @@ the simulated values to the observed values. This can be done using the
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
 <span>                       param <span class="op">=</span> <span class="va">best_params</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                       return_aeme <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-07-23 01:23:21]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-07-23 01:23:22]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-07-23 01:23:22]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-07-23 09:32:10]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-07-23 09:32:11]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-07-23 09:32:11]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span></code></pre></div>
 <p>The simulated values can be compared to the observed values using the
