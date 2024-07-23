@@ -16,12 +16,13 @@ more details.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
-\item{raw}{logical. If TRUE, return the raw calibration output as a dataframe
-with the "fit" and "gen" columns. This is generally used when restarting a
-calibration.}
+\item{file}{file name; to read. Can be either a "csv" or "db" file and it
+must be located within the path.}
+
+\item{sim_id}{A vector of simulation IDs to read.}
 }
 \value{
-A data frame with the calibration results.
+A list with the metadata and simulation data frames.
 }
 \description{
 Read calibration output
