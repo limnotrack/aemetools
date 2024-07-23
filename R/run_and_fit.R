@@ -434,7 +434,9 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
       } else if (any(balance[["lvl"]] <= 0) | any(is.na(balance[["lvl"]]))) {
         return(return_list)
       }
-      if (!is.null(obs$level)) {
+      tme <- AEME::time(aeme)
+      time_check <- any(obs$level$Date > tme$start & obs$level$Date < tme$stop)
+      if (!is.null(obs$level) & time_check) {
         lvl_adj <- obs$level |>
           dplyr::mutate(value = (value - min(inp$hypsograph$elev)))
       } else {
