@@ -923,6 +923,83 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
 
 })
 
+test_that("can calibrate lake level with no data for target time period", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, file = "aeme.yaml")
+  obs <- AEME::observations(aeme)
+  obs$lake <- NULL
+  AEME::observations(aeme) <- obs
+  model_controls <- AEME::get_model_controls()
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("gotm_wet")
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = FALSE)
+
+  obs <- AEME::observations(aeme)
+  obs$level <- obs$level |>
+    dplyr::mutate(Date = Date - 700)
+  AEME::observations(aeme) <- obs
+  inp <- AEME::input(aeme)
+  inp$hypsograph
+  # aeme <- AEME::runaeme = # aeme <- AEME::run_aeme(aeme = aeme, model = model,
+  #                        verbose = FALSE, path = path)
+  # AEME::plot(aeme, model = model, path = path, plot = "calib",
+  #            obs = "temp", save = FALSE, show = FALSE)
+  lke <- AEME::lake(aeme)
+  # file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+  #                                                tolower(lke$name)),
+  #                                   model, "output", "output.nc"))
+  # testthat::expect_true(file_chk)
+
+  utils::data("aeme_parameters", package = "AEME")
+  param <- aeme_parameters
+
+  param <- aeme_parameters[aeme_parameters$name == "outflow", ]
+
+  # Function to calculate fitness
+  fit <- function(df) {
+    O <- df$obs
+    P <- df$model
+    abs(cumsum(P -O))
+  }
+  FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
+
+  ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 30,
+                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         parallel = TRUE, file_type = "csv",
+                         na_value = 1e20, ncore = 2L)
+
+  vars_sim <- c("LKE_lvlwtr")
+  weights <- c("LKE_lvlwtr" = 1)
+
+  # Calibrate AEME model
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
+
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
+  testthat::expect_true(is.list(calib))
+
+  # param2 <- update_param(param = param, calib = calib, na_value = ctrl$na_value)
+
+  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
+  testthat::expect_true(is.list(plist))
+
+  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+
+  sim_meta <- read_simulation_meta(file = ctrl$file_name, path = path)
+  testthat::expect_true(is.data.frame(sim_meta))
+
+})
+
 
 test_that("can calibrate temperature with LHC for AEME-GLM in series with DB output", {
   tmpdir <- tempdir()
