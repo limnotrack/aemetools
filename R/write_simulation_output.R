@@ -102,9 +102,10 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list, path,
       dplyr::bind_rows()
 
     # Extract parameter info
+    param_column_names <- get_param_column_names()
     param_meta <- param |>
       dplyr::mutate(sim_id = sim_id, group = as.character(group)) |>
-      dplyr::select(sim_id, file, name, value, min, max, module, group)
+      dplyr::select(sim_id, dplyr::all_of(param_column_names))
 
     # Sensitivity analysis metadata
     if (ctrl$method == "sa") {
