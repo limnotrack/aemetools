@@ -16,8 +16,10 @@
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/create_linz_key.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/download_era5_ncdf.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/era5_ref_table.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_dem_raster.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_dem_value.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_era5_point.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_layer_ids.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_linz_basemap_tile.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_param.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/get_raster_layer_value.html</loc></url>
@@ -34,6 +36,7 @@
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_scatter.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_sobol.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/plot_uncertainty.html</loc></url>
+<url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/query_elev.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_calib_meta.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_sa.html</loc></url>
 <url><loc>https://special-enigma-8p9lgre.pages.github.io/reference/read_simulation_meta.html</loc></url>

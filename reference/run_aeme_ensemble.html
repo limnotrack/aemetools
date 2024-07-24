@@ -70,13 +70,34 @@
 passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").</p></dd>
 
 
+<dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
+<dd><p>numeric; number of ensemble members to generate.</p></dd>
+
+
+<dt id="arg-dist">dist<a class="anchor" aria-label="anchor" href="#arg-dist"></a></dt>
+<dd><p>character; distribution to sample from. Default is "norm". Other
+options are "unif".</p></dd>
+
+
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
 <dd><p>filepath; where input files are located relative to `config`.</p></dd>
 
 
+<dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
+<dd><p>logical; whether to run in parallel. Default is FALSE.</p></dd>
+
+
+<dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
+<dd><p>numeric; number of cores to use. Default is NULL.</p></dd>
+
+
 <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
-<dd><p>dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")</p></dd>
+<dd><p>data.frame; parameter values to use. Default is NULL. If NULL,
+the function will use the parameters from the aeme object.</p></dd>
+
+
+<dt id="arg-na-value">na_value<a class="anchor" aria-label="anchor" href="#arg-na-value"></a></dt>
+<dd><p>numeric; value to use for NA values. Default is 999.</p></dd>
 
 </dl></div>
     <div class="section level2">
