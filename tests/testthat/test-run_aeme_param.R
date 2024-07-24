@@ -131,7 +131,7 @@ test_that("running GOTM with different grid", {
   nc <- ncdf4::nc_open(file.path(lake_dir, model, "output", "output.nc"))
   h <- ncdf4::ncvar_get(nc, "h")
   ncdf4::nc_close(nc)
-  testthat::expect_true(nrow(h))
+  testthat::expect_true(nrow(h) == 28)
 })
 
 test_that("running DYRESM works with params", {
