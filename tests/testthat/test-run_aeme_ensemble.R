@@ -77,17 +77,16 @@ test_that("can run an ensemble of AEME-GLM in series", {
                        vars_sim = vars_sim, weights = weights)
 
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
-
   testthat::expect_true(is.list(calib))
-  ctrl$parallel <- FALSE
+
+  aeme <- update_param(calib = calib, aeme = aeme)
 
   # Run ensemble
-  aeme <- run_aeme_ensemble(aeme = aeme, sim_id = sim_id, param = param,
-                            path = path, calib = calib, ctrl = ctrl)
+  aeme <- run_aeme_ensemble(aeme = aeme, model = model, n = 5, path = path,
+                            parallel = FALSE)
 
   outp <- AEME::output(aeme)
-  testthat::expect_true(outp$n_members == ctrl$NP)
-
+  testthat::expect_true(outp$n_members == 5)
 })
 
 test_that("can run an ensemble of AEME-GLM in parallel and plot", {

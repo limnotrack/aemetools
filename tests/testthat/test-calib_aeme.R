@@ -414,7 +414,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   calib_meta <- read_calib_meta(file = ctrl$file_name, path = path)
   testthat::expect_true(is.data.frame(calib_meta))
 
-  param2 <- update_param(calib = calib, na_value = ctrl$na_value)
+  param2 <- update_param(calib = calib)
 
   testthat::expect_true(is.data.frame(param2))
   testthat::expect_true(!all(param2$value == param$value))
@@ -423,8 +423,8 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   mod_pars2 <- param2 |>
     dplyr::filter(model == "gotm_wet")
 
-  testthat::expect_true(all(mod_pars2$min >= mod_pars1$min))
-  testthat::expect_true(all(mod_pars2$max <= mod_pars1$max))
+  testthat::expect_true(all(mod_pars2$min > mod_pars1$min))
+  testthat::expect_true(all(mod_pars2$max < mod_pars1$max))
 
   best_pars <- get_param(calib = calib, na_value = ctrl$na_value, best = TRUE)
 
@@ -1181,10 +1181,12 @@ test_that("can calibrate HYD_thmcln for AEME-GLM & GOTM in parallel", {
 
   best_pars <- get_param(calib = calib, na_value = ctrl$na_value, best = TRUE)
 
-  upd_param <- update_param(param = param, calib = calib,
-                           na_value = ctrl$na_value)
-
-  AEME::parameters(aeme) <- upd_param
+  aeme <- update_param(calib = calib, aeme = aeme)
+  upd_param <- AEME::parameters(aeme)
+  upd_param2 <- update_param(calib = calib)
+  testthat::expect_true(all(upd_param$value == upd_param2$value))
+  testthat::expect_true(all(upd_param$min == upd_param2$min))
+  testthat::expect_true(all(upd_param$max == upd_param2$max))
 
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
@@ -1200,11 +1202,14 @@ test_that("can calibrate HYD_thmcln for AEME-GLM & GOTM in parallel", {
 
   glm_res <- run_and_fit(aeme = aeme, param = upd_param, model = "glm_aed",
                          vars_sim = vars_sim, path = path, FUN_list = FUN_list,
-                         weights = weights, na_value = ctrl$na_value, return_df = F)
-  mean(abs(glm_res$obs - glm_res$model))
+                         weights = weights, na_value = ctrl$na_value,
+                         return_df = TRUE)
+  glm_mae <- mean(abs(glm_res$obs - glm_res$model))
   gotm_res <- run_and_fit(aeme = aeme, param = upd_param, model = "gotm_wet",
                          vars_sim = vars_sim, path = path, FUN_list = FUN_list,
-                         weights = weights, na_value = ctrl$na_value)
+                         weights = weights, na_value = ctrl$na_value,
+                         return_df = TRUE)
+  gotm_mae <- mean(abs(gotm_res$obs - gotm_res$model))
 
 })
 
