@@ -7,8 +7,9 @@
 update_param(
   calib,
   param = NULL,
-  na_value,
-  prob = 0.1,
+  na_value = NULL,
+  aeme = NULL,
+  quantile = 0.1,
   fit_col = "fit",
   best_pars = NULL
 )
@@ -20,8 +21,15 @@ update_param(
 \item{param}{A data frame with parameters to update. Defaults to NULL. When
 NULL, the parameter values are extracted from \code{calib$parameter_metadata}.}
 
-\item{na_value}{A numeric value which corresponds to the NA value used in
-the calibration.}
+\item{na_value}{The value to replace NA values with. Defaults to NULL. When
+NULL, the value is extracted from \code{calib$calibration_metadata$na_value}.}
+
+\item{aeme}{aeme; object. Defaults to NULL. When NULL, a dataframe of the
+updated parameter values is returned. When provided, the updated parameter
+values are added to the aeme object and the aeme object is returned.}
+
+\item{quantile}{The quantile to use for the top quantile of the fit_value.
+Defaults to 0.1.}
 
 \item{fit_col}{character; name of column containing fit values. Default is
 \code{"fit"}.}
