@@ -23,7 +23,7 @@ get_linz_basemap_tile <- function(x, zoom = 16, key = NULL, verbose = FALSE) {
   url <- paste0("https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.webp?api=", key)
   prov <- maptiles::create_provider(name = "LINZ",
                                     url = url,
-                                    citation = "© LINZ CC BY 4.0 © Imagery Basemap contributors")
+                                    citation = "LINZ CC BY 4.0 Imagery Basemap contributors")
   catch <- tryCatch({
     tiles <- maptiles::get_tiles(x, provider = prov, zoom = zoom,
                                  forceDownload = TRUE, verbose = verbose)

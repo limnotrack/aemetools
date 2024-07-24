@@ -27,6 +27,8 @@ plot_calib(
 \item{base_size}{numeric; base size for theme}
 
 \item{return_pars}{logical; return parameter values}
+
+\item{log_y}{logical; use log scale on y-axis. Default is \code{TRUE}.}
 }
 \value{
 list of plots

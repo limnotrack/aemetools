@@ -1,6 +1,7 @@
 #' Plot AEME ensemble output
 #'
 #' @inheritParams AEME::plot_output
+#' @inheritParams AEME::get_var
 #' @param conf_int numeric; confidence interval to plot when `type = "ribbon"`.
 #'  Default is 0.95.
 #' @param type character; type of plot to create. Can be `"ribbon"`, where it
@@ -18,9 +19,9 @@
 #'
 
 plot_ensemble <- function(aeme, model, var_sim = "HYD_temp", depth = NULL,
-                               conf_int = 0.95, type = "ribbon",
-                               remove_spin_up = TRUE, add_obs = TRUE,
-                               var_lims = NULL) {
+                          conf_int = 0.95, type = "ribbon",
+                          remove_spin_up = TRUE, add_obs = TRUE,
+                          var_lims = NULL) {
 
   # Set timezone temporarily to UTC
   withr::local_locale(c("LC_TIME" = "C"))

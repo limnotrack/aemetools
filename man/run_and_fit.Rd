@@ -62,6 +62,9 @@ fit.}
 \item{method}{string; of the method of the model run. Options are c("sa",
 "calib").}
 
+\item{sa_ctrl}{list; of control parameters for the sensitivity analysis.
+Only required if \code{method = "sa"}.}
+
 \item{fit}{boolean; fit model or not. If FALSE, only return netCDF file
 connection.}
 }

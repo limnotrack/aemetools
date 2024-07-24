@@ -24,6 +24,9 @@ plot_ensemble(
 
 \item{var_sim}{string; of variable to plot}
 
+\item{depth}{numeric; depth of the variable to extract. Default is NULL. If
+NULL, the variable profiles are extracted.}
+
 \item{conf_int}{numeric; confidence interval to plot when \code{type = "ribbon"}.
 Default is 0.95.}
 

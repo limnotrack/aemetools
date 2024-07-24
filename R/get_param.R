@@ -2,7 +2,6 @@
 #'
 #' @param calib A list with the calibration results loaded using
 #' \code{\link{read_calib}}.
-#' @param model A character vector with the model name.
 #' @param na_value A numeric value which corresponds to the NA value used in
 #' the calibration.
 #' @param best A logical value indicating whether to return the best parameter

@@ -11,6 +11,8 @@ read_sa(ctrl, sim_id, path = ".", R = NULL, boot = TRUE)
 the \code{\link{create_control}} function. See \link{create_control} for
 more details.}
 
+\item{sim_id}{A vector of simulation IDs to read.}
+
 \item{path}{filepath; where input files are located relative to `config`.}
 
 \item{R}{Positive integer, number of bootstrap replicas. Default is NULL.}
