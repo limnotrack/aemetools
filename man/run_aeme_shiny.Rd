@@ -9,6 +9,9 @@ run_aeme_shiny(aeme, param, path = ".", model_controls = NULL)
 \arguments{
 \item{aeme}{aeme; object.}
 
+\item{param}{dataframe; of parameters read in from a csv file. Requires the
+columns c("model", "file", "name", "value", "min", "max", "log")}
+
 \item{path}{filepath; where input files are located relative to `config`.}
 
 \item{model_controls}{dataframe; of configuration loaded from

@@ -9,6 +9,8 @@ read_simulation_meta(file, path = ".")
 \arguments{
 \item{file}{The path to the output file. It can either be a DuckDB database
 or a CSV file.}
+
+\item{path}{filepath; where input files are located relative to `config`.}
 }
 \value{
 A data frame with the simulation metadata

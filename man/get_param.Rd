@@ -18,8 +18,6 @@ the calibration.}
 
 \item{best}{A logical value indicating whether to return the best parameter
 values or all parameter values.}
-
-\item{model}{A character vector with the model name.}
 }
 \value{
 A data frame with the parameter values.

@@ -22,10 +22,21 @@ run_aeme_ensemble(
 \item{model}{string; for which model to calibrate. Only one model can be
 passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
 
+\item{n}{numeric; number of ensemble members to generate.}
+
+\item{dist}{character; distribution to sample from. Default is "norm". Other
+options are "unif".}
+
 \item{path}{filepath; where input files are located relative to `config`.}
 
-\item{param}{dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")}
+\item{parallel}{logical; whether to run in parallel. Default is FALSE.}
+
+\item{ncores}{numeric; number of cores to use. Default is NULL.}
+
+\item{param}{data.frame; parameter values to use. Default is NULL. If NULL,
+the function will use the parameters from the aeme object.}
+
+\item{na_value}{numeric; value to use for NA values. Default is 999.}
 }
 \value{
 an `aeme` object with model output loaded.

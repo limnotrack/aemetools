@@ -1,6 +1,7 @@
 #' Run AEME in a Shiny app
 #'
-#' @inheritParams AEME::run_aeme
+#' @inheritParams AEME::build_aeme
+#' @inheritParams calib_aeme
 #'
 #' @importFrom shiny shinyApp fluidPage sidebarLayout sidebarPanel mainPanel
 #'  plotOutput actionButton radioButtons h1 h3 tableOutput renderUI observeEvent

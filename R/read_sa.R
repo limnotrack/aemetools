@@ -3,6 +3,7 @@
 #' @inheritParams calib_aeme
 #' @inheritParams AEME::build_aeme
 #' @inheritParams sensobol::sobol_indices
+#' @inheritParams read_simulation_output
 #'
 #' @importFrom dplyr case_when left_join mutate select summarise group_by
 #' @importFrom tidyr pivot_longer

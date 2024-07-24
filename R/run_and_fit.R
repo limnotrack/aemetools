@@ -25,6 +25,8 @@
 #'  "calib").
 #' @param fit boolean; fit model or not. If FALSE, only return netCDF file
 #' connection.
+#' @param sa_ctrl list; of control parameters for the sensitivity analysis.
+#' Only required if `method = "sa"`.
 #'
 #' @return A single value of model fit, calculated by `FUN_list`.
 #'
@@ -36,6 +38,8 @@
 #' @importFrom stats approx
 #' @importFrom utils data
 #' @importFrom graphics points
+#' @importFrom rLakeAnalyzer thermo.depth center.buoyancy meta.depths
+#' @importFrom rLakeAnalyzer schmidt.stability
 #'
 #' @export
 

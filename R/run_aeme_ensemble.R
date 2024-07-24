@@ -3,6 +3,14 @@
 #' Run a parameter ensemble
 #'
 #' @inheritParams calib_aeme
+#' @param n numeric; number of ensemble members to generate.
+#' @param dist character; distribution to sample from. Default is "norm". Other
+#' options are "unif".
+#' @param parallel logical; whether to run in parallel. Default is FALSE.
+#' @param ncores numeric; number of cores to use. Default is NULL.
+#' @param param data.frame; parameter values to use. Default is NULL. If NULL,
+#' the function will use the parameters from the aeme object.
+#' @param na_value numeric; value to use for NA values. Default is 999.
 #'
 #' @inherit AEME::run_aeme return
 #' @export
@@ -23,6 +31,7 @@ run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
 
   if (is.null(param)) {
     param <- AEME::parameters(aeme)
+    if (nrow(param) == 0) stop("No parameters found in aeme object")
   }
 
   # model <- names(sim_id)

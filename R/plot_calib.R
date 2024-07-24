@@ -7,6 +7,7 @@
 #' @param nrow integer; number of rows in plot
 #' @param base_size numeric; base size for theme
 #' @param return_pars logical; return parameter values
+#' @param log_y logical; use log scale on y-axis. Default is \code{TRUE}.
 #'
 #' @importFrom ggplot2 aes geom_point geom_vline geom_hline geom_smooth
 #' @importFrom ggplot2 facet_wrap labs theme_bw scale_colour_brewer

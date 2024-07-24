@@ -8,6 +8,9 @@ write_csv_to_db(path, file_name = "results.db")
 }
 \arguments{
 \item{path}{filepath; where input files are located relative to `config`.}
+
+\item{file_name}{The name of the database file to write to. Default is
+"results.db".}
 }
 \value{
 file path to the database.

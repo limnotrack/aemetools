@@ -6,6 +6,7 @@
 #'
 #' @param file The path to the output file. It can either be a DuckDB database
 #' or a CSV file.
+#' @inheritParams AEME::build_aeme
 #'
 #' @return A data frame with the simulation metadata
 #' @export

@@ -1,6 +1,8 @@
 #' Write CSV to database
 #'
 #' @inheritParams AEME::build_aeme
+#' @param file_name The name of the database file to write to. Default is
+#' "results.db".
 #'
 #' @return file path to the database.
 #' @export
