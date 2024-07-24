@@ -15,6 +15,8 @@
 #' @param quantile The quantile to use for the top quantile of the fit_value.
 #' Defaults to 0.1.
 #'
+#' @importFrom dplyr filter group_by select summarise all_of anti_join arrange
+#'
 #' @return data frame with updated parameter values for running the model with
 #'  `run_aeme_param`
 #' @export
@@ -69,7 +71,9 @@ update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
   } else {
     old_pars <- AEME::parameters(aeme)
     if (nrow(old_pars) > 0) {
-      param <- dplyr::bind_rows(old_pars, param)
+      par_diff <- dplyr::anti_join(param, old_pars, by = c("model", "name"))
+      param <- dplyr::bind_rows(par_diff, param) |>
+        dplyr::arrange(model, name)
     }
     AEME::parameters(aeme) <- param
     return(aeme)
