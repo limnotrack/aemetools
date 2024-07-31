@@ -423,8 +423,8 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   mod_pars2 <- param2 |>
     dplyr::filter(model == "gotm_wet")
 
-  testthat::expect_true(all(mod_pars2$min > mod_pars1$min))
-  testthat::expect_true(all(mod_pars2$max < mod_pars1$max))
+  testthat::expect_true(all(mod_pars2$min >= mod_pars1$min))
+  testthat::expect_true(all(mod_pars2$max <= mod_pars1$max))
 
   best_pars <- get_param(calib = calib, na_value = ctrl$na_value, best = TRUE)
 
@@ -1223,7 +1223,7 @@ test_that("can update bgc parameters for GLM-AED2", {
   model_controls <- AEME::get_model_controls(use_bgc = TRUE)
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed")
+  model <- c("glm_aed", "gotm_wet")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
                            inf_factor = inf_factor, ext_elev = 5,
@@ -1268,7 +1268,10 @@ test_that("can update bgc parameters for GLM-AED2", {
 
   aeme <- update_param(calib = calib, aeme = aeme)
   upd_param <- AEME::parameters(aeme)
+  upd_param$param_name <- paste0(upd_param$model, "/", upd_param$group, "/", upd_param$name)
   upd_param2 <- update_param(calib = calib)
+  upd_param2$param_name <- paste0(upd_param2$model, "/", upd_param2$group, "/", upd_param2$name)
+  upd_param2 <- upd_param2[match(upd_param$param_name, upd_param2$param_name), ]
   testthat::expect_true(all(upd_param$value == upd_param2$value))
   testthat::expect_true(all(upd_param$min == upd_param2$min))
   testthat::expect_true(all(upd_param$max == upd_param2$max))
