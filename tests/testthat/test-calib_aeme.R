@@ -1213,6 +1213,77 @@ test_that("can calibrate HYD_thmcln for AEME-GLM & GOTM in parallel", {
 
 })
 
+test_that("can update bgc parameters for GLM-AED2", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed")
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = TRUE)
+
+  # Get parameters for calibration
+  utils::data("aeme_parameters", package = "AEME")
+  phy_param <- AEME::retrieve_params(model = model, module = "phytoplankton")
+  param <- dplyr::bind_rows(aeme_parameters, phy_param)
+
+  # Function to calculate fitness
+  fit <- function(df) {
+    O <- df$obs
+    P <- df$model
+    mean(abs(P - O))
+  }
+  FUN_list <- list(PHY_tchla = fit)
+
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
+                         parallel = TRUE, file_type = "db", na_value = 1e20,
+                         file_name = "results.db", c_method = "LHC")
+
+  vars_sim <- c("PHY_tchla")
+  weights <- c("PHY_tchla" = 1)
+
+  # Calibrate AEME model
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
+
+  calib <- read_calib(sim_id = sim_id, path = path, ctrl = ctrl)
+
+  testthat::expect_true(is.list(calib))
+
+  plist <- plot_calib(calib = calib, fit_col = "PHY_tchla",
+                      na_value = ctrl$na_value)
+
+  testthat::expect_true(is.list(plist))
+
+  best_pars <- get_param(calib = calib, na_value = ctrl$na_value, best = TRUE)
+
+  aeme <- update_param(calib = calib, aeme = aeme)
+  upd_param <- AEME::parameters(aeme)
+  upd_param2 <- update_param(calib = calib)
+  testthat::expect_true(all(upd_param$value == upd_param2$value))
+  testthat::expect_true(all(upd_param$min == upd_param2$min))
+  testthat::expect_true(all(upd_param$max == upd_param2$max))
+
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = TRUE)
+
+  aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model)
+  mod_fit <- AEME::assess_model(aeme = aeme, model = model, var_sim = vars_sim)
+
+  testthat::expect_true(all(best_pars$parameter_value %in% upd_param$value))
+})
+
 test_that("can write csv output to database", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
