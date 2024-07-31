@@ -49,14 +49,20 @@ update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
                      max = max(parameter_value), .groups = "drop")
 
   for (i in seq_len(nrow(best_pars))) {
-    idx <- grepl(best_pars$name[i], param$name) & grepl(best_pars$model[i],
-                                                          param$model)
+    if (is.na(best_pars$group[i])) {
+      idx <- grepl(best_pars$name[i], param$name) &
+        grepl(best_pars$model[i], param$model)
+    } else {
+      idx <- grepl(best_pars$name[i], param$name) &
+        grepl(best_pars$model[i], param$model) &
+        grepl(best_pars$group[i], param$group)
+    }
     j <- which(min_max$name == best_pars$name[i] & min_max$sim_id == best_pars$sim_id[i])
     if (sum(idx) == 0)
-      stop("Parameter ", best_pars$param2[i], " not found in param")
+      stop("Parameter ", best_pars$name[i], " not found in param")
 
     if (sum(idx) > 1)
-      stop("Parameter ", best_pars$param2[i], " found in multiple places for ",
+      stop("Parameter ", best_pars$name[i], " found in multiple places for ",
                            best_pars$model[i])
     param[idx, "value"] <- best_pars$parameter_value[i]
     param[idx, "min"] <- min_max$min[j]

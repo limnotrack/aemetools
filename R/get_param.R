@@ -9,7 +9,7 @@
 #' @inheritParams plot_calib
 #'
 #' @importFrom dplyr case_when filter group_by mutate summarise
-#' @importFrom stringr str_replace
+#' @importFrom stringr str_split_i
 #'
 #' @return A data frame with the parameter values.
 #' @export
@@ -55,8 +55,14 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
       dplyr::mutate(
         label = abbrev_pars(parameter_name, model),
         gen = factor(gen),
-        name = gsub("NA.", "", parameter_name)
-      )
+        name = stringr::str_split_i(parameter_name, "^[^/]*/", 2),
+        group = stringr::str_split_i(parameter_name, "/", 1),
+        par = stringr::str_split_i(label, "%", 2)
+      ) |>
+      dplyr::mutate(group = dplyr::case_when(
+        group == "NA" ~ NA,
+        .default = group
+      ))
   }) |>
     dplyr::bind_rows() |>
     dplyr::select(sim_id, model, gen, run, index, dplyr::everything())
@@ -72,6 +78,8 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
                      fit_value = min(fit_value),
                      gen = gen[which.min(fit_value)],
                      name = name[which.min(fit_value)],
+                     group = group[which.min(fit_value)],
+                     par = par[which.min(fit_value)],
                      .groups = "drop") |>
     as.data.frame()
 }
