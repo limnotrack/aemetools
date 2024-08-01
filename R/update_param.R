@@ -12,6 +12,9 @@
 #' @param aeme aeme; object. Defaults to NULL. When NULL, a dataframe of the
 #' updated parameter values is returned. When provided, the updated parameter
 #' values are added to the aeme object and the aeme object is returned.
+#' @param replace Logical. If TRUE, the parameter values in the aeme object are
+#' replaced with the updated values. Defaults to FALSE. Only used when aeme is
+#' provided.
 #' @param quantile The quantile to use for the top quantile of the fit_value.
 #' Defaults to 0.1.
 #'
@@ -22,7 +25,8 @@
 #' @export
 
 update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
-                         quantile = 0.1, fit_col = "fit", best_pars = NULL) {
+                         replace = FALSE, quantile = 0.1, fit_col = "fit",
+                         best_pars = NULL) {
 
   if (is.null(param)) {
     param_column_names <- get_param_column_names()
@@ -43,7 +47,7 @@ update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
   # fit_value
   min_max <- pars |>
     dplyr::filter(fit_value != na_value) |>
-    dplyr::group_by(sim_id, name) |>
+    dplyr::group_by(sim_id, group, name) |>
     dplyr::filter(fit_value <= quantile(fit_value, quantile)) |>
     dplyr::summarise(min = min(parameter_value),
                      max = max(parameter_value), .groups = "drop")
@@ -52,12 +56,17 @@ update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
     if (is.na(best_pars$group[i])) {
       idx <- grepl(best_pars$name[i], param$name) &
         grepl(best_pars$model[i], param$model)
+      j <- which(min_max$name == best_pars$name[i] &
+                   min_max$sim_id == best_pars$sim_id[i])
     } else {
       idx <- grepl(best_pars$name[i], param$name) &
         grepl(best_pars$model[i], param$model) &
         grepl(best_pars$group[i], param$group)
+      j <- which(min_max$name == best_pars$name[i] &
+                   min_max$sim_id == best_pars$sim_id[i] &
+                   min_max$group == best_pars$group[i])
+
     }
-    j <- which(min_max$name == best_pars$name[i] & min_max$sim_id == best_pars$sim_id[i])
     if (sum(idx) == 0)
       stop("Parameter ", best_pars$name[i], " not found in param")
 
@@ -75,13 +84,18 @@ update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
   if (is.null(aeme)) {
     return(param)
   } else {
-    old_pars <- AEME::parameters(aeme)
-    if (nrow(old_pars) > 0) {
-      par_diff <- dplyr::anti_join(param, old_pars, by = c("model", "name"))
-      param <- dplyr::bind_rows(par_diff, param) |>
-        dplyr::arrange(model, name)
+    if (replace) {
+      AEME::parameters(aeme) <- param
+    } else {
+      old_pars <- AEME::parameters(aeme)
+      if (nrow(old_pars) > 0) {
+        par_diff <- dplyr::anti_join(old_pars, param, by = c("model", "name",
+                                                             "group"))
+        param <- dplyr::bind_rows(par_diff, param) |>
+          dplyr::arrange(model, group, name)
+      }
+      AEME::parameters(aeme) <- param
     }
-    AEME::parameters(aeme) <- param
     return(aeme)
   }
 }
