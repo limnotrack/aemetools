@@ -9,6 +9,7 @@ update_param(
   param = NULL,
   na_value = NULL,
   aeme = NULL,
+  replace = FALSE,
   quantile = 0.1,
   fit_col = "fit",
   best_pars = NULL
@@ -27,6 +28,10 @@ NULL, the value is extracted from \code{calib$calibration_metadata$na_value}.}
 \item{aeme}{aeme; object. Defaults to NULL. When NULL, a dataframe of the
 updated parameter values is returned. When provided, the updated parameter
 values are added to the aeme object and the aeme object is returned.}
+
+\item{replace}{Logical. If TRUE, the parameter values in the aeme object are
+replaced with the updated values. Defaults to FALSE. Only used when aeme is
+provided.}
 
 \item{quantile}{The quantile to use for the top quantile of the fit_value.
 Defaults to 0.1.}
