@@ -49,6 +49,7 @@
 <span>  param <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  na_value <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  aeme <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  replace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quantile <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>  fit_col <span class="op">=</span> <span class="st">"fit"</span>,</span>
 <span>  best_pars <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -78,6 +79,12 @@ NULL, the value is extracted from <code>calib$calibration_metadata$na_value</cod
 <dd><p>aeme; object. Defaults to NULL. When NULL, a dataframe of the
 updated parameter values is returned. When provided, the updated parameter
 values are added to the aeme object and the aeme object is returned.</p></dd>
+
+
+<dt id="arg-replace">replace<a class="anchor" aria-label="anchor" href="#arg-replace"></a></dt>
+<dd><p>Logical. If TRUE, the parameter values in the aeme object are
+replaced with the updated values. Defaults to FALSE. Only used when aeme is
+provided.</p></dd>
 
 
 <dt id="arg-quantile">quantile<a class="anchor" aria-label="anchor" href="#arg-quantile"></a></dt>
