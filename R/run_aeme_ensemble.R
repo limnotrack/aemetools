@@ -21,7 +21,7 @@ run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
                               na_value = 999) {
 
   # Check inputs
-  if (!is(aeme, "aeme")) stop("aeme must be an aeme object")
+  if (!is(aeme, "Aeme")) stop("aeme must be an Aeme object")
   # if (!is.character(sim_id)) stop("sim_id must be a character")
   # if (!is.data.frame(param)) stop("param must be a data frame")
 
