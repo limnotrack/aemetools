@@ -70,7 +70,8 @@ nz_shapefile <- nz_shapefile |>
 ```{r view-nz-shapefile}
 # View the shapefile data
 tm_shape(nz_shapefile, name = "Regional Council boundaries") +
-  tm_borders(col = "blue")
+  tm_borders(col = "blue") +
+  tm_fill(col = "C2023_V", title = "Region", alpha = 0.3, id = "C2023_V")
 
 ```
 
@@ -103,12 +104,12 @@ pnt
 
 ### Visualise the location of the lake
 
-We can visualise the location of the lake using the `tmap` package.
+We can visualise the location of the lake using the [`tmap`](https://r-tmap.github.io/tmap/) package.
 
 ```{r view-lake-location}
 # View the location of the lake in a map
 map <- tm_shape(pnt, name = "Lake") +
-  tm_markers(popup.vars = "title") 
+  tm_dots(col = "blue", size = 0.2, popup.vars = "title") 
 
 map +
   tm_view(set.view = 15)
@@ -145,12 +146,12 @@ df |>
 We can view the coverage of the DEM layers to see which layers intersect with
 our lake.
 
-```{r view-dem-coverage}
+```{r view-dem-coverage, warning = FALSE}
 # View the coverage of the DEM layers
 tm_shape(nz_dem_metadata, name = "DEM coverage") +
   tm_polygons(col = "red", border.col = "black", alpha = 0.1, id = "title") +
   tm_shape(pnt, name = "Lake") +
-  tm_markers(popup.vars = "title") 
+  tm_dots(col = "blue", size = 0.2, popup.vars = "title") 
 
 ```
 
@@ -182,7 +183,7 @@ tm_shape(dem_84) +
   tm_polygons(col = "red", border.col = "black", popup.vars = "title", alpha = 0.3) +
   # tm_borders(col = "red", popup.vars = "title") +
   tm_shape(pnt, name = "Lake") +
-  tm_markers(clustering = FALSE, popup.vars = "title") +
+  tm_dots(col = "blue", size = 0.2, popup.vars = "title") +
   tm_view(set.view = c(lon, lat, 7))
 
 ```
@@ -211,7 +212,7 @@ There is a discrepancy between the elevation values from the two layers. We will
 use the layer from the second layer because it is a higher resolution (1m) and 
 is from more recent data (2019).
 
-### Download the DEM raster data
+<!-- ### Download the DEM raster data
 
 We can download the LiDAR raster data for this layer and plot this over the lake
 to see which one works
@@ -226,6 +227,7 @@ tm_shape(dem, raster.downsample = FALSE, name = "LiDAR") +
   tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, 
             title = "Elevation (m)") 
 ```
+-->
 
 ## Aerial imagery
 
@@ -274,8 +276,7 @@ intersect with our lake.
 tm_shape(aerial_layers, name = "Aerial imagery coverage") +
   tm_polygons(col = "yellow", border.col = "black", alpha = 0.1, id = "title") +
   tm_shape(pnt, name = "Lake") +
-  tm_markers(popup.vars = "title")
-
+  tm_dots(col = "blue", size = 0.2, popup.vars = "title") 
 ```
 
 We can download two aerial images for the lake and compare them.
@@ -289,7 +290,7 @@ This is important to note as even though some layers may have a higher
 resolution, we may not need that resolution for our analysis. We can compare the
 
 
-```{r plot-aerial-image}
+```{r plot-aerial-image, warning = FALSE, message = FALSE}
 aerial1 <- get_raster_tile(x = pnt, layer_id = aerial_layers$layer_id[1],
                        zoom = 17) 
 aerial2 <- get_raster_tile(x = pnt, layer_id = aerial_layers$layer_id[4],
@@ -327,7 +328,7 @@ We can also download the [LINZ Aerial Basemap](https://basemaps.linz.govt.nz/)
 to see the coverage of the lake. You will need to sign up for a free API key to
 use this service.
 
-```{r linz-basemap}
+```{r linz-basemap, warning = FALSE, message = FALSE}
 # Get the LINZ basemap
 linz_basemap <- get_linz_basemap_tile(x = pnt, zoom = 16)
 
