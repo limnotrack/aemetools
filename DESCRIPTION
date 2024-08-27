@@ -61,7 +61,6 @@ Config/testthat/edition: 3
 Remotes: 
     github::limnotrack/AEME,
     github::limnotrack/rdrop2,
-URL: https://studious-enigma-z736ppg.pages.github.io/
 BugReports: https://github.com/limnotrack/aemetools/issues
 VignetteBuilder: knitr
 Depends: 
