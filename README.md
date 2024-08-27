@@ -1,22 +1,26 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# aemetools <a href="https://special-enigma-8p9lgre.pages.github.io/"><img src="man/figures/logo.png" align="right" height="120" alt="aemetools website" /></a>
+# aemetools <a href="https://limnotrack.github.io/aemetools/"><img src="man/figures/logo.png" alt="aemetools website" align="right" height="120"/></a>
 
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/limnotrack/aemetools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/limnotrack/aemetools?branch=main)
+
 <!-- badges: end -->
 
 aemetools is designed to work with
 [AEME](https://github.com/limnotrack/AEME/). It contains a range of
 functions to assist in setting up simulations for a lake site.
 
-Currently, you can use this to:
+This package was developed by [LimnoTrack](http://limnotrack.com/).
+<a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="120"/></a>
+
+Currently, this package can be used to:
 
 - Download meteorological data from
   [ERA5-Land](https://www.ecmwf.int/en/era5-land) for any point in New
@@ -38,6 +42,10 @@ You can install the development version of aemetools from
 devtools::install_github("limnotrack/aemetools")
 ```
 
+``` r
+library(aemetools)
+```
+
 ### Download NZ point meteorological data
 
 Currently, there is ERA5-Land data (~9km grid spacing) archived for New
@@ -51,7 +59,6 @@ below. There is a `parallel` switch which allows you to use multiple
 cores on your computer to speed up the download.
 
 ``` r
-library(aemetools)
 
 lon <- 176.2717
 lat <- -38.079
@@ -61,8 +68,8 @@ met <- get_era5_point(lat = lat, lon = lon, years = 2020:2021,
                       variables = variables, format = "aeme", parallel = TRUE)
 #> Checking if lat/lon point is in the grid...
 #> Point is in the grid.
-#> Downloading ERA5 variables in parallel... [2024-05-14 14:22:37]
-#> Finished downloading ERA5 variables! [2024-05-14 14:22:47]
+#> Downloading ERA5 variables in parallel... [2024-08-27 13:59:14]
+#> Finished downloading ERA5 variables! [2024-08-27 13:59:25]
 summary(met)
 #>       Date              MET_tmpair       MET_pprain      
 #>  Min.   :2020-01-01   Min.   : 4.848   Min.   : 0.00000  
@@ -82,7 +89,7 @@ met |>
   pivot_longer(cols = c(MET_tmpair, MET_pprain)) |> 
   ggplot(aes(x = Date, y = value)) +
   geom_line() +
-  facet_wrap(~name, scales = "free_y") +
+  facet_wrap(~name, scales = "free_y", ncol = 1) +
   theme_bw()
 ```
 
@@ -91,12 +98,12 @@ met |>
 ### Calibrate AEME model
 
 See the vignette
-[here](https://special-enigma-8p9lgre.pages.github.io/articles/calibrate-aeme.html)
+[here](https://limnotrack.github.io/aemetools/articles/calibrate-aeme.html).
 
 ### Sensitivity analysis for AEME models
 
 See the vignette
-[here](https://special-enigma-8p9lgre.pages.github.io/articles/sensitivity-analysis.html)
+[here](https://limnotrack.github.io/aemetools/articles/sensitivity-analysis.html).
 
 ### Hydrological modelling - Run GR4J model
 
@@ -123,10 +130,6 @@ inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
                          catchments = catchments, obs_flow = obs_flow, met = met,
                          lat = lat, FUN_MOD = FUN_MOD,
                          plot = TRUE)
-#> Warning: attribute variables are assumed to be spatially constant throughout
-#> all geometries
-#> Warning in make_GR_inputs(id = id, reaches = reaches, lake = lake, catchments =
-#> catchments, : NA values present. Selecting period with less NA's.
 ```
 
 <img src="man/figures/README-make-gr4j-inputs-1.png" width="100%" />
