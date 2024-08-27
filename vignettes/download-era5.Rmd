@@ -46,3 +46,27 @@ met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
                       variables = variables, format = "aeme", parallel = FALSE)
 summary(met)
 ```
+
+```{r plot-era5}
+
+library(ggplot2)
+library(tidyr)
+
+met |> 
+  pivot_longer(cols = c(MET_tmpair, MET_pprain)) |> 
+  ggplot(aes(x = Date, y = value)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y", ncol = 1) +
+  theme_bw()
+
+```
+
+By default, it will download all available variables.
+
+```
+lon <- 176.2717
+lat <- -38.079
+
+met <- get_era5_point(lat = lat, lon = lon, years = 1980:2023)
+summary(met)
+```
