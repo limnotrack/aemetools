@@ -34,7 +34,7 @@ Imports:
     parallel,
     patchwork,
     plyr,
-    rdrop2 (>= 0.8.2.1),
+    rdrop2 (>= 0.8.2.2),
     reshape2,
     rLakeAnalyzer,
     scales,
@@ -58,9 +58,9 @@ Suggests:
     testthat (>= 3.0.0),
     tmap
 Config/testthat/edition: 3
-Remotes: 
+Remotes:  
     github::limnotrack/AEME,
-    github::limnotrack/rdrop2,
+    github::karthik/rdrop2
 URL: https://limnotrack.github.io/aemetools/
 BugReports: https://github.com/limnotrack/aemetools/issues
 VignetteBuilder: knitr
