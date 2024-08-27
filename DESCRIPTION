@@ -6,9 +6,9 @@ Authors@R:
     email = "tadhg@limnotrack.com"),
     person("Chris", "McBride", role = "aut",
     email = "chris@limnotrack.com"))
-Description: Run simple hydrological models to generate inflow inputs for the
-    AEME package, download ERA5-Land data for any point in New Zealand, and
-    calibrate the AEME model ensemble.
+Description: Calibrate the AEME model ensemble, download ERA5-Land data for any 
+    point in New Zealand, and run simple hydrological models to generate inflow 
+    inputs for the AEME model ensemble.
 License: GPL (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
