@@ -61,6 +61,7 @@ Config/testthat/edition: 3
 Remotes: 
     github::limnotrack/AEME,
     github::limnotrack/rdrop2,
+URL: https://limnotrack.github.io/aemetools/
 BugReports: https://github.com/limnotrack/aemetools/issues
 VignetteBuilder: knitr
 Depends: 
