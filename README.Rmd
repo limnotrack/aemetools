@@ -13,23 +13,24 @@ knitr::opts_chunk$set(
 )
 ```
 
-# aemetools <a href="https://special-enigma-8p9lgre.pages.github.io/"><img src="man/figures/logo.png" align="right" height="120" alt="aemetools website" /></a>
+# aemetools <a href="https://limnotrack.github.io/aemetools/"><img src="man/figures/logo.png" alt="aemetools website" align="right" height="120"/></a>
 
 <!-- badges: start -->
 
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) [![R-CMD-check](https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/limnotrack/aemetools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/limnotrack/aemetools?branch=main)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable) [![R-CMD-check](https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/limnotrack/aemetools/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/limnotrack/aemetools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/limnotrack/aemetools?branch=main)
+
 <!-- badges: end -->
 
 aemetools is designed to work with [AEME](https://github.com/limnotrack/AEME/). It contains a range of functions to assist in setting up simulations for a lake site.
 
-Currently, you can use this to:
+This package was developed by [LimnoTrack](http://limnotrack.com/). <a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="120"/></a>
 
-  - Download meteorological data from [ERA5-Land](https://www.ecmwf.int/en/era5-land) for any point in New Zealand from 1999-2022, or download ERA5-Land netCDF files for any area in the world.
-  - Set up and run hydrological simulations using the suite of models from the [`airGR`](https://hydrogr.github.io/airGR/) package using catchment, reach and lake data.
-  - Conduct a sensitivity analysis on the parameters for the AEME models.
-  - Calibrate the AEME models using lake observational data.
+Currently, this package can be used to:
 
+-   Download meteorological data from [ERA5-Land](https://www.ecmwf.int/en/era5-land) for any point in New Zealand from 1999-2022, or download ERA5-Land netCDF files for any area in the world.
+-   Set up and run hydrological simulations using the suite of models from the [`airGR`](https://hydrogr.github.io/airGR/) package using catchment, reach and lake data.
+-   Conduct a sensitivity analysis on the parameters for the AEME models.
+-   Calibrate the AEME models using lake observational data.
 
 ```{r include=FALSE, echo=FALSE}
 data("era5_ref_table", package = "aemetools")
@@ -46,12 +47,15 @@ You can install the development version of aemetools from [GitHub](https://githu
 devtools::install_github("limnotrack/aemetools")
 ```
 
+```{r setup, warning=FALSE, message=FALSE}
+library(aemetools)
+```
+
 ### Download NZ point meteorological data
 
 Currently, there is ERA5-Land data (\~9km grid spacing) archived for New Zealand (166.5/-46.6/178.6/-34.5) for the time period 1980-2023 with the main meteorological variables (`r era5_names`) required to drive hydrological and hydrodynamic models. This can be easily downloaded using the example below. There is a `parallel` switch which allows you to use multiple cores on your computer to speed up the download.
 
 ```{r download-era5}
-library(aemetools)
 
 lon <- 176.2717
 lat <- -38.079
@@ -71,29 +75,24 @@ met |>
   pivot_longer(cols = c(MET_tmpair, MET_pprain)) |> 
   ggplot(aes(x = Date, y = value)) +
   geom_line() +
-  facet_wrap(~name, scales = "free_y") +
+  facet_wrap(~name, scales = "free_y", ncol = 1) +
   theme_bw()
 
 ```
 
-
-
 ### Calibrate AEME model
 
-See the vignette [here](https://special-enigma-8p9lgre.pages.github.io/articles/calibrate-aeme.html)
+See the vignette [here](https://limnotrack.github.io/aemetools/articles/calibrate-aeme.html).
 
 ### Sensitivity analysis for AEME models
 
-See the vignette [here](https://special-enigma-8p9lgre.pages.github.io/articles/sensitivity-analysis.html)
+See the vignette [here](https://limnotrack.github.io/aemetools/articles/sensitivity-analysis.html).
 
+### Hydrological modelling - Run GR4J model
 
+Here is simple example set up for one of the lake inflows into Lake Rotorua. First, the input for the model are generated using the stream ID (nzsegment), and spatial features (sf objects) of the reaches, lake and catchment (including sub-catchments), observed discharge (if available) meteorological data (air temperature and precipitation). It recursively creates an upstream network using the nzsegment, then combines the subcatchments of all the upstream reaches (`sf::st_union()`) to calculate the area of the catchment.
 
-### Hydrological modelling - Run GR4J model 
-
-Here is simple example set up for one of the lake inflows into Lake Rotorua. First, the input for the model are generated using the stream ID (nzsegment), and spatial features (sf objects) of the reaches, lake and catchment (including sub-catchments), observed discharge (if available) meteorological data (air temperature and precipitation).
-It recursively creates an upstream network using the nzsegment, then combines the subcatchments of all the upstream reaches (`sf::st_union()`) to calculate the area of the catchment.
-
-```{r make-gr4j-inputs, results='asis', fig.keep='all'}
+```{r make-gr4j-inputs, results='asis', fig.keep='all', warning=FALSE}
 data_dir <- system.file("extdata/hydro/", package = "aemetools")
 lake <- readRDS(file.path(data_dir, "lake.rds"))
 reaches <- readRDS(file.path(data_dir, "reaches.rds"))
@@ -113,7 +112,7 @@ inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
 
 Within the `airGR` package, there are calibration algorithms which allows you to calibrate the hydrological model if discharge data for the reach is available. The calibrated parameters can be passed to the `run_GR` function to run the selected model.
 
-```{r run-gr4j}
+```{r run-gr4j, warning=FALSE}
 #' airGR uses indices to run the model, so first we split our observed data in 
 #' half (0.5) for calibration and validation periods based on when the 
 #' observation data starts (which is provided in `inputs$data$start`).
@@ -138,4 +137,3 @@ output <- run_GR(inputs = inputs, param = param,
 # Plot the output
 plot(output, Qobs = inputs$data$Qmm[cal_idx])
 ```
-
