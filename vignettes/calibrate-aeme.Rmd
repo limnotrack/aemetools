@@ -67,11 +67,10 @@ model setup is working.
 
 ```{r}
 #| label: run-aeme-example
-#| fig.height: 8
+#| fig.height: 4
 #| fig.width: 8
 #| cache: false
-#| fig.cap: "Simple plots of surface and bottom water temperarure
-#| an lake level after running AEME with the glm_aed model."
+#| fig.cap: Water temperature contour plotfor the model output.
 
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
                  path = path)
@@ -85,7 +84,7 @@ dataframe. The parameters are stored in a data frame with the following columns:
 
 -   `model`: The model name
 
--   `file`: The file name of the model parameter file
+-   `file`: The file name of the model parameter file. For meteorological scaling variables, "met" is used, whereas for scaling factors for inflow and outflow, "inflow" an "outflow" is used accordingly.
 
 -   `name`: The parameter name
 
@@ -95,13 +94,18 @@ dataframe. The parameters are stored in a data frame with the following columns:
 
 -   `max`: The maximum value of the parameter
 
-Parameters to be used for the calibration. (man)
+-   `module`: The module of the parameter
+
+-   `group`: The group of the parameter. Only used for phytoplankton and zooplankton parameters. 
+
+Parameters to be used for the calibration.
 
 ```{r}
 #| label: load-parameters
 #| tbl-captions: "Parameters to be used for the calibration."
 utils::data("aeme_parameters", package = "AEME")
-aeme_parameters
+aeme_parameters|>
+  DT::datatable(options = list(pageLength = 4, scrollX = TRUE))
 
 ```
 
@@ -163,7 +167,6 @@ passed to the `calib_aeme` function. They are named according to the target
 variable.
 
 ```{r define-function-list}
-
 # Create list of functions
 FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = rmse)
 
@@ -182,7 +185,14 @@ follows:
 ```
 
 
-Here is an example of the control parameters:
+Here is an example of the control parameters for calibration, with a 
+value-to-reach of 0, 40 members in each population, maximum number of iterations
+of 400, a relative tolerance of 0.07, 25% of parameters in each population need 
+to be non-NA to be used as parents in the next generation, 10% of the children 
+parameters undergo random mutation, parallel processing is used, the file type
+for writing the results is CSV, the NA value is 999 and 2 cores are used for
+parallel processing. The control parameters are stored in the `ctrl` object
+which is then passed to the `calib_aeme` function.    
 
 ```{r define-control-parameters}
 ctrl <- create_control(method = "calib", VTR = 0, NP = 40, itermax = 400, 
