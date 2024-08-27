@@ -17,8 +17,14 @@ aemetools is designed to work with
 [AEME](https://github.com/limnotrack/AEME/). It contains a range of
 functions to assist in setting up simulations for a lake site.
 
-This package was developed by [LimnoTrack](http://limnotrack.com/).
+## Development
+
+This package was developed by [LimnoTrack](http://limnotrack.com/) as
+part of the Lake Ecosystem Restoration New Zealan Modelling Platform
+(LERNZmp) project.
 <a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"/></a>
+
+## Overview
 
 Currently, this package can be used to:
 
@@ -68,8 +74,8 @@ met <- get_era5_point(lat = lat, lon = lon, years = 2020:2021,
                       variables = variables, format = "aeme", parallel = TRUE)
 #> Checking if lat/lon point is in the grid...
 #> Point is in the grid.
-#> Downloading ERA5 variables in parallel... [2024-08-27 14:10:43]
-#> Finished downloading ERA5 variables! [2024-08-27 14:10:55]
+#> Downloading ERA5 variables in parallel... [2024-08-27 14:14:41]
+#> Finished downloading ERA5 variables! [2024-08-27 14:14:52]
 summary(met)
 #>       Date              MET_tmpair       MET_pprain      
 #>  Min.   :2020-01-01   Min.   : 4.848   Min.   : 0.00000  

@@ -23,7 +23,11 @@ knitr::opts_chunk$set(
 
 aemetools is designed to work with [AEME](https://github.com/limnotrack/AEME/). It contains a range of functions to assist in setting up simulations for a lake site.
 
-This package was developed by [LimnoTrack](http://limnotrack.com/). <a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"/></a>
+## Development
+
+This package was developed by [LimnoTrack](http://limnotrack.com/) as part of the Lake Ecosystem Restoration New Zealan Modelling Platform (LERNZmp) project. <a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"/></a>
+
+## Overview
 
 Currently, this package can be used to:
 
