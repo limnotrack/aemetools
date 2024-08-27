@@ -84,7 +84,9 @@ dataframe. The parameters are stored in a data frame with the following columns:
 
 -   `model`: The model name
 
--   `file`: The file name of the model parameter file. For meteorological scaling variables, "met" is used, whereas for scaling factors for inflow and outflow, "inflow" an "outflow" is used accordingly.
+-   `file`: The file name of the model parameter file. For meteorological
+    scaling variables, "met" is used, whereas for scaling factors for inflow and
+    outflow, "inflow" an "outflow" is used accordingly.
 
 -   `name`: The parameter name
 
@@ -96,7 +98,8 @@ dataframe. The parameters are stored in a data frame with the following columns:
 
 -   `module`: The module of the parameter
 
--   `group`: The group of the parameter. Only used for phytoplankton and zooplankton parameters. 
+-   `group`: The group of the parameter. Only used for phytoplankton and
+    zooplankton parameters.
 
 Parameters to be used for the calibration.
 
@@ -120,8 +123,8 @@ aeme_parameters
 
 This dataframe can be passed to the `run_aeme_param` function to run AEME with
 the parameter values specified in the dataframe. This function is different to
-the `run_aeme` function in that it does not return an `aeme` object, but
-the model output is generate within the lake folder.
+the `run_aeme` function in that it does not return an `aeme` object, but the
+model output is generate within the lake folder.
 
 ```{r run-aeme-param}
 run_aeme_param(aeme = aeme, param = aeme_parameters,
@@ -134,7 +137,7 @@ run_aeme_param(aeme = aeme, param = aeme_parameters,
 ### Define fitness function
 
 First, we will define a function for the calibration function to use to
-calculate the fitness of the model. This function takes a dataframe as an 
+calculate the fitness of the model. This function takes a dataframe as an
 argument. The dataframe contains the observed data (`obs`) and the modelled data
 (`model`). The function should return a single value.
 
@@ -151,8 +154,8 @@ rmse <- function(df) {
 ```
 
 Different functions can be applied to different variables. For example, we can
-use the RMSE for the lake level and the mean absolute error (MAE) for the
-water temperature:
+use the RMSE for the lake level and the mean absolute error (MAE) for the water
+temperature:
 
 ```{r define-fitness-function-2}
 # Function to calculate fitness
@@ -162,9 +165,8 @@ mae <- function(df) {
 
 ```
 
-Then these would be combined into a named list of functions which will be 
-passed to the `calib_aeme` function. They are named according to the target
-variable.
+Then these would be combined into a named list of functions which will be passed
+to the `calib_aeme` function. They are named according to the target variable.
 
 ```{r define-function-list}
 # Create list of functions
@@ -172,27 +174,25 @@ FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = rmse)
 
 ```
 
-
 ### Define control parameters
 
 Next, we will define the control parameters for the calibration. The control
 parameters are generated using the `create_control` funtion and are then passed
-to the `calib_aeme` function. The control parameters for calibration are as 
+to the `calib_aeme` function. The control parameters for calibration are as
 follows:
 
 ```{r create-control-args, tidy=FALSE, printr.help.sections=c('arguments'), comment=''}
 ?create_control
 ```
 
-
-Here is an example of the control parameters for calibration, with a 
+Here is an example of the control parameters for calibration, with a
 value-to-reach of 0, 40 members in each population, maximum number of iterations
-of 400, a relative tolerance of 0.07, 25% of parameters in each population need 
-to be non-NA to be used as parents in the next generation, 10% of the children 
+of 400, a relative tolerance of 0.07, 25% of parameters in each population need
+to be non-NA to be used as parents in the next generation, 10% of the children
 parameters undergo random mutation, parallel processing is used, the file type
 for writing the results is CSV, the NA value is 999 and 2 cores are used for
 parallel processing. The control parameters are stored in the `ctrl` object
-which is then passed to the `calib_aeme` function.    
+which is then passed to the `calib_aeme` function.
 
 ```{r define-control-parameters}
 ctrl <- create_control(method = "calib", VTR = 0, NP = 40, itermax = 400, 
@@ -335,7 +335,7 @@ best_params
 ```
 
 The best parameter values can be used to run the model and compare the simulated
-values to the observed values. This can be done using the `run_aeme_param` 
+values to the observed values. This can be done using the `run_aeme_param`
 function.
 
 ```{r run-calibrated-model}
@@ -348,19 +348,15 @@ aeme <- run_aeme_param(aeme = aeme, path = path,
 The simulated values can be compared to the observed values using the
 `assess_model` function. This function takes the following arguments:
 
--   `aeme`: The `aeme` object which has observations and model
-    simulations.
+-   `aeme`: The `aeme` object which has observations and model simulations.
 -   `model`: The model to assess.
 -   `var_sim`: The variables to use for the assessment.
-
 
 The `assess_model` function returns:
 
 ```{r sa-aeme-args, tidy=FALSE, printr.help.sections=c('value'), comment=''}
 ?assess_model
 ```
-
-
 
 ```{r assess-calibated-model}
 
@@ -370,15 +366,14 @@ assess_model(aeme = aeme, model = model, var_sim = vars_sim)
 
 ### Visualise model performance
 
-The model performance can be visualised using the `plot_resid` function within 
-the AEME package. This returns a list of ggplot objects, a plot of residuals
-for each variable. This is a multi-panel plot displaying residuals for:
+The model performance can be visualised using the `plot_resid` function within
+the AEME package. This returns a list of ggplot objects, a plot of residuals for
+each variable. This is a multi-panel plot displaying residuals for:
 
 -   Observed vs. predicted values
 -   Residuals vs. predicted values
 -   Residuals vs. day of year
 -   Residuals vs. quantiles of the observed values
-
 
 ```{r plot-residuals}
 pl <- plot_resid(aeme = aeme, model = model, var_sim = vars_sim)
