@@ -80,7 +80,7 @@ models. This can be easily downloaded using the example below. There is
 a <code>parallel</code> switch which allows you to use multiple cores on
 your computer to speed up the download.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://studious-enigma-z736ppg.pages.github.io/" class="external-link">aemetools</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://limnotrack.github.io/aemetools/" class="external-link">aemetools</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lon</span> <span class="op">&lt;-</span> <span class="fl">176.2717</span></span>
 <span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">38.079</span></span>
@@ -90,8 +90,8 @@ your computer to speed up the download.</p>
 <span>                      variables <span class="op">=</span> <span class="va">variables</span>, format <span class="op">=</span> <span class="st">"aeme"</span>, parallel <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Checking if lat/lon point is in the grid...</span></span>
 <span><span class="co">#&gt; Point is in the grid.</span></span>
-<span><span class="co">#&gt; Downloading ERA5 variables... [2024-08-15 19:39:50] (Have you tried parallelising?)</span></span>
-<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-08-15 19:40:03]</span></span>
+<span><span class="co">#&gt; Downloading ERA5 variables... [2024-08-27 02:11:16] (Have you tried parallelising?)</span></span>
+<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-08-27 02:11:28]</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Date              MET_tmpair       MET_pprain     </span></span>
 <span><span class="co">#&gt;  Min.   :2000-01-01   Min.   : 3.567   Min.   : 0.0000  </span></span>
@@ -100,6 +100,24 @@ your computer to speed up the download.</p>
 <span><span class="co">#&gt;  Mean   :2000-12-31   Mean   :11.967   Mean   : 6.3207  </span></span>
 <span><span class="co">#&gt;  3rd Qu.:2001-07-01   3rd Qu.:14.835   3rd Qu.: 6.9353  </span></span>
 <span><span class="co">#&gt;  Max.   :2001-12-31   Max.   :19.837   Max.   :89.4112</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">met</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">MET_tmpair</span>, <span class="va">MET_pprain</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Date</span>, y <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">name</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="download-era5_files/figure-html/plot-era5-1.png" width="700"></p>
+<p>By default, it will download all available variables.</p>
+<pre><code><span><span class="va">lon</span> <span class="op">&lt;-</span> <span class="fl">176.2717</span></span>
+<span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">38.079</span></span>
+<span></span>
+<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_era5_point.html">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">1980</span><span class="op">:</span><span class="fl">2023</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span></code></pre>
 </div>
   </main>
 </div>
