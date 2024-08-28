@@ -14,7 +14,8 @@
 #'  to calculate model fit. If NULL, uses mean absolute error (MAE).
 #'
 #' @importFrom AEME lake
-#' @importFrom parallel makeCluster stopCluster detectCores
+#' @importFrom parallel stopCluster clusterExport parLapply
+#' @importFrom parallelly availableCores makeClusterPSOCK
 #' @importFrom utils write.csv write.table
 #' @importFrom stats runif
 #' @importFrom FME Latinhyper
@@ -144,7 +145,7 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
       param_df <- as.data.frame(param_df)
     }
     if (is.null(ctrl$ncore)) {
-      ctrl$ncore <- parallel::detectCores() - 1
+      ctrl$ncore <- parallelly::availableCores(omit = 1)
       if (ctrl$ncore > nrow(param_df)) ctrl$ncore <- nrow(param_df)
     }
 
@@ -157,13 +158,13 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
 
       temp_dirs <- make_temp_dir(m, lake_dir, n = ctrl$ncore)
       # list.files(temp_dirs[1], recursive = TRUE)
-      ncores <- min((parallel::detectCores() - 1), ctrl$ncore)
+      ncores <- min(c(parallelly::availableCores(omit = 1), ctrl$ncore))
       nmes <- names(ctrl$vars_sim)
       message("Running sensitivity analysis in parallel for ", m, " using ",
               ncores, " cores with ", nrow(param_df), " parameter sets [",
               format(Sys.time()), "]")
 
-      cl <- parallel::makeCluster(ncores)
+      cl <- parallelly::makeClusterPSOCK(ncores)
       on.exit(parallel::stopCluster(cl))
       varlist <- list("param", "aeme", "path", "m", "vars_sim",
                       "FUN_list", "model_controls", "var_indices", "temp_dirs",
