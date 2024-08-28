@@ -22,7 +22,7 @@ sensitivity analysis. There are arguments which are common to both methods:
 \item \code{na_value} value to replace NA values with in observations. Defaults to 999.
 \item \code{parallel} boolean; run calibration in parallel. Default to TRUE
 \item \code{ncore}: The number of cores to use for the calibration. This is only used
-if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
+if \code{parallel = TRUE}. Default to \code{parallelly::availableCores(omit = 1)}.
 }
 
 For calibration, the arguments are:

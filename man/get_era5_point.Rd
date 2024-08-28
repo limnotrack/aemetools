@@ -35,7 +35,7 @@ Defaults to "aeme".}
 to TRUE.}
 
 \item{ncores}{integer; number of cores to use for parallelisation. If
-missing, defaults to \code{min(c(parallel::detectCores() - 1, length(variables)))}}
+missing, defaults to \code{min(c(parallelly::availableCores(omit = 1), length(variables)))}}
 }
 \value{
 dataframe of daily ERA5 data.

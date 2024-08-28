@@ -12,6 +12,9 @@
 #' the function will use the parameters from the aeme object.
 #' @param na_value numeric; value to use for NA values. Default is 999.
 #'
+#' @importFrom parallelly availableCores makeClusterPSOCK
+#' @importFrom parallel parLapply clusterExport stopCluster
+#'
 #' @inherit AEME::run_aeme return
 #' @export
 #'
@@ -91,7 +94,7 @@ run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
     #                               keep_best_pars = TRUE)
 
     if (is.null(ncores)) {
-      ncores <- parallel::detectCores() - 1
+      ncores <- parallelly::availableCores(omit = 1)
       if (ncores > nrow(new_params)) ncores <- nrow(new_params)
     }
 
@@ -108,7 +111,7 @@ run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
       temp_dirs <- make_temp_dir(m, lake_dir, n = ncores)
       # list.files(temp_dirs[1], recursive = TRUE)
       tryCatch(parallel::stopCluster(cl), error = function(e) {})
-      cl <- parallel::makeCluster(ncores)
+      cl <- parallelly::makeClusterPSOCK(ncores)
       on.exit(parallel::stopCluster(cl))
       varlist <- list("param_list", "aeme", "path", "m", "model_pars",
                       "temp_dirs")

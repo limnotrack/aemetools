@@ -17,12 +17,12 @@
 #' @param parallel boolean; parallelise the download of ERA5 variables. Defaults
 #' to TRUE.
 #' @param ncores integer; number of cores to use for parallelisation. If
-#' missing, defaults to `min(c(parallel::detectCores() - 1, length(variables)))`
+#' missing, defaults to `min(c(parallelly::availableCores(omit = 1), length(variables)))`
 #'
 #' @importFrom sf st_as_sf
 #' @importFrom stars st_extract
-#' @importFrom parallel detectCores makeCluster stopCluster clusterExport
-#' parLapply
+#' @importFrom parallel stopCluster clusterExport parLapply
+#' @importFrom parallelly makeClusterPSOCK availableCores
 #' @importFrom dplyr filter mutate across
 #' @importFrom stats complete.cases na.exclude
 #'
@@ -79,9 +79,9 @@ get_era5_point <- function(lat, lon, years, variables = c("MET_tmpair",
 
   if (parallel & length(variables) == 1) {
     if (missing(ncores)) {
-      ncores <- min(c(parallel::detectCores() - 1, length(years)))
+      ncores <- min(c(parallelly::availableCores(omit = 1), length(years)))
     }
-    cl <- parallel::makeCluster(ncores)
+    cl <- parallelly::makeClusterPSOCK(ncores, autoStop = TRUE)
     on.exit({
       parallel::stopCluster(cl)
     })
@@ -98,9 +98,9 @@ get_era5_point <- function(lat, lon, years, variables = c("MET_tmpair",
     df <- do.call(rbind, out)
   } else if (parallel & length(variables) > 1) {
     if (missing(ncores)) {
-      ncores <- min(c(parallel::detectCores() - 1, length(variables)))
+      ncores <- min(c(parallelly::availableCores(omit = 1), length(variables)))
     }
-    cl <- parallel::makeCluster(ncores)
+    cl <- parallelly::makeClusterPSOCK(ncores, autoStop = TRUE)
     on.exit({
       parallel::stopCluster(cl)
     })
