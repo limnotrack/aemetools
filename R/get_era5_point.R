@@ -81,7 +81,7 @@ get_era5_point <- function(lat, lon, years, variables = c("MET_tmpair",
     if (missing(ncores)) {
       ncores <- min(c(parallelly::availableCores(omit = 1), length(years)))
     }
-    cl <- parallelly::makeClusterPSOCK(ncores, autoStop = TRUE)
+    cl <- parallelly::makeClusterPSOCK(ncores)
     on.exit({
       parallel::stopCluster(cl)
     })
@@ -100,7 +100,7 @@ get_era5_point <- function(lat, lon, years, variables = c("MET_tmpair",
     if (missing(ncores)) {
       ncores <- min(c(parallelly::availableCores(omit = 1), length(variables)))
     }
-    cl <- parallelly::makeClusterPSOCK(ncores, autoStop = TRUE)
+    cl <- parallelly::makeClusterPSOCK(ncores)
     on.exit({
       parallel::stopCluster(cl)
     })
