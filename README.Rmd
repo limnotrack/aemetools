@@ -25,7 +25,7 @@ aemetools is designed to work with [AEME](https://github.com/limnotrack/AEME/). 
 
 ## Development
 
-This package was developed by [LimnoTrack](http://limnotrack.com/) as part of the Lake Ecosystem Restoration New Zealan Modelling Platform (LERNZmp) project. <a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"/></a>
+This package was developed by [LimnoTrack](http://limnotrack.com/) as part of the Lake Ecosystem Restoration New Zealand Modelling Platform (LERNZmp) project. <a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"/></a>
 
 ## Overview
 
@@ -66,7 +66,7 @@ lat <- -38.079
 variables <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_point(lat = lat, lon = lon, years = 2020:2021,
-                      variables = variables, format = "aeme", parallel = TRUE)
+                      variables = variables)
 summary(met)
 ```
 
