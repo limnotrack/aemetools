@@ -24,14 +24,12 @@ era5_names <- paste0(tolower(era5_ref_table$variable[-1]), collapse = ", ")
 
 ### Download NZ point meteorological data
 
-Currently, there is 
+Currently, there are 
 [ERA5-Land data](https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land) 
 (\~9km grid spacing) archived for New Zealand (166.5/-46.6/178.6/-34.5)
 for the time period 1980-2023 with the main meteorological variables
 (`r era5_names`) required to drive hydrological and hydrodynamic models. This
-can be easily downloaded using the example below. There is a `parallel` switch 
-which allows you to use multiple cores on your computer to speed up the 
-download.
+can be easily downloaded using the example below. 
 
 ```{r setup}
 library(aemetools)
@@ -43,7 +41,7 @@ lat <- -38.079
 variables <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
-                      variables = variables, format = "aeme", parallel = FALSE)
+                      variables = variables)
 summary(met)
 ```
 
@@ -63,10 +61,58 @@ met |>
 
 By default, it will download all available variables.
 
-```
+```{r download-era5-all}
 lon <- 176.2717
 lat <- -38.079
 
-met <- get_era5_point(lat = lat, lon = lon, years = 1980:2023)
+met <- get_era5_point(lat = lat, lon = lon, years = 2022:2023)
 summary(met)
+```
+
+## Derive other meteorological variables
+
+The downloaded ERA5 data can be converted to other meteorological variables
+using the `AEME::expand_met()` function. Which will calculate the following
+variables:
+
+- `MET_tmpdew`: Dew point temperature (°C)
+- `MET_wndspd`: Wind speed (m/s) 
+- `MET_wnddir`: Wind direction (°)
+- `MET_radlwd`: Longwave radiation (W/m²)
+- `MET_cldcvr`: Cloud cover (fraction)
+- `MET_prmslp`: Mean sea level pressure (Pa)
+- `MET_humrel`: Relative humidity (%)
+- `MET_prvapr`: Vapour pressure (Pa)
+
+To use this function, you will need to provide the latitude, longitude, and
+elevation of the site. Elevation is required to calculate the mean sea level
+pressure and cloud cover. 
+
+We can access the elevation data using the `get_dem_value()` function. This 
+function uses the LINZ data service to obtain the elevation value for a
+given latitude and longitude using the national 8m digital elevation model (DEM)
+layer (ID: 51768).
+
+This requires a LINZ API key which can be obtained by visiting the
+[LINZ website](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/) 
+and registering for an account. Then adding it to your R session using the
+`add_linz_key()` function.
+
+```{r get-dem}
+
+elev <- get_dem_value(lat = lat, lon = lon)
+elev
+
+```
+
+
+ 
+
+
+
+
+```{r expand-era5}
+met <- AEME::expand_met(met, lat = lat, lon = lon, elev = elev)
+summary(met)
+
 ```
