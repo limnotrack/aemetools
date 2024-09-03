@@ -35,7 +35,6 @@ Imports:
     parallelly,
     patchwork,
     plyr,
-    rdrop2 (>= 0.8.2.2),
     reshape2,
     rLakeAnalyzer,
     scales,
