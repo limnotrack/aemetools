@@ -20,7 +20,7 @@ functions to assist in setting up simulations for a lake site.
 ## Development
 
 This package was developed by [LimnoTrack](http://limnotrack.com/) as
-part of the Lake Ecosystem Restoration New Zealan Modelling Platform
+part of the Lake Ecosystem Restoration New Zealand Modelling Platform
 (LERNZmp) project.
 <a href="http://limnotrack.com/"><img src="man/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"/></a>
 
@@ -71,18 +71,14 @@ lat <- -38.079
 variables <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_point(lat = lat, lon = lon, years = 2020:2021,
-                      variables = variables, format = "aeme", parallel = TRUE)
-#> Checking if lat/lon point is in the grid...
-#> Point is in the grid.
-#> Downloading ERA5 variables in parallel... [2024-08-27 14:14:41]
-#> Finished downloading ERA5 variables! [2024-08-27 14:14:52]
+                      variables = variables)
 summary(met)
 #>       Date              MET_tmpair       MET_pprain      
 #>  Min.   :2020-01-01   Min.   : 4.848   Min.   : 0.00000  
-#>  1st Qu.:2020-07-01   1st Qu.: 9.699   1st Qu.: 0.08203  
-#>  Median :2020-12-31   Median :12.729   Median : 0.83959  
+#>  1st Qu.:2020-07-01   1st Qu.: 9.699   1st Qu.: 0.08205  
+#>  Median :2020-12-31   Median :12.729   Median : 0.83960  
 #>  Mean   :2020-12-31   Mean   :12.845   Mean   : 5.10542  
-#>  3rd Qu.:2021-07-01   3rd Qu.:15.782   3rd Qu.: 5.73168  
+#>  3rd Qu.:2021-07-01   3rd Qu.:15.782   3rd Qu.: 5.73165  
 #>  Max.   :2021-12-31   Max.   :22.176   Max.   :53.44960
 ```
 
