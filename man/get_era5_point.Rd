@@ -10,9 +10,8 @@ get_era5_point(
   years,
   variables = c("MET_tmpair", "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", "MET_pprain",
     "MET_ppsnow", "MET_prsttn", "MET_radswd"),
-  format = "aeme",
-  parallel = TRUE,
-  ncores
+  api_url = "http://170.64.143.18:80",
+  api_key = NULL
 )
 }
 \arguments{
@@ -28,14 +27,10 @@ downloaded. Defaults to all available variables: c("MET_tmpair",
 "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", "MET_pprain", "MET_ppsnow",
 "MET_prsttn", "MET_radswd").}
 
-\item{format}{string; the format for column headers. Can be "aeme" or "ler".
-Defaults to "aeme".}
+\item{api_url}{character; URL to the API endpoint. Default is
+"http://170.64.143.18:80"}
 
-\item{parallel}{boolean; parallelise the download of ERA5 variables. Defaults
-to TRUE.}
-
-\item{ncores}{integer; number of cores to use for parallelisation. If
-missing, defaults to \code{min(c(parallelly::availableCores(omit = 1), length(variables)))}}
+\item{api_key}{character; API key to access the data.}
 }
 \value{
 dataframe of daily ERA5 data.
