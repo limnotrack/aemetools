@@ -41,7 +41,6 @@ test_that("running GLM & GOTM works with params", {
   gotm_inf1 <- read.delim(gotm_inf_file, header = FALSE)
   gotm_outf1 <- read.delim(gotm_outf_file, header = FALSE)
 
-  # utils::data("aeme_parameters_bgc", package = "aemetools")
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::mutate(value = dplyr::case_when(
@@ -167,7 +166,6 @@ test_that("running DYRESM works with params", {
   dy_outf1 <- read.delim(dy_outf_file, skip = 2)
 
 
-  # utils::data("aeme_parameters_bgc", package = "aemetools")
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::mutate(value = dplyr::case_when(
@@ -230,28 +228,20 @@ test_that("running GLM-AED works with bgc_params", {
                                model = model, model_controls = model_controls,
                                ext_elev = 5, use_bgc = TRUE)
 
-  # utils::data("aeme_parameters_bgc", package = "aemetools")
-  utils::data("glm_aed_parameters", package = "aemetools")
+  utils::data("glm_aed_parameters", package = "AEME")
   param <- glm_aed_parameters
-  # param <- dplyr::bind_rows(
-  #   # aeme_parameters_bgc,
-  #   glm_aed_parameters
-  # ) |>
-  #   dplyr::filter(model == "glm_aed")
-  # run_aeme_shiny(aeme = aeme, param = param, path = path,
-  #                model_controls = model_controls)
+  param <- param |>
+    dplyr::filter(grepl("aed2_carbon|aed2_oxygen|aed2_phytoplankton|aed2_nitrogen|aed2_organic_matter|aed2_phosphorus|phyto_data|zoop_params", name))
 
-  aeme <- run_aeme_param(aeme = aeme,
-                         model = model,
+  aeme <- run_aeme_param(aeme = aeme, model = model,
                          param = param, path = path,
                          model_controls = model_controls,
                          na_value = 999, return_aeme = TRUE)
 
   # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
   lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
+  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
+  file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 })
 
@@ -271,12 +261,12 @@ test_that("running GOTM-WET works with bgc_params", {
     ))
   model <- c("gotm_wet")
   aeme <- AEME::build_aeme(path = path, aeme = aeme, model = model,
-                               model_controls = model_controls,
-                               ext_elev = 5, use_bgc = TRUE)
+                           model_controls = model_controls,
+                           ext_elev = 5, use_bgc = TRUE)
 
-  utils::data("gotm_wet_parameters", package = "aemetools")
-  param <- gotm_wet_parameters
-
+  utils::data("gotm_wet_parameters", package = "AEME")
+  param <- gotm_wet_parameters |>
+    dplyr::filter(grepl("oxygen|phytoplankton|nitrogen|carbon|phytoplankton|zooplankton", module))
 
   aeme <- run_aeme_param(aeme = aeme,
                          model = model,
@@ -285,7 +275,7 @@ test_that("running GOTM-WET works with bgc_params", {
                          na_value = 999, return_aeme = TRUE)
 
   # AEME::plot_output(aeme, model = "gotm_wet")
-  lke <- AEME::lake(aeme)
+  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
                                     model, "output", "output.nc"))
@@ -308,7 +298,7 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
                                inf_factor = inf_factor, ext_elev = 5,
                                use_bgc = TRUE)
 
-  utils::data("gotm_wet_parameters", package = "aemetools")
+  utils::data("gotm_wet_parameters", package = "AEME")
   param <- gotm_wet_parameters |>
     dplyr::filter(module %in% c("oxygen", "phytoplankton"))
 
@@ -339,8 +329,8 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
   )
 
   # Run sensitivity analysis AEME model
-  sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
-                    model = model, ctrl = ctrl, model_controls = model_controls,
+  sim_id <- sa_aeme(aeme = aeme, path = path, param = param, model = model,
+                    ctrl = ctrl, model_controls = model_controls,
                     FUN_list = FUN_list)
 
   sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, path = path, boot = FALSE)
