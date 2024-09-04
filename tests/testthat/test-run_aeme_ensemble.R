@@ -20,7 +20,7 @@ test_that("can run an ensemble of AEME-GLM & GOTM in parallel", {
 
   # Run ensemble
   aeme <- run_aeme_ensemble(aeme = aeme, model = model, n = 5, path = path,
-                            parallel = TRUE)
+                            parallel = TRUE, ncore = 2)
 
   outp <- AEME::output(aeme)
   testthat::expect_true(outp$n_members == 5)
@@ -114,7 +114,7 @@ test_that("can run an ensemble of AEME-GLM in parallel and plot", {
 
   # Run ensemble
   aeme <- run_aeme_ensemble(aeme = aeme, model = model, n = 5, path = path,
-                            parallel = TRUE)
+                            parallel = TRUE, ncore = 2)
 
   outp <- AEME::output(aeme)
   testthat::expect_true(outp$n_members == 5)
