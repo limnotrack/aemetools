@@ -35,9 +35,7 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   }
 
   # Load AEME data
-  lke <- AEME::lake(aeme)
-  lakename <- tolower(lke[["name"]])
-  lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
+  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
   inp <- AEME::input(aeme)
   obs <- AEME::observations(aeme)
   obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
