@@ -68,7 +68,7 @@
 <div class="section level2">
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
-<p>This package was developed by <a href="http://limnotrack.com/" class="external-link">LimnoTrack</a> as part of the Lake Ecosystem Restoration New Zealan Modelling Platform (LERNZmp) project. <a href="http://limnotrack.com/" class="external-link"><img src="reference/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"></a></p>
+<p>This package was developed by <a href="http://limnotrack.com/" class="external-link">LimnoTrack</a> as part of the Lake Ecosystem Restoration New Zealand Modelling Platform (LERNZmp) project. <a href="http://limnotrack.com/" class="external-link"><img src="reference/figures/limnotrack_border.jpg" alt="LimnoTrack website" align="right" height="80"></a></p>
 </div>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -101,18 +101,14 @@
 <span><span class="va">variables</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MET_tmpair"</span>, <span class="st">"MET_pprain"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_era5_point.html">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span>,</span>
-<span>                      variables <span class="op">=</span> <span class="va">variables</span>, format <span class="op">=</span> <span class="st">"aeme"</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Checking if lat/lon point is in the grid...</span></span>
-<span><span class="co">#&gt; Point is in the grid.</span></span>
-<span><span class="co">#&gt; Downloading ERA5 variables in parallel... [2024-08-27 14:14:41]</span></span>
-<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-08-27 14:14:52]</span></span>
+<span>                      variables <span class="op">=</span> <span class="va">variables</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Date              MET_tmpair       MET_pprain      </span></span>
 <span><span class="co">#&gt;  Min.   :2020-01-01   Min.   : 4.848   Min.   : 0.00000  </span></span>
-<span><span class="co">#&gt;  1st Qu.:2020-07-01   1st Qu.: 9.699   1st Qu.: 0.08203  </span></span>
-<span><span class="co">#&gt;  Median :2020-12-31   Median :12.729   Median : 0.83959  </span></span>
+<span><span class="co">#&gt;  1st Qu.:2020-07-01   1st Qu.: 9.699   1st Qu.: 0.08205  </span></span>
+<span><span class="co">#&gt;  Median :2020-12-31   Median :12.729   Median : 0.83960  </span></span>
 <span><span class="co">#&gt;  Mean   :2020-12-31   Mean   :12.845   Mean   : 5.10542  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:2021-07-01   3rd Qu.:15.782   3rd Qu.: 5.73168  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:2021-07-01   3rd Qu.:15.782   3rd Qu.: 5.73165  </span></span>
 <span><span class="co">#&gt;  Max.   :2021-12-31   Max.   :22.176   Max.   :53.44960</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>

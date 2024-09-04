@@ -69,16 +69,14 @@
 <div class="section level3">
 <h3 id="download-nz-point-meteorological-data">Download NZ point meteorological data<a class="anchor" aria-label="anchor" href="#download-nz-point-meteorological-data"></a>
 </h3>
-<p>Currently, there is <a href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land" class="external-link">ERA5-Land
+<p>Currently, there are <a href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land" class="external-link">ERA5-Land
 data</a> (~9km grid spacing) archived for New Zealand
 (166.5/-46.6/178.6/-34.5) for the time period 1980-2023 with the main
 meteorological variables (air temperature, dewpoint temperature, wind
 u-vector at 10m, wind v-vector at 10m, total precipitation, snowfall,
 surface level pressure, downwelling shortwave radiation, downwelling
 longwave radiation) required to drive hydrological and hydrodynamic
-models. This can be easily downloaded using the example below. There is
-a <code>parallel</code> switch which allows you to use multiple cores on
-your computer to speed up the download.</p>
+models. This can be easily downloaded using the example below.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://limnotrack.github.io/aemetools/" class="external-link">aemetools</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -87,11 +85,7 @@ your computer to speed up the download.</p>
 <span><span class="va">variables</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MET_tmpair"</span>, <span class="st">"MET_pprain"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_era5_point.html">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2000</span><span class="op">:</span><span class="fl">2001</span>,</span>
-<span>                      variables <span class="op">=</span> <span class="va">variables</span>, format <span class="op">=</span> <span class="st">"aeme"</span>, parallel <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Checking if lat/lon point is in the grid...</span></span>
-<span><span class="co">#&gt; Point is in the grid.</span></span>
-<span><span class="co">#&gt; Downloading ERA5 variables... [2024-08-28 23:25:34] (Have you tried parallelising?)</span></span>
-<span><span class="co">#&gt; Finished downloading ERA5 variables! [2024-08-28 23:25:49]</span></span>
+<span>                      variables <span class="op">=</span> <span class="va">variables</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Date              MET_tmpair       MET_pprain     </span></span>
 <span><span class="co">#&gt;  Min.   :2000-01-01   Min.   : 3.567   Min.   : 0.0000  </span></span>
@@ -113,13 +107,115 @@ your computer to speed up the download.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="download-era5_files/figure-html/plot-era5-1.png" width="700"></p>
 <p>By default, it will download all available variables.</p>
-<pre><code><span><span class="va">lon</span> <span class="op">&lt;-</span> <span class="fl">176.2717</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lon</span> <span class="op">&lt;-</span> <span class="fl">176.2717</span></span>
 <span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">38.079</span></span>
 <span></span>
-<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_era5_point.html">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">1980</span><span class="op">:</span><span class="fl">2023</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span></code></pre>
+<span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_era5_point.html">get_era5_point</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, years <span class="op">=</span> <span class="fl">2022</span><span class="op">:</span><span class="fl">2023</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       Date              MET_tmpair       MET_tmpdew       MET_wnduvu     </span></span>
+<span><span class="co">#&gt;  Min.   :2022-01-01   Min.   : 4.725   Min.   :-2.106   Min.   :-5.5620  </span></span>
+<span><span class="co">#&gt;  1st Qu.:2022-07-02   1st Qu.: 9.901   1st Qu.: 6.845   1st Qu.:-1.3116  </span></span>
+<span><span class="co">#&gt;  Median :2022-12-31   Median :12.940   Median : 9.723   Median : 0.1794  </span></span>
+<span><span class="co">#&gt;  Mean   :2022-12-31   Mean   :12.899   Mean   : 9.755   Mean   : 0.2274  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:2023-07-01   3rd Qu.:15.961   3rd Qu.:12.792   3rd Qu.: 1.8215  </span></span>
+<span><span class="co">#&gt;  Max.   :2023-12-31   Max.   :21.905   Max.   :21.368   Max.   : 5.7673  </span></span>
+<span><span class="co">#&gt;    MET_wnduvv         MET_pprain         MET_ppsnow          MET_prsttn   </span></span>
+<span><span class="co">#&gt;  Min.   :-4.82260   Min.   :  0.0000   Min.   :0.000e+00   Min.   :93756  </span></span>
+<span><span class="co">#&gt;  1st Qu.:-1.09642   1st Qu.:  0.1583   1st Qu.:0.000e+00   1st Qu.:96870  </span></span>
+<span><span class="co">#&gt;  Median : 0.18915   Median :  1.6596   Median :0.000e+00   Median :97352  </span></span>
+<span><span class="co">#&gt;  Mean   : 0.07119   Mean   :  8.1192   Mean   :1.521e-16   Mean   :97314  </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 1.25388   3rd Qu.: 10.5166   3rd Qu.:0.000e+00   3rd Qu.:97879  </span></span>
+<span><span class="co">#&gt;  Max.   : 5.16590   Max.   :106.9180   Max.   :3.470e-15   Max.   :99473  </span></span>
+<span><span class="co">#&gt;    MET_radswd     </span></span>
+<span><span class="co">#&gt;  Min.   :  8.615  </span></span>
+<span><span class="co">#&gt;  1st Qu.: 93.090  </span></span>
+<span><span class="co">#&gt;  Median :150.059  </span></span>
+<span><span class="co">#&gt;  Mean   :164.618  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:229.137  </span></span>
+<span><span class="co">#&gt;  Max.   :386.774</span></span></code></pre></div>
 </div>
-  </main>
+<div class="section level2">
+<h2 id="derive-other-meteorological-variables">Derive other meteorological variables<a class="anchor" aria-label="anchor" href="#derive-other-meteorological-variables"></a>
+</h2>
+<p>The downloaded ERA5 data can be converted to other meteorological
+variables using the <code><a href="https://expert-guide-29ve1vw.pages.github.io/reference/expand_met.html" class="external-link">AEME::expand_met()</a></code> function. Which will
+calculate the following variables:</p>
+<ul>
+<li>
+<code>MET_tmpdew</code>: Dew point temperature (°C)</li>
+<li>
+<code>MET_wndspd</code>: Wind speed (m/s)</li>
+<li>
+<code>MET_wnddir</code>: Wind direction (°)</li>
+<li>
+<code>MET_radlwd</code>: Longwave radiation (W/m²)</li>
+<li>
+<code>MET_cldcvr</code>: Cloud cover (fraction)</li>
+<li>
+<code>MET_prmslp</code>: Mean sea level pressure (Pa)</li>
+<li>
+<code>MET_humrel</code>: Relative humidity (%)</li>
+<li>
+<code>MET_prvapr</code>: Vapour pressure (Pa)</li>
+</ul>
+<p>To use this function, you will need to provide the latitude,
+longitude, and elevation of the site. Elevation is required to calculate
+the mean sea level pressure and cloud cover.</p>
+<p>We can access the elevation data using the
+<code><a href="../reference/get_dem_value.html">get_dem_value()</a></code> function. This function uses the LINZ data
+service to obtain the elevation value for a given latitude and longitude
+using the national 8m digital elevation model (DEM) layer (ID:
+51768).</p>
+<p>This requires a LINZ API key which can be obtained by visiting the <a href="https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/" class="external-link">LINZ
+website</a> and registering for an account. Then adding it to your R
+session using the <code><a href="../reference/add_linz_key.html">add_linz_key()</a></code> function.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">elev</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dem_value.html">get_dem_value</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span><span class="op">)</span></span>
+<span><span class="va">elev</span></span>
+<span><span class="co">#&gt; [1] 282</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://expert-guide-29ve1vw.pages.github.io/reference/expand_met.html" class="external-link">expand_met</a></span><span class="op">(</span><span class="va">met</span>, lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, elev <span class="op">=</span> <span class="va">elev</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       Date              MET_radswd        MET_radlwd      MET_cldcvr    </span></span>
+<span><span class="co">#&gt;  Min.   :2022-01-01   Min.   :  8.615   Min.   :186.7   Min.   :0.1580  </span></span>
+<span><span class="co">#&gt;  1st Qu.:2022-07-02   1st Qu.: 93.090   1st Qu.:248.6   1st Qu.:0.5600  </span></span>
+<span><span class="co">#&gt;  Median :2022-12-31   Median :150.059   Median :288.2   Median :0.7300  </span></span>
+<span><span class="co">#&gt;  Mean   :2022-12-31   Mean   :164.618   Mean   :291.7   Mean   :0.7058  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:2023-07-01   3rd Qu.:229.137   3rd Qu.:332.2   3rd Qu.:0.8738  </span></span>
+<span><span class="co">#&gt;  Max.   :2023-12-31   Max.   :386.774   Max.   :410.8   Max.   :1.0000  </span></span>
+<span><span class="co">#&gt;    MET_tmpair       MET_airmax   MET_airmin   MET_dewmax   MET_dewmin</span></span>
+<span><span class="co">#&gt;  Min.   : 4.725   Min.   :0    Min.   :0    Min.   :0    Min.   :0   </span></span>
+<span><span class="co">#&gt;  1st Qu.: 9.901   1st Qu.:0    1st Qu.:0    1st Qu.:0    1st Qu.:0   </span></span>
+<span><span class="co">#&gt;  Median :12.941   Median :0    Median :0    Median :0    Median :0   </span></span>
+<span><span class="co">#&gt;  Mean   :12.899   Mean   :0    Mean   :0    Mean   :0    Mean   :0   </span></span>
+<span><span class="co">#&gt;  3rd Qu.:15.961   3rd Qu.:0    3rd Qu.:0    3rd Qu.:0    3rd Qu.:0   </span></span>
+<span><span class="co">#&gt;  Max.   :21.905   Max.   :0    Max.   :0    Max.   :0    Max.   :0   </span></span>
+<span><span class="co">#&gt;    MET_humrel      MET_tmpdew       MET_prvapr       MET_prsttn   </span></span>
+<span><span class="co">#&gt;  Min.   :50.18   Min.   :-2.106   Min.   : 5.242   Min.   :93756  </span></span>
+<span><span class="co">#&gt;  1st Qu.:74.78   1st Qu.: 6.845   1st Qu.: 9.918   1st Qu.:96870  </span></span>
+<span><span class="co">#&gt;  Median :82.01   Median : 9.723   Median :12.059   Median :97352  </span></span>
+<span><span class="co">#&gt;  Mean   :81.77   Mean   : 9.755   Mean   :12.455   Mean   :97314  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:89.29   3rd Qu.:12.792   3rd Qu.:14.781   3rd Qu.:97879  </span></span>
+<span><span class="co">#&gt;  Max.   :99.71   Max.   :21.368   Max.   :25.445   Max.   :99473  </span></span>
+<span><span class="co">#&gt;    MET_prmslp       MET_wndspd      MET_wnddir        MET_wnduvu     </span></span>
+<span><span class="co">#&gt;  Min.   : 96901   Min.   :0.079   Min.   :  0.909   Min.   :-5.5620  </span></span>
+<span><span class="co">#&gt;  1st Qu.:100164   1st Qu.:1.517   1st Qu.: 77.121   1st Qu.:-1.3120  </span></span>
+<span><span class="co">#&gt;  Median :100663   Median :2.375   Median :168.021   Median : 0.1795  </span></span>
+<span><span class="co">#&gt;  Mean   :100637   Mean   :2.502   Mean   :173.417   Mean   : 0.2274  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:101219   3rd Qu.:3.388   3rd Qu.:261.986   3rd Qu.: 1.8213  </span></span>
+<span><span class="co">#&gt;  Max.   :102904   Max.   :7.405   Max.   :358.476   Max.   : 5.7670  </span></span>
+<span><span class="co">#&gt;    MET_wnduvv        MET_pprain         MET_ppsnow</span></span>
+<span><span class="co">#&gt;  Min.   :-4.8230   Min.   :  0.0000   Min.   :0   </span></span>
+<span><span class="co">#&gt;  1st Qu.:-1.0967   1st Qu.:  0.1585   1st Qu.:0   </span></span>
+<span><span class="co">#&gt;  Median : 0.1890   Median :  1.6595   Median :0   </span></span>
+<span><span class="co">#&gt;  Mean   : 0.0712   Mean   :  8.1192   Mean   :0   </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 1.2537   3rd Qu.: 10.5162   3rd Qu.:0   </span></span>
+<span><span class="co">#&gt;  Max.   : 5.1660   Max.   :106.9180   Max.   :0</span></span></code></pre></div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
