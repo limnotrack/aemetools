@@ -7,20 +7,19 @@
 #' @param dist character; distribution to sample from. Default is "norm". Other
 #' options are "unif".
 #' @param parallel logical; whether to run in parallel. Default is FALSE.
-#' @param ncores numeric; number of cores to use. Default is NULL.
 #' @param param data.frame; parameter values to use. Default is NULL. If NULL,
 #' the function will use the parameters from the aeme object.
 #' @param na_value numeric; value to use for NA values. Default is 999.
 #'
-#' @importFrom parallelly availableCores makeClusterPSOCK
-#' @importFrom parallel parLapply clusterExport stopCluster
+#' @importFrom parallel parLapply clusterExport stopCluster detectCores
+#' makeCluster
 #'
 #' @inherit AEME::run_aeme return
 #' @export
 #'
 
 run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
-                              parallel = FALSE, ncores = NULL, param = NULL,
+                              parallel = FALSE, ncore = NULL, param = NULL,
                               na_value = 999) {
 
   # Check inputs
@@ -93,13 +92,13 @@ run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
     #                               ctrl = ctrl, add_mutation = FALSE,
     #                               keep_best_pars = TRUE)
 
-    if (is.null(ncores)) {
-      ncores <- parallelly::availableCores(omit = 1)
-      if (ncores > nrow(new_params)) ncores <- nrow(new_params)
+    if (is.null(ncore)) {
+      ncore <- (parallel::detectCores() - 1)
+      if (ncore > nrow(new_params)) ncore <- nrow(new_params)
     }
 
-    # Correct N of splits if ncores is greater than number of parameters
-    splts <- ncores # min(ctrl$NP, ncores)
+    # Correct N of splits if ncore is greater than number of parameters
+    splts <- ncore # min(ctrl$NP, ncore)
 
     suppressWarnings({
       param_list <- split(new_params, 1:splts)
@@ -108,17 +107,17 @@ run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
     # Loop through each of the parameters
     if (parallel) {
 
-      temp_dirs <- make_temp_dir(m, lake_dir, n = ncores)
+      temp_dirs <- make_temp_dir(m, lake_dir, n = ncore)
       # list.files(temp_dirs[1], recursive = TRUE)
       tryCatch(parallel::stopCluster(cl), error = function(e) {})
-      cl <- parallelly::makeClusterPSOCK(ncores)
+      cl <- parallel::makeCluster(ncore)
       on.exit(parallel::stopCluster(cl))
       varlist <- list("param_list", "aeme", "path", "m", "model_pars",
                       "temp_dirs")
       parallel::clusterExport(cl, varlist = varlist,
                               envir = environment())
       message("Running an ensemble of ", m, " with ", n,
-              " members using ", ncores, " cores. ", "[",
+              " members using ", ncore, " cores. ", "[",
               format(Sys.time()), "]")
 
       # Run the ensemble in parallel

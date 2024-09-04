@@ -14,7 +14,7 @@
 #'  * `na_value` value to replace NA values with in observations. Defaults to 999.
 #'  * `parallel` boolean; run calibration in parallel. Default to TRUE
 #'  * `ncore`: The number of cores to use for the calibration. This is only used
-#'  if `parallel = TRUE`. Default to `parallelly::availableCores(omit = 1)`.
+#'  if `parallel = TRUE`. Default to `parallel::detectCores() - 1`.
 #'
 #'   For calibration, the arguments are:
 #' * `VTR` Value to be reached. The optimization process will stop if
@@ -96,7 +96,7 @@ create_control <- function(method, ...) {
   }
   parallel <- ifelse("parallel" %in% names(ls), ls$parallel, TRUE)
   ncore <- ifelse("ncore" %in% names(ls), ls$ncore,
-                  (parallelly::availableCores(omit = 1)))
+                  (parallel::detectCores() - 1))
 
 
   if (method == "calib") {
