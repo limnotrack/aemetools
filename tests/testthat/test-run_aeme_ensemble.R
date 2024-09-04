@@ -65,7 +65,7 @@ test_that("can run an ensemble of AEME-GLM in series", {
 
   ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
                          parallel = TRUE, file_type = "db",
-                         file_name = "results.db")
+                         file_name = "results_series.db")
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
   weights <- c("HYD_temp" = 10, "LKE_lvlwtr" = 1)
