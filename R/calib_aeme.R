@@ -26,8 +26,8 @@
 #' Requires the columns c("model", "file", "name", "value", "min", "max"). This
 #' is used to restart from a previous calibration.
 #'
-#' @importFrom parallel stopCluster clusterExport parLapply
-#' @importFrom parallelly makeClusterPSOCK availableCores
+#' @importFrom parallel stopCluster clusterExport parLapply makeCluster
+#' detectCores
 #' @importFrom utils write.csv write.table
 #' @importFrom stats runif
 #' @importFrom FME Latinhyper
@@ -130,7 +130,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
       tot_gen <- max(param_df$gen) + ctrl$ngen
     }
     if (is.null(ctrl$ncore)) {
-      ctrl$ncore <- parallelly::availableCores(omit = 1)
+      ctrl$ncore <- (parallel::detectCores() - 1)
       if (ctrl$ncore > nrow(start_param)) ctrl$ncore <- nrow(start_param)
     }
 
@@ -146,10 +146,10 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
 
       temp_dirs <- make_temp_dir(m, lake_dir, n = ctrl$ncore)
       # list.files(temp_dirs[1], recursive = TRUE)
-      ncores <- min((parallelly::availableCores(omit = 1)), ctrl$ncore, ctrl$NP)
+      ncores <- min((parallel::detectCores() - 1), ctrl$ncore, ctrl$NP)
       message("Calibrating in parallel for ", m, " using ", ncores, " cores...")
 
-      cl <- parallelly::makeClusterPSOCK(ncores)
+      cl <- parallel::makeCluster(ncores)
       on.exit(parallel::stopCluster(cl))
       varlist <- list("param", "aeme", "path", "m", "vars_sim", "FUN_list",
                       "model_controls", "var_indices", "temp_dirs","ctrl",

@@ -32,7 +32,6 @@ Imports:
     MASS,
     ncdf4,
     parallel,
-    parallelly,
     patchwork,
     plyr,
     reshape2,
