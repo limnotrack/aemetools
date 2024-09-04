@@ -67,7 +67,7 @@ sensitivity analysis. There are arguments which are common to both methods:</p><
 <li><p><code>na_value</code> value to replace NA values with in observations. Defaults to 999.</p></li>
 <li><p><code>parallel</code> boolean; run calibration in parallel. Default to TRUE</p></li>
 <li><p><code>ncore</code>: The number of cores to use for the calibration. This is only used
-if <code>parallel = TRUE</code>. Default to <code>parallelly::availableCores(omit = 1)</code>.</p></li>
+if <code>parallel = TRUE</code>. Default to <code>parallel::detectCores() - 1</code>.</p></li>
 </ul><p>For calibration, the arguments are:</p><ul><li><p><code>VTR</code> Value to be reached. The optimization process will stop if
 either the maximum number of iterations itermax is reached or the best
 parameter vector bestmem has found a value fn(bestmem) &lt;= VTR. Default to
