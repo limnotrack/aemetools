@@ -11,7 +11,7 @@ run_aeme_ensemble(
   dist = "norm",
   path = ".",
   parallel = FALSE,
-  ncores = NULL,
+  ncore = NULL,
   param = NULL,
   na_value = 999
 )
@@ -30,8 +30,6 @@ options are "unif".}
 \item{path}{filepath; where input files are located relative to `config`.}
 
 \item{parallel}{logical; whether to run in parallel. Default is FALSE.}
-
-\item{ncores}{numeric; number of cores to use. Default is NULL.}
 
 \item{param}{data.frame; parameter values to use. Default is NULL. If NULL,
 the function will use the parameters from the aeme object.}
