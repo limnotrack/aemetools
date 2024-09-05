@@ -276,8 +276,7 @@ test_that("running GOTM-WET works with bgc_params", {
 
   # AEME::plot_output(aeme, model = "gotm_wet")
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
+  file_chk <- file.exists(file.path(lake_dir,
                                     model, "output", "output.nc"))
   testthat::expect_true(file_chk)
 })
