@@ -27,12 +27,20 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
     model_controls <- config$model_controls
   }
 
+  # Add cheats for shinytest2
+  module <- NULL
+  name <- NULL
+  value <- NULL
+  min <- NULL
+  max <- NULL
+
   # param <- aeme_parameters
   cfg <- AEME::configuration(aeme)
   # Which models are not NULL in cfg
   models <- names(cfg)
+  models <- models[!models %in% c("model_controls")]
   names(models) <- c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET")
-  idx <- sapply(names(cfg), \(x) !is.null(cfg[[x]][["hydrodynamic"]]))
+  idx <- sapply(models, \(x) !is.null(cfg[[x]][["hydrodynamic"]]))
   models <- models[idx]
   param <- param |>
     dplyr::mutate(id = 1:dplyr::n())
@@ -64,7 +72,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
         shiny::tableOutput("table")
       )
     ),
-    actionButton("exitButton", "Exit App")
+    shiny::actionButton("exitButton", "Exit App")
   )
 
   # Server ----
@@ -74,8 +82,8 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
                                   update_tab = TRUE, tabs = NULL)
 
     # Exit button ----
-    observeEvent(input$exitButton, {
-      stopApp()
+    shiny::observeEvent(input$exitButton, {
+      shiny::stopApp()
     })
 
     # Create tabs for each module ----
@@ -108,7 +116,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
       reac$tabs <- do.call(shiny::tabsetPanel, myTabs)
     })
 
-    output$module_tabs = renderUI({
+    output$module_tabs = shiny::renderUI({
       shiny::validate(shiny::need(!is.null(reac$tabs),
                                   "Please select a model"))
       reac$tabs
@@ -121,7 +129,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
         reac$aeme <- AEME::build_aeme(path = path, aeme = reac$aeme,
                                           model = input$model,
                                           model_controls = model_controls,
-                                          inf_factor = inf_factor,
+                                          inf_factor = 1,
                                           ext_elev = 5,
                                           use_bgc = input$use_bgc)
         shiny::incProgress(amount = 0.9)
@@ -136,16 +144,16 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
         outp <- AEME::output(reac$aeme)
         mod_res <- lapply(input$model, \(m) {
           out <- run_aeme_param(aeme = reac$aeme,
-                                model = input$model,
+                                model = m,
                                 param = reac$df, path = path,
                                 model_controls = model_controls,
                                 na_value = 999, return_aeme = TRUE) |>
             AEME::output()
-          out[[m]]
+          out[["ens_001"]][[m]]
         })
         names(mod_res) <- input$model
         for (m in input$model) {
-          outp[[m]] <- mod_res[[m]]
+          outp[["ens_001"]][[m]] <- mod_res[[m]]
         }
         AEME::output(reac$aeme) <- outp
         shiny::incProgress(amount = 0.9)
@@ -167,7 +175,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
     # Update table ----
     output$table <- shiny::renderTable({
       reac$df |>
-        dplyr::select(name, value, min, max, description)
+        dplyr::select(name, value, min, max)
     })
 
     # Plot model output ----
@@ -187,7 +195,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
 
       outp <- AEME::output(reac$aeme)
       shiny::validate(
-        shiny::need(input$out_var %in% names(outp[[input$model]]),
+        shiny::need(input$out_var %in% names(outp[["ens_001"]][[input$model]]),
                     "This variable is not available.")
       )
       AEME::plot_output(aeme = reac$aeme, model = input$model,
