@@ -64,6 +64,9 @@ sensitivity analysis. There are arguments which are common to both methods:</p><
 <li><p><code>file_name</code> string; file name to write the output to. Defaults to
 "results.db" if <code>file_type</code> is "db" and "simulation_metadata.csv" if
 <code>file_type</code> is "csv".</p></li>
+<li><p><code>file_dir</code> string; directory to write the output to. Defaults to the
+directory "calib" in the current working directory. If the directory does
+not exist, it will be created.</p></li>
 <li><p><code>na_value</code> value to replace NA values with in observations. Defaults to 999.</p></li>
 <li><p><code>parallel</code> boolean; run calibration in parallel. Default to TRUE</p></li>
 <li><p><code>ncore</code>: The number of cores to use for the calibration. This is only used

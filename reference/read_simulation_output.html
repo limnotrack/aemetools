@@ -44,9 +44,9 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_simulation_output</span><span class="op">(</span><span class="va">ctrl</span>, path <span class="op">=</span> <span class="st">"."</span>, file <span class="op">=</span> <span class="cn">NULL</span>, sim_id <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_simulation_output</span><span class="op">(</span><span class="va">ctrl</span>, file <span class="op">=</span> <span class="cn">NULL</span>, sim_id <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">read_calib</span><span class="op">(</span><span class="va">ctrl</span>, path <span class="op">=</span> <span class="st">"."</span>, file <span class="op">=</span> <span class="cn">NULL</span>, sim_id <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">read_calib</span><span class="op">(</span><span class="va">ctrl</span>, file <span class="op">=</span> <span class="cn">NULL</span>, sim_id <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -57,10 +57,6 @@
 <dd><p>list; of controls for sensitivity analysis function created using
 the <code><a href="create_control.html">create_control</a></code> function. See <a href="create_control.html">create_control</a> for
 more details.</p></dd>
-
-
-<dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
-<dd><p>filepath; where input files are located relative to `config`.</p></dd>
 
 
 <dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
