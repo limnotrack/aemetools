@@ -15,9 +15,9 @@
 #' @importFrom DBI dbConnect dbDisconnect
 #'
 
-read_calib_meta <- function(file, path = ".") {
+read_calib_meta <- function(file, file_dir = "calib") {
 
-  file <- file.path(path, file)
+  file <- file.path(file_dir, file)
 
   if (!file.exists(file)) stop("File not found: ", file)
   type <- tools::file_ext(file)
@@ -28,7 +28,7 @@ read_calib_meta <- function(file, path = ".") {
     sim_meta <- dplyr::tbl(con, "calibration_metadata") |>
       as.data.frame()
   } else if (type == "csv") {
-    sim_meta <- read.csv(file.path(path, "calibration_metadata.csv"))
+    sim_meta <- read.csv(file.path(file_dir, "calibration_metadata.csv"))
   }
   return(sim_meta)
 }

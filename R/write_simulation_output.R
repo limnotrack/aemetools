@@ -11,7 +11,7 @@
 #' @noRd
 #'
 
-write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list, path,
+write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
                                     sim_id = NULL, append_metadata = TRUE) {
 
   # Extract meta information
@@ -36,6 +36,10 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list, path,
   # Table names
   tbl_names <- c("lake_metadata", "simulation_metadata", "function_metadata",
                  "parameter_metadata", "simulation_data")
+  path <- ctrl$file_dir
+  if (!dir.exists(path)) {
+    dir.create(path, recursive = TRUE)
+  }
 
   file_to_check <- ifelse(type == "db", ctrl$file_name,
                           "simulation_metadata.csv")

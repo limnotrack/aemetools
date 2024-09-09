@@ -11,7 +11,7 @@
 #' @noRd
 #'
 
-write_calib_metadata <- function(ctrl, path, nsim, t0) {
+write_calib_metadata <- function(ctrl, nsim, t0) {
 
   # Check output type
   type <- ctrl$file_type
@@ -36,6 +36,13 @@ write_calib_metadata <- function(ctrl, path, nsim, t0) {
                                      time_elapsed = time_elapsed)
 
   output <- list(calibration_metadata = calibration_metadata)
+
+  # Create directory if it does not exist for output
+  path <- ctrl$file_dir
+  if (!dir.exists(path)) {
+    dir.create(path, recursive = TRUE)
+  }
+
 
   if (type == "csv") {
     write_to_csv(output = output, path = path, sim_id = ctrl$sim_id, gen_n = 1)

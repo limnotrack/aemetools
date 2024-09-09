@@ -17,8 +17,7 @@
 #' @return A list with the metadata and simulation data frames.
 #' @export
 
-read_simulation_output <- function(ctrl, path = ".", file = NULL,
-                                   sim_id = NULL) {
+read_simulation_output <- function(ctrl, file = NULL, sim_id = NULL) {
 
   meta_tables <- c("lake_metadata", "simulation_metadata",
                    "function_metadata", "parameter_metadata",
@@ -43,6 +42,7 @@ read_simulation_output <- function(ctrl, path = ".", file = NULL,
   } else {
     file <- file
   }
+  path <- ctrl$file_dir
   file <- file.path(path, file)
 
   if (!all(file.exists(file)) & ctrl$method != "all") {

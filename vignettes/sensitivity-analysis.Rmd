@@ -161,7 +161,7 @@ chlorophyll-a (PHY_tchla) at the surface (0 - 2 m) during the summer period.
 
 ```{r define-control-parameters}
 ctrl <- create_control(method = "sa", N = 2^4, ncore = 2, na_value = 999,
-                       parallel = FALSE, file_type = "db", 
+                       parallel = TRUE, file_type = "db", 
                        file_name = "file_type",
                        vars_sim = list(
                          surf_temp = list(var = "HYD_temp",
@@ -212,7 +212,7 @@ function takes the following arguments:
 
 ```{r read-sensitivity-analysis, warning=FALSE}
 # Read in sensitivity analysis results
-sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, path = path, R = 10^3)
+sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 10^3)
 names(sa_res)
 ```
 
