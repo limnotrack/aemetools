@@ -13,6 +13,7 @@
 #' @return list of \code{ggplot} objects for each variable
 #' @export
 #'
+
 plot_sobol <- function(sa, order = "first", add_errorbars = TRUE,
                        use_dummy = TRUE, ...) {
 
