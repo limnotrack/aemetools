@@ -114,7 +114,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   sim_id <- sa_aeme(aeme = aeme, path = path, param = param, model = model,
                     ctrl = ctrl, FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, path = path, sim_id = sim_id, R = 2^2)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
@@ -184,7 +184,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel for just LK
   sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
                     model = model, ctrl = ctrl, FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2, path = path)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
@@ -258,7 +258,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
                     model = model, ctrl = ctrl, FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2, path = path)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
@@ -329,7 +329,7 @@ test_that("can execute sensitivity analysis for derived variables", {
   sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
                     model = model, ctrl = ctrl, FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, boot = FALSE, path = path)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, boot = FALSE)
 
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 

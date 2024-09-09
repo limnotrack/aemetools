@@ -59,18 +59,17 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
   if (is.null(ctrl$na_value)) {
     ctrl$na_value <- 999
   }
-  nsim <- 0 # Counter for number of simulations
-  t0 <- Sys.time() # Time check for calibration
 
   include_wlev <- ifelse("LKE_lvlwtr" %in% vars_sim, TRUE, FALSE)
 
-  lke <- AEME::lake(aeme)
-  lakename <- tolower(lke[["name"]])
-  lake_dir <- file.path(path, paste0(lke$id, "_", lakename))
+  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
 
   names(model) <- model
   sapply(model, \(m) {
     var_indices <- list()
+    t0 <- Sys.time() # Time check for calibration
+    nsim <- 0 # Counter for number of simulations
+
     if (any(vars_sim != "LKE_lvlwtr")) {
       # Extract indices for modelled variables
       message("Extracting indices for ", m, " modelled variables [",
@@ -231,16 +230,16 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
       ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
                                              FUN_list = FUN_list,
                                              aeme = aeme, model = m,
-                                             param = param, path = path,
+                                             param = param,
                                              append_metadata = TRUE)
 
       if (ctrl$c_method == "LHC") {
-        write_calib_metadata(ctrl = ctrl, nsim = nsim, path = path, t0 = t0)
+        write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
         message("Completed LHC calibration. [", format(Sys.time()), "]")
         return(ctrl$sim_id)
       }
       if (min(g1$fit) < ctrl$VTR) {
-        write_calib_metadata(ctrl = ctrl, nsim = nsim, path = path, t0 = t0)
+        write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
         message("Model fitness is less than VTR. Stopping simulation.")
         return(ctrl$sim_id)
       }
@@ -324,7 +323,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
         out_df <- apply(g, 2, signif, digits = 6)
         nsim <- nsim + nrow(out_df)
         write_simulation_output(x = out_df, ctrl = ctrl, aeme = aeme,
-                                model = m, param = param, path = path,
+                                model = m, param = param,
                                 FUN_list = FUN_list, sim_id = ctrl$sim_id,
                                 append_metadata = FALSE)
 
@@ -427,7 +426,6 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                                              FUN_list = FUN_list,
                                              aeme = aeme, model = m,
                                              param = param,
-                                             path = path,
                                              append_metadata = TRUE)
 
       if (min(g1$fit) < ctrl$VTR) {
@@ -516,7 +514,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
 
         nsim <- nsim + nrow(out_df)
         write_simulation_output(x = out_df, ctrl = ctrl, aeme = aeme,
-                                path = path, model = m, param = param,
+                                 model = m, param = param,
                                 FUN_list = FUN_list, sim_id = ctrl$sim_id,
                                 append_metadata = FALSE)
 
@@ -539,7 +537,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                              best_pars = best_pars)
       }
     }
-    write_calib_metadata(ctrl = ctrl, nsim = nsim, path = path, t0 = t0)
+    write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
     return(ctrl$sim_id)
   })
 }

@@ -11,6 +11,9 @@
 #'  * `file_name` string; file name to write the output to. Defaults to
 #'  "results.db" if `file_type` is "db" and "simulation_metadata.csv" if
 #'  `file_type` is "csv".
+#'  * `file_dir` string; directory to write the output to. Defaults to the
+#'  directory "calib_sa" in the current working directory. If the directory does
+#'  not exist, it will be created.
 #'  * `na_value` value to replace NA values with in observations. Defaults to 999.
 #'  * `parallel` boolean; run calibration in parallel. Default to TRUE
 #'  * `ncore`: The number of cores to use for the calibration. This is only used
@@ -76,9 +79,9 @@
 create_control <- function(method, ...) {
   ls <- list(...)
 
-  check_names <- c("na_value", "file_type", "file_name", "parallel", "ncore",
-                   "VTR", "NP", "itermax", "reltol", "cutoff", "mutate",
-                   "N", "vars_sim", "c_method")
+  check_names <- c("na_value", "file_type", "file_name", "file_dir", "parallel",
+                   "ncore", "VTR", "NP", "itermax", "reltol", "cutoff",
+                   "mutate", "N", "vars_sim", "c_method")
 
   if (any(!names(ls) %in% check_names)) {
     stop(strwrap("Invalid argument(s) passed to create_control. Please check
@@ -94,6 +97,7 @@ create_control <- function(method, ...) {
   } else if (file_type == "csv") {
     file_name <- "simulation_metadata.csv"
   }
+  file_dir <- ifelse("file_dir" %in% names(ls), ls$file_dir, "calib_sa")
   parallel <- ifelse("parallel" %in% names(ls), ls$parallel, TRUE)
   ncore <- ifelse("ncore" %in% names(ls), ls$ncore,
                   (parallel::detectCores() - 1))
@@ -112,8 +116,8 @@ create_control <- function(method, ...) {
     ctrl <- list(VTR = VTR, NP = NP, itermax = itermax, reltol = reltol,
                  cutoff = cutoff, mutate = mutate, parallel = parallel,
                  file_type = file_type, file_name = file_name,
-                 na_value = na_value, ncore = ncore, method = method,
-                 c_method = c_method)
+                 file_dir = file_dir, na_value = na_value, ncore = ncore,
+                 method = method, c_method = c_method)
   } else if (method == "sa") {
 
     N <- ifelse("N" %in% names(ls), ls$N, 2^2)
@@ -132,7 +136,7 @@ create_control <- function(method, ...) {
 
     ctrl <- list(N = N, parallel = parallel, ncore = ncore, na_value = na_value,
                  file_type = file_type, file_name = file_name,
-                 vars_sim = vars_sim, method = method)
+                 file_dir = file_dir, vars_sim = vars_sim, method = method)
   }
   return(ctrl)
 }
