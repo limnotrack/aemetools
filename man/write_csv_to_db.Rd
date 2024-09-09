@@ -2,12 +2,12 @@
 % Please edit documentation in R/write_csv_to_db.R
 \name{write_csv_to_db}
 \alias{write_csv_to_db}
-\title{Write CSV to database}
+\title{Write calibration/sensitivity analysis .csv files to database}
 \usage{
-write_csv_to_db(path, file_name = "results.db")
+write_csv_to_db(file_dir, file_name = "results.db")
 }
 \arguments{
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{file_dir}{The directory where the .csv file is located.}
 
 \item{file_name}{The name of the database file to write to. Default is
 "results.db".}
@@ -16,5 +16,5 @@ write_csv_to_db(path, file_name = "results.db")
 file path to the database.
 }
 \description{
-Write CSV to database
+Write calibration/sensitivity analysis .csv files to database
 }
