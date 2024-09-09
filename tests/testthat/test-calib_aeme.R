@@ -1323,7 +1323,7 @@ test_that("can write csv output to database", {
   }
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "calib", NP = 10, itermax = 30, ncore = 2,
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
                          parallel = TRUE, file_type = "csv")
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
@@ -1339,10 +1339,8 @@ test_that("can write csv output to database", {
 
   testthat::expect_true(is.list(calib))
 
-  db_file <- write_csv_to_db(path = path)
+  db_file <- write_csv_to_db(file_dir = ctrl$file_dir)
 
   testthat::expect_true(file.exists(db_file))
-
-
 
 })
