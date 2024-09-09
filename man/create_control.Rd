@@ -20,7 +20,7 @@ sensitivity analysis. There are arguments which are common to both methods:
 "results.db" if \code{file_type} is "db" and "simulation_metadata.csv" if
 \code{file_type} is "csv".
 \item \code{file_dir} string; directory to write the output to. Defaults to the
-directory "calib" in the current working directory. If the directory does
+directory "calib_sa" in the current working directory. If the directory does
 not exist, it will be created.
 \item \code{na_value} value to replace NA values with in observations. Defaults to 999.
 \item \code{parallel} boolean; run calibration in parallel. Default to TRUE
