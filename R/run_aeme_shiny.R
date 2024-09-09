@@ -17,17 +17,26 @@
 run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
 
   # data("aeme_parameters")
+  if (is.null(model_controls)) {
+    config <- AEME::configuration(aeme = aeme)
+    model_controls <- config$model_controls
+  }
   data("key_naming", package = "AEME")
   out_vars <- key_naming$name
   names(out_vars) <- key_naming$name_full
   out_vars <- out_vars[-1]
   out_vars <- grep("HYD|LKE|PHY|CHM|PHS|NIT", out_vars, value = TRUE)
-  if (is.null(model_controls)) {
-    config <- AEME::configuration(aeme = aeme)
-    model_controls <- config$model_controls
-  }
+  out_vars_aeme <- model_controls |>
+    dplyr::filter(simulate) |>
+    dplyr::select(var_aeme) |>
+    dplyr::left_join(key_naming, by = c("var_aeme" = "name"))
+  out_vars <- out_vars_aeme$var_aeme
+  names(out_vars) <- out_vars_aeme$name_text
+
+  diag_vars <- c("Chlorophyll", "Zooplankton", "Nitrogen", "Phosphorus")
 
   # Add cheats for shinytest2
+  model <- NULL
   module <- NULL
   name <- NULL
   value <- NULL
@@ -43,7 +52,8 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
   idx <- sapply(models, \(x) !is.null(cfg[[x]][["hydrodynamic"]]))
   models <- models[idx]
   param <- param |>
-    dplyr::mutate(id = 1:dplyr::n())
+    dplyr::mutate(id = 1:dplyr::n(),
+                  initial = value)
 
   # UI ----
   ui <- shiny::fluidPage(
@@ -59,15 +69,30 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
                             selected = models[1]
         ),
         shiny::checkboxInput("use_bgc", "Use BGC", value = FALSE),
+        shiny::actionButton("build", "Build!"),
         shiny::uiOutput("param"),
         shiny::uiOutput('module_tabs')
       ),
       shiny::mainPanel(
-        shiny::plotOutput("plot", height = "600px"),
-        shiny::actionButton("build", "Build!"),
+
+        shiny::tabsetPanel(
+          id = "module_tabs",
+          shiny::tabPanel("Time-series",
+                          shiny::h3("Time-series"),
+                          shiny::plotOutput("plot", height = "600px"),
+                          shiny::radioButtons("out_var", "Output variable:",
+                                              out_vars, selected = "HYD_temp",
+                                              inline = TRUE)
+                          ),
+          shiny::tabPanel("Diagnostics",
+                          shiny::h3("Diagnostics"),
+                          shiny::plotOutput("diag_plot", height = "600px"),
+                          shiny::radioButtons("diag_var", "Dianostic variable:",
+                                              diag_vars, selected = diag_vars[1],
+                                              inline = TRUE)
+                          )
+          ),
         shiny::actionButton("run", "Run!"),
-        shiny::radioButtons("out_var", "Output variable:", out_vars,
-                            selected = "HYD_temp", inline = TRUE),
         shiny::h3("Parameters"),
         shiny::tableOutput("table")
       )
@@ -175,7 +200,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
     # Update table ----
     output$table <- shiny::renderTable({
       reac$df |>
-        dplyr::select(name, value, min, max)
+        dplyr::select(name, value, min, max, initial)
     })
 
     # Plot model output ----
@@ -201,8 +226,23 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
       AEME::plot_output(aeme = reac$aeme, model = input$model,
                         var_sim = input$out_var, level = FALSE) +
         ggplot2::theme_bw(base_size = 16)
-    }
-    )
+    })
+
+    # Plot diagnostic variable ----
+    output$diag_plot <- shiny::renderPlot({
+
+      if (input$diag_var == "Chlorophyll") {
+        p1 <- AEME::plot_phytos(aeme = reac$aeme, model = input$model)
+      } else if (input$diag_var == "Zooplankton") {
+        p1 <- AEME::plot_zoops(aeme = reac$aeme, model = input$model)
+      } else if (input$diag_var == "Nitrogen") {
+        p1 <- AEME::plot_nit(aeme = reac$aeme, model = input$model)
+      } else if (input$diag_var == "Phosphorus") {
+        p1 <- AEME::plot_phs(aeme = reac$aeme, model = input$model)
+      }
+      p1 +
+        ggplot2::theme_bw(base_size = 16)
+    })
   }
 
   # Use a modal dialog as a viewr.

@@ -1,7 +1,7 @@
 # File: tests/testthat/test-app-function.R
 library(shinytest2)
 
-test_that("hello-world app initial values are consistent", {
+test_that("run_aeme app runs", {
   # Don't run these tests on the CRAN build servers
   skip_on_cran()
 
