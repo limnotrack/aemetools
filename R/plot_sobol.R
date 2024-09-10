@@ -3,9 +3,9 @@
 #' @inheritParams plot_uncertainty
 #' @param order A character vector specifying the order of the Sobol' indices to
 #'  plot. The only current option is "first".
-#'  @param add_errorbars A logical value indicating whether to add error bars to
+#' @param add_errorbars A logical value indicating whether to add error bars to
 #'  the plot. Default is \code{TRUE}.
-#'  @param use_dummy A logical value indicating whether to use a dummy variable
+#' @param use_dummy A logical value indicating whether to use a dummy variable
 #'  for the x-axis. Default is \code{TRUE}.
 #'
 #' @importFrom ggplot2 ggtitle
@@ -15,7 +15,7 @@
 #'
 
 plot_sobol <- function(sa, order = "first", add_errorbars = TRUE,
-                       use_dummy = TRUE, ...) {
+                       use_dummy = TRUE) {
 
   sim_ids <- names(sa)
 
