@@ -6,7 +6,8 @@
 #'
 #' @param file The path to the output file. It can either be a DuckDB database
 #' or a CSV file.
-#' @inheritParams AEME::build_aeme
+#' @param file_dir The directory where the output file is located. Defaults to
+#' "calib_sa".
 #'
 #' @return A data frame with the calibration metadata
 #' @export
@@ -15,7 +16,7 @@
 #' @importFrom DBI dbConnect dbDisconnect
 #'
 
-read_calib_meta <- function(file, file_dir = "calib") {
+read_calib_meta <- function(file, file_dir = "calib_sa") {
 
   file <- file.path(file_dir, file)
 
