@@ -42,6 +42,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
   value <- NULL
   min <- NULL
   max <- NULL
+  initial <- NULL
 
   # param <- aeme_parameters
   cfg <- AEME::configuration(aeme)
@@ -76,7 +77,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
       shiny::mainPanel(
 
         shiny::tabsetPanel(
-          id = "module_tabs",
+          id = "tabs",
           shiny::tabPanel("Time-series",
                           shiny::h3("Time-series"),
                           shiny::plotOutput("plot", height = "600px"),
