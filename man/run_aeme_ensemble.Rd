@@ -31,6 +31,9 @@ options are "unif".}
 
 \item{parallel}{logical; whether to run in parallel. Default is FALSE.}
 
+\item{ncore}{numeric; number of cores to use for parallel processing. Default
+is NULL. If NULL, the function will use the number of cores minus 1.}
+
 \item{param}{data.frame; parameter values to use. Default is NULL. If NULL,
 the function will use the parameters from the aeme object.}
 

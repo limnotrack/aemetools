@@ -4,11 +4,14 @@
 \alias{read_calib_meta}
 \title{Read the calibration metadata}
 \usage{
-read_calib_meta(file, file_dir = "calib")
+read_calib_meta(file, file_dir = "calib_sa")
 }
 \arguments{
 \item{file}{The path to the output file. It can either be a DuckDB database
 or a CSV file.}
+
+\item{file_dir}{The directory where the output file is located. Defaults to
+"calib_sa".}
 }
 \value{
 A data frame with the calibration metadata
