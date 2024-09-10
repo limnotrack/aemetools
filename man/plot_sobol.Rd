@@ -4,16 +4,18 @@
 \alias{plot_sobol}
 \title{Visualization of first, total, second, third and fourth-order Sobol' indices}
 \usage{
-plot_sobol(sa, order = "first", add_errorbars = TRUE, use_dummy = TRUE, ...)
+plot_sobol(sa, order = "first", add_errorbars = TRUE, use_dummy = TRUE)
 }
 \arguments{
 \item{sa}{list; of sensitivity analysis results read in with \code{\link{read_sa}}}
 
 \item{order}{A character vector specifying the order of the Sobol' indices to
-plot. The only current option is "first".
-@param add_errorbars A logical value indicating whether to add error bars to
-the plot. Default is \code{TRUE}.
-@param use_dummy A logical value indicating whether to use a dummy variable
+plot. The only current option is "first".}
+
+\item{add_errorbars}{A logical value indicating whether to add error bars to
+the plot. Default is \code{TRUE}.}
+
+\item{use_dummy}{A logical value indicating whether to use a dummy variable
 for the x-axis. Default is \code{TRUE}.}
 }
 \value{
