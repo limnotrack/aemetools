@@ -4,13 +4,18 @@
 \alias{read_simulation_meta}
 \title{Read the simulation metadata}
 \usage{
-read_simulation_meta(file, path = ".")
+read_simulation_meta(ctrl = NULL, file_name, file_dir)
 }
 \arguments{
-\item{file}{The path to the output file. It can either be a DuckDB database
-or a CSV file.}
+\item{ctrl}{A list with the control parameters used in \code{calib_aeme()} or
+\code{sa_aeme()}. If \code{ctrl} is provided, the \code{file_name} and \code{file_dir} arguments
+are ignored.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{file_name}{The name of the output file. If \code{ctrl} is provided, this
+argument is ignored.}
+
+\item{file_dir}{The directory of the output file. If \code{ctrl} is provided, this
+argument is ignored.}
 }
 \value{
 A data frame with the simulation metadata

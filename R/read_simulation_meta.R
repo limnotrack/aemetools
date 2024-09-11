@@ -4,9 +4,13 @@
 #' file can be either a DuckDB database or a CSV file. The function reads the
 #' metadata and returns it as a data frame.
 #'
-#' @param file The path to the output file. It can either be a DuckDB database
-#' or a CSV file.
-#' @inheritParams AEME::build_aeme
+#' @param ctrl A list with the control parameters used in `calib_aeme()` or
+#' `sa_aeme()`. If `ctrl` is provided, the `file_name` and `file_dir` arguments
+#' are ignored.
+#' @param file_name The name of the output file. If `ctrl` is provided, this
+#' argument is ignored.
+#' @param file_dir The directory of the output file. If `ctrl` is provided, this
+#' argument is ignored.
 #'
 #' @return A data frame with the simulation metadata
 #' @export
@@ -15,7 +19,7 @@
 #' @importFrom DBI dbConnect dbDisconnect
 #'
 
-read_simulation_meta <- function(file, path = ".") {
+read_simulation_meta <- function(ctrl = NULL, file_name, file_dir) {
 
   # type <- file_type
   # if (!is.null(file_name)) {
@@ -26,7 +30,12 @@ read_simulation_meta <- function(file, path = ".") {
   # } else if (type == "csv") {
   #   file <- "simulation_metadata.csv"
   # }
-  file <- file.path(path, file)
+
+  if (!is.null(ctrl)) {
+    file <- file.path(ctrl$file_dir, ctrl$file_name)
+  } else {
+    file <- file.path(file_dir, file_name)
+  }
 
   if (!file.exists(file)) stop("File not found: ", file)
   type <- tools::file_ext(file)
