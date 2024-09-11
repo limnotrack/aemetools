@@ -21,7 +21,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
     config <- AEME::configuration(aeme = aeme)
     model_controls <- config$model_controls
   }
-  data("key_naming", package = "AEME")
+  data("key_naming", package = "AEME", envir = environment())
   out_vars <- key_naming$name
   names(out_vars) <- key_naming$name_full
   out_vars <- out_vars[-1]
