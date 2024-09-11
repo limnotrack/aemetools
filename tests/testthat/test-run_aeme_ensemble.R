@@ -76,7 +76,7 @@ test_that("can run an ensemble of AEME-GLM in series", {
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id, path = path)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
   testthat::expect_true(is.list(calib))
 
   aeme <- update_param(calib = calib, aeme = aeme)
