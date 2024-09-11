@@ -4,12 +4,18 @@
 \alias{read_sa}
 \title{Read sensitivity analysis output}
 \usage{
-read_sa(ctrl, sim_id, R = NULL, boot = TRUE)
+read_sa(ctrl = NULL, file_name, file_dir, sim_id, R = NULL, boot = TRUE)
 }
 \arguments{
 \item{ctrl}{list; of controls for sensitivity analysis function created using
 the \code{\link{create_control}} function. See \link{create_control} for
 more details.}
+
+\item{file_name}{The name of the output file. If \code{ctrl} is provided, this
+argument is ignored.}
+
+\item{file_dir}{The directory of the output file. If \code{ctrl} is provided, this
+argument is ignored.}
 
 \item{sim_id}{A vector of simulation IDs to read.}
 

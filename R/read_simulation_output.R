@@ -2,8 +2,7 @@
 #'
 #' @inheritParams calib_aeme
 #' @inheritParams AEME::build_aeme
-#' @param file file name; to read. Can be either a "csv" or "db" file and it
-#' must be located within the path.
+#' @inheritParams read_simulation_meta
 #' @param sim_id A vector of simulation IDs to read.
 #'
 #' @importFrom dplyr case_when left_join mutate select summarise group_by
@@ -17,7 +16,8 @@
 #' @return A list with the metadata and simulation data frames.
 #' @export
 
-read_simulation_output <- function(ctrl, file = NULL, sim_id = NULL) {
+read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
+                                   sim_id = NULL) {
 
   meta_tables <- c("lake_metadata", "simulation_metadata",
                    "function_metadata", "parameter_metadata",
@@ -31,19 +31,27 @@ read_simulation_output <- function(ctrl, file = NULL, sim_id = NULL) {
                      "calibration_metadata")
   }
   sim_vec <- sim_id
-
-  if (is.null(file)) {
-    type <- ctrl$file_type
-    if (type == "db") {
-      file <- ctrl$file_name
-    } else if (type == "csv") {
-      file <- paste0(meta_tables, ".csv")
-    }
-  } else {
-    file <- file
+  if (!is.null(ctrl)) {
+    file_dir <- ctrl$file_dir
+    file_name <- ctrl$file_name
   }
-  path <- ctrl$file_dir
-  file <- file.path(path, file)
+  type <- tools::file_ext(file_name)
+  if (type == "db") {
+    file <- file.path(file_dir, file_name)
+  } else if (type == "csv") {
+    file <- file.path(file_dir, paste0(meta_tables, ".csv"))
+  }
+
+  # if (is.null(file)) {
+  #   type <- ctrl$file_type
+  #   if (type == "db") {
+  #     file <- file_name
+  #   } else if (type == "csv") {
+  #     file <- paste0(meta_tables, ".csv")
+  #   }
+  # } else {
+  #   file <- file_name
+  # }
 
   if (!all(file.exists(file)) & ctrl$method != "all") {
     stop("File not found: ", file)
@@ -58,10 +66,10 @@ read_simulation_output <- function(ctrl, file = NULL, sim_id = NULL) {
   # all <- lapply(sim_id, \(sid) {
   if (type == "csv") {
     out <- lapply(meta_tables, function(x) {
-      df <- read.csv(file.path(path, paste0(x, ".csv")))
+      df <- read.csv(file.path(file_dir, paste0(x, ".csv")))
       if (!is.null(sim_id)) {
         if (x == "lake_metadata") {
-          lake_id <- read.csv(file.path(path, "simulation_metadata.csv")) |>
+          lake_id <- read.csv(file.path(file_dir, "simulation_metadata.csv")) |>
             dplyr::filter(sim_id %in% sim_vec) |>
             dplyr::pull(id)
           df <- df |>
