@@ -181,7 +181,7 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
 
         path <- temp_dirs[i]
         # Add columns to pars
-        pars[[i]][["fit"]] <- NA
+        # pars[[i]][["fit"]] <- NA
         for (n in nmes) {
           pars[[i]][[n]] <- NA
         }
@@ -221,14 +221,14 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
             pars[[i]][[n]][p] <- res[[n]]
           }
 
-          if (ctrl$na_value %in% unlist(res)) {
-            res1 <- ctrl$na_value
-          } else {
-            res1 <- sum(unlist(res))
-            res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
-          }
-
-          pars[[i]][["fit"]][p] <- res1
+          # if (ctrl$na_value %in% unlist(res)) {
+          #   res1 <- ctrl$na_value
+          # } else {
+          #   res1 <- sum(unlist(res))
+          #   res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
+          # }
+          #
+          # pars[[i]][["fit"]][p] <- res1
           # print(pars[[i]][["fit"]][p])
         }
         return(pars[[i]])
@@ -257,7 +257,7 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
       model_out <- lapply(seq_along(param_list), \(pars, i) {
 
         # Add columns to pars
-        pars[[i]][["fit"]] <- NA
+        # pars[[i]][["fit"]] <- NA
         for (n in nmes) {
           pars[[i]][[n]] <- NA
         }
@@ -296,14 +296,14 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
             pars[[i]][[n]][p] <- res[[n]]
           }
 
-          if (ctrl$na_value %in% unlist(res)) {
-            res1 <- ctrl$na_value
-          } else {
-            res1 <- sum(unlist(res))
-            res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
-          }
-
-          pars[[i]][["fit"]][p] <- res1
+          # if (ctrl$na_value %in% unlist(res)) {
+          #   res1 <- ctrl$na_value
+          # } else {
+          #   res1 <- sum(unlist(res))
+          #   res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
+          # }
+          #
+          # pars[[i]][["fit"]][p] <- res1
         }
 
         return(pars[[i]])
