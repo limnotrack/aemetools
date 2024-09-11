@@ -54,7 +54,6 @@ Suggests:
     knitr,
     printr,
     rmarkdown,
-    shinytest2,
     testthat (>= 3.0.0),
     tmap
 Config/testthat/edition: 3
