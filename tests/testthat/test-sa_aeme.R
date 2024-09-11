@@ -11,9 +11,9 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                               model = model, model_controls = model_controls,
-                               inf_factor = inf_factor, ext_elev = 5,
-                               use_bgc = FALSE)
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = FALSE)
 
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
                          verbose = FALSE, path = path)
@@ -72,9 +72,9 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                               model = model, model_controls = model_controls,
-                               inf_factor = inf_factor, ext_elev = 5,
-                               use_bgc = FALSE)
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = FALSE)
 
   aeme <- AEME::run_aeme(aeme = aeme, model = model, verbose = FALSE,
                          path = path)
@@ -171,11 +171,11 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel for just LK
   FUN_list <- list(LKE_lvlwtr = fit)
 
   ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
-                         file_type = "db", file_name = "results.db",
+                         file_type = "csv",
                          vars_sim = list(
                            lke_lvl = list(var = "LKE_lvlwtr",
-                                            month = 1:12,
-                                            depth_range = c(0, 2)
+                                          month = 1:12,
+                                          depth_range = c(0, 2)
                            )
                          )
   )
@@ -216,9 +216,9 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                               model = model, model_controls = model_controls,
-                               inf_factor = inf_factor, ext_elev = 5,
-                               use_bgc = FALSE)
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = FALSE)
 
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
                          verbose = FALSE, path = path)
@@ -237,8 +237,11 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   fit <- function(df) {
     mean(df$model)
   }
+  fit2 <- function(df) {
+    median(df$model, na.rm = TRUE)
+  }
 
-  FUN_list <- list(HYD_temp = fit)
+  FUN_list <- list(HYD_temp = fit, HYD_thmcln = fit2)
 
   ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
                          file_type = "db", file_name = "results.db",
@@ -250,6 +253,10 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
                            bot_temp = list(var = "HYD_temp",
                                            month = c(10:12, 1:3),
                                            depth_range = c(10, 13)
+                           ),
+                           thm_cln = list(var = "HYD_thmcln",
+                                          month = c(10:12, 1:3),
+                                          depth_range = c(0, 13)
                            )
                          )
   )
@@ -311,16 +318,16 @@ test_that("can execute sensitivity analysis for derived variables", {
                          file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            sch_stab = list(var = "HYD_schstb",
-                                            month = c(10:12, 1:3),
-                                            depth_range = c(0, 18)
+                                           month = c(10:12, 1:3),
+                                           depth_range = c(0, 18)
                            ),
                            thermo_depth = list(var = "HYD_thmcln",
-                                           month = c(10:12, 1:3),
-                                           depth_range = c(0, 18)
+                                               month = c(10:12, 1:3),
+                                               depth_range = c(0, 18)
                            ),
                            oxy_nal = list(var = "CHM_oxynal",
-                                           month = c(10:12, 1:3),
-                                           depth_range = c(0, 18)
+                                          month = c(10:12, 1:3),
+                                          depth_range = c(0, 18)
                            )
                          )
   )
