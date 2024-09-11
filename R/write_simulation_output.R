@@ -231,6 +231,11 @@ write_to_db <- function(file, path, output, add_lake_meta = FALSE) {
     if (names(output)[i] == "lake_metadata") {
       if (!add_lake_meta) next
     }
+    if (names(output)[i] == "parameter_metadata") {
+      if (any(is.na(output[[i]][["group"]]))) {
+        output[[i]][["group"]][is.na(output[[i]][["group"]])] <- "NA"
+      }
+    }
     DBI::dbWriteTable(con, names(output)[i], output[[i]],
                       overwrite = !file_chk, append = file_chk)
   }
