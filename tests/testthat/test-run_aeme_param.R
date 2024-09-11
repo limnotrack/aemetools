@@ -320,7 +320,7 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
                                            month = c(10:12, 1:3),
                                            depth_range = c(10, 13)
                            ),
-                           PHY_tchla = list(var = "PHY_tchla",
+                           surf_chla = list(var = "PHY_tchla",
                                             month = c(10:12, 1:3),
                                             depth_range = c(0, 2)
                            )
