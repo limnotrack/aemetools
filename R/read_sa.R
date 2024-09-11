@@ -18,7 +18,14 @@
 #' the sobol indices for each variable.
 #' @export
 
-read_sa <- function(ctrl, sim_id, R = NULL, boot = TRUE) {
+read_sa <- function(ctrl = NULL, file_name, file_dir, sim_id, R = NULL,
+                    boot = TRUE) {
+
+  if (is.null(ctrl)) {
+    ctrl$file_dir <- file_dir
+    ctrl$file_name <- file_name
+    ctrl$method <- "sa"
+  }
 
   out <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
   if (nrow(out$simulation_data) == 0) {
@@ -44,7 +51,7 @@ read_sa <- function(ctrl, sim_id, R = NULL, boot = TRUE) {
     # vars <- c("fit", vars)
 
     mat <- wid |>
-      dplyr::select(-dplyr::all_of(c("fit", vars))) |>
+      dplyr::select(-dplyr::all_of(c(vars))) |>
       as.matrix()
 
     # vars <- out |>
@@ -70,6 +77,8 @@ read_sa <- function(ctrl, sim_id, R = NULL, boot = TRUE) {
 
     sobol_dummy_indices <- lapply(vars, function(v) {
       Y <- wid[[v]]
+      Y[is.na(Y)] <- ctrl$na_value
+      if (sd(Y, na.rm = TRUE) < 1e-3) return()
       sensobol::sobol_dummy(Y = Y, N = N, params = params, boot = boot, R = R)
     })
 

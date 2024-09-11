@@ -5,17 +5,20 @@
 \alias{read_calib}
 \title{Read calibration output}
 \usage{
-read_simulation_output(ctrl, file = NULL, sim_id = NULL)
+read_simulation_output(ctrl = NULL, file_name, file_dir, sim_id = NULL)
 
-read_calib(ctrl, file = NULL, sim_id = NULL)
+read_calib(ctrl = NULL, file_name, file_dir, sim_id = NULL)
 }
 \arguments{
 \item{ctrl}{list; of controls for sensitivity analysis function created using
 the \code{\link{create_control}} function. See \link{create_control} for
 more details.}
 
-\item{file}{file name; to read. Can be either a "csv" or "db" file and it
-must be located within the path.}
+\item{file_name}{The name of the output file. If \code{ctrl} is provided, this
+argument is ignored.}
+
+\item{file_dir}{The directory of the output file. If \code{ctrl} is provided, this
+argument is ignored.}
 
 \item{sim_id}{A vector of simulation IDs to read.}
 }
