@@ -353,7 +353,7 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
 
-  sim_meta <- read_simulation_meta(file = ctrl$file_name, path = path)
+  sim_meta <- read_simulation_meta(ctrl = ctrl)
   testthat::expect_true(is.data.frame(sim_meta))
 
 })
@@ -918,7 +918,8 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
 
-  sim_meta <- read_simulation_meta(file = ctrl$file_name, path = path)
+  sim_meta <- read_simulation_meta(file_name = ctrl$file_name,
+                                   file_dir = ctrl$file_dir)
   testthat::expect_true(is.data.frame(sim_meta))
 
 })
@@ -995,7 +996,7 @@ test_that("can calibrate lake level with no data for target time period", {
 
   testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
 
-  sim_meta <- read_simulation_meta(file = ctrl$file_name, path = path)
+  sim_meta <- read_simulation_meta(ctrl = ctrl)
   testthat::expect_true(is.data.frame(sim_meta))
 
 })

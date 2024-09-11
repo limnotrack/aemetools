@@ -332,7 +332,7 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
                     ctrl = ctrl, model_controls = model_controls,
                     FUN_list = FUN_list)
 
-  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, path = path, boot = FALSE)
+  sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, boot = FALSE)
 
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
