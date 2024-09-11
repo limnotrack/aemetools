@@ -32,10 +32,11 @@ read_simulation_meta <- function(ctrl = NULL, file_name, file_dir) {
   # }
 
   if (!is.null(ctrl)) {
-    file <- file.path(ctrl$file_dir, ctrl$file_name)
-  } else {
-    file <- file.path(file_dir, file_name)
+    file_dir <- ctrl$file_dir
+    file_name <- ctrl$file_name
   }
+  file <- file.path(ctrl$file_dir, ctrl$file_name)
+
 
   if (!file.exists(file)) stop("File not found: ", file)
   type <- tools::file_ext(file)
@@ -54,12 +55,12 @@ read_simulation_meta <- function(ctrl = NULL, file_name, file_dir) {
       as.data.frame() |>
       dplyr::left_join(n_sim, by = "sim_id")
     } else if (type == "csv") {
-      n_sim <- read.csv(file.path(path, "simulation_data.csv")) |>
+      n_sim <- read.csv(file.path(file_dir, "simulation_data.csv")) |>
         dplyr::group_by(sim_id, gen) |>
         dplyr::summarise(nruns = max(run), .groups = "drop") |>
         dplyr::group_by(sim_id) |>
         dplyr::summarise(n_run = sum(nruns), .groups = "drop")
-      sim_meta <- read.csv(file.path(path, "simulation_metadata.csv")) |>
+      sim_meta <- read.csv(file.path(file_dir, "simulation_metadata.csv")) |>
         dplyr::left_join(n_sim, by = "sim_id")
     }
   return(sim_meta)
