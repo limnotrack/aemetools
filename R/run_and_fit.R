@@ -314,6 +314,9 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
               depth <- ncdf4::ncvar_get(nc, "lake_level")
             } else if (model == "gotm_wet") {
               zi <- ncdf4::ncvar_get(nc, "zi")
+              if (is.null(ncol(this.var))) {
+                return(return_list[[n]])
+              }
               depth <- zi[nrow(zi), ] - zi[1, ]
               depth[depth <= 0] <- 0
             }
@@ -333,7 +336,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
           if(length(var_indices[[n]][["depths"]]) == 0 |
              length(var_indices[[n]][["time"]]) == 0 |
              is.null(ncol(this.var))) {
-            return(return_list)
+            return(return_list[[n]])
           }
 
           conv.fact <- ifelse(model == "glm_aed",
