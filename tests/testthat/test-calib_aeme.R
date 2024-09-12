@@ -356,6 +356,15 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
   sim_meta <- read_simulation_meta(ctrl = ctrl)
   testthat::expect_true(is.data.frame(sim_meta))
 
+  sim_meta2 <- read_simulation_meta(file = ctrl$file_name,
+                                    file_dir = ctrl$file_dir)
+  testthat::expect_true(is.data.frame(sim_meta2))
+
+  calib_meta <- read_calib_meta(file = ctrl$file_name, file_dir = ctrl$file_dir)
+  testthat::expect_true(is.data.frame(calib_meta))
+  testthat::expect_true(ncol(calib_meta) > ncol(sim_meta))
+
+
 })
 
 test_that("can calibrate lake level for AEME-GOTM in parallel", {
