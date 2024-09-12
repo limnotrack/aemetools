@@ -26,6 +26,6 @@ plot_uncertainty <- function(sa, bins = 30) {
                             colour = "black", bins = bins, fill = "grey") +
     ggplot2::facet_wrap(sim_id ~ fit_type, scales = "free") +
     ggplot2::ylab("Counts") +
-    ggplot2::xlab("y") +
+    ggplot2::xlab("value") +
     ggplot2::theme_bw()
 }
