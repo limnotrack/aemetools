@@ -314,7 +314,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
               depth <- ncdf4::ncvar_get(nc, "lake_level")
             } else if (model == "gotm_wet") {
               zi <- ncdf4::ncvar_get(nc, "zi")
-              if (is.null(ncol(this.var))) {
+              if (is.null(ncol(zi))) {
                 return(return_list[[n]])
               }
               depth <- zi[nrow(zi), ] - zi[1, ]
