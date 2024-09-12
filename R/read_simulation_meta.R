@@ -35,7 +35,7 @@ read_simulation_meta <- function(ctrl = NULL, file_name, file_dir) {
     file_dir <- ctrl$file_dir
     file_name <- ctrl$file_name
   }
-  file <- file.path(ctrl$file_dir, ctrl$file_name)
+  file <- file.path(file_dir, file_name)
 
 
   if (!file.exists(file)) stop("File not found: ", file)
