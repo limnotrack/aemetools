@@ -148,7 +148,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
       ncores <- min((parallel::detectCores() - 1), ctrl$ncore, ctrl$NP)
       message("Calibrating in parallel for ", m, " using ", ncores, " cores...")
 
-      cl <- parallel::makeCluster(ncores)
+      cl <- parallel::makeCluster(ncores, outfile = "parallel.log")
       on.exit(parallel::stopCluster(cl))
       varlist <- list("param", "aeme", "path", "m", "vars_sim", "FUN_list",
                       "model_controls", "var_indices", "temp_dirs","ctrl",

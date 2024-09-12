@@ -112,7 +112,7 @@ run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
       temp_dirs <- make_temp_dir(m, lake_dir, n = ncore)
       # list.files(temp_dirs[1], recursive = TRUE)
       tryCatch(parallel::stopCluster(cl), error = function(e) {})
-      cl <- parallel::makeCluster(ncore)
+      cl <- parallel::makeCluster(ncore, outfile = "parallel.log")
       on.exit(parallel::stopCluster(cl))
       varlist <- list("param_list", "aeme", "path", "m", "model_pars",
                       "temp_dirs")
