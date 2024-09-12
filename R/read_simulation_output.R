@@ -35,10 +35,10 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
     file_dir <- ctrl$file_dir
     file_name <- ctrl$file_name
   }
-  type <- tools::file_ext(file_name)
-  if (type == "db") {
+  # type <- tools::file_ext(file_name)
+  if (ctrl$file_type == "db") {
     file <- file.path(file_dir, file_name)
-  } else if (type == "csv") {
+  } else if (ctrl$file_type == "csv") {
     file <- file.path(file_dir, paste0(meta_tables, ".csv"))
   }
 
@@ -64,7 +64,7 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
   names(meta_tables) <- meta_tables
 
   # all <- lapply(sim_id, \(sid) {
-  if (type == "csv") {
+  if (ctrl$file_type == "csv") {
     out <- lapply(meta_tables, function(x) {
       df <- read.csv(file.path(file_dir, paste0(x, ".csv")))
       if (!is.null(sim_id)) {
@@ -83,7 +83,7 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
       }
       return(df)
     })
-  } else if (type == "db") {
+  } else if (ctrl$file_type == "db") {
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
 
