@@ -44,7 +44,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_sa</span><span class="op">(</span><span class="va">ctrl</span>, <span class="va">sim_id</span>, R <span class="op">=</span> <span class="cn">NULL</span>, boot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_sa</span><span class="op">(</span>ctrl <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">file_name</span>, <span class="va">file_dir</span>, <span class="va">sim_id</span>, R <span class="op">=</span> <span class="cn">NULL</span>, boot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -55,6 +55,16 @@
 <dd><p>list; of controls for sensitivity analysis function created using
 the <code><a href="create_control.html">create_control</a></code> function. See <a href="create_control.html">create_control</a> for
 more details.</p></dd>
+
+
+<dt id="arg-file-name">file_name<a class="anchor" aria-label="anchor" href="#arg-file-name"></a></dt>
+<dd><p>The name of the output file. If <code>ctrl</code> is provided, this
+argument is ignored.</p></dd>
+
+
+<dt id="arg-file-dir">file_dir<a class="anchor" aria-label="anchor" href="#arg-file-dir"></a></dt>
+<dd><p>The directory of the output file. If <code>ctrl</code> is provided, this
+argument is ignored.</p></dd>
 
 
 <dt id="arg-sim-id">sim_id<a class="anchor" aria-label="anchor" href="#arg-sim-id"></a></dt>
