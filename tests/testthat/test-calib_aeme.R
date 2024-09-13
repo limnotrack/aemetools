@@ -1348,7 +1348,8 @@ test_that("can write csv output to database", {
 
   testthat::expect_true(is.list(calib))
 
-  db_file <- write_csv_to_db(file_dir = ctrl$file_dir)
+  db_file <- write_csv_to_db(file_dir = ctrl$file_dir,
+                             file_name = "csv2db.db")
 
   testthat::expect_true(file.exists(db_file))
 
