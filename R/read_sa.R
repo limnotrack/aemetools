@@ -69,8 +69,8 @@ read_sa <- function(ctrl = NULL, file_name, file_dir, sim_id, R = NULL,
 
     sobol_indices <- lapply(vars, function(v) {
       Y <- wid[[v]]
-      # Y[Y > 100] <- 999
       Y[is.na(Y)] <- ctrl$na_value
+      Y[Y > 1e10] <- ctrl$na_value
       if (sd(Y, na.rm = TRUE) < 1e-3) return()
       sensobol::sobol_indices(Y = Y, N = N, params = params, boot = boot, R = R)
     })
@@ -78,6 +78,7 @@ read_sa <- function(ctrl = NULL, file_name, file_dir, sim_id, R = NULL,
     sobol_dummy_indices <- lapply(vars, function(v) {
       Y <- wid[[v]]
       Y[is.na(Y)] <- ctrl$na_value
+      Y[Y > 1e10] <- ctrl$na_value
       if (sd(Y, na.rm = TRUE) < 1e-3) return()
       sensobol::sobol_dummy(Y = Y, N = N, params = params, boot = boot, R = R)
     })
