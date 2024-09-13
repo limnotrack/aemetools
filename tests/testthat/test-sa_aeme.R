@@ -67,6 +67,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
   aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  inp <- AEME::input(aeme)
   model_controls <- AEME::get_model_controls()
   inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
@@ -93,22 +94,48 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   fit <- function(df) {
     mean(df$model)
   }
-
-  FUN_list <- list(HYD_temp = fit)
-
-  ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
-                         file_type = "db", file_name = "results.db",
+  fit2 <- function(df) {
+    median(df$model, na.rm = TRUE)
+  }
+  bot_deps <- c(inp$init_depth - 2, inp$init_depth)
+  FUN_list <- list(HYD_temp = fit, HYD_thmcln = fit2, LKE_lvlwtr = fit2)
+  db_file <- "results.db"
+  ctrl <- create_control(method = "sa", N = 2^2,
+                         file_type = "db", file_name = db_file,
+                         na_value = 1e20, ncore = 8,
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
-                                            month = c(10:12, 1:3),
+                                            month = c(12, 1:2),
                                             depth_range = c(0, 2)
                            ),
                            bot_temp = list(var = "HYD_temp",
-                                           month = c(10:12, 1:3),
-                                           depth_range = c(10, 13)
+                                           month = c(12, 1:2),
+                                           depth_range = bot_deps
+                           ),
+                           thm_cln = list(var = "HYD_thmcln",
+                                          month = c(12, 1:2),
+                                          depth_range = c(0, inp$init_depth)
+                           ),
+                           lke_lvl = list(var = "LKE_lvlwtr",
+                                          month = c(12, 1:2),
+                                          depth_range = c(0, inp$init_depth)
                            )
                          )
   )
+
+  # ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
+  #                        file_type = "db", file_name = "results.db",
+  #                        vars_sim = list(
+  #                          surf_temp = list(var = "HYD_temp",
+  #                                           month = c(10:12, 1:3),
+  #                                           depth_range = c(0, 2)
+  #                          ),
+  #                          bot_temp = list(var = "HYD_temp",
+  #                                          month = c(10:12, 1:3),
+  #                                          depth_range = c(10, 13)
+  #                          )
+  #                        )
+  # )
 
   # Run sensitivity analysis AEME model
   sim_id <- sa_aeme(aeme = aeme, path = path, param = param, model = model,
@@ -241,7 +268,8 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
     median(df$model, na.rm = TRUE)
   }
 
-  FUN_list <- list(HYD_temp = fit, HYD_thmcln = fit2)
+  FUN_list <- list(HYD_temp = fit, HYD_thmcln = fit2, LKE_lvlwtr = fit2)
+
 
   ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
                          file_type = "db", file_name = "results.db",
@@ -257,6 +285,10 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
                            thm_cln = list(var = "HYD_thmcln",
                                           month = c(10:12, 1:3),
                                           depth_range = c(0, 13)
+                           ),
+                           lke_lvl = list(var = "LKE_lvlwtr",
+                                          month = c(12, 1:2),
+                                          depth_range = c(0, lke$depth)
                            )
                          )
   )
