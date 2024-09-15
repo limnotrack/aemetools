@@ -6,6 +6,7 @@
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #' @importFrom duckdb duckdb
+#' @importFrom dplyr bind_rows filter pull slice_tail
 #'
 #' @return \code{write_calib_output} writes the calibration output to a file
 #' @noRd

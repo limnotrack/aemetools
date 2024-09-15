@@ -19,6 +19,7 @@
 #' Defaults to 0.1.
 #'
 #' @importFrom dplyr filter group_by select summarise all_of anti_join arrange
+#' bind_rows
 #'
 #' @return data frame with updated parameter values for running the model with
 #'  `run_aeme_param`
