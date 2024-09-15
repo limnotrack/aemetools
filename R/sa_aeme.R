@@ -19,7 +19,7 @@
 #' @importFrom utils write.csv write.table
 #' @importFrom stats runif
 #' @importFrom FME Latinhyper
-#' @importFrom dplyr mutate
+#' @importFrom dplyr bind_rows
 #' @importFrom sensobol sobol_matrices
 #'
 #' @return string of simulation id to be used to read the simulation output.
@@ -236,7 +236,7 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
 
       message("Completed ", m, "! [", format(Sys.time()), "]")
 
-      g1 <- do.call(rbind, model_out)
+      g1 <- dplyr::bind_rows(model_out)
       out_df <- apply(g1, 2, signif, digits = 6)
       ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
                                              FUN_list = FUN_list,
@@ -309,7 +309,7 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
         return(pars[[i]])
       }, pars = param_list)
 
-      g1 <- do.call(rbind, model_out)
+      g1 <- dplyr::bind_rows(model_out)
       out_df <- apply(g1, 2, signif, digits = 6)
       ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
                                              FUN_list = FUN_list,
