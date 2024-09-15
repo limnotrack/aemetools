@@ -2,6 +2,7 @@
 #'
 #' @param sa list; of sensitivity analysis results read in with \code{\link{read_sa}}
 #' @param bins integer; number of bins for the histogram. Default is 30.
+#' @inheritParams base::mean
 #'
 #' @return \code{ggplot} object
 #' @export
@@ -10,12 +11,21 @@
 #' @importFrom dplyr filter
 #'
 
-plot_uncertainty <- function(sa, bins = 30) {
+plot_uncertainty <- function(sa, na.rm = TRUE, bins = 30) {
 
   df <- lapply(names(sa), \(x) {
-    sa[[x]]$df |>
+    dat <- sa[[x]]$df |>
       dplyr::filter(parameter_name == parameter_name[1] & fit_type != "fit") |>
       dplyr::mutate(sim_id = x)
+    if (na.rm) {
+      n_nas <- sum(is.na(dat$fit_value) | dat$fit_value >= 1e4)
+      message(paste0("Dropped ", n_nas, " NA's from ", nrow(dat),
+                     " rows for sim_id ", x))
+      dat |>
+        dplyr::filter(!is.na(fit_value) & fit_value < 1e4)
+    } else {
+      dat
+    }
   }) |>
     dplyr::bind_rows()
   # df <- sa$df |>
