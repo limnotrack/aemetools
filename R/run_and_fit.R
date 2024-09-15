@@ -30,7 +30,7 @@
 #'
 #' @return A single value of model fit, calculated by `FUN_list`.
 #'
-#' @importFrom dplyr case_when
+#' @importFrom dplyr case_when filter left_join mutate select bind_rows
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @importFrom lubridate as_date
 #' @importFrom AEME lake input observations get_var_indices
@@ -425,7 +425,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
         })
       }
 
-      mod_out <- do.call(rbind, vars_out)
+      mod_out <- dplyr::bind_rows(vars_out)
       if (ncol(mod_out) == 1 & nrow(obs$lake) > 0) {
         return(return_list)
       }

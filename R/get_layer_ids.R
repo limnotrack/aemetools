@@ -8,6 +8,9 @@
 #'  layers to return. The default is c("dem", "aerial"). If only one type is
 #'  specified, the function will only return layers of that type.
 #'
+#' @importFrom dplyr bind_rows
+#' @importFrom sf st_within
+#'
 #' @return A data frame with the layer IDs of the layers that intersect with
 #' the spatial object.
 #' @export
@@ -22,13 +25,13 @@ get_layer_ids <- function(x, type = c("dem", "aerial")) {
     lyr <- nz_aerial_imagery_metadata[sf::st_within(x = x,
                                                     nz_aerial_imagery_metadata,
                                                     sparse = FALSE), ]
-    df <- rbind(df, lyr)
+    df <- dplyr::bind_rows(df, lyr)
   }
   if ("dem" %in% type) {
     utils::data("nz_dem_metadata", package = "aemetools")
     lyr <- nz_dem_metadata[sf::st_within(x, nz_dem_metadata,
                                          sparse = FALSE), ]
-    df <- rbind(df, lyr)
+    df <- dplyr::bind_rows(df, lyr)
   }
   return(df)
 }

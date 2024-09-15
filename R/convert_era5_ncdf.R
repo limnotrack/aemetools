@@ -84,7 +84,7 @@ convert_era5_ncdf <- function(lat,
       }
       return(df)
     })
-    out2 <- do.call(rbind, out2)
+    out2 <- dplyr::bind_rows(out2)
   })
 
   met <- Reduce(merge, out)

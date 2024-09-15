@@ -31,7 +31,7 @@
 #' @importFrom utils write.csv write.table
 #' @importFrom stats runif
 #' @importFrom FME Latinhyper
-#' @importFrom dplyr mutate
+#' @importFrom dplyr mutate bind_rows
 #'
 #' @return string of simulation id to be used to read the simulation output.
 #'
@@ -217,7 +217,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
         return(pars[[i]])
       }, pars = param_list)
 
-      g1 <- do.call(rbind, model_out)
+      g1 <- dplyr::bind_rows(model_out)
       message("Best fit: ", signif(min(g1$fit), 3), " (sd: ",
               signif(sd(g1$fit), 5), ")
             Parameters: [", paste0(signif(g1[which.min(g1$fit),
@@ -317,7 +317,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
           return(pars[[i]])
         }, pars = param_list)
 
-        g <- do.call(rbind, model_out)
+        g <- dplyr::bind_rows(model_out)
         g$gen <- gen_n
 
         out_df <- apply(g, 2, signif, digits = 6)
@@ -411,7 +411,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
         return(pars[[i]])
       }, pars = param_list)
 
-      g1 <- do.call(rbind, model_out)
+      g1 <- dplyr::bind_rows(model_out)
       message("Best fit: ", signif(min(g1$fit), 3), " (sd: ",
               signif(sd(g1$fit), 3), ")
             Parameters: [", paste0(signif(g1[which.min(g1$fit),
@@ -508,7 +508,7 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
           return(pars[[i]])
         }, pars = param_list)
 
-        g <- do.call(rbind, model_out)
+        g <- dplyr::bind_rows(model_out)
         g$gen <- gen_n
         out_df <- apply(g, 2, signif, digits = 6)
 
