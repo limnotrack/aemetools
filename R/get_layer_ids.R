@@ -19,19 +19,28 @@
 get_layer_ids <- function(x, type = c("dem", "aerial")) {
 
   # Load in data from the package
-  df <- data.frame() # Empty data frame to store results
+  # df <- data.frame() # Empty data frame to store results
   if ("aerial" %in% type) {
     utils::data("nz_aerial_imagery_metadata", package = "aemetools")
-    lyr <- nz_aerial_imagery_metadata[sf::st_within(x = x,
+    aer <- nz_aerial_imagery_metadata[sf::st_within(x = x,
                                                     nz_aerial_imagery_metadata,
                                                     sparse = FALSE), ]
-    df <- dplyr::bind_rows(df, lyr)
+    # df <- dplyr::bind_rows(df, lyr)
   }
   if ("dem" %in% type) {
     utils::data("nz_dem_metadata", package = "aemetools")
-    lyr <- nz_dem_metadata[sf::st_within(x, nz_dem_metadata,
+    dem <- nz_dem_metadata[sf::st_within(x, nz_dem_metadata,
                                          sparse = FALSE), ]
-    df <- dplyr::bind_rows(df, lyr)
+    # df <- dplyr::bind_rows(lyr, df)
   }
+
+  if ("aerial" %in% type & "dem" %in% type) {
+    df <- dplyr::bind_rows(aer, dem)
+  } else if ("aerial" %in% type) {
+    df <- aer
+  } else if ("dem" %in% type) {
+    df <- dem
+  }
+
   return(df)
 }
