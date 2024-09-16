@@ -102,7 +102,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   db_file <- "results.db"
   ctrl <- create_control(method = "sa", N = 2^2,
                          file_type = "db", file_name = db_file,
-                         na_value = 1e20, ncore = 8,
+                         na_value = 1e20, ncore = 2,
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
                                             month = c(12, 1:2),
