@@ -44,7 +44,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_uncertainty</span><span class="op">(</span><span class="va">sa</span>, bins <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_uncertainty</span><span class="op">(</span><span class="va">sa</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span>, bins <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -53,6 +53,12 @@
 
 <dl><dt id="arg-sa">sa<a class="anchor" aria-label="anchor" href="#arg-sa"></a></dt>
 <dd><p>list; of sensitivity analysis results read in with <code><a href="read_sa.html">read_sa</a></code></p></dd>
+
+
+<dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
+<dd><p>a logical evaluating to <code>TRUE</code> or <code>FALSE</code>
+    indicating whether <code>NA</code> values should be stripped before the
+    computation proceeds.</p></dd>
 
 
 <dt id="arg-bins">bins<a class="anchor" aria-label="anchor" href="#arg-bins"></a></dt>
