@@ -3,7 +3,7 @@ Title: Tools to expand the Aquatic Ecosystem Model Ensemble Package
 Version: 0.0.0.9000
 Authors@R: 
     c(person("Tadhg", "Moore", role = c("aut","cre"),
-    email = "tadhg@limnotrack.com"),
+    email = "tadhg@limnotrack.com", comment = c(ORCID = "0000-0002-3834-8868")),
     person("Chris", "McBride", role = "aut",
     email = "chris@limnotrack.com"))
 Description: Calibrate the AEME model ensemble, download ERA5-Land data for any 
