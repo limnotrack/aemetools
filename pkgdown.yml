@@ -1,12 +1,12 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   access-geospatial: access-geospatial.html
   calibrate-aeme: calibrate-aeme.html
   download-era5: download-era5.html
   sensitivity-analysis: sensitivity-analysis.html
-last_built: 2024-09-18T03:35Z
+last_built: 2024-09-18T21:32Z
 urls:
   reference: https://limnotrack.github.io/aemetools/reference
   article: https://limnotrack.github.io/aemetools/articles
