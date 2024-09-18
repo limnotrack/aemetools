@@ -50,8 +50,10 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
   # }
   if (nrow(survivors2) <= 1) {
     message("All parameter sets are NA. Generating base parameters...")
+    qt <- ctrl$cutoff * 3
+    qt <- ifelse(qt > 1, 1, qt)
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
-                                                               (ctrl$cutoff * 3)),
+                                                               qt),
                              keep_cols]
     g <- FME::Latinhyper(param[, c("min", "max")],
                          ctrl$NP)
