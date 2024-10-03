@@ -134,6 +134,33 @@ run_aeme_param(aeme = aeme, param = aeme_parameters,
 
 ## Calibration setup
 
+### Choosing variables to calibrate 
+
+Choosing which variables to calibrate is an important step in the calibration
+process. The variables to calibrate are usually selected based on the 
+availability of data and the importance of the variable to the model. 
+
+There is a function within the `AEME` package called `get_mod_obs_vars` which 
+can be used to get the available variables for which there is modelled and observed data.
+
+```{r select-calib-vars}
+available_vars <- AEME::get_mod_obs_vars(aeme = aeme, model = model)
+available_vars
+```
+
+There are 10 variables available for calibration, this includes derived 
+variables such as thermocline depth (HYD_thmcln) and Schmidt stability 
+(HYD_schstb).
+
+For this example, we will calibrate the water temperature and lake level. The
+variables are selected using the AEME variable definition e.g.
+`c("HYD_temp", "LKE_lvlwtr")`.
+
+```{r define-variables}
+vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+```
+
+
 ### Define fitness function
 
 First, we will define a function for the calibration function to use to
@@ -201,13 +228,11 @@ ctrl <- create_control(method = "calib", VTR = 0, NP = 40, itermax = 400,
                        na_value = 999, ncore = 2)
 ```
 
-### Define variables
+### Define variable weights
 
-Next we will select the variables to use for the calibration. The variables
-selected need to use the AEME variable definition e.g.
-`c("HYD_temp", "LKE_lvlwtr")`. Weights need to be attributed to each of the
-variables. The weights are used to scale the fitness value. This can be helpful
-if the variables have different units. For example, if the temperature is in
+Weights need to be attributed to each of the selected variables. The weights are
+used to scale the fitness value. This can be helpful if the variables have 
+different units. For example, if the temperature is in
 degrees Celsius and the water level is in metres, then the water level will have
 a much larger impact on the fitness value. Therefore, the weight for the water
 level should be much smaller than the weight for the temperature.
@@ -215,8 +240,7 @@ level should be much smaller than the weight for the temperature.
 The weights are specified in a named vector. The names of the vector should be
 the same as the variable names.
 
-```{r define-variables}
-vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+```{r define-variable-weights}
 weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 0.1)
 ```
 
