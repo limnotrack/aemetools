@@ -119,9 +119,9 @@ make sure the current model setup is working.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://expert-guide-29ve1vw.pages.github.io/reference/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                 path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-10-02 03:14:58]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-10-02 03:14:59]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-10-02 03:14:59]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-10-03 21:16:07]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-10-03 21:16:08]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-10-03 21:16:08]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
@@ -436,13 +436,45 @@ model output is generate within the lake folder.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, param <span class="op">=</span> <span class="va">aeme_parameters</span>,</span>
 <span>                 model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-10-02 03:15:11]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-10-02 03:15:12]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-10-02 03:15:12]</span></span></code></pre></div>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-10-03 21:16:23]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-10-03 21:16:24]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-10-03 21:16:24]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="calibration-setup">Calibration setup<a class="anchor" aria-label="anchor" href="#calibration-setup"></a>
 </h2>
+<div class="section level3">
+<h3 id="choosing-variables-to-calibrate">Choosing variables to calibrate<a class="anchor" aria-label="anchor" href="#choosing-variables-to-calibrate"></a>
+</h3>
+<p>Choosing which variables to calibrate is an important step in the
+calibration process. The variables to calibrate are usually selected
+based on the availability of data and the importance of the variable to
+the model.</p>
+<p>There is a function within the <code>AEME</code> package called
+<code>get_mod_obs_vars</code> which can be used to get the available
+variables for which there is modelled and observed data.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">available_vars</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://expert-guide-29ve1vw.pages.github.io/reference/get_mod_obs_vars.html" class="external-link">get_mod_obs_vars</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
+<span><span class="va">available_vars</span></span>
+<span><span class="co">#&gt;                   Salinity          Water temperature </span></span>
+<span><span class="co">#&gt;                 "CHM_salt"                 "HYD_temp" </span></span>
+<span><span class="co">#&gt;          Thermocline depth         Centre of buoyancy </span></span>
+<span><span class="co">#&gt;               "HYD_thmcln"               "HYD_ctrbuy" </span></span>
+<span><span class="co">#&gt;           Epilimnion depth          Hypolimnion depth </span></span>
+<span><span class="co">#&gt;               "HYD_epidep"               "HYD_hypdep" </span></span>
+<span><span class="co">#&gt;          Schmidt stability Metalimnetic oxygen minima </span></span>
+<span><span class="co">#&gt;               "HYD_schstb"               "CHM_oxymom" </span></span>
+<span><span class="co">#&gt;    Number of anoxic layers                Water level </span></span>
+<span><span class="co">#&gt;               "CHM_oxynal"               "LKE_lvlwtr"</span></span></code></pre></div>
+<p>There are 10 variables available for calibration, this includes
+derived variables such as thermocline depth (HYD_thmcln) and Schmidt
+stability (HYD_schstb).</p>
+<p>For this example, we will calibrate the water temperature and lake
+level. The variables are selected using the AEME variable definition
+e.g. <code>c("HYD_temp", "LKE_lvlwtr")</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">vars_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span>, <span class="st">"LKE_lvlwtr"</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level3">
 <h3 id="define-fitness-function">Define fitness function<a class="anchor" aria-label="anchor" href="#define-fitness-function"></a>
 </h3>
@@ -454,7 +486,7 @@ function should return a single value.</p>
 <p>Here we use the root mean square error (RMSE) as the fitness
 function:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">RMSE</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>,</mo><mover><mi>y</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msqrt><mfrac><mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mover><mi>y</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><mi>N</mi></mfrac></msqrt></mrow><annotation encoding="application/x-tex">\text{RMSE}(y, \hat{y}) = \sqrt{\frac{\sum_{i=0}^{N - 1} (y_i - \hat{y}_i)^2}{N}}</annotation></semantics></math></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Function to calculate fitness</span></span>
 <span><span class="va">rmse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">obs</span> <span class="op">-</span> <span class="va">df</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
@@ -462,7 +494,7 @@ function:</p>
 <p>Different functions can be applied to different variables. For
 example, we can use the RMSE for the lake level and the mean absolute
 error (MAE) for the water temperature:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Function to calculate fitness</span></span>
 <span><span class="va">mae</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">obs</span> <span class="op">-</span> <span class="va">df</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">)</span></span>
@@ -470,7 +502,7 @@ error (MAE) for the water temperature:</p>
 <p>Then these would be combined into a named list of functions which
 will be passed to the <code>calib_aeme</code> function. They are named
 according to the target variable.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create list of functions</span></span>
 <span><span class="va">FUN_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>HYD_temp <span class="op">=</span> <span class="va">mae</span>, LKE_lvlwtr <span class="op">=</span> <span class="va">rmse</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -481,7 +513,7 @@ according to the target variable.</p>
 control parameters are generated using the <code>create_control</code>
 funtion and are then passed to the <code>calib_aeme</code> function. The
 control parameters for calibration are as follows:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">?</span><span class="va">create_control</span></span></code></pre></div>
 <div class="r-help-page">
 <div class="container"><main><table style="width: 100%;" class="table"><tr>
@@ -610,29 +642,26 @@ parallel processing is used, the file type for writing the results is
 CSV, the NA value is 999 and 2 cores are used for parallel processing.
 The control parameters are stored in the <code>ctrl</code> object which
 is then passed to the <code>calib_aeme</code> function.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_control.html">create_control</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"calib"</span>, VTR <span class="op">=</span> <span class="fl">0</span>, NP <span class="op">=</span> <span class="fl">40</span>, itermax <span class="op">=</span> <span class="fl">400</span>, </span>
 <span>                       reltol <span class="op">=</span> <span class="fl">0.07</span>, cutoff <span class="op">=</span> <span class="fl">0.25</span>, mutate <span class="op">=</span> <span class="fl">0.1</span>, </span>
 <span>                       parallel <span class="op">=</span> <span class="cn">TRUE</span>, file_type <span class="op">=</span> <span class="st">"csv"</span>, </span>
 <span>                       na_value <span class="op">=</span> <span class="fl">999</span>, ncore <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="define-variables">Define variables<a class="anchor" aria-label="anchor" href="#define-variables"></a>
+<h3 id="define-variable-weights">Define variable weights<a class="anchor" aria-label="anchor" href="#define-variable-weights"></a>
 </h3>
-<p>Next we will select the variables to use for the calibration. The
-variables selected need to use the AEME variable definition e.g.
-<code>c("HYD_temp", "LKE_lvlwtr")</code>. Weights need to be attributed
-to each of the variables. The weights are used to scale the fitness
-value. This can be helpful if the variables have different units. For
-example, if the temperature is in degrees Celsius and the water level is
-in metres, then the water level will have a much larger impact on the
-fitness value. Therefore, the weight for the water level should be much
-smaller than the weight for the temperature.</p>
+<p>Weights need to be attributed to each of the selected variables. The
+weights are used to scale the fitness value. This can be helpful if the
+variables have different units. For example, if the temperature is in
+degrees Celsius and the water level is in metres, then the water level
+will have a much larger impact on the fitness value. Therefore, the
+weight for the water level should be much smaller than the weight for
+the temperature.</p>
 <p>The weights are specified in a named vector. The names of the vector
 should be the same as the variable names.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">vars_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span>, <span class="st">"LKE_lvlwtr"</span><span class="op">)</span></span>
-<span><span class="va">weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"LKE_lvlwtr"</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"LKE_lvlwtr"</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -641,7 +670,7 @@ should be the same as the variable names.</p>
 <p>Once we have defined the fitness function, control parameters and
 variables, we can run the calibration. The <code>calib_aeme</code>
 function takes the following arguments:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">?</span><span class="va">calib_aeme</span></span></code></pre></div>
 <div class="r-help-page">
 <div class="container"><main><table style="width: 100%;" class="table"><tr>
@@ -731,53 +760,53 @@ to the file specified after each generation. This allows the calibration
 to be stopped and restarted at any time. The <code>calib_aeme</code>
 function returns the <code>ctrl</code> object with any updated
 values.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calib_aeme.html">calib_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
 <span>                     param <span class="op">=</span> <span class="va">aeme_parameters</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                     FUN_list <span class="op">=</span> <span class="va">FUN_list</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, </span>
 <span>                     vars_sim <span class="op">=</span> <span class="va">vars_sim</span>, weights <span class="op">=</span> <span class="va">weights</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for glm_aed modelled variables [2024-10-02 03:15:13]</span></span>
-<span><span class="co">#&gt; Completed glm_aed! [2024-10-02 03:15:13]</span></span>
+<span><span class="co">#&gt; Extracting indices for glm_aed modelled variables [2024-10-03 21:16:25]</span></span>
+<span><span class="co">#&gt; Completed glm_aed! [2024-10-03 21:16:26]</span></span>
 <span><span class="co">#&gt; Calibrating in parallel for glm_aed using 2 cores...</span></span>
-<span><span class="co">#&gt; Starting generation 1/10, 40 members. [2024-10-02 03:15:14]</span></span>
+<span><span class="co">#&gt; Starting generation 1/10, 40 members. [2024-10-03 21:16:26]</span></span>
 <span><span class="co">#&gt; Best fit: 1.03 (sd: 437.28)</span></span>
 <span><span class="co">#&gt;             Parameters: [2.01, 0.881, 1.01, 0.122, 0.27, 0.158, 0.42, 0.631, 1.79, 1.93]</span></span>
-<span><span class="co">#&gt; Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-02 03:15:38]</span></span>
+<span><span class="co">#&gt; Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-03 21:16:50]</span></span>
 <span><span class="co">#&gt; Survival rate: 0.75</span></span>
-<span><span class="co">#&gt; Starting generation 2/10, 40 members. [2024-10-02 03:15:38]</span></span>
-<span><span class="co">#&gt; Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-02 03:15:57]</span></span>
+<span><span class="co">#&gt; Starting generation 2/10, 40 members. [2024-10-03 21:16:50]</span></span>
+<span><span class="co">#&gt; Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-03 21:17:09]</span></span>
 <span><span class="co">#&gt; Best fit: 0.88337 (sd: 157.74)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 3/10, 40 members. [2024-10-02 03:15:57]</span></span>
-<span><span class="co">#&gt; Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-02 03:16:16]</span></span>
+<span><span class="co">#&gt; Starting generation 3/10, 40 members. [2024-10-03 21:17:09]</span></span>
+<span><span class="co">#&gt; Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-03 21:17:28]</span></span>
 <span><span class="co">#&gt; Best fit: 0.87781 (sd: 0.3347)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 4/10, 40 members. [2024-10-02 03:16:16]</span></span>
-<span><span class="co">#&gt; Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-02 03:16:34]</span></span>
+<span><span class="co">#&gt; Starting generation 4/10, 40 members. [2024-10-03 21:17:28]</span></span>
+<span><span class="co">#&gt; Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-03 21:17:47]</span></span>
 <span><span class="co">#&gt; Best fit: 0.85284 (sd: 266.18)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.92</span></span>
-<span><span class="co">#&gt; Starting generation 5/10, 40 members. [2024-10-02 03:16:34]</span></span>
-<span><span class="co">#&gt; Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-02 03:16:54]</span></span>
+<span><span class="co">#&gt; Starting generation 5/10, 40 members. [2024-10-03 21:17:47]</span></span>
+<span><span class="co">#&gt; Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-03 21:18:06]</span></span>
 <span><span class="co">#&gt; Best fit: 0.78309 (sd: 220.27)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.95</span></span>
-<span><span class="co">#&gt; Starting generation 6/10, 40 members. [2024-10-02 03:16:54]</span></span>
-<span><span class="co">#&gt; Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-02 03:17:13]</span></span>
+<span><span class="co">#&gt; Starting generation 6/10, 40 members. [2024-10-03 21:18:06]</span></span>
+<span><span class="co">#&gt; Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-03 21:18:26]</span></span>
 <span><span class="co">#&gt; Best fit: 0.77572 (sd: 0.22877)</span></span>
 <span><span class="co">#&gt; Survival rate: 1</span></span>
-<span><span class="co">#&gt; Starting generation 7/10, 40 members. [2024-10-02 03:17:13]</span></span>
-<span><span class="co">#&gt; Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-02 03:17:32]</span></span>
+<span><span class="co">#&gt; Starting generation 7/10, 40 members. [2024-10-03 21:18:26]</span></span>
+<span><span class="co">#&gt; Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-03 21:18:45]</span></span>
 <span><span class="co">#&gt; Best fit: 0.77018 (sd: 220.28)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.95</span></span>
-<span><span class="co">#&gt; Starting generation 8/10, 40 members. [2024-10-02 03:17:32]</span></span>
-<span><span class="co">#&gt; Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-02 03:17:50]</span></span>
+<span><span class="co">#&gt; Starting generation 8/10, 40 members. [2024-10-03 21:18:45]</span></span>
+<span><span class="co">#&gt; Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-03 21:19:04]</span></span>
 <span><span class="co">#&gt; Best fit: 0.75302 (sd: 220.3)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.95</span></span>
-<span><span class="co">#&gt; Starting generation 9/10, 40 members. [2024-10-02 03:17:50]</span></span>
-<span><span class="co">#&gt; Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-02 03:18:09]</span></span>
+<span><span class="co">#&gt; Starting generation 9/10, 40 members. [2024-10-03 21:19:04]</span></span>
+<span><span class="co">#&gt; Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-03 21:19:23]</span></span>
 <span><span class="co">#&gt; Best fit: 0.73354 (sd: 157.81)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 10/10, 40 members. [2024-10-02 03:18:09]</span></span>
-<span><span class="co">#&gt; Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-02 03:18:28]</span></span>
+<span><span class="co">#&gt; Starting generation 10/10, 40 members. [2024-10-03 21:19:23]</span></span>
+<span><span class="co">#&gt; Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2024-10-03 21:19:42]</span></span>
 <span><span class="co">#&gt; Best fit: 0.73354 (sd: 266.25)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.92</span></span></code></pre></div>
 </div>
@@ -787,7 +816,7 @@ values.</p>
 <p>The calibrations results can be read in using the
 <code>read_calib</code> function. This function takes the following
 arguments:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">?</span><span class="va">read_calib</span></span></code></pre></div>
 <div class="r-help-page">
 <div class="container"><main><table style="width: 100%;" class="table"><tr>
@@ -847,7 +876,7 @@ calibration.</li>
 </ul>
 <p>And returns a list of ggplot objects: a dotty plot, density plot and
 convergence plot.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">calib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_simulation_output.html">read_calib</a></span><span class="op">(</span>ctrl <span class="op">=</span> <span class="va">ctrl</span>, sim_id <span class="op">=</span> <span class="va">sim_id</span><span class="op">)</span></span>
 <span><span class="va">plist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_calib.html">plot_calib</a></span><span class="op">(</span>calib <span class="op">=</span> <span class="va">calib</span>, na_value <span class="op">=</span> <span class="va">ctrl</span><span class="op">$</span><span class="va">na_value</span><span class="op">)</span></span></code></pre></div>
@@ -860,7 +889,7 @@ generation. The fitness value is on the y-axis and the parameter value
 is on the x-axis. It is faceted by the parameter name. The parameter
 values are coloured by the generation. The best fitness value for each
 generation is shown as a black line with a red dot.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plist</span><span class="op">$</span><span class="va">dotty</span></span></code></pre></div>
 <p><img src="calibrate-aeme_files/figure-html/dotty-plot-1.png" width="768"></p>
 </div>
@@ -875,7 +904,7 @@ name.</p>
 <p>If a parameter is converging on a value, then the histogram will show
 a peak around that value. If a parameter is not converging on a value,
 then the histogram will show a flat distribution.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plist</span><span class="op">$</span><span class="va">hist</span></span></code></pre></div>
 <p><img src="calibrate-aeme_files/figure-html/histogram-plot-1.png" width="768"></p>
 </div>
@@ -888,7 +917,7 @@ value is on the y-axis and the iteration is on the x-axis. It is faceted
 by the parameter name. The parameter values are coloured by the
 generation. The best fitness value for each generation is shown as a
 solid horizontal black line.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plist</span><span class="op">$</span><span class="va">convergence</span></span></code></pre></div>
 <p><img src="calibrate-aeme_files/figure-html/convergence-plot-1.png" width="768"></p>
 </div>
@@ -917,7 +946,7 @@ results that contains the fitness value. Defaults to
 parameter values or the entire calibration dataset. Defaults to
 <code>FALSE</code>.</li>
 </ul>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_param.html">get_param</a></span><span class="op">(</span><span class="va">calib</span>, na_value <span class="op">=</span> <span class="va">ctrl</span><span class="op">$</span><span class="va">na_value</span>, fit_col <span class="op">=</span> <span class="st">"fit"</span>, </span>
 <span>                         best <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">best_params</span></span></code></pre></div>
@@ -1072,13 +1101,13 @@ parameter values or the entire calibration dataset. Defaults to
 <p>The best parameter values can be used to run the model and compare
 the simulated values to the observed values. This can be done using the
 <code>run_aeme_param</code> function.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
 <span>                       param <span class="op">=</span> <span class="va">best_params</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                       return_aeme <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-10-02 03:18:33]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2024-10-02 03:18:33]</span></span>
-<span><span class="co">#&gt; Model run complete![2024-10-02 03:18:33]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2024-10-03 21:19:47]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2024-10-03 21:19:47]</span></span>
+<span><span class="co">#&gt; Model run complete![2024-10-03 21:19:47]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span></code></pre></div>
 <p>The simulated values can be compared to the observed values using the
@@ -1094,7 +1123,7 @@ observations and model simulations.</li>
 <code>var_sim</code>: The variables to use for the assessment.</li>
 </ul>
 <p>The <code>assess_model</code> function returns:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">?</span><span class="va">assess_model</span></span></code></pre></div>
 <div class="r-help-page">
 <div class="container"><main><table style="width: 100%;" class="table"><tr>
@@ -1156,7 +1185,7 @@ variable. These include:
 </li>
 </ul></main></div>
 </div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://expert-guide-29ve1vw.pages.github.io/reference/assess_model.html" class="external-link">assess_model</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="va">vars_sim</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
@@ -1244,12 +1273,12 @@ multi-panel plot displaying residuals for:</p>
 <li>Residuals vs. day of year</li>
 <li>Residuals vs. quantiles of the observed values</li>
 </ul>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://expert-guide-29ve1vw.pages.github.io/reference/plot_resid.html" class="external-link">plot_resid</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="va">vars_sim</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="water-temperature-residuals">Water temperature residuals<a class="anchor" aria-label="anchor" href="#water-temperature-residuals"></a>
 </h4>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">pl</span><span class="op">$</span><span class="va">HYD_temp</span></span></code></pre></div>
 <p><img src="calibrate-aeme_files/figure-html/plot-residuals-plot-1.png" width="768"></p>
@@ -1257,7 +1286,7 @@ multi-panel plot displaying residuals for:</p>
 <div class="section level4">
 <h4 id="lake-level-residuals">Lake level residuals<a class="anchor" aria-label="anchor" href="#lake-level-residuals"></a>
 </h4>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">pl</span><span class="op">$</span><span class="va">LKE_lvlwtr</span></span></code></pre></div>
 <p><img src="calibrate-aeme_files/figure-html/plot-residuals-plot-2-1.png" width="768"></p>
