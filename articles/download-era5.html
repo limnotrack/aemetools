@@ -139,7 +139,7 @@ models. This can be easily downloaded using the example below.</p>
 <h2 id="derive-other-meteorological-variables">Derive other meteorological variables<a class="anchor" aria-label="anchor" href="#derive-other-meteorological-variables"></a>
 </h2>
 <p>The downloaded ERA5 data can be converted to other meteorological
-variables using the <code><a href="https://expert-guide-29ve1vw.pages.github.io/reference/expand_met.html" class="external-link">AEME::expand_met()</a></code> function. Which will
+variables using the <code><a href="https://limnotrack.github.io/AEME/reference/expand_met.html" class="external-link">AEME::expand_met()</a></code> function. Which will
 calculate the following variables:</p>
 <ul>
 <li>
@@ -176,7 +176,7 @@ session using the <code><a href="../reference/add_linz_key.html">add_linz_key()<
 <span><span class="va">elev</span></span>
 <span><span class="co">#&gt; [1] 282</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://expert-guide-29ve1vw.pages.github.io/reference/expand_met.html" class="external-link">expand_met</a></span><span class="op">(</span><span class="va">met</span>, lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, elev <span class="op">=</span> <span class="va">elev</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/expand_met.html" class="external-link">expand_met</a></span><span class="op">(</span><span class="va">met</span>, lat <span class="op">=</span> <span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span>, elev <span class="op">=</span> <span class="va">elev</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Date              MET_radswd        MET_radlwd      MET_cldcvr    </span></span>
 <span><span class="co">#&gt;  Min.   :2022-01-01   Min.   :  8.615   Min.   :186.7   Min.   :0.1580  </span></span>
