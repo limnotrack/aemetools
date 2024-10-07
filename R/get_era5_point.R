@@ -49,7 +49,12 @@ get_era5_point <- function(lat, lon, years, variables = c("MET_tmpair",
 
   if (response$status_code == 200) {
     data <- httr::content(response, as = "text", encoding = "UTF-8")
-    data <- jsonlite::fromJSON(data) |>
+    data <- jsonlite::fromJSON(data)
+    # CHeck it is a dataframe
+    if (!is.data.frame(data)) {
+      stop(data$error)
+    }
+    data <- data |>
       dplyr::mutate(Date = as.Date(Date))
     return(data)
   } else {
