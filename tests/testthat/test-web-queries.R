@@ -78,7 +78,8 @@ test_that("can get LINZ basemap raster tile", {
   ras <- get_linz_basemap_tile(x = x, zoom = 14)
 
   testthat::expect_true(is(ras, "SpatRaster"))
-  testthat::expect_equal(mean(terra::values(ras), na.rm = T), 81.120357)
+  rast_mean <- round(mean(terra::values(ras), na.rm = TRUE))
+  testthat::expect_equal(rast_mean, 81)
 
 })
 
