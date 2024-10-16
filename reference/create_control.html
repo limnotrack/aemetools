@@ -71,6 +71,9 @@ not exist, it will be created.</p></li>
 <li><p><code>parallel</code> boolean; run calibration in parallel. Default to TRUE</p></li>
 <li><p><code>ncore</code>: The number of cores to use for the calibration. This is only used
 if <code>parallel = TRUE</code>. Default to <code>parallel::detectCores() - 1</code>.</p></li>
+<li><p><code>timeout</code>: The maximum time in seconds to run the calibration. Default to
+Inf. If the calibration takes longer than the timeout, the calibration will
+stop and return the best parameter set found so far.</p></li>
 </ul><p>For calibration, the arguments are:</p><ul><li><p><code>VTR</code> Value to be reached. The optimization process will stop if
 either the maximum number of iterations itermax is reached or the best
 parameter vector bestmem has found a value fn(bestmem) &lt;= VTR. Default to
