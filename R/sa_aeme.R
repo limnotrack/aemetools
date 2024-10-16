@@ -122,7 +122,7 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                                    return_indices = TRUE,
                                    include_wlev = include_wlev,
                                    method = "sa", sa_ctrl = ctrl,
-                                   fit = FALSE)
+                                   fit = FALSE, timeout = ctrl$timeout)
       )
       message("Complete! [", format(Sys.time()), "]")
     }
@@ -215,7 +215,8 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                                         include_wlev = include_wlev,
                                         fit = TRUE,
                                         method = "sa", sa_ctrl = ctrl,
-                                        weights = weights)
+                                        weights = weights,
+                                        timeout = ctrl$timeout)
 
           for (n in nmes) {
             pars[[i]][[n]][p] <- res[[n]]
@@ -290,7 +291,8 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                              return_indices = FALSE,
                              include_wlev = include_wlev,
                              fit = TRUE, method = "sa", sa_ctrl = ctrl,
-                             weights = weights)
+                             weights = weights,
+                             timeout = ctrl$timeout)
 
           for (n in nmes) {
             pars[[i]][[n]][p] <- res[[n]]
