@@ -18,6 +18,9 @@
 #'  * `parallel` boolean; run calibration in parallel. Default to TRUE
 #'  * `ncore`: The number of cores to use for the calibration. This is only used
 #'  if `parallel = TRUE`. Default to `parallel::detectCores() - 1`.
+#'  * `timeout`: The maximum time in seconds to run the calibration. Default to
+#'  Inf. If the calibration takes longer than the timeout, the calibration will
+#'  stop and return the best parameter set found so far.
 #'
 #'   For calibration, the arguments are:
 #' * `VTR` Value to be reached. The optimization process will stop if
@@ -81,7 +84,7 @@ create_control <- function(method, ...) {
 
   check_names <- c("na_value", "file_type", "file_name", "file_dir", "parallel",
                    "ncore", "VTR", "NP", "itermax", "reltol", "cutoff",
-                   "mutate", "N", "vars_sim", "c_method")
+                   "mutate", "N", "vars_sim", "c_method", "timeout")
 
   if (any(!names(ls) %in% check_names)) {
     stop(strwrap("Invalid argument(s) passed to create_control. Please check
@@ -101,6 +104,7 @@ create_control <- function(method, ...) {
   parallel <- ifelse("parallel" %in% names(ls), ls$parallel, TRUE)
   ncore <- ifelse("ncore" %in% names(ls), ls$ncore,
                   (parallel::detectCores() - 1))
+  timeout <- ifelse("timeout" %in% names(ls), ls$timeout, Inf)
 
 
   if (method == "calib") {
@@ -117,7 +121,7 @@ create_control <- function(method, ...) {
                  cutoff = cutoff, mutate = mutate, parallel = parallel,
                  file_type = file_type, file_name = file_name,
                  file_dir = file_dir, na_value = na_value, ncore = ncore,
-                 method = method, c_method = c_method)
+                 method = method, c_method = c_method, timeout = timeout)
   } else if (method == "sa") {
 
     N <- ifelse("N" %in% names(ls), ls$N, 2^2)
@@ -136,7 +140,8 @@ create_control <- function(method, ...) {
 
     ctrl <- list(N = N, parallel = parallel, ncore = ncore, na_value = na_value,
                  file_type = file_type, file_name = file_name,
-                 file_dir = file_dir, vars_sim = vars_sim, method = method)
+                 file_dir = file_dir, vars_sim = vars_sim, method = method,
+                 timeout = timeout)
   }
   return(ctrl)
 }

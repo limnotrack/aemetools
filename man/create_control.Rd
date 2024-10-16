@@ -26,6 +26,9 @@ not exist, it will be created.
 \item \code{parallel} boolean; run calibration in parallel. Default to TRUE
 \item \code{ncore}: The number of cores to use for the calibration. This is only used
 if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
+\item \code{timeout}: The maximum time in seconds to run the calibration. Default to
+Inf. If the calibration takes longer than the timeout, the calibration will
+stop and return the best parameter set found so far.
 }
 
 For calibration, the arguments are:

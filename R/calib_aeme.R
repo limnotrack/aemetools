@@ -80,7 +80,8 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                                    FUN_list = FUN_list, model_controls = model_controls,
                                    vars_sim = vars_sim, weights = weights,
                                    return_indices = TRUE,
-                                   include_wlev = include_wlev, fit = FALSE)
+                                   include_wlev = include_wlev, fit = FALSE,
+                                   timeout = ctrl$timeout)
       )
       message("Completed ", m, "! [", format(Sys.time()), "]")
     }
@@ -198,7 +199,8 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                                         return_indices = FALSE,
                                         include_wlev = include_wlev,
                                         fit = TRUE,
-                                        weights = weights)
+                                        weights = weights,
+                                        timeout = ctrl$timeout)
 
           for (v in vars_sim) {
             pars[[i]][[v]][p] <- res[[v]]
@@ -298,7 +300,8 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                                           return_indices = FALSE,
                                           include_wlev = include_wlev,
                                           fit = TRUE,
-                                          weights = weights)
+                                          weights = weights,
+                                          timeout = ctrl$timeout)
 
             for (v in vars_sim) {
               pars[[i]][[v]][p] <- res[[v]]
@@ -391,7 +394,8 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                              return_indices = FALSE,
                              include_wlev = include_wlev,
                              fit = TRUE,
-                             weights = weights)
+                             weights = weights,
+                             timeout = ctrl$timeout)
 
           for (v in vars_sim) {
             pars[[i]][[v]][p] <- res[[v]]
@@ -488,7 +492,8 @@ calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
                                return_indices = FALSE,
                                include_wlev = include_wlev,
                                fit = TRUE,
-                               weights = weights)
+                               weights = weights,
+                               timeout = ctrl$timeout)
 
             for (v in vars_sim) {
               pars[[i]][[v]][p] <- res[[v]]

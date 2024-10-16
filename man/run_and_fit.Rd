@@ -20,7 +20,8 @@ run_and_fit(
   return_df = FALSE,
   method = "calib",
   sa_ctrl = NULL,
-  fit = TRUE
+  fit = TRUE,
+  timeout = Inf
 )
 }
 \arguments{
@@ -67,6 +68,9 @@ Only required if \code{method = "sa"}.}
 
 \item{fit}{boolean; fit model or not. If FALSE, only return netCDF file
 connection.}
+
+\item{timeout}{numeric; time in seconds to run each simulation. Default is
+Inf.}
 }
 \value{
 A single value of model fit, calculated by \code{FUN_list}.

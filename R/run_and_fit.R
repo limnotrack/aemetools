@@ -27,6 +27,8 @@
 #' connection.
 #' @param sa_ctrl list; of control parameters for the sensitivity analysis.
 #' Only required if `method = "sa"`.
+#' @param timeout numeric; time in seconds to run each simulation. Default is
+#' Inf.
 #'
 #' @return A single value of model fit, calculated by `FUN_list`.
 #'
@@ -49,7 +51,10 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                         var_indices = NULL, return_indices = FALSE,
                         include_wlev = FALSE, return_df = FALSE,
                         method = "calib", sa_ctrl = NULL,
-                        fit = TRUE) {
+                        fit = TRUE, timeout = Inf) {
+
+  # Set timeout for each simulation
+  setTimeLimit(cpu = timeout)
 
   return_nc <- ifelse(fit | return_indices, TRUE, FALSE)
   if (is.null(model_controls)) {
