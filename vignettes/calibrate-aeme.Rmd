@@ -124,7 +124,7 @@ aeme_parameters
 This dataframe can be passed to the `run_aeme_param` function to run AEME with
 the parameter values specified in the dataframe. This function is different to
 the `run_aeme` function in that it does not return an `aeme` object, but the
-model output is generate within the lake folder.
+model output is generated within the lake folder.
 
 ```{r run-aeme-param}
 run_aeme_param(aeme = aeme, param = aeme_parameters,
