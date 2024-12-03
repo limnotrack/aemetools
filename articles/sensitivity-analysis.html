@@ -8,8 +8,8 @@
 <title>Sensitivity Analysis • aemetools</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Sensitivity Analysis">
 </head>
 <body>
@@ -655,9 +655,19 @@ specified. The <code>sa_aeme</code> function returns the
 <code class="sourceCode R"><span><span class="co"># Run sensitivity analysis AEME model</span></span>
 <span><span class="va">sim_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sa_aeme.html">sa_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>, param <span class="op">=</span> <span class="va">param</span>,</span>
 <span>                  model <span class="op">=</span> <span class="va">model</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, FUN_list <span class="op">=</span> <span class="va">FUN_list</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for gotm_wet modelled variables [2024-10-16 22:23:02]</span></span>
-<span><span class="co">#&gt; Complete! [2024-10-16 22:23:06]</span></span>
-<span><span class="co">#&gt; Running sensitivity analysis in parallel for gotm_wet using 2 cores with 144 parameter sets [2024-10-16 22:23:06]</span></span>
+<span><span class="co">#&gt; Extracting indices for gotm_wet modelled variables [2024-12-03 00:01:41]</span></span>
+<span><span class="co">#&gt;  [1] " ------------------------------------------------------------------------"</span></span>
+<span><span class="co">#&gt;  [2] " GOTM:    v5.3-685-g2895ac94-dirty (au branch)"                           </span></span>
+<span><span class="co">#&gt;  [3] " YAML:    0.1.0 (unknown branch)"                                         </span></span>
+<span><span class="co">#&gt;  [4] " flexout: 0.1.0 (unknown branch)"                                         </span></span>
+<span><span class="co">#&gt;  [5] " STIM:     (unknown branch)"                                              </span></span>
+<span><span class="co">#&gt;  [6] " FABM:    v0.95.3-300-g3910177 (au branch)"                               </span></span>
+<span><span class="co">#&gt;  [7] " WET:  6cd445e-dirty (master branch)"                                     </span></span>
+<span><span class="co">#&gt;  [8] " NetCDF: 3.6.1-beta1 of Mar  7 2018 17:17:53 $"                           </span></span>
+<span><span class="co">#&gt;  [9] " ------------------------------------------------------------------------"</span></span>
+<span><span class="co">#&gt; [10] " Compiler: Intel 2021.8.0.20221119"</span></span>
+<span><span class="co">#&gt; Complete! [2024-12-03 00:01:45]</span></span>
+<span><span class="co">#&gt; Running sensitivity analysis in parallel for gotm_wet using 2 cores with 144 parameter sets [2024-12-03 00:01:45]</span></span>
 <span><span class="co">#&gt;        turbulence/turb_param/k_min light_extinction/A/constant_value</span></span>
 <span><span class="co">#&gt; mean                     4.851e-06                           0.52760</span></span>
 <span><span class="co">#&gt; median                   5.000e-06                           0.52700</span></span>
@@ -670,8 +680,8 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="co">#&gt; mean       0.9965     0.9983 1.4930</span></span>
 <span><span class="co">#&gt; median     1.0000     1.0000 1.5000</span></span>
 <span><span class="co">#&gt; sd         0.1619     0.1606 0.5311</span></span>
-<span><span class="co">#&gt; Completed gotm_wet! [2024-10-16 22:28:34]</span></span>
-<span><span class="co">#&gt; Writing output for generation 1 to results.db with sim ID: 45819_gotmwet_S_001 [2024-10-16 22:28:34]</span></span></code></pre></div>
+<span><span class="co">#&gt; Completed gotm_wet! [2024-12-03 00:07:17]</span></span>
+<span><span class="co">#&gt; Writing output for generation 1 to results.db with sim ID: 45819_gotmwet_S_001 [2024-12-03 00:07:17]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-sensitivity-analysis-results">Reading sensitivity analysis results<a class="anchor" aria-label="anchor" href="#reading-sensitivity-analysis-results"></a>
