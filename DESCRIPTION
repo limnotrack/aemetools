@@ -52,6 +52,7 @@ Imports:
 Suggests: 
     DT,
     knitr,
+    osmdata,
     printr,
     rmarkdown,
     testthat (>= 3.0.0),
