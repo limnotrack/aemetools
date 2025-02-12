@@ -79,8 +79,12 @@ data from the Copernicus Data Store (CDS). This function requires the latitude,
 longitude, variable, year, and month to be specified. The data will be saved as
 a GRIB file in the specified path.
 
+#### Example: Download 2m air temperature for January 2024 for Lake Toba, Indonesia
+
 We will choose the latitude and longitude of Toba, Indonesia, and download the
 2m temperature for January 2024.
+
+#### Download shapefile for Lake Toba, Indonesia
 
 We will download a shapefile for Lake Toba, Indonesia, and plot the location
 using the `osmdata` and `tmap` packages.
@@ -90,13 +94,13 @@ For more details on using `osmdata`, you can visit the [osmdata website](https:/
 ```{r download-toba}
 library(osmdata)
 osm_data <- opq(bbox = "Sumatra, Indonesia") |> 
-  add_osm_feature(key = "natural", value = "water") |> 
   add_osm_feature(key = "name:en", value = "Lake Toba", value_exact = FALSE) |> 
   osmdata_sf()
 
 # Extract lake polygon
 toba <- osm_data$osm_multipolygons |> 
   st_make_valid()
+toba
 
 ```
 Plot the location of Lake Toba.
@@ -265,9 +269,9 @@ era5_ref_table |>
   dplyr::select(variable, aeme, nc_unit) |>
   dplyr::rename(Variable = variable, Aeme = aeme, Unit = nc_unit) |>
   dplyr::mutate(Unit = dplyr::case_when(
-    aeme %in% c("MET_radswd", "MET_radlwd") ~ "W/m²",
+    Aeme %in% c("MET_radswd", "MET_radlwd") ~ "W/m²",
     .default = Unit
-  ))
+  )) |> 
   knitr::kable()
 
 ```
