@@ -9,9 +9,10 @@
 #' profile}. Further information can be found on the
 #' \href{https://bluegreen-labs.github.io/ecmwfr/#use}{ecmwfr} package page.
 #'
-#'
+#' @param shape sf object; shapefile or spatial object to download data for.
 #' @param lat numeric; latitude
 #' @param lon numeric; longitude
+#' @param buffer numeric; buffer around the point in degrees. Default is 0.1.
 #' @param variable vector of ERA5 variable names e.g.
 #' "2m_temperature", "total_precipitation". Default variables are:
 #' "10m_u_component_of_wind", "10m_v_component_of_wind",
@@ -45,8 +46,10 @@
 #' @export
 #'
 
-download_era5_grib <- function(lat,
+download_era5_grib <- function(shape = NULL,
+                               lat,
                                lon,
+                               buffer = 0.1,
                                variable = c("10m_u_component_of_wind",
                                             "10m_v_component_of_wind",
                                             "2m_dewpoint_temperature",
@@ -77,13 +80,25 @@ download_era5_grib <- function(lat,
             '18:00', '19:00', '20:00',
             '21:00', '22:00', '23:00')
   timestep <- "hourly"
-  area <- c(plyr::round_any(lat + 0.1, accuracy = 0.1, f = ceiling),
-                 plyr::round_any(lon - 0.1, accuracy = 0.1, f = floor),
-                 plyr::round_any(lat - 0.1, accuracy = 0.1, f = floor),
-                 plyr::round_any(lon + 0.1, accuracy = 0.1, f = ceiling))
+
+  if (!is.null(shape)) {
+    bbox <- shape |>
+      sf::st_bbox()
+    area <- c(plyr::round_any(bbox["ymax"], accuracy = 0.1, f = ceiling),
+              plyr::round_any(bbox["xmin"], accuracy = 0.1, f = floor),
+              plyr::round_any(bbox["ymin"], accuracy = 0.1, f = floor),
+              plyr::round_any(bbox["xmax"], accuracy = 0.1, f = ceiling)
+              )
+  } else {
+    area <- c(plyr::round_any(lat + buffer, accuracy = 0.1, f = ceiling),
+              plyr::round_any(lon - buffer, accuracy = 0.1, f = floor),
+              plyr::round_any(lat - buffer, accuracy = 0.1, f = floor),
+              plyr::round_any(lon + buffer, accuracy = 0.1, f = ceiling)
+              )
+  }
+
 
   # Generate a list of requests for each variable fo each year and each month
-
   request_list <- list()
   for (v in variable) {
     for (y in year) {

@@ -5,8 +5,10 @@
 \title{Download ERA5 GRIB files}
 \usage{
 download_era5_grib(
+  shape = NULL,
   lat,
   lon,
+  buffer = 0.1,
   variable = c("10m_u_component_of_wind", "10m_v_component_of_wind",
     "2m_dewpoint_temperature", "2m_temperature", "snowfall", "surface_pressure",
     "surface_solar_radiation_downwards", "surface_thermal_radiation_downwards",
@@ -21,9 +23,13 @@ download_era5_grib(
 )
 }
 \arguments{
+\item{shape}{sf object; shapefile or spatial object to download data for.}
+
 \item{lat}{numeric; latitude}
 
 \item{lon}{numeric; longitude}
+
+\item{buffer}{numeric; buffer around the point in degrees. Default is 0.1.}
 
 \item{variable}{vector of ERA5 variable names e.g.
 "2m_temperature", "total_precipitation". Default variables are:
@@ -51,7 +57,8 @@ Create a free CDS user account by \href{https://cds.climate.copernicus.eu/user/r
 registering}.
 Once your user account has been verified you can get your personal user ID
 and key by visiting the \href{https://cds.climate.copernicus.eu/user}{user
-profile}.
+profile}. Further information can be found on the
+\href{https://bluegreen-labs.github.io/ecmwfr/#use}{ecmwfr} package page.
 }
 \examples{
 \dontrun{

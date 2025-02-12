@@ -22,7 +22,7 @@
 #' df <- read_grib_point(file = files, lat = lat, lon = lon)
 #' }
 
-read_grib_point <- function(file, lat, lon, method = "bilinear") {
+read_grib_point <- function(file, shape = NULL, lat, lon, method = "bilinear") {
   out <- lapply(file, \(f) {
 
     if (!file.exists(f)) {
@@ -33,8 +33,16 @@ read_grib_point <- function(file, lat, lon, method = "bilinear") {
     r <- terra::rast(f)
 
     # Extract point data
-    v <- terra::extract(r, cbind(lon, lat), method = method) |>
-      as.numeric()
+    if (!is.null(shape)) {
+      shape_vec <- terra::vect(shape)
+      shape_vec <- terra::project(shape_vec, r)
+      v <- terra::extract(r, shape_vec, fun = mean, ID = FALSE, weights = TRUE) |>
+        as.numeric()
+    } else {
+      v <- terra::extract(r, cbind(lon, lat), method = method) |>
+        as.numeric()
+    }
+
     if (all(is.na(v))) {
       warning("No data found for the point for ", f, ". Returning NA.")
     }
@@ -54,7 +62,7 @@ read_grib_point <- function(file, lat, lon, method = "bilinear") {
 
     # Extract timestamp data
     time <- terra::time(r)
-    df <- data.frame(DateTime = time, lat = lat, lon = lon,
+    df <- data.frame(DateTime = time, #lat = lat, lon = lon,
                      value = v, units = units, variable = var_name, short_name = short_name)
 
     return(df)
