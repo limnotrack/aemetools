@@ -4,10 +4,12 @@
 \alias{read_grib_point}
 \title{Read a point from a grib file}
 \usage{
-read_grib_point(file, lat, lon, method = "bilinear")
+read_grib_point(file, shape = NULL, lat, lon, method = "bilinear")
 }
 \arguments{
 \item{file}{character; path to the grib file. Can be a vector of paths.}
+
+\item{shape}{sf object; shapefile or spatial object to download data for.}
 
 \item{lat}{numeric; latitude}
 
