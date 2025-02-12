@@ -126,6 +126,9 @@ month <- 1
 variable <- "2m_temperature"
 path <- "data/test"
 
+ecmwfr::wf_set_key(key = Sys.getenv("CDS_KEY"),
+                   user = Sys.getenv("CDS_USER"))
+
 files <- download_era5_grib(shape = toba, year = year, month = month,
                             variable = variable, path = path, site = "toba",
                             user = Sys.getenv("CDS_USER"))
@@ -196,7 +199,7 @@ met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
 summary(met)
 ```
 
-```{r plot-era5}
+```{r plot-era5, fig.alt='Timeseries plot of air temperature and precipitation.'}
 
 library(ggplot2)
 library(tidyr)
