@@ -64,7 +64,7 @@ download_era5_grib <- function(shape = NULL,
                                user = NULL,
                                era5_dataset = "reanalysis-era5-land",
                                path = ".",
-                               job = TRUE) {
+                               job = FALSE) {
 
   # Create dir if it does not exist
   if (!dir.exists(path)) {
@@ -106,7 +106,6 @@ download_era5_grib <- function(shape = NULL,
         list_name <- paste0(v, "_", y, "_", m)
         request_list[[list_name]] <- list(
           dataset_short_name = era5_dataset, # "reanalysis-era5-single-levels", #
-          dataset_short_name = era5_dataset, # "reanalysis-era5-single-levels", #
           product_type   = "reanalysis",
           download_format = "unarchived",
           data_format = "grib",
@@ -118,7 +117,8 @@ download_era5_grib <- function(shape = NULL,
                   "21","22","23","24","25","26","27","28","29","30","31"),
           time = time,
           area = area,
-          target = paste0("era5", "_", v, "_", timestep, "_", y, "_", m, "_", site, ".grib")
+          target = paste0(era5_dataset, "_", v, "_", timestep, "_", y, "_", m,
+                          "_", site, ".grib")
         )
       }
     }
