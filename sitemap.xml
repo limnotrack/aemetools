@@ -14,7 +14,7 @@
 <url><loc>https://limnotrack.github.io/aemetools/reference/convert_era5_ncdf.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/create_control.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/create_linz_key.html</loc></url>
-<url><loc>https://limnotrack.github.io/aemetools/reference/download_era5_ncdf.html</loc></url>
+<url><loc>https://limnotrack.github.io/aemetools/reference/download_era5_grib.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/era5_ref_table.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/get_dem_raster.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/get_dem_value.html</loc></url>
@@ -39,6 +39,7 @@
 <url><loc>https://limnotrack.github.io/aemetools/reference/plot_uncertainty.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/query_elev.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/read_calib_meta.html</loc></url>
+<url><loc>https://limnotrack.github.io/aemetools/reference/read_grib_point.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/read_sa.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/read_simulation_meta.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/read_simulation_output.html</loc></url>
