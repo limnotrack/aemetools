@@ -6,7 +6,7 @@ articles:
   calibrate-aeme: calibrate-aeme.html
   download-era5: download-era5.html
   sensitivity-analysis: sensitivity-analysis.html
-last_built: 2025-02-12T22:26Z
+last_built: 2025-02-12T22:48Z
 urls:
   reference: https://limnotrack.github.io/aemetools/reference
   article: https://limnotrack.github.io/aemetools/articles
