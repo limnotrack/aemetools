@@ -59,10 +59,18 @@ Please see instructions on setting up a Copernicus (CDS) account and linking it
 with the `ecmwfr` package in the [ecmwfr vignette](https://bluegreen-labs.github.io/ecmwfr/#use).
 
 ```{r setup-cds-key, eval=FALSE}
-Sys.setenv(CDS_KEY = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX")
-Sys.setenv(CDS_USER = "person@email.com")
-```
+key <- "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+user <- "person@email.com"
 
+# Add the key and user to the environment
+Sys.setenv(CDS_KEY = key)
+Sys.setenv(CDS_USER = user)
+
+# Set the key for connecting to Copernicus Data Store (CDS)
+ecmwfr::wf_set_key(key = Sys.getenv("CDS_KEY"),
+                   user = Sys.getenv("CDS_USER"))
+
+```
 
 ### Download ERA5 data
 
@@ -120,19 +128,28 @@ can use the `download_era5_grib()` function to download the data using the
 shapefile we downloaded earlier or the latitude and longitude of the location.
 
 
-```{r results='hide'}
+```{r results='hide', message=FALSE, eval=FALSE}
 year <- 2024
 month <- 1
 variable <- "2m_temperature"
 path <- "data/test"
-
-ecmwfr::wf_set_key(key = Sys.getenv("CDS_KEY"),
-                   user = Sys.getenv("CDS_USER"))
+site <- "toba"
 
 files <- download_era5_grib(shape = toba, year = year, month = month,
-                            variable = variable, path = path, site = "toba",
-                            user = Sys.getenv("CDS_USER"))
+                            variable = variable, path = path, site = site,
+                            user = user)
 ```
+
+```{r results='hide', message=FALSE, eval=TRUE, include=FALSE}
+path <- "data/test"
+site <- "toba"
+era5_dir <- system.file("extdata/era5/", package = "aemetools")
+dir.create(path = path, recursive = TRUE, showWarnings = FALSE)
+fils <- list.files(era5_dir, full.names = TRUE, pattern = site)
+file.copy(fils, path, recursive = TRUE)
+files <- list.files(path, full.names = TRUE, pattern = site)
+```
+
 
 The function will return the path to the downloaded file.
 
