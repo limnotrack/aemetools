@@ -6,7 +6,8 @@
 #'  registering}.
 #' Once your user account has been verified you can get your personal user ID
 #' and key by visiting the \href{https://cds.climate.copernicus.eu/user}{user
-#' profile}.
+#' profile}. Further information can be found on the
+#' \href{https://bluegreen-labs.github.io/ecmwfr/#use}{ecmwfr} package page.
 #'
 #'
 #' @param lat numeric; latitude

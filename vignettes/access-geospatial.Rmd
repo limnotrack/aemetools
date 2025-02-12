@@ -18,12 +18,13 @@ knitr::opts_chunk$set(
 
 ```{r setup, warning=FALSE, message=FALSE}
 library(aemetools)
+library(sf) # Used for spatial data
 library(terra) # Used for raster data
 library(tmap) # Used for spatial plotting
 
 # tmap settings
 tmap_mode("view")
-tmap_options(basemaps = "Esri.WorldImagery", check.and.fix = TRUE)
+tmap_options(basemap.server = "Esri.WorldImagery", raster.max_cells = 1e8)
 
 ```
 
@@ -71,7 +72,8 @@ nz_shapefile <- nz_shapefile |>
 # View the shapefile data
 tm_shape(nz_shapefile, name = "Regional Council boundaries") +
   tm_borders(col = "blue") +
-  tm_fill(col = "C2023_V", title = "Region", alpha = 0.3, id = "C2023_V")
+  tm_fill(fill = "C2023_V", fill.legend = tm_legend(title = "Region"),
+          fill_alpha = 0.3, id = "C2023_V")
 
 ```
 
@@ -112,7 +114,7 @@ map <- tm_shape(pnt, name = "Lake") +
   tm_dots(col = "blue", size = 0.2, popup.vars = "title") 
 
 map +
-  tm_view(set.view = 15)
+  tm_view(set_view = 15)
 ```
 
 ## Query DEM metadata for elevation
@@ -149,7 +151,7 @@ our lake.
 ```{r view-dem-coverage, warning = FALSE}
 # View the coverage of the DEM layers
 tm_shape(nz_dem_metadata, name = "DEM coverage") +
-  tm_polygons(col = "red", border.col = "black", alpha = 0.1, id = "title") +
+  tm_polygons(fill = "red", col = "black", fill_alpha = 0.1, id = "title") +
   tm_shape(pnt, name = "Lake") +
   tm_dots(col = "blue", size = 0.2, popup.vars = "title") 
 
@@ -180,11 +182,11 @@ dem_84 <- dem_layers |>
   sf::st_transform(crs = 4326) 
 
 tm_shape(dem_84) +
-  tm_polygons(col = "red", border.col = "black", popup.vars = "title", alpha = 0.3) +
+  tm_polygons(fill = "red", col = "black", popup.vars = "title", fill_alpha = 0.3) +
   # tm_borders(col = "red", popup.vars = "title") +
   tm_shape(pnt, name = "Lake") +
   tm_dots(col = "blue", size = 0.2, popup.vars = "title") +
-  tm_view(set.view = c(lon, lat, 7))
+  tm_view(set_view = c(lon, lat, 7))
 
 ```
 
@@ -274,7 +276,7 @@ intersect with our lake.
 ```{r view-aerial-coverage, warning = FALSE}
 # View the coverage of the aerial imagery layers
 tm_shape(aerial_layers, name = "Aerial imagery coverage") +
-  tm_polygons(col = "yellow", border.col = "black", alpha = 0.1, id = "title") +
+  tm_polygons(fill = "yellow", col = "black", fill_alpha = 0.1, id = "title") +
   tm_shape(pnt, name = "Lake") +
   tm_dots(col = "blue", size = 0.2, popup.vars = "title") 
 ```
@@ -292,9 +294,9 @@ resolution, we may not need that resolution for our analysis. We can compare the
 
 ```{r plot-aerial-image, warning = FALSE, message = FALSE}
 aerial1 <- get_raster_tile(x = pnt, layer_id = aerial_layers$layer_id[1],
-                       zoom = 17) 
+                           zoom = 16) 
 aerial2 <- get_raster_tile(x = pnt, layer_id = aerial_layers$layer_id[4],
-                       zoom = 17) 
+                           zoom = 16) 
 
 tm_shape(aerial1) +
   tm_rgb() +
