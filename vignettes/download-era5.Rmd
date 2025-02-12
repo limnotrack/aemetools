@@ -7,11 +7,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r, include = FALSE, message=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+ecmwfr::wf_set_key(key = Sys.getenv("CDS_KEY"),
+                   user = Sys.getenv("CDS_USER"))
+
 ```
 
 ```{r include=FALSE, echo=FALSE}
@@ -21,6 +25,15 @@ data("era5_ref_table", package = "aemetools")
 era5_names <- paste0(tolower(era5_ref_table$variable[-1]), collapse = ", ")
 
 ```
+
+```{r}
+library(sf)
+library(terra)
+library(tmap)
+tmap_mode("view")
+
+```
+
 
 ## Global
 
@@ -48,25 +61,107 @@ Sys.setenv(CDS_KEY = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX")
 Sys.setenv(CDS_USER = "person@email.com")
 ```
 
-```{r setup-cds-key-2, echo=FALSE, results='hide'}
-ecmwfr::wf_set_key(key = Sys.getenv("CDS_KEY"),
-                   user = Sys.getenv("CDS_USER"))
+
+### Download ERA5 data
+
+The `download_era5_grib()` function can be used to download ERA5 meteorological
+data from the Copernicus Data Store (CDS). This function requires the latitude,
+longitude, variable, year, and month to be specified. The data will be saved as
+a GRIB file in the specified path.
+
+We will choose the latitude and longitude of Toba, Indonesia, and download the
+2m temperature for January 2024.
+
+We will download a shapefile for Lake Toba, Indonesia, and plot the location
+using the `osmdata` and `tmap` packages.
+
+For more details on using `osmdata`, you can visit the [osmdata website](https://docs.ropensci.org/osmdata/).
+
+```{r download-toba}
+library(osmdata)
+osm_data <- opq(bbox = "Sumatra, Indonesia") |> 
+  add_osm_feature(key = "natural", value = "water") |> 
+  add_osm_feature(key = "name:en", value = "Lake Toba", value_exact = FALSE) |> 
+  osmdata_sf()
+
+# Extract lake polygon
+toba <- osm_data$osm_multipolygons |> 
+  st_make_valid()
+
 ```
 
-```{r results='hide'}
+```{r plot-toba}
+tm_shape(toba) +
+  tm_fill(fill = "blue", fill_alpha = 0.5) +
+  tm_borders(col = "black") 
+```
+
+Alternatively, you can manually input the latitude and longitude of the location
+you are interested in.
+
+```{r plot-location}
 lat <- 2.637047
 lon <- 98.67591
+
+# View location
+coords <- data.frame(lat = lat, lon = lon) |> 
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+
+tm_shape(coords) +
+  tm_dots(fill = "red", size = 2) 
+
+```
+
+Now we can download the ERA5 data for the 2m temperature for January 2024. We 
+can use the `download_era5_grib()` function to download the data using the 
+shapefile we downloaded earlier or the latitude and longitude of the location.
+
+
+```{r results='hide'}
 year <- 2024
 month <- 1
 variable <- "2m_temperature"
 path <- "data/test"
-files <- download_era5_grib(lat = lat, lon = lon, year = year, month = month,
+files <- download_era5_grib(shape = toba, year = year, month = month,
                             variable = variable, path = path, site = "toba",
                             user = Sys.getenv("CDS_USER"))
-df <- read_grib_point(file = files, lat = lat, lon = lon)
 ```
 
+The function will return the path to the downloaded file.
+
 ```{r}
+files
+```
+Files are in GRIB (GRIdded Binary) format, which is a format commonly used in
+meteorology to store gridded data. You can read more about these files on the
+ECMWF website: [GRIB](https://confluence.ecmwf.int/display/CKB/What+are+GRIB+files+and+how+can+I+read+them).
+
+The most important thing is not to be afraid of them. You can easily read them
+using the `terra::rast()` function.
+
+```{r}
+r <- rast(files[1])
+r
+```
+
+Hmmmmmmm... Ok, maybe these files are not that easy to read/understand. We can 
+also plot them in leaflet using the `terra::plet()` function.
+
+```{r}
+plet(r)
+```
+
+As you can see it gives us a spatial grid of the 2m temperature for the month of
+January 2024. However it is at a 1-hour temporal resolution. We can use the
+`read_grib_point()` function to extract
+
+
+
+
+
+
+```{r}
+df <- read_grib_point(file = files, shape = toba)
 head(df)
 ```
 
