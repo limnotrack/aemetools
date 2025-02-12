@@ -48,4 +48,4 @@ jobs:
         with:
           upload-snapshots: true
           error-on: '"error"'
-          args: 'c("--no-vignettes")'
+          build_args: '"--no-vignettes"'
