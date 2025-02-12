@@ -22,10 +22,62 @@ era5_names <- paste0(tolower(era5_ref_table$variable[-1]), collapse = ", ")
 
 ```
 
+## Global
+
+### Download global point meteorological data
+
+One of the most widely used meteorological datasets for hydrodynamic modelling
+is the [ERA5-Land reanalysis](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land?tab=overview)
+dataset. This dataset has a spatial resolution of \~9 km and provides hourly
+meteorological data for the period 1950-present. It also includes a wide range
+of meteorological variables that are required to drive hydrological and
+hydrodynamic models.
+
+However, there are known issues with the ERA5-Land dataset, such as the
+underestimation of precipitation and wind speed in some regions. Therefore, it
+is recommended to compare the ERA5-Land data with local observations before
+using it for hydrodynamic modelling.
+
+#### Set up Copernicus (CDS) account and link with `ecmwfr` package
+
+Please see instructions on setting up a Copernicus (CDS) account and linking it
+with the `ecmwfr` package in the [ecmwfr vignette](https://bluegreen-labs.github.io/ecmwfr/#use).
+
+```{r setup-cds-key, eval=FALSE}
+Sys.setenv(CDS_KEY = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX")
+Sys.setenv(CDS_USER = "person@email.com")
+```
+
+```{r setup-cds-key-2, echo=FALSE, results='hide'}
+ecmwfr::wf_set_key(key = Sys.getenv("CDS_KEY"),
+                   user = Sys.getenv("CDS_USER"))
+```
+
+```{r results='hide'}
+lat <- 2.637047
+lon <- 98.67591
+year <- 2024
+month <- 1
+variable <- "2m_temperature"
+path <- "data/test"
+files <- download_era5_grib(lat = lat, lon = lon, year = year, month = month,
+                            variable = variable, path = path, site = "toba",
+                            user = Sys.getenv("CDS_USER"))
+df <- read_grib_point(file = files, lat = lat, lon = lon)
+```
+
+```{r}
+head(df)
+```
+
+
+
+## New Zealand
+
 ### Download NZ point meteorological data
 
 Currently, there are 
-[ERA5-Land data](https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land) 
+[ERA5-Land data](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land?tab=overview) 
 (\~9km grid spacing) archived for New Zealand (166.5/-46.6/178.6/-34.5)
 for the time period 1980-2023 with the main meteorological variables
 (`r era5_names`) required to drive hydrological and hydrodynamic models. This
