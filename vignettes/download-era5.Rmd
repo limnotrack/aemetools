@@ -26,11 +26,13 @@ era5_names <- paste0(tolower(era5_ref_table$variable[-1]), collapse = ", ")
 
 ```
 
-```{r}
+```{r load-libraries, warning=FALSE, message=FALSE, results='hide'}
+library(aemetools)
 library(sf)
 library(terra)
 library(tmap)
 tmap_mode("view")
+tmap_options(basemap.server = "OpenTopoMap")
 
 ```
 
@@ -89,6 +91,7 @@ toba <- osm_data$osm_multipolygons |>
   st_make_valid()
 
 ```
+Plot the location of Lake Toba.
 
 ```{r plot-toba}
 tm_shape(toba) +
@@ -122,6 +125,7 @@ year <- 2024
 month <- 1
 variable <- "2m_temperature"
 path <- "data/test"
+
 files <- download_era5_grib(shape = toba, year = year, month = month,
                             variable = variable, path = path, site = "toba",
                             user = Sys.getenv("CDS_USER"))
