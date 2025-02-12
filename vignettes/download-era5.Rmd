@@ -177,12 +177,8 @@ plet(r)
 
 As you can see it gives us a spatial grid of the 2m temperature for the month of
 January 2024. However it is at a 1-hour temporal resolution. We can use the
-`read_grib_point()` function to extract
-
-
-
-
-
+`read_grib_point()` function to extract the timeseries data at a specific point 
+location. 
 
 ```{r}
 df <- read_grib_point(file = files, shape = toba)
@@ -205,16 +201,43 @@ can be easily downloaded using the example below.
 ```{r setup}
 library(aemetools)
 ```
+First we will define our point location for New Zealand. We will use the
+latitude and longitude of Lake Rotorua, Bay of Plenty, New Zealand.
 
-```{r download-era5}
+```{r define-location}
 lon <- 176.2717
 lat <- -38.079
+```
+
+Plot the location.
+
+```{r}
+coords <- data.frame(lat = lat, lon = lon) |> 
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+
+tm_shape(coords) +
+  tm_dots(fill = "red", size = 2) 
+
+
+```
+
+Now we can download the ERA5 data for the air temperature and precipitation for
+the years 2000-2001. We can use the `get_era5_point()` function to download the
+data.
+
+The function will return a dataframe with the daily meteorological data for the
+specified years.
+
+```{r download-era5}
+
 variables <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
                       variables = variables)
 summary(met)
 ```
+
+We can plot the timeseries data using the `ggplot2` package.
 
 ```{r plot-era5, fig.alt='Timeseries plot of air temperature and precipitation.'}
 
@@ -230,12 +253,28 @@ met |>
 
 ```
 
-By default, it will download all available variables.
+By default, it will download all available variables. Currently available
+variables are air temperature (`MET_tmpair`), dew point temperature
+(`MET_tmpdew`), wind u-component (`MET_wnduvu`), wind v-component (`MET_wnduvv`),
+precipitation (`MET_pprain`), snowfall (`MET_ppsnow`), surface level pressure (`MET_prsttn`)
+and shortwave radiation (`MET_radswd`).
 
+```{r tbl-met-vars, results='asis', include=FALSE}
+
+era5_ref_table |> 
+  dplyr::select(variable, aeme, nc_unit) |>
+  dplyr::rename(Variable = variable, Aeme = aeme, Unit = nc_unit) |>
+  dplyr::mutate(Unit = dplyr::case_when(
+    aeme %in% c("MET_radswd", "MET_radlwd") ~ "W/m²",
+    .default = Unit
+  ))
+  knitr::kable()
+
+```
+
+To download all available variables for Lake Rotorua for the years 2022-2023,
+you can use the following code:
 ```{r download-era5-all}
-lon <- 176.2717
-lat <- -38.079
-
 met <- get_era5_point(lat = lat, lon = lon, years = 2022:2023)
 summary(met)
 ```
@@ -276,14 +315,17 @@ elev
 
 ```
 
-
- 
-
-
-
+Now we can expand the meteorological data to include the derived variables.
 
 ```{r expand-era5}
 met <- AEME::expand_met(met, lat = lat, lon = lon, elev = elev)
 summary(met)
 
 ```
+
+With these simple steps, you can download and derive meteorological data for
+your location of interest. This data can be used to drive hydrological and
+hydrodynamic models for your study area.
+
+Head over to the [AEME Getting Started](https://limnotrack.github.io/AEME/articles/getting-started.html) vignette to learn more about how to use the meteorological data to drive hydrodynamic models.
+
