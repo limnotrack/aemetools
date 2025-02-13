@@ -43,7 +43,7 @@ inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
 
 Within the `airGR` package, there are calibration algorithms which allows you to calibrate the hydrological model if discharge data for the reach is available. The calibrated parameters can be passed to the `run_GR` function to run the selected model.
 
-```{r run-gr4j, warning=FALSE}
+```{r run-gr4j, warning=FALSE,fig.height=6,fig.width=8}
 #' airGR uses indices to run the model, so first we split our observed data in 
 #' half (0.5) for calibration and validation periods based on when the 
 #' observation data starts (which is provided in `inputs$data$start`).
