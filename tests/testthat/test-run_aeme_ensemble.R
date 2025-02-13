@@ -89,7 +89,7 @@ test_that("can run an ensemble of AEME-GLM in series", {
   testthat::expect_true(outp$n_members == 5)
 })
 
-test_that("can run an ensemble of AEME-GLM in parallel and plot", {
+test_that("can run an ensemble of AEME-GOTM-WET in parallel and plot", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
