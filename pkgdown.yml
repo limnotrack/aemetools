@@ -5,8 +5,9 @@ articles:
   access-geospatial: access-geospatial.html
   calibrate-aeme: calibrate-aeme.html
   download-era5: download-era5.html
+  run-gr4j: run-gr4j.html
   sensitivity-analysis: sensitivity-analysis.html
-last_built: 2025-02-13T00:24Z
+last_built: 2025-02-13T01:56Z
 urls:
   reference: https://limnotrack.github.io/aemetools/reference
   article: https://limnotrack.github.io/aemetools/articles
