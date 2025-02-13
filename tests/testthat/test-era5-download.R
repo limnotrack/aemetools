@@ -33,6 +33,9 @@ test_that("can download ERA5 point data outside of grid", {
 })
 
 test_that("can download from CDS", {
+
+  testthat::skip("Skip test as it requires CDS key")
+
   lat <- -38.07782
   lon <- 176.2673
   year <- 2024
