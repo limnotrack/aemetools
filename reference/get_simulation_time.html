@@ -100,15 +100,12 @@ c(1).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmpdir</span>, <span class="st">"lake"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/yaml_to_aeme.html" class="external-link">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Linking to GEOS 3.12.2, GDAL 3.9.3, PROJ 9.4.1; sf_use_s2() is FALSE</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Lake area [152343 m2] is different to the area calculated from the lake</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> shape [152433.09 m2].</span>
 <span class="r-in"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/get_model_controls.html" class="external-link">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/build_aeme.html" class="external-link">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>,</span></span>
 <span class="r-in"><span>model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-02-13 20:46:52]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-02-15 02:13:05]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using constant water level</span>
@@ -119,12 +116,12 @@ c(1).</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Building GOTM-WET for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Copied all GOTM configuration files</span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models... (Have you tried parallelizing?) [2025-02-13 20:46:54]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED running... [2025-02-13 20:46:54]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED run successful! [2025-02-13 20:46:54]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GOTM-WET running... [2025-02-13 20:46:54]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GOTM-WET run successful! [2025-02-13 20:46:55]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-02-13 20:46:55]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models... (Have you tried parallelizing?) [2025-02-15 02:13:07]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED running... [2025-02-15 02:13:07]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED run successful! [2025-02-15 02:13:08]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GOTM-WET running... [2025-02-15 02:13:08]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GOTM-WET run successful! [2025-02-15 02:13:09]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-02-15 02:13:09]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting temp for model glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting salt for model glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting temp for model gotm_wet</span>
