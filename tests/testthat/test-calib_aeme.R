@@ -1251,7 +1251,8 @@ test_that("can update bgc parameters for GLM-AED2", {
 
   # Get parameters for calibration
   utils::data("aeme_parameters", package = "AEME")
-  phy_param <- AEME::retrieve_params(model = model, module = "phytoplankton")
+  phy_param <- AEME::get_aeme_parameters(model = model,
+                                         module = "phytoplankton")
   param <- dplyr::bind_rows(aeme_parameters, phy_param)
 
   # Function to calculate fitness
