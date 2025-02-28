@@ -74,12 +74,42 @@ ecmwfr::wf_set_key(key = Sys.getenv("CDS_KEY"),
 
 ### Download ERA5 data
 
+#### Point timeseries data
+
+The `get_era5_isimip_point()` function can be used to download ERA5 
+meteorological data for a specific point location. This uses the ISIMIP3a
+dataset which is a subset of the ERA5 dataset and is accessed via the 
+[ISIMIP API](https://files.isimip.org/api/v2). This function requires the 
+latitude, longitude, years, and variables to be specified. It can be used for 
+any point location globally. However, this dataset only covers 1900-2021.
+
+##### Example: Download meterological data for 2021 for Lake Toba, Indonesia
+
+However, it is very quick and easy to download meteorological data for a 
+specific point location. We will choose the latitude and longitude of Lake Toba,
+Indonesia, and download the air temperature and precipitation for the year 2021.
+
+```{r}
+lon <- 98.67591
+lat <- 2.637047
+years <- 2021
+vars <- c("MET_tmpair", "MET_pprain")
+
+met <- get_era5_isimip_point(lon, lat, years, vars)
+summary(met)
+
+```
+
+
+
+#### GRIB files
+
 The `download_era5_grib()` function can be used to download ERA5 meteorological
 data from the Copernicus Data Store (CDS). This function requires the latitude,
 longitude, variable, year, and month to be specified. The data will be saved as
 a GRIB file in the specified path.
 
-#### Example: Download 2m air temperature for January 2024 for Lake Toba, Indonesia
+##### Example: Download 2m air temperature GRIB files for January 2024 for Lake Toba, Indonesia
 
 We will choose the latitude and longitude of Toba, Indonesia, and download the
 2m temperature for January 2024.
