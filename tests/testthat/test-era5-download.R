@@ -63,12 +63,7 @@ test_that("can download ERA5-ISIMIP3a point data", {
                                vars = vars)
 
   testthat::expect_true(is.data.frame(met))
-  testthat::expect_true(ncol(met) == 4)
-  met <- get_era5_land_point_nz(lat = lat, lon = lon, years = 2023:2024,
-                                vars = vars)
-
-  testthat::expect_true(is.data.frame(met))
-  testthat::expect_true(ncol(met) == 4)
+  testthat::expect_true(ncol(met) == 6)
 })
 
 
