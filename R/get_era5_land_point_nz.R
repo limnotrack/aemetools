@@ -8,7 +8,7 @@
 #' @param lon numeric; Longitude
 #' @param years numeric; vector of years in numeric form to be extracted.
 #' Currently years are limited to 1980-2022.
-#' @param variables vector; with AEME meteorological variable names to be
+#' @param vars vector; with AEME meteorological variable names to be
 #' downloaded. Defaults to all available variables: c("MET_tmpair",
 #'  "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", "MET_pprain", "MET_ppsnow",
 #'  "MET_prsttn", "MET_radswd").
@@ -23,7 +23,7 @@
 #'
 #' @export
 
-get_era5_point <- function(lat, lon, years, variables = c("MET_tmpair",
+get_era5_land_point_nz <- function(lat, lon, years, vars = c("MET_tmpair",
                                                           "MET_tmpdew",
                                                           "MET_wnduvu",
                                                           "MET_wnduvv",
@@ -39,7 +39,7 @@ get_era5_point <- function(lat, lon, years, variables = c("MET_tmpair",
   url$path <- "get_era5_data"
 
   url$query <- list(lat = lat, lon = lon, years = paste0(years, collapse = ","),
-                    variables = paste(variables, collapse = ","),
+                    variables = paste(vars, collapse = ","),
                     key = api_key)
 
 
