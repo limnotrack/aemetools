@@ -68,10 +68,10 @@ cores on your computer to speed up the download.
 
 lon <- 176.2717
 lat <- -38.079
-variables <- c("MET_tmpair", "MET_pprain")
+vars <- c("MET_tmpair", "MET_pprain")
 
-met <- get_era5_point(lat = lat, lon = lon, years = 2020:2021,
-                      variables = variables)
+met <- get_era5_land_point_nz(lat = lat, lon = lon, years = 2020:2021,
+                      vars = vars)
 summary(met)
 #>       Date              MET_tmpair       MET_pprain      
 #>  Min.   :2020-01-01   Min.   : 4.848   Min.   : 0.00000  

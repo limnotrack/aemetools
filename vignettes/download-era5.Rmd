@@ -226,7 +226,7 @@ tm_shape(coords) +
 ```
 
 Now we can download the ERA5 data for the air temperature and precipitation for
-the years 2000-2001. We can use the `get_era5_point()` function to download the
+the years 2000-2001. We can use the `get_era5_land_point_nz()` function to download the
 data.
 
 The function will return a dataframe with the daily meteorological data for the
@@ -234,10 +234,10 @@ specified years.
 
 ```{r download-era5}
 
-variables <- c("MET_tmpair", "MET_pprain")
+vars <- c("MET_tmpair", "MET_pprain")
 
-met <- get_era5_point(lat = lat, lon = lon, years = 2000:2001,
-                      variables = variables)
+met <- get_era5_land_point_nz(lat = lat, lon = lon, years = 2000:2001,
+                              vars = vars)
 summary(met)
 ```
 
@@ -279,7 +279,7 @@ era5_ref_table |>
 To download all available variables for Lake Rotorua for the years 2022-2023,
 you can use the following code:
 ```{r download-era5-all}
-met <- get_era5_point(lat = lat, lon = lon, years = 2022:2023)
+met <- get_era5_land_point_nz(lat = lat, lon = lon, years = 2022:2023)
 summary(met)
 ```
 
