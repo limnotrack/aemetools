@@ -6,6 +6,15 @@
 #' Get ERA5 data from ISIMIP3a for a point location
 #'
 #' @inheritParams get_era5_land_point_nz
+#' @param download_path character; path to download the data. Default is
+#' the temporary directory.
+#'
+#' @importFrom httr POST content_type_json http_status GET content
+#' @importFrom jsonlite toJSON
+#' @importFrom terra rast values time
+#' @importFrom dplyr bind_rows full_join
+#' @importFrom zip unzip
+#' @importFrom logger log_info log_error
 #'
 #' @returns A data frame with the requested variables
 #' @export
@@ -19,7 +28,8 @@
 #' get_era5_isimip_point(lon, lat, years, vars)
 #' }
 
-get_era5_isimip_point <- function(lon, lat, years, vars) {
+get_era5_isimip_point <- function(lon, lat, years, vars,
+                                  download_path = tempdir()) {
   # Set up logging
   log_info <- function(...) logger::log_info(...)
   log_error <- function(...) logger::log_error(...)
@@ -37,15 +47,14 @@ get_era5_isimip_point <- function(lon, lat, years, vars) {
     paths = paths,
     operations = list(
       list(
-        operation = "cutout_bbox",
-        bbox = list(lon - 0.1, lon + 0.1, lat - 0.1, lat + 0.1)  # minx, maxx, miny, maxy
+        operation = "select_bbox",
+        # operation = "cutout_point",
+        bbox = list(lon - 0.25, lon + 0.25, lat - 0.25, lat + 0.25)  # minx, maxx, miny, maxy
         # point = list(lon, lat),  # longitude, latitude
         # output_csv = output_csv  # optional: set to TRUE to get a CSV file instead of NetCDF
       )
     )
   )
-
-  download_path <- "download"
 
   # Perform the initial request to the server
   response <- httr::POST(
@@ -89,7 +98,9 @@ get_era5_isimip_point <- function(lon, lat, years, vars) {
   out <- lapply(vars, \(v) {
     fils <- list.files(out_path, full.names = TRUE, pattern = paste0("_", v, "_"))
     df <- lapply(fils, \(f) {
-      nc <- terra::rast(f)
+      suppressWarnings({
+        nc <- terra::rast(f)
+      })
       vals <- terra::values(nc)
       dates <- terra::time(nc)
       data.frame(Date = dates, value = as.vector(vals))
