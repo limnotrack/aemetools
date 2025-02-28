@@ -1,6 +1,6 @@
 #' Get raster layer value for a given latitude and longitude
 #'
-#' @inheritParams get_era5_point
+#' @inheritParams get_era5_land_point_nz
 #' @param layer_id numeric; layer ID value for the raster layer on the LINZ
 #' data service. See \url{https://data.linz.govt.nz/}
 #' @param key character; LINZ API key. This can be set as an environment variable
