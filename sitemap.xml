@@ -19,7 +19,8 @@
 <url><loc>https://limnotrack.github.io/aemetools/reference/era5_ref_table.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/get_dem_raster.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/get_dem_value.html</loc></url>
-<url><loc>https://limnotrack.github.io/aemetools/reference/get_era5_point.html</loc></url>
+<url><loc>https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.html</loc></url>
+<url><loc>https://limnotrack.github.io/aemetools/reference/get_era5_land_point_nz.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/get_layer_ids.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/get_linz_basemap_tile.html</loc></url>
 <url><loc>https://limnotrack.github.io/aemetools/reference/get_param.html</loc></url>
