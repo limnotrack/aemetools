@@ -15,7 +15,7 @@
 #'
 #' @importFrom terra metags
 #' @importFrom sf st_point_on_surface st_transform st_coordinates
-#' @importFrom dplyr rename
+#' @importFrom dplyr rename filter pull
 #'
 #' @return numeric; elevation value
 #' @export
@@ -27,7 +27,15 @@ query_elev <- function(x, dem, lat, lon, layer_id = NULL) {
     meta_tags <- terra::metags(dem)
     if (length(meta_tags) == 0) stop("No metadata found for DEM!")
 
-    layer_id <- as.numeric(meta_tags[["layer_id"]])
+    if (is.data.frame(meta_tags)) {
+      layer_id <- meta_tags |>
+        dplyr::filter(name == "layer_id") |>
+        dplyr::pull(value) |>
+        as.numeric()
+    } else {
+      layer_id <- as.numeric(meta_tags[["layer_id"]])
+    }
+
     if (is.na(layer_id)) stop("No layer_id found in metadata for DEM!")
   }
   crs <- sf::st_crs(x)
