@@ -4,7 +4,14 @@
 \alias{get_era5_isimip_point}
 \title{Get ERA5 data from ISIMIP3a for a point location}
 \usage{
-get_era5_isimip_point(lon, lat, years, vars, download_path = tempdir())
+get_era5_isimip_point(
+  lon,
+  lat,
+  years,
+  vars = c("MET_tmpair", "MET_pprain", "MET_wndspd", "MET_radswd", "MET_prsttn",
+    "MET_radlwd", "MET_humrel"),
+  download_path = tempdir()
+)
 }
 \arguments{
 \item{lon}{numeric; Longitude}
