@@ -63,7 +63,7 @@ test_that("can download ERA5-ISIMIP3a point data", {
                                vars = vars)
 
   testthat::expect_true(is.data.frame(met))
+  testthat::expect_true(any(grepl("MET", names(met))))
   testthat::expect_true(ncol(met) == 6)
 })
-
 

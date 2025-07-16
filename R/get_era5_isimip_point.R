@@ -28,7 +28,11 @@
 #' get_era5_isimip_point(lon, lat, years, vars)
 #' }
 
-get_era5_isimip_point <- function(lon, lat, years, vars,
+get_era5_isimip_point <- function(lon, lat, years,
+                                  vars = c("MET_tmpair", "MET_pprain",
+                                           "MET_wndspd", "MET_radswd",
+                                           "MET_prsttn", "MET_radlwd",
+                                           "MET_humrel"),
                                   download_path = tempdir()) {
   # Set up logging
   log_info <- function(...) logger::log_info(...)
@@ -126,6 +130,9 @@ get_era5_isimip_point <- function(lon, lat, years, vars,
     result$pr <- result$pr * 86400
   }
 
+  # Rename to AEME column names
+  names(result) <- switch_vars(names(result))
+
   return(result)
 }
 
@@ -157,6 +164,38 @@ check_vars <- function(vars) {
   if (length(vars) == 0) stop("No valid variables")
   return(vars)
 }
+
+#' Switch variable names
+#'
+#' @param vars A character vector of variable names
+#' @return A vector of variable names suitable for ISIMIP3a or AEME
+#' @noRd
+switch_vars <- function(vars) {
+
+  # Reference data frame for variable mapping
+  mapping_df <- data.frame(
+    era5 = c("tas", "pr", "sfcwind", "rsds", "ps", "rlds", "hurs"),
+    aeme = c("MET_tmpair", "MET_pprain", "MET_wndspd", "MET_radswd",
+             "MET_prsttn", "MET_radlwd", "MET_humrel")
+  )
+  # Create a named vector for mapping
+  era5_to_aeme <- setNames(mapping_df$aeme, mapping_df$era5)
+  aeme_to_era5 <- setNames(mapping_df$era5, mapping_df$aeme)
+
+  aeme_chk <- grepl("^MET_", vars)
+  if (any(aeme_chk)) {
+    upd_vars <- sapply(vars, function(x) {
+      if (x %in% names(aeme_to_era5)) aeme_to_era5[[x]] else x
+    }, USE.NAMES = FALSE)
+  } else {
+    upd_vars <- sapply(vars, function(x) {
+        if (x %in% names(era5_to_aeme)) era5_to_aeme[[x]] else x
+      }, USE.NAMES = FALSE)
+  }
+
+  return(upd_vars)
+}
+
 
 #' Get decades for a given year for ISIMIP3a data
 #'
