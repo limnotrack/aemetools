@@ -51,6 +51,9 @@ read_web_sf <- function(url, layer_id, key = NULL) {
     FALSE
   })
 
+  chk2 <- !any(sf::st_geometry_type(f) %in% c("CURVEPOLYGON", "COMPOUNDCURVE",
+                                              "MULTISURFACE"))
+
   if (chk2) {
     return(f)
   } else {
@@ -59,7 +62,8 @@ read_web_sf <- function(url, layer_id, key = NULL) {
     if (length(unique(nchar(names(f)))) > 1) {
       idx <- which(nchar(names(f)) > 10)
       # truncate the columns names using the last 10 characters
-      names(f)[idx] <- substr(names(f)[idx], nchar(names(f)[idx]) - 15, nchar(names(f)[idx]))
+      names(f)[idx] <- substr(names(f)[idx], nchar(names(f)[idx]) - 15,
+                              nchar(names(f)[idx]))
       # ensure the names are unique
       names(f) <- make.unique(names(f))
       # names(f) <- substr(names(f), 1, 10)
