@@ -72,7 +72,8 @@ nz_shapefile <- nz_shapefile |>
 # View the shapefile data
 tm_shape(nz_shapefile, name = "Regional Council boundaries") +
   tm_borders(col = "blue") +
-  tm_fill(fill = "C2023_V", fill.legend = tm_legend(title = "Region"),
+  tm_fill(fill = "C2023_V", 
+          fill.legend = tm_legend(title = "Region"),
           fill_alpha = 0.3, id = "C2023_V")
 
 ```
