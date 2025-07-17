@@ -215,23 +215,6 @@ There is a discrepancy between the elevation values from the two layers. We will
 use the layer from the second layer because it is a higher resolution (1m) and 
 is from more recent data (2019).
 
-<!-- ### Download the DEM raster data
-
-We can download the LiDAR raster data for this layer and plot this over the lake
-to see which one works
-
-```{r plot-dem, warning = FALSE, message = FALSE}
-dem <- get_raster_tile(x = pnt, layer_id = dem_layers$layer_id[2],
-                       zoom = 18) |> 
-  terra::subset(1) # All colours are the same, so we will subset the first layer
-names(dem) <- "Elevation"
-
-tm_shape(dem, raster.downsample = FALSE, name = "LiDAR") +
-  tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, 
-            title = "Elevation (m)") 
-```
--->
-
 ## Aerial imagery
 
 Aerial imagery is also available from the LINZ Data Service. We can use this to
