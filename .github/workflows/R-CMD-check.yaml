@@ -23,6 +23,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GH_ACTIONS }}
       LINZ_KEY: ${{ secrets.LINZ_KEY }}
+      LERNZMP_KEY: ${{ secrets.LERNZMP_KEY }}
       STATS_NZ_KEY: ${{ secrets.STATS_NZ_KEY }}
       MFE_KEY: ${{ secrets.MFE_KEY }}
       LINZ_BASEMAP_KEY: ${{ secrets.LINZ_BASEMAP_KEY }}
