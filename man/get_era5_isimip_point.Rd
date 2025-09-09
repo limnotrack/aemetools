@@ -19,7 +19,7 @@ get_era5_isimip_point(
 \item{lat}{numeric; Latitude}
 
 \item{years}{numeric; vector of years in numeric form to be extracted.
-Currently years are limited to 1980-2022.}
+Currently years are limited to 1980-2024.}
 
 \item{vars}{vector; with AEME meteorological variable names to be
 downloaded. Defaults to all available variables: c("MET_tmpair",

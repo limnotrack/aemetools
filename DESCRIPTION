@@ -24,7 +24,7 @@ Imports:
     FME,
     forcats,
     ggplot2,
-    httr,
+    httr2,
     job,
     jsonlite,
     logger,
