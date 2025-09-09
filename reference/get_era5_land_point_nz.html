@@ -57,7 +57,7 @@ number of years (1980-2023).</p>
 <span>  <span class="va">years</span>,</span>
 <span>  vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MET_tmpair"</span>, <span class="st">"MET_tmpdew"</span>, <span class="st">"MET_wnduvu"</span>, <span class="st">"MET_wnduvv"</span>, <span class="st">"MET_pprain"</span>,</span>
 <span>    <span class="st">"MET_ppsnow"</span>, <span class="st">"MET_prsttn"</span>, <span class="st">"MET_radswd"</span><span class="op">)</span>,</span>
-<span>  api_url <span class="op">=</span> <span class="st">"http://170.64.143.18:80"</span>,</span>
+<span>  api_url <span class="op">=</span> <span class="st">"http://170.64.143.18:8000"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -76,7 +76,7 @@ number of years (1980-2023).</p>
 
 <dt id="arg-years">years<a class="anchor" aria-label="anchor" href="#arg-years"></a></dt>
 <dd><p>numeric; vector of years in numeric form to be extracted.
-Currently years are limited to 1980-2022.</p></dd>
+Currently years are limited to 1980-2024.</p></dd>
 
 
 <dt id="arg-vars">vars<a class="anchor" aria-label="anchor" href="#arg-vars"></a></dt>
@@ -92,7 +92,9 @@ downloaded. Defaults to all available variables: c("MET_tmpair",
 
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
-<dd><p>character; API key to access the data.</p></dd>
+<dd><p>character; API key to access the data. To get an API key,
+please contact the package maintainer. The API key can also be set as an
+environment variable using <code>Sys.setenv(LERNZMP_KEY = "your_api_key")</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
