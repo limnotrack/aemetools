@@ -7,7 +7,8 @@
 #' using the \code{add_linz_key()} function or passed as a character.
 #' See \code{?add_linz_key} for more information with setting up the API key.
 #'
-#' @importFrom httr GET
+#' @importFrom httr2 request req_url_query req_perform resp_status 
+#' @importFrom httr2 resp_status_desc resp_body_json 
 #' @importFrom jsonlite fromJSON
 #'
 #' @return numeric value or NA if outside extent
@@ -29,40 +30,48 @@ get_raster_layer_value <- function(lat, lon, layer_id, key = NULL) {
       stop("No LINZ API key found. See ?add_linz_key for more information.")
     }
   }
-
-  req <- paste0("https://data.linz.govt.nz/services/query/v1/raster.json?key=",
-                key, "&layer=", layer_id, "&x=", lon, "&y=", lat)
-  res <- httr::GET(req)
-  if (res$status_code == 200) {
-    data <- jsonlite::fromJSON(rawToChar(res$content))
-
-    if (data$rasterQuery$layers[[as.character(layer_id)]]$status == "outside-extent") {
-      message("Outside extent for layer ID ", layer_id, ". Returning NA.")
-      return(NA)
+  
+  # Using httr2
+  req <- httr2::request("https://data.linz.govt.nz/services/query/v1/raster.json") |>
+    httr2::req_url_query(
+      key   = key,
+      layer = layer_id,
+      x     = lon,
+      y     = lat
+    )
+  
+  # res <- httr2::req_perform(req)
+  res <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) {
+      return(list(success = FALSE, message = paste("Request failed:", e$message)))
     }
-
-    if (is.na(data$rasterQuery$layers[[as.character(layer_id)]][["bands"]])) {
-      message("NA in the bands for ", layer_id, ". Returning NA.")
-      return(NA)
-    }
-
-
-    val <- data$rasterQuery$layers[[as.character(layer_id)]][["bands"]][["value"]]
-  } else {
-    if (res$status_code == 403) {
-      message("Status code ", res$status_code, "Invalid LINZ API key.")
-    }
-    if (res$status_code == 400) {
-      message("Status code ", res$status_code, " for ", layer_id,
-              ". Bad request. Check lat and lon are correct.")
-
-    } else {
-      message("Status code ", res$status_code, " for ", layer_id,
-              ". Returning NA.")
-    }
-    val <- NA
+  )
+  
+  if (is.list(res) && identical(res$success, FALSE)) {
+    return(res)  # network error
   }
-  val
+  
+  status <- httr2::resp_status(res)
+  if (status < 200 || status >= 300) {
+    return(list(
+      success = FALSE,
+      message = paste("API returned status", status, httr2::resp_status_desc(res))
+    ))
+  }
+  
+  # Parse JSON
+  data <- tryCatch(
+    httr2::resp_body_json(res),
+    error = function(e) list(success = FALSE, message = paste("Failed to parse JSON:", e$message))
+  )
+  
+  if (is.list(data) && !is.null(data$success) && data$success == FALSE) {
+    return(NA)  # JSON parse error
+  }
+  
+  val <- data$rasterQuery$layers[[as.character(layer_id)]][["bands"]][[1]][["value"]]
+  return(val)
 }
 
 #' Get DEM value for a given latitude and longitude

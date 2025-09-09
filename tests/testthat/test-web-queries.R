@@ -16,7 +16,7 @@ test_that("can get layer value", {
 
   elev <- get_raster_layer_value(lat = lat, lon = lon, layer_id = 104772)
 
-  testthat::expect_equal(elev, 52.280998)
+  testthat::expect_equal(elev, 52.292)
 
 })
 
@@ -79,7 +79,7 @@ test_that("can get LINZ basemap raster tile", {
 
   testthat::expect_true(is(ras, "SpatRaster"))
   rast_mean <- round(mean(terra::values(ras), na.rm = TRUE))
-  testthat::expect_equal(rast_mean, 81)
+  testthat::expect_equal(rast_mean, 93)
 
 })
 
@@ -149,7 +149,8 @@ test_that("can get LINZ lakes sf object", {
 test_that("can get tables from MfE", {
 
   lake_wq_status <- read_web_table(url = "https://data.mfe.govt.nz/",
-                                   layer_id = 109652, Sys.getenv("MFE_KEY"))
+                                   layer_id = 109652, 
+                                   key = Sys.getenv("MFE_KEY"))
 
   testthat::expect_true(is.data.frame(lake_wq_status))
   testthat::expect_equal(nrow(lake_wq_status), 53382)

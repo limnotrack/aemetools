@@ -9,7 +9,10 @@
 #' @param download_path character; path to download the data. Default is
 #' the temporary directory.
 #'
-#' @importFrom httr POST content_type_json http_status GET content
+#' @importFrom httr2 request req_body_json req_perform resp_status resp_body_json
+#' @importFrom httr2 resp_body_string
+#' @importFrom httr2 req_url_query req_url_path_append req_headers
+#' @importFrom httr2 req_perform
 #' @importFrom jsonlite toJSON
 #' @importFrom terra rast values time
 #' @importFrom dplyr bind_rows full_join
@@ -59,44 +62,53 @@ get_era5_isimip_point <- function(lon, lat, years,
       )
     )
   )
-
+  
+  
   # Perform the initial request to the server
-  response <- httr::POST(
-    url,
-    body = jsonlite::toJSON(data, auto_unbox = TRUE),  # Convert list to JSON
-    httr::content_type_json(),  # Set Content-Type header to application/json
-    encode = "json"
+  req <- httr2::request(url) |>
+    httr2::req_body_json(data)
+  
+  res <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) {
+      log_error("job submission failed", error = e$message)
+      return(NULL)
+    }
   )
-
-  if (httr::http_status(response)$category == "Success") {
-    job <- httr::content(response, "parsed")
+  
+  if (is.null(res)) return(invisible(NULL))
+  
+  if (httr2::resp_status(res) >= 200 && httr2::resp_status(res) < 300) {
+    job <- httr2::resp_body_json(res)
     log_info("job submitted", id = job$id, status = job$status)
-
+    
+    # Poll until finished
     while (job$status %in% c("queued", "started")) {
-      # Wait for 4 seconds
       Sys.sleep(4)
-
-      # Check the status of the job
-      job <- httr::GET(job$job_url)
-      job <- httr::content(job, "parsed")
+      job_req <- httr2::request(job$job_url)
+      job_res <- httr2::req_perform(job_req)
+      job <- httr2::resp_body_json(job_res)
       log_info("job updated", id = job$id, status = job$status, meta = job$meta)
     }
-
+    
     if (job$status == "finished") {
       # Download file
       zip_path <- file.path(download_path, job$file_name)
       dir.create(dirname(zip_path), showWarnings = FALSE, recursive = TRUE)
       log_info("downloading", file_url = job$file_url)
       download.file(job$file_url, zip_path, mode = "wb")
-
+      
       # Extract zip file
-      out_path <- sub(".zip", "", zip_path)
+      out_path <- sub("\\.zip$", "", zip_path)
       dir.create(out_path, showWarnings = FALSE, recursive = TRUE)
-      log_info("extracting", zip_path = out_path)
+      log_info("extracting", zip_path = zip_path, out_path = out_path)
       zip::unzip(zip_path, exdir = out_path)
+      
+    } else {
+      log_error("job did not finish successfully", status = job$status)
     }
   } else {
-    log_error("job submission failed", error = httr::content(response, "text"))
+    log_error("job submission failed", error = httr2::resp_body_string(res))
   }
 
   out <- lapply(vars, \(v) {
