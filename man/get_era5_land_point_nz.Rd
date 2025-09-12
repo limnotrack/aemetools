@@ -10,7 +10,7 @@ get_era5_land_point_nz(
   years,
   vars = c("MET_tmpair", "MET_tmpdew", "MET_wnduvu", "MET_wnduvv", "MET_pprain",
     "MET_ppsnow", "MET_prsttn", "MET_radswd"),
-  api_url = "http://170.64.143.18:8000",
+  api_url = "https://api.limnotrack.com",
   api_key = NULL
 )
 }
