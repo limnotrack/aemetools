@@ -37,6 +37,7 @@ Imports:
     plyr,
     reshape2,
     rLakeAnalyzer,
+    rlang,
     scales,
     sensobol,
     sf,
