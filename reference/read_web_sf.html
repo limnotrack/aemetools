@@ -45,7 +45,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_web_sf</span><span class="op">(</span><span class="va">url</span>, <span class="va">layer_id</span>, key <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_web_sf</span><span class="op">(</span><span class="va">url</span>, <span class="va">layer_id</span>, key <span class="op">=</span> <span class="cn">NULL</span>, filter_col <span class="op">=</span> <span class="cn">NULL</span>, filter_val <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -53,18 +53,27 @@
 
 
 <dl><dt id="arg-url">url<a class="anchor" aria-label="anchor" href="#arg-url"></a></dt>
-<dd><p>character, URL of the web service</p></dd>
+<dd><p>character, URL of the web feature service (WFS) endpoint.</p></dd>
 
 
 <dt id="arg-layer-id">layer_id<a class="anchor" aria-label="anchor" href="#arg-layer-id"></a></dt>
-<dd><p>numeric; layer ID value for the raster layer on the LINZ
-data service. See <a href="https://data.linz.govt.nz/" class="external-link">https://data.linz.govt.nz/</a></p></dd>
+<dd><p>integer, layer ID of the spatial feature data to retrieve.</p></dd>
 
 
 <dt id="arg-key">key<a class="anchor" aria-label="anchor" href="#arg-key"></a></dt>
 <dd><p>character; LINZ API key. This can be set as an environment variable
 using the <code><a href="add_linz_key.html">add_linz_key()</a></code> function or passed as a character.
 See <code><a href="add_linz_key.html">?add_linz_key</a></code> for more information with setting up the API key.</p></dd>
+
+
+<dt id="arg-filter-col">filter_col<a class="anchor" aria-label="anchor" href="#arg-filter-col"></a></dt>
+<dd><p>character, name of the column to filter on. If NULL, no
+filtering is applied. Default is NULL.</p></dd>
+
+
+<dt id="arg-filter-val">filter_val<a class="anchor" aria-label="anchor" href="#arg-filter-val"></a></dt>
+<dd><p>character vector, values to filter the specified column
+on. If NULL, no filtering is applied. Default is NULL.</p></dd>
 
 </dl></div>
     <div class="section level2">
