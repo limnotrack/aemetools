@@ -64,7 +64,7 @@ plotting difficult. We will remove these from the shapefile.
 ```{r remove-chatham-islands}
 # Remove the Chatham Islands from the shapefile
 nz_shapefile <- nz_shapefile |> 
-  dplyr::filter(C2023_V != "Area Outside Region")
+  dplyr::filter(REGC2023_V1_00_NAME != "Area Outside Region")
 ```
 
 
@@ -72,9 +72,9 @@ nz_shapefile <- nz_shapefile |>
 # View the shapefile data
 tm_shape(nz_shapefile, name = "Regional Council boundaries") +
   tm_borders(col = "blue") +
-  tm_fill(fill = "C2023_V", 
+  tm_fill(fill = "REGC2023_V1_00_NAME", 
           fill.legend = tm_legend(title = "Region"),
-          fill_alpha = 0.3, id = "C2023_V")
+          fill_alpha = 0.3, id = "REGC2023_V1_00_NAME")
 
 ```
 
@@ -112,7 +112,7 @@ We can visualise the location of the lake using the [`tmap`](https://r-tmap.gith
 ```{r view-lake-location}
 # View the location of the lake in a map
 map <- tm_shape(pnt, name = "Lake") +
-  tm_dots(col = "blue", size = 0.2, popup.vars = "title") 
+  tm_symbols(fill = "blue")
 
 map +
   tm_view(set_view = 15)
@@ -262,7 +262,7 @@ intersect with our lake.
 tm_shape(aerial_layers, name = "Aerial imagery coverage") +
   tm_polygons(fill = "yellow", col = "black", fill_alpha = 0.1, id = "title") +
   tm_shape(pnt, name = "Lake") +
-  tm_dots(col = "blue", size = 0.2, popup.vars = "title") 
+  tm_symbols(fill = "blue")
 ```
 
 We can download two aerial images for the lake and compare them.
