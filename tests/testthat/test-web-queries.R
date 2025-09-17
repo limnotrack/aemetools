@@ -83,7 +83,6 @@ test_that("can get LINZ basemap raster tile", {
 
 })
 
-
 test_that("can get LINZ sf object", {
 
   key <- Sys.getenv("STATS_NZ_KEY")
@@ -92,14 +91,14 @@ test_that("can get LINZ sf object", {
                              layer_id = 111182)
 
   testthat::expect_true(is(reg_council, "sf"))
-  testthat::expect_equal(reg_council$C2023_V[1], "Northland Region")
+  testthat::expect_equal(reg_council$REGC2023_V1_00_NAME[1], "Northland Region")
 
 })
 
 test_that("can get LINZ lakes sf object", {
 
   lakes <- read_web_sf(url = "https://data.linz.govt.nz",
-                         layer_id = 50293)
+                       layer_id = 50293)
 
   lake <- lakes |>
     dplyr::filter(grepl("Pupuke", name)) |>

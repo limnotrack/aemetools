@@ -50,6 +50,7 @@ Imports:
     units,
     utils,
     withr,
+    xml2,
     yaml,
     zip
 Suggests: 
