@@ -4,17 +4,22 @@
 \alias{read_web_sf}
 \title{Read spatial feature (sf) data from online databases as sf object}
 \usage{
-read_web_sf(url, layer_id, key = NULL)
+read_web_sf(url, layer_id, key = NULL, filter_col = NULL, filter_val = NULL)
 }
 \arguments{
-\item{url}{character, URL of the web service}
+\item{url}{character, URL of the web feature service (WFS) endpoint.}
 
-\item{layer_id}{numeric; layer ID value for the raster layer on the LINZ
-data service. See \url{https://data.linz.govt.nz/}}
+\item{layer_id}{integer, layer ID of the spatial feature data to retrieve.}
 
 \item{key}{character; LINZ API key. This can be set as an environment variable
 using the \code{add_linz_key()} function or passed as a character.
 See \code{?add_linz_key} for more information with setting up the API key.}
+
+\item{filter_col}{character, name of the column to filter on. If NULL, no
+filtering is applied. Default is NULL.}
+
+\item{filter_val}{character vector, values to filter the specified column
+on. If NULL, no filtering is applied. Default is NULL.}
 }
 \value{
 sf object
