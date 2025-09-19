@@ -16,13 +16,17 @@ knitr::opts_chunk$set(
 
 ```{r}
 #| label: setup
-#| echo: FALSE
+#| echo: TRUE
 #| eval: TRUE
+#| warnings: FALSE
+#| message: FALSE
 
 library(AEME)
 library(aemetools)
 library(tmap)
 tmap_mode("view")
+tmap_options(basemap.server = c("Esri.WorldImagery", "Esri.WorldGrayCanvas",
+                                "OpenStreetMap", "Esri.WorldTopoMap"))
 ```
 
 The Limnotrack API provides access to various environmental data layers, including
@@ -88,17 +92,16 @@ names(catchment)
 #| echo: TRUE
 #| eval: TRUE
 
-tm_shape(catchment$catchment) +
+tm_shape(catchment$catchment, name = "Catchment") +
   tm_borders(col = "red", lwd = 2) +
-  tm_shape(catchment$reaches) +
+  tm_shape(catchment$reaches, name = "Reaches") +
   tm_lines(col = "reachtype2") +
-  tm_shape(catchment$lakes) +
+  tm_shape(catchment$lakes, name = "Lake") +
   tm_borders(col = "cyan", lwd = 2) +
-  tm_shape(catchment$subcatchments) +
+  tm_shape(catchment$subcatchments, name = "Subcatchments") +
   tm_borders(col = "green", lwd = 2) +
-  tm_shape(catchment$lcdb) +
+  tm_shape(catchment$lcdb, name = "Land cover") +
   tm_fill(id = "Name_2018", fill = "Name_2018", fill_alpha = 0.5) 
-  # tm_basemap("Esri.WorldImagery")
 ```
 
 ## Aeme object
@@ -129,3 +132,16 @@ function.
 
 plot_hyps(aeme, y = "depth")
 ```
+
+You can also plot the meteorological data from the Aeme object using the
+`plot_met()` function.
+
+```{r}
+#| label: plot-aeme-met
+#| echo: TRUE
+#| eval: TRUE
+
+plot_met_tile(aeme, var_inp = "MET_tmpair")
+
+```
+
