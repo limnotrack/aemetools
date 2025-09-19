@@ -21,6 +21,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/access-geospatial.html">Access geospatial data</a></li>
     <li><a class="dropdown-item" href="../articles/calibrate-aeme.html">Calibrate AEME</a></li>
     <li><a class="dropdown-item" href="../articles/download-era5.html">Download ERA5 data</a></li>
+    <li><a class="dropdown-item" href="../articles/limnotrack-api.html">Using the Limnotrack API</a></li>
     <li><a class="dropdown-item" href="../articles/run-gr4j.html">Run Hydrological models</a></li>
     <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">Sensitivity Analysis</a></li>
   </ul></li>
@@ -105,7 +106,7 @@ c(1).</p></dd>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/build_aeme.html" class="external-link">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>,</span></span>
 <span class="r-in"><span>model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-09-17 22:22:11]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-09-19 01:02:31]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Missing values in observed water level</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using constant water level</span>
@@ -116,12 +117,12 @@ c(1).</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Building GOTM-WET for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Copied all GOTM configuration files</span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models... (Have you tried parallelizing?) [2025-09-17 22:22:12]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED running... [2025-09-17 22:22:12]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED run successful! [2025-09-17 22:22:13]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GOTM-WET running... [2025-09-17 22:22:13]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GOTM-WET run successful! [2025-09-17 22:22:14]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-09-17 22:22:14]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models... (Have you tried parallelizing?) [2025-09-19 01:02:34]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED running... [2025-09-19 01:02:34]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED run successful! [2025-09-19 01:02:35]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GOTM-WET running... [2025-09-19 01:02:35]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GOTM-WET run successful! [2025-09-19 01:02:36]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-09-19 01:02:36]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting temp for model glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting salt for model glm_aed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting temp for model gotm_wet</span>
