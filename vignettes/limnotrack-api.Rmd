@@ -1,0 +1,131 @@
+---
+title: "Using the Limnotrack API"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using the Limnotrack API}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+#| label: setup
+#| echo: FALSE
+#| eval: TRUE
+
+library(AEME)
+library(aemetools)
+library(tmap)
+tmap_mode("view")
+```
+
+The Limnotrack API provides access to various environmental data layers, including
+meteorological data from ERA5-Land. This vignette demonstrates how to use the
+Limnotrack API to extract ERA5-Land data for specific locations in New Zealand.
+
+First, it is always good to check the status of the API to ensure it is 
+operational.
+
+```{r}
+#| label: check-api
+#| echo: TRUE
+#| eval: TRUE
+
+check_api_status()
+
+```
+
+
+## Lake shape data
+
+There are shape files for all lakes in the LimnoTrack database. These can be
+accessed using the `get_lake_shape()` function. You need to provide the lake ID
+(e.g. FENZ ID or Lernzmp ID).
+
+```{r}
+#| label: get-lake-shape
+#| echo: TRUE
+#| eval: TRUE
+
+lake <- get_lake_shape(id = 15022)
+print(lake)
+```
+```{r}
+#| label: plot-lake-shape
+#| echo: TRUE
+#| eval: TRUE
+
+tm_shape(lake) +
+  tm_borders(col = "blue", lwd = 2) +
+  tm_basemap("Esri.WorldImagery")
+```
+
+
+## Lake catchment data
+
+Lake catchment data can be accessed using the `get_catchment_data()` function. You
+need to provide the lake ID (e.g. FENZ ID or Lernzmp ID). The downloaded data
+is a list which includes the catchment, reaches, lakes, subcatchments, and LCDB
+data.
+
+```{r}
+#| label: get-catchment-data
+#| echo: TRUE
+#| eval: TRUE
+
+catchment <- get_catchment_data(id = 15022)
+names(catchment)
+```
+
+```{r}
+#| label: plot-catchment-data
+#| echo: TRUE
+#| eval: TRUE
+
+tm_shape(catchment$catchment) +
+  tm_borders(col = "red", lwd = 2) +
+  tm_shape(catchment$reaches) +
+  tm_lines(col = "reachtype2") +
+  tm_shape(catchment$lakes) +
+  tm_borders(col = "cyan", lwd = 2) +
+  tm_shape(catchment$subcatchments) +
+  tm_borders(col = "green", lwd = 2) +
+  tm_shape(catchment$lcdb) +
+  tm_fill(id = "Name_2018", fill = "Name_2018", fill_alpha = 0.5) 
+  # tm_basemap("Esri.WorldImagery")
+```
+
+## Aeme object
+
+For many lakes in the LimnoTrack database, there is an associated Aeme object
+that contains model parameters and other information. You can access the Aeme
+object using the `get_aeme()` function. You need to provide the lake ID
+(e.g. FENZ ID or Lernzmp ID).
+
+
+
+```{r}
+#| label: get-aeme
+#| echo: TRUE
+#| eval: TRUE
+
+aeme <- get_aeme(id = 15022)
+aeme
+```
+
+You can plot the lake hypsograph from the Aeme object using the `plot_hyps()`
+function.
+
+```{r}
+#| label: plot-aeme-hyps
+#| echo: TRUE
+#| eval: TRUE
+
+plot_hyps(aeme, y = "depth")
+```

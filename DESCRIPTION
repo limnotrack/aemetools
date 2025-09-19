@@ -12,7 +12,7 @@ Description: Calibrate the AEME model ensemble, download ERA5-Land data for any
 License: GPL (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Imports: 
     AEME (>= 0.1.0),
     airGR,
@@ -23,6 +23,7 @@ Imports:
     ecmwfr,
     FME,
     forcats,
+    geojsonsf,
     ggplot2,
     httr2,
     job,
