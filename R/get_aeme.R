@@ -14,7 +14,7 @@
 #' aeme <- get_aeme(id = "LID1", api_key = Sys.getenv("LERNZMP_KEY"))
 #' aeme
 
-get_aeme <- function(api_url = "https://api.limnotrack.com", id = "LID1",
+get_aeme <- function(id = "LID1", api_url = "https://api.limnotrack.com", 
                      api_key = NULL) {
   res <- api_request(
     api_url = api_url,
