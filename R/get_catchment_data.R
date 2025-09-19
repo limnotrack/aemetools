@@ -22,8 +22,8 @@
 #' api_key = Sys.getenv("LERNZMP_KEY"))
 #' names(catchment)
 
-get_catchment_data <- function(api_url = "https://api.limnotrack.com", 
-                               id = 3, api_key = NULL) {
+get_catchment_data <- function(id = 3, api_url = "https://api.limnotrack.com", 
+                               api_key = NULL) {
   query <- list()
   for (x in id) query <- c(query, list(id = x))
   

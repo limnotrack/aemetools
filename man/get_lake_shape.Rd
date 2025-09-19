@@ -4,13 +4,13 @@
 \alias{get_lake_shape}
 \title{Get lake shape as sf object}
 \usage{
-get_lake_shape(api_url = "https://api.limnotrack.com", id, api_key = NULL)
+get_lake_shape(id, api_url = "https://api.limnotrack.com", api_key = NULL)
 }
 \arguments{
-\item{api_url}{character; base URL of the API.}
-
 \item{id}{character or numeric; the character Lernzmp ID (e.g. "LID 1") of
 the lake or the numeric FENZ ID (e.g. 1).}
+
+\item{api_url}{character; base URL of the API.}
 
 \item{api_key}{character; API key for authentication. If NULL, will look for
 the key in the LERNZMP_KEY environment variable. If that is not set, will

@@ -17,7 +17,7 @@
 #' @examples
 #' lake <- get_lake_shape(id = 1, api_key = Sys.getenv("LERNZMP_KEY"))
 
-get_lake_shape <- function(api_url = "https://api.limnotrack.com", id, 
+get_lake_shape <- function(id, api_url = "https://api.limnotrack.com",  
                            api_key = NULL) {
   query <- list()
   for (x in id) query <- c(query, list(id = x))
