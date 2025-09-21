@@ -121,9 +121,9 @@ test_that("can run an ensemble of AEME-GOTM-WET in parallel and plot", {
 
   p <- plot_ensemble(aeme = aeme, model = model, depth = 0)
 
-  testthat::expect_true(ggplot2::is.ggplot(p))
+  testthat::expect_true(ggplot2::is_ggplot(p))
 
   p2 <- plot_ensemble(aeme = aeme, model = model, depth = 5, type = "line")
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
 
 })
