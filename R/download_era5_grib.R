@@ -63,8 +63,7 @@ download_era5_grib <- function(shape = NULL,
                                site  = "test",
                                user = NULL,
                                era5_dataset = "reanalysis-era5-land",
-                               path = ".",
-                               job = FALSE) {
+                               path = ".") {
 
   # Create dir if it does not exist
   if (!dir.exists(path)) {
