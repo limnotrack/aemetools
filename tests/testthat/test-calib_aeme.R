@@ -227,7 +227,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
 })
 
@@ -289,7 +289,7 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
 
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
 })
 
@@ -346,7 +346,7 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
 
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
   sim_meta <- read_simulation_meta(ctrl = ctrl)
   testthat::expect_true(is.data.frame(sim_meta))
@@ -438,7 +438,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 })
 
 test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
@@ -499,7 +499,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
 })
 
@@ -575,7 +575,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
 })
 
@@ -638,7 +638,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
 })
 
@@ -705,7 +705,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
 })
 
@@ -783,7 +783,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
 })
 
@@ -863,7 +863,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
 })
 
@@ -936,7 +936,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
   sim_meta <- read_simulation_meta(ctrl = ctrl)
   testthat::expect_true(is.data.frame(sim_meta))
@@ -1013,7 +1013,7 @@ test_that("can calibrate lake level with no data for target time period", {
   plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
   sim_meta <- read_simulation_meta(ctrl = ctrl)
   testthat::expect_true(is.data.frame(sim_meta))
@@ -1082,7 +1082,7 @@ test_that("can calibrate temperature with LHC for AEME-GLM in series with DB out
 
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
 })
 
@@ -1145,7 +1145,7 @@ test_that("can calibrate temperature with LHC for AEME-GOTM in parallel with csv
 
   testthat::expect_true(is.list(plist))
 
-  testthat::expect_true(all(sapply(plist, ggplot2::is.ggplot)))
+  testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
 
 })
 

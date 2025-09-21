@@ -146,17 +146,17 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
   p1 <- plot_uncertainty(sa_res)
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
 
   p2 <- plot_scatter(sa_res)
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
 
   pl1 <- plot_multiscatter(sa_res)
   testthat::expect_true(is.list(pl1))
-  testthat::expect_true(ggplot2::is.ggplot(pl1[[1]][[1]]))
+  testthat::expect_true(ggplot2::is_ggplot(pl1[[1]][[1]]))
 
   pl2 <- plot_sobol(sa = sa_res, add_errorbars = TRUE, use_dummy = TRUE)
-  testthat::expect_true(ggplot2::is.ggplot(pl2))
+  testthat::expect_true(ggplot2::is_ggplot(pl2))
 
 })
 
@@ -216,17 +216,17 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel for just LK
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
   p1 <- plot_uncertainty(sa_res)
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
 
   p2 <- plot_scatter(sa_res)
-  testthat::expect_true(ggplot2::is.ggplot(p2))
+  testthat::expect_true(ggplot2::is_ggplot(p2))
 
   pl1 <- plot_multiscatter(sa_res)
   testthat::expect_true(is.list(pl1))
-  testthat::expect_true(ggplot2::is.ggplot(pl1[[1]][[1]]))
+  testthat::expect_true(ggplot2::is_ggplot(pl1[[1]][[1]]))
 
   pl2 <- plot_sobol(sa = sa_res, add_errorbars = TRUE, use_dummy = TRUE)
-  testthat::expect_true(ggplot2::is.ggplot(pl2))
+  testthat::expect_true(ggplot2::is_ggplot(pl2))
 
 })
 
@@ -302,7 +302,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
   punc <- plot_uncertainty(sa_res)
-  testthat::expect_true(ggplot2::is.ggplot(punc))
+  testthat::expect_true(ggplot2::is_ggplot(punc))
 
 })
 
@@ -373,6 +373,6 @@ test_that("can execute sensitivity analysis for derived variables", {
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
   punc <- plot_uncertainty(sa_res)
-  testthat::expect_true(ggplot2::is.ggplot(punc))
+  testthat::expect_true(ggplot2::is_ggplot(punc))
 
 })

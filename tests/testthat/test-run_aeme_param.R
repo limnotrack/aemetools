@@ -337,5 +337,5 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
 
   p1 <- plot_uncertainty(sa = sa_res)
-  testthat::expect_true(ggplot2::is.ggplot(p1))
+  testthat::expect_true(ggplot2::is_ggplot(p1))
 })
