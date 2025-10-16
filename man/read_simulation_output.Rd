@@ -5,9 +5,23 @@
 \alias{read_calib}
 \title{Read calibration output}
 \usage{
-read_simulation_output(ctrl = NULL, file_name, file_dir, sim_id = NULL)
+read_simulation_output(
+  ctrl = NULL,
+  file_name,
+  file_dir,
+  file_type = "db",
+  sim_id = NULL,
+  type
+)
 
-read_calib(ctrl = NULL, file_name, file_dir, sim_id = NULL)
+read_calib(
+  ctrl = NULL,
+  file_name,
+  file_dir,
+  file_type = "db",
+  sim_id = NULL,
+  type
+)
 }
 \arguments{
 \item{ctrl}{list; of controls for sensitivity analysis function created using
@@ -20,7 +34,12 @@ argument is ignored.}
 \item{file_dir}{The directory of the output file. If \code{ctrl} is provided, this
 argument is ignored.}
 
-\item{sim_id}{A vector of simulation IDs to read.}
+\item{sim_id}{A vector of simulation IDs to read. If NULL, all simulations
+are read.}
+
+\item{type}{A character string indicating the type of simulation. One of
+"calib", "sa", or "all". If missing, the type is inferred from the
+\code{ctrl} argument. If type is provided it overrides the \code{ctrl$method} value.}
 }
 \value{
 A list with the metadata and simulation data frames.
