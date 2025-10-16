@@ -3,7 +3,11 @@
 #' @inheritParams calib_aeme
 #' @inheritParams AEME::build_aeme
 #' @inheritParams read_simulation_meta
-#' @param sim_id A vector of simulation IDs to read.
+#' @param sim_id A vector of simulation IDs to read. If NULL, all simulations
+#' are read.
+#' @param type A character string indicating the type of simulation. One of
+#' "calib", "sa", or "all". If missing, the type is inferred from the
+#' `ctrl` argument. If type is provided it overrides the `ctrl$method` value.
 #'
 #' @importFrom dplyr case_when left_join mutate select summarise group_by
 #' @importFrom tidyr pivot_longer
@@ -16,46 +20,39 @@
 #' @return A list with the metadata and simulation data frames.
 #' @export
 
-read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
-                                   sim_id = NULL) {
+read_simulation_output <- function(ctrl = NULL, file_name, file_dir, 
+                                   file_type = "db", sim_id = NULL, type) {
 
   meta_tables <- c("lake_metadata", "simulation_metadata",
                    "function_metadata", "parameter_metadata",
                    "simulation_data")
-  if (ctrl$method == "sa") {
+  if (!is.null(ctrl) & missing(type)) {
+    type <- ctrl$method
+  }
+  if (!is.null(ctrl)) {
+    file_dir <- ctrl$file_dir
+    file_name <- ctrl$file_name
+    file_type <- ctrl$file_type
+  }
+  if (file_type == "db") {
+    file <- file.path(file_dir, file_name)
+  } else if (file_type == "csv") {
+    file <- file.path(file_dir, paste0(meta_tables, ".csv"))
+  }
+  
+  if (type == "sa") {
     meta_tables <- c(meta_tables, "sensitivity_metadata")
-  } else if (ctrl$method == "calib") {
+  } else if (type == "calib") {
     meta_tables <- c(meta_tables, "calibration_metadata")
-  } else if (ctrl$method == "all") {
+  } else if (type == "all") {
     meta_tables <- c(meta_tables, "sensitivity_metadata",
                      "calibration_metadata")
   }
   sim_vec <- sim_id
-  if (!is.null(ctrl)) {
-    file_dir <- ctrl$file_dir
-    file_name <- ctrl$file_name
-  }
-  # type <- tools::file_ext(file_name)
-  if (ctrl$file_type == "db") {
-    file <- file.path(file_dir, file_name)
-  } else if (ctrl$file_type == "csv") {
-    file <- file.path(file_dir, paste0(meta_tables, ".csv"))
-  }
 
-  # if (is.null(file)) {
-  #   type <- ctrl$file_type
-  #   if (type == "db") {
-  #     file <- file_name
-  #   } else if (type == "csv") {
-  #     file <- paste0(meta_tables, ".csv")
-  #   }
-  # } else {
-  #   file <- file_name
-  # }
-
-  if (!all(file.exists(file)) & ctrl$method != "all") {
+  if (!all(file.exists(file)) & type != "all") {
     stop("File not found: ", file)
-  } else if (ctrl$method == "all") {
+  } else if (type == "all") {
     not_found <- !file.exists(file)
     message("File not present: ", file[not_found])
     meta_tables <- meta_tables[!not_found]
@@ -64,7 +61,7 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
   names(meta_tables) <- meta_tables
 
   # all <- lapply(sim_id, \(sid) {
-  if (ctrl$file_type == "csv") {
+  if (file_type == "csv") {
     out <- lapply(meta_tables, function(x) {
       df <- read.csv(file.path(file_dir, paste0(x, ".csv")))
       if (!is.null(sim_id)) {
@@ -83,7 +80,7 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
       }
       return(df)
     })
-  } else if (ctrl$file_type == "db") {
+  } else if (file_type == "db") {
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
 

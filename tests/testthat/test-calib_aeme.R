@@ -277,7 +277,9 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
                        FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
 
-  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  # calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  calib <- read_calib(file_name = ctrl$file_name, file_dir = ctrl$file_dir, 
+                      file_type = "db", type = "calib", sim_id = sim_id)
   testthat::expect_true("time_elapsed" %in% names(calib$calibration_metadata))
   testthat::expect_true(is.list(calib))
 
