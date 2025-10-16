@@ -19,8 +19,8 @@ plot_ensemble(
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{character vector; model(s) to plot. If missing, all models
+in the Aeme object will be plotted.}
 
 \item{var_sim}{string; of variable to plot}
 
