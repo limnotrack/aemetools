@@ -34,11 +34,6 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
     file_name <- ctrl$file_name
     file_type <- ctrl$file_type
   }
-  if (file_type == "db") {
-    file <- file.path(file_dir, file_name)
-  } else if (file_type == "csv") {
-    file <- file.path(file_dir, paste0(meta_tables, ".csv"))
-  }
   
   if (type == "sa") {
     meta_tables <- c(meta_tables, "sensitivity_metadata")
@@ -48,6 +43,14 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
     meta_tables <- c(meta_tables, "sensitivity_metadata",
                      "calibration_metadata")
   }
+  names(meta_tables) <- meta_tables
+  
+  if (file_type == "db") {
+    file <- file.path(file_dir, file_name)
+  } else if (file_type == "csv") {
+    file <- file.path(file_dir, paste0(meta_tables, ".csv"))
+  }
+  
   sim_vec <- sim_id
 
   if (!all(file.exists(file)) & type != "all") {
@@ -58,7 +61,6 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
     meta_tables <- meta_tables[!not_found]
   }
 
-  names(meta_tables) <- meta_tables
 
   # all <- lapply(sim_id, \(sid) {
   if (file_type == "csv") {
