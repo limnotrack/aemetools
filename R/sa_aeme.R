@@ -270,8 +270,13 @@ sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
           for(n in names(pars[[i]])) {
             grp <- strsplit(n, "/")[[1]][1]
             nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
+            spl <- stringr::str_split(nme, pattern = "\\.")
+            idx <- as.numeric(stringr::str_split(nme, pattern = "\\.")[[1]][2])
             if (grp != "NA") {
               param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
+            } else if (!is.na(idx)) {
+              par_idx <- which(param$name == spl[[1]][1])
+              param$value[par_idx[idx + 1]] <- pars[[i]][p, n]
             } else {
               param$value[param$name == nme] <- pars[[i]][p, n]
             }
