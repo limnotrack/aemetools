@@ -4,7 +4,7 @@
 \alias{read_simulation_meta}
 \title{Read the simulation metadata}
 \usage{
-read_simulation_meta(ctrl = NULL, file_name, file_dir)
+read_simulation_meta(ctrl = NULL, file_name, file_dir, type)
 }
 \arguments{
 \item{ctrl}{A list with the control parameters used in \code{calib_aeme()} or
@@ -16,6 +16,10 @@ argument is ignored.}
 
 \item{file_dir}{The directory of the output file. If \code{ctrl} is provided, this
 argument is ignored.}
+
+\item{type}{Optional character vector to filter by simulation type. Possible
+values are "sa" for sensitivity analysis simulations and "calib" for
+calibration simulations. If not provided, all simulations are returned.}
 }
 \value{
 A data frame with the simulation metadata
