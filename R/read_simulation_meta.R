@@ -11,6 +11,9 @@
 #' argument is ignored.
 #' @param file_dir The directory of the output file. If `ctrl` is provided, this
 #' argument is ignored.
+#' @param type Optional character vector to filter by simulation type. Possible
+#' values are "sa" for sensitivity analysis simulations and "calib" for
+#' calibration simulations. If not provided, all simulations are returned.
 #'
 #' @return A data frame with the simulation metadata
 #' @export
@@ -19,17 +22,7 @@
 #' @importFrom DBI dbConnect dbDisconnect
 #'
 
-read_simulation_meta <- function(ctrl = NULL, file_name, file_dir) {
-
-  # type <- file_type
-  # if (!is.null(file_name)) {
-  #   file <- file_name
-  #   type <- tools::file_ext(file_name)
-  # } else if (type == "db") {
-  #   file <- file_name
-  # } else if (type == "csv") {
-  #   file <- "simulation_metadata.csv"
-  # }
+read_simulation_meta <- function(ctrl = NULL, file_name, file_dir, type) {
 
   if (!is.null(ctrl)) {
     file_dir <- ctrl$file_dir
@@ -39,10 +32,10 @@ read_simulation_meta <- function(ctrl = NULL, file_name, file_dir) {
 
 
   if (!file.exists(file)) stop("File not found: ", file)
-  type <- tools::file_ext(file)
+  file_type <- tools::file_ext(file)
 
   # Read the file
-  if (type == "db") {
+  if (file_type == "db") {
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
     n_sim <- dplyr::tbl(con, "simulation_data") |>
@@ -54,7 +47,7 @@ read_simulation_meta <- function(ctrl = NULL, file_name, file_dir) {
     sim_meta <- dplyr::tbl(con, "simulation_metadata") |>
       as.data.frame() |>
       dplyr::left_join(n_sim, by = "sim_id")
-    } else if (type == "csv") {
+    } else if (file_type == "csv") {
       n_sim <- read.csv(file.path(file_dir, "simulation_data.csv")) |>
         dplyr::group_by(sim_id, gen) |>
         dplyr::summarise(nruns = max(run), .groups = "drop") |>
@@ -63,5 +56,22 @@ read_simulation_meta <- function(ctrl = NULL, file_name, file_dir) {
       sim_meta <- read.csv(file.path(file_dir, "simulation_metadata.csv")) |>
         dplyr::left_join(n_sim, by = "sim_id")
     }
+  # Add type column filtering
+  sim_meta <- sim_meta |> 
+    dplyr::mutate(
+      type = dplyr::case_when(
+        grepl("S", sim_id) ~ "sa",
+        grepl("C", sim_id) ~ "calib",
+        TRUE ~ "unknown"
+      )
+    )
+  
+  
+  if (!missing(type)) {
+    sel_type <- type
+    sim_meta <- sim_meta |>
+      dplyr::filter(type %in% sel_type)
+  }
+  
   return(sim_meta)
 }
