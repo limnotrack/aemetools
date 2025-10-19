@@ -123,24 +123,14 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
                          )
   )
 
-  # ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
-  #                        file_type = "db", file_name = "results.db",
-  #                        vars_sim = list(
-  #                          surf_temp = list(var = "HYD_temp",
-  #                                           month = c(10:12, 1:3),
-  #                                           depth_range = c(0, 2)
-  #                          ),
-  #                          bot_temp = list(var = "HYD_temp",
-  #                                          month = c(10:12, 1:3),
-  #                                          depth_range = c(10, 13)
-  #                          )
-  #                        )
-  # )
-
   # Run sensitivity analysis AEME model
   sim_id <- sa_aeme(aeme = aeme, path = path, param = param, model = model,
                     ctrl = ctrl, FUN_list = FUN_list)
-
+  
+  sim_meta <- read_simulation_meta(ctrl = ctrl)
+  sim_meta2 <- read_simulation_meta(ctrl = ctrl, type = "sa")
+  testthat::expect_true(all(sim_meta2$type == "sa"))
+  
   sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 
   testthat::expect_true(is.data.frame(sa_res[[1]]$df))
