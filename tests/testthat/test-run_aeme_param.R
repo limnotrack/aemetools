@@ -225,8 +225,8 @@ test_that("running GLM-AED works with bgc_params", {
     ))
   model <- c("glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                               model = model, model_controls = model_controls,
-                               ext_elev = 5, use_bgc = TRUE)
+                           model = model, model_controls = model_controls,
+                           ext_elev = 5, use_bgc = TRUE)
 
   utils::data("glm_aed_parameters", package = "AEME")
   param <- glm_aed_parameters
