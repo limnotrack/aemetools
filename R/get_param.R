@@ -70,6 +70,14 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
 
 
   if (!best) return(all_pars)
+  
+  uniq_pars <- unique(all_pars$name)
+  # Remove "outflow", "inflow" and ones that contain "MET"
+  uniq_pars <- uniq_pars[!uniq_pars %in% c("outflow", "inflow")]
+  uniq_pars <- uniq_pars[!grepl("MET", uniq_pars)]
+  
+  aeme_pars <- AEME::get_aeme_parameters(name = uniq_pars) |> 
+    dplyr::select(model, file, name)
 
   all_pars |>
     dplyr::filter(fit_value != na_value) |>
@@ -81,7 +89,19 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
                      group = group[which.min(fit_value)],
                      par = par[which.min(fit_value)],
                      .groups = "drop") |>
-    as.data.frame()
+    as.data.frame() |>
+    dplyr::left_join(aeme_pars, by = c("model", "name")) |> 
+    dplyr::mutate(
+      value = parameter_value,
+      min = value, max = value,
+      file = dplyr::case_when(
+        grepl("MET", name) ~ "met",
+        grepl("outflow", name) ~ "wdr",
+        grepl("inflow", name) ~ "inf",
+        .default = file
+      )
+    ) |> 
+    dplyr::select(sim_id, model, file, name, value, min, max, dplyr::everything()) 
 }
 
 
