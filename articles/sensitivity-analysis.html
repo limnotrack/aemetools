@@ -74,7 +74,7 @@
 <p>First, we will load the <code>AEME</code> and <code>aemetools</code>
 package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://limnotrack.github.io/AEME/" class="external-link">AEME</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/limnotrack/AEME" class="external-link">AEME</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://limnotrack.github.io/aemetools/">aemetools</a></span><span class="op">)</span></span></code></pre></div>
 <p>Create a folder for running the example calibration setup.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -100,12 +100,12 @@ setup. For this example, we will use the <code>glm_aed</code> model. The
 <code>build_aeme</code> function will</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.github.io/AEME/reference/yaml_to_aeme.html" class="external-link">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
-<span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/get_model_controls.html" class="external-link">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.com/AEME/reference/yaml_to_aeme.html" class="external-link">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
+<span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/AEME/reference/get_model_controls.html" class="external-link">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">inf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gotm_wet"</span><span class="op">)</span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.github.io/AEME/reference/build_aeme.html" class="external-link">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>,</span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.com/AEME/reference/build_aeme.html" class="external-link">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>,</span>
 <span>                       model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
 <span>                       inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                       use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -654,9 +654,9 @@ specified. The <code>sa_aeme</code> function returns the
 <code class="sourceCode R"><span><span class="co"># Run sensitivity analysis AEME model</span></span>
 <span><span class="va">sim_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sa_aeme.html">sa_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>, param <span class="op">=</span> <span class="va">param</span>,</span>
 <span>                  model <span class="op">=</span> <span class="va">model</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, FUN_list <span class="op">=</span> <span class="va">FUN_list</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for gotm_wet modelled variables [2025-09-22 00:20:03]</span></span>
-<span><span class="co">#&gt; Complete! [2025-09-22 00:20:07]</span></span>
-<span><span class="co">#&gt; Running sensitivity analysis in parallel for gotm_wet using 2 cores with 144 parameter sets [2025-09-22 00:20:07]</span></span>
+<span><span class="co">#&gt; Extracting indices for gotm_wet modelled variables [2025-10-21 03:27:33]</span></span>
+<span><span class="co">#&gt; Complete! [2025-10-21 03:27:36]</span></span>
+<span><span class="co">#&gt; Running sensitivity analysis in parallel for gotm_wet using 2 cores with 144 parameter sets [2025-10-21 03:27:37]</span></span>
 <span><span class="co">#&gt;        turbulence/turb_param/k_min light_extinction/A/constant_value</span></span>
 <span><span class="co">#&gt; mean                     4.851e-06                           0.52760</span></span>
 <span><span class="co">#&gt; median                   5.000e-06                           0.52700</span></span>
@@ -669,8 +669,8 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="co">#&gt; mean       0.9965     0.9983 1.4930</span></span>
 <span><span class="co">#&gt; median     1.0000     1.0000 1.5000</span></span>
 <span><span class="co">#&gt; sd         0.1619     0.1606 0.5311</span></span>
-<span><span class="co">#&gt; Completed gotm_wet! [2025-09-22 00:26:22]</span></span>
-<span><span class="co">#&gt; Writing output for generation 1 to results.db with sim ID: 45819_gotmwet_S_001 [2025-09-22 00:26:22]</span></span></code></pre></div>
+<span><span class="co">#&gt; Completed gotm_wet! [2025-10-21 03:32:43]</span></span>
+<span><span class="co">#&gt; Writing output for generation 1 to results.db with sim ID: 45819_gotmwet_S_001 [2025-10-21 03:32:43]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-sensitivity-analysis-results">Reading sensitivity analysis results<a class="anchor" aria-label="anchor" href="#reading-sensitivity-analysis-results"></a>
