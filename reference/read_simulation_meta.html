@@ -52,7 +52,7 @@ metadata and returns it as a data frame.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_simulation_meta</span><span class="op">(</span>ctrl <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">file_name</span>, <span class="va">file_dir</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_simulation_meta</span><span class="op">(</span>ctrl <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">file_name</span>, <span class="va">file_dir</span>, <span class="va">type</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -73,6 +73,12 @@ argument is ignored.</p></dd>
 <dt id="arg-file-dir">file_dir<a class="anchor" aria-label="anchor" href="#arg-file-dir"></a></dt>
 <dd><p>The directory of the output file. If <code>ctrl</code> is provided, this
 argument is ignored.</p></dd>
+
+
+<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
+<dd><p>Optional character vector to filter by simulation type. Possible
+values are "sa" for sensitivity analysis simulations and "calib" for
+calibration simulations. If not provided, all simulations are returned.</p></dd>
 
 </dl></div>
     <div class="section level2">

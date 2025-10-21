@@ -78,7 +78,7 @@
 <p>First, we will load the <code>AEME</code> and <code>aemetools</code>
 package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://limnotrack.github.io/AEME/" class="external-link">AEME</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/limnotrack/AEME" class="external-link">AEME</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://limnotrack.github.io/aemetools/">aemetools</a></span><span class="op">)</span></span></code></pre></div>
 <p>Create a folder for running the example calibration setup.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -105,23 +105,23 @@ setup. For this example, we will use the <code>glm_aed</code> model. The
 <code>build_aeme</code> function will</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.github.io/AEME/reference/yaml_to_aeme.html" class="external-link">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
-<span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/get_model_controls.html" class="external-link">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.com/AEME/reference/yaml_to_aeme.html" class="external-link">yaml_to_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, <span class="st">"aeme.yaml"</span><span class="op">)</span></span>
+<span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/AEME/reference/get_model_controls.html" class="external-link">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">inf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span><span class="op">)</span></span>
-<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.github.io/AEME/reference/build_aeme.html" class="external-link">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, </span>
+<span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.com/AEME/reference/build_aeme.html" class="external-link">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, </span>
 <span>                   model_controls <span class="op">=</span> <span class="va">model_controls</span>, inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, </span>
 <span>                   ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Run the model ensemble using the <code>run_aeme</code> function to
 make sure the current model setup is working.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.github.io/AEME/reference/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.com/AEME/reference/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                 path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-09-22 00:14:52]</span></span>
-<span><span class="co">#&gt; GLM-AED running... [2025-09-22 00:14:52]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2025-09-22 00:14:53]</span></span>
-<span><span class="co">#&gt; Model run complete![2025-09-22 00:14:53]</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-10-21 03:22:06]</span></span>
+<span><span class="co">#&gt; GLM-AED running... [2025-10-21 03:22:06]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2025-10-21 03:22:07]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-10-21 03:22:07]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aeme</span><span class="op">)</span></span></code></pre></div>
@@ -436,10 +436,11 @@ model output is generated within the lake folder.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, param <span class="op">=</span> <span class="va">aeme_parameters</span>,</span>
 <span>                 model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-09-22 00:15:06]</span></span>
-<span><span class="co">#&gt; GLM-AED running... [2025-09-22 00:15:06]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2025-09-22 00:15:07]</span></span>
-<span><span class="co">#&gt; Model run complete![2025-09-22 00:15:07]</span></span></code></pre></div>
+<span><span class="co">#&gt; GLM nml checks passed with no issues.</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-10-21 03:22:19]</span></span>
+<span><span class="co">#&gt; GLM-AED running... [2025-10-21 03:22:19]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2025-10-21 03:22:19]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-10-21 03:22:19]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="calibration-setup">Calibration setup<a class="anchor" aria-label="anchor" href="#calibration-setup"></a>
@@ -455,18 +456,78 @@ the model.</p>
 <code>get_mod_obs_vars</code> which can be used to get the available
 variables for which there is modelled and observed data.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">available_vars</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/get_mod_obs_vars.html" class="external-link">get_mod_obs_vars</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
-<span><span class="va">available_vars</span></span>
-<span><span class="co">#&gt;                   Salinity          Water temperature </span></span>
-<span><span class="co">#&gt;                 "CHM_salt"                 "HYD_temp" </span></span>
-<span><span class="co">#&gt;          Thermocline depth         Centre of buoyancy </span></span>
-<span><span class="co">#&gt;               "HYD_thmcln"               "HYD_ctrbuy" </span></span>
-<span><span class="co">#&gt;           Epilimnion depth          Hypolimnion depth </span></span>
-<span><span class="co">#&gt;               "HYD_epidep"               "HYD_hypdep" </span></span>
-<span><span class="co">#&gt;          Schmidt stability Metalimnetic oxygen minima </span></span>
-<span><span class="co">#&gt;               "HYD_schstb"               "CHM_oxymom" </span></span>
-<span><span class="co">#&gt;    Number of anoxic layers                Water level </span></span>
-<span><span class="co">#&gt;               "CHM_oxynal"               "LKE_lvlwtr"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">available_vars</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/AEME/reference/get_mod_obs_vars.html" class="external-link">get_mod_obs_vars</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
+<span><span class="va">available_vars</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">var_aeme</th>
+<th align="right">n</th>
+<th align="right">n_depth</th>
+<th align="right">n_dates</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">CHM_oxymom</td>
+<td align="right">7</td>
+<td align="right">1</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">CHM_oxynal</td>
+<td align="right">10</td>
+<td align="right">1</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="left">CHM_salt</td>
+<td align="right">125</td>
+<td align="right">13</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">HYD_ctrbuy</td>
+<td align="right">10</td>
+<td align="right">1</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="left">HYD_epidep</td>
+<td align="right">7</td>
+<td align="right">1</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">HYD_hypdep</td>
+<td align="right">7</td>
+<td align="right">1</td>
+<td align="right">7</td>
+</tr>
+<tr class="odd">
+<td align="left">HYD_schstb</td>
+<td align="right">10</td>
+<td align="right">1</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">HYD_temp</td>
+<td align="right">125</td>
+<td align="right">13</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="left">HYD_thmcln</td>
+<td align="right">10</td>
+<td align="right">1</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">LKE_lvlwtr</td>
+<td align="right">8</td>
+<td align="right">1</td>
+<td align="right">8</td>
+</tr>
+</tbody>
+</table>
 <p>There are 10 variables available for calibration, this includes
 derived variables such as thermocline depth (HYD_thmcln) and Schmidt
 stability (HYD_schstb).</p>
@@ -771,48 +832,48 @@ values.</p>
 <span>                     param <span class="op">=</span> <span class="va">aeme_parameters</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                     FUN_list <span class="op">=</span> <span class="va">FUN_list</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, </span>
 <span>                     vars_sim <span class="op">=</span> <span class="va">vars_sim</span>, weights <span class="op">=</span> <span class="va">weights</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Extracting indices for glm_aed modelled variables [2025-09-22 00:15:08]</span></span>
-<span><span class="co">#&gt; Completed glm_aed! [2025-09-22 00:15:08]</span></span>
+<span><span class="co">#&gt; Extracting indices for glm_aed modelled variables [2025-10-21 03:22:20]</span></span>
+<span><span class="co">#&gt; Completed glm_aed! [2025-10-21 03:22:21]</span></span>
 <span><span class="co">#&gt; Calibrating in parallel for glm_aed using 2 cores...</span></span>
-<span><span class="co">#&gt; Starting generation 1/10, 40 members. [2025-09-22 00:15:09]</span></span>
+<span><span class="co">#&gt; Starting generation 1/10, 40 members. [2025-10-21 03:22:21]</span></span>
 <span><span class="co">#&gt; Best fit: 1.04 (sd: 437.27)</span></span>
 <span><span class="co">#&gt;             Parameters: [2.01, 0.881, 1.01, 0.122, 0.27, 0.158, 0.42, 0.631, 1.79, 1.93]</span></span>
-<span><span class="co">#&gt; Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-09-22 00:15:37]</span></span>
+<span><span class="co">#&gt; Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-10-21 03:22:48]</span></span>
 <span><span class="co">#&gt; Survival rate: 0.75</span></span>
-<span><span class="co">#&gt; Starting generation 2/10, 40 members. [2025-09-22 00:15:37]</span></span>
-<span><span class="co">#&gt; Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-09-22 00:15:56]</span></span>
+<span><span class="co">#&gt; Starting generation 2/10, 40 members. [2025-10-21 03:22:48]</span></span>
+<span><span class="co">#&gt; Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-10-21 03:23:07]</span></span>
 <span><span class="co">#&gt; Best fit: 0.88042 (sd: 157.73)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 3/10, 40 members. [2025-09-22 00:15:56]</span></span>
-<span><span class="co">#&gt; Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-09-22 00:16:16]</span></span>
+<span><span class="co">#&gt; Starting generation 3/10, 40 members. [2025-10-21 03:23:07]</span></span>
+<span><span class="co">#&gt; Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-10-21 03:23:30]</span></span>
 <span><span class="co">#&gt; Best fit: 0.81292 (sd: 157.77)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 4/10, 40 members. [2025-09-22 00:16:16]</span></span>
-<span><span class="co">#&gt; Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-09-22 00:16:38]</span></span>
+<span><span class="co">#&gt; Starting generation 4/10, 40 members. [2025-10-21 03:23:30]</span></span>
+<span><span class="co">#&gt; Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-10-21 03:23:50]</span></span>
 <span><span class="co">#&gt; Best fit: 0.81292 (sd: 266.19)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.92</span></span>
-<span><span class="co">#&gt; Starting generation 5/10, 40 members. [2025-09-22 00:16:38]</span></span>
-<span><span class="co">#&gt; Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-09-22 00:16:58]</span></span>
+<span><span class="co">#&gt; Starting generation 5/10, 40 members. [2025-10-21 03:23:50]</span></span>
+<span><span class="co">#&gt; Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-10-21 03:24:08]</span></span>
 <span><span class="co">#&gt; Best fit: 0.75111 (sd: 220.28)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.95</span></span>
-<span><span class="co">#&gt; Starting generation 6/10, 40 members. [2025-09-22 00:16:58]</span></span>
-<span><span class="co">#&gt; Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-09-22 00:17:18]</span></span>
+<span><span class="co">#&gt; Starting generation 6/10, 40 members. [2025-10-21 03:24:08]</span></span>
+<span><span class="co">#&gt; Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-10-21 03:24:27]</span></span>
 <span><span class="co">#&gt; Best fit: 0.67665 (sd: 157.81)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 7/10, 40 members. [2025-09-22 00:17:18]</span></span>
-<span><span class="co">#&gt; Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-09-22 00:17:42]</span></span>
+<span><span class="co">#&gt; Starting generation 7/10, 40 members. [2025-10-21 03:24:27]</span></span>
+<span><span class="co">#&gt; Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-10-21 03:24:45]</span></span>
 <span><span class="co">#&gt; Best fit: 0.67665 (sd: 220.29)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.95</span></span>
-<span><span class="co">#&gt; Starting generation 8/10, 40 members. [2025-09-22 00:17:42]</span></span>
-<span><span class="co">#&gt; Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-09-22 00:18:02]</span></span>
+<span><span class="co">#&gt; Starting generation 8/10, 40 members. [2025-10-21 03:24:45]</span></span>
+<span><span class="co">#&gt; Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-10-21 03:25:04]</span></span>
 <span><span class="co">#&gt; Best fit: 0.67665 (sd: 157.81)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 9/10, 40 members. [2025-09-22 00:18:02]</span></span>
-<span><span class="co">#&gt; Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-09-22 00:18:21]</span></span>
+<span><span class="co">#&gt; Starting generation 9/10, 40 members. [2025-10-21 03:25:04]</span></span>
+<span><span class="co">#&gt; Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-10-21 03:25:25]</span></span>
 <span><span class="co">#&gt; Best fit: 0.67609 (sd: 157.82)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.98</span></span>
-<span><span class="co">#&gt; Starting generation 10/10, 40 members. [2025-09-22 00:18:21]</span></span>
-<span><span class="co">#&gt; Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-09-22 00:18:43]</span></span>
+<span><span class="co">#&gt; Starting generation 10/10, 40 members. [2025-10-21 03:25:25]</span></span>
+<span><span class="co">#&gt; Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-10-21 03:25:53]</span></span>
 <span><span class="co">#&gt; Best fit: 0.65977 (sd: 266.26)</span></span>
 <span><span class="co">#&gt; Survival rate: 0.92</span></span></code></pre></div>
 </div>
@@ -859,7 +920,16 @@ argument is ignored.</p>
 <tr>
 <td><code id="sim_id">sim_id</code></td>
 <td>
-<p>A vector of simulation IDs to read.</p>
+<p>A vector of simulation IDs to read. If NULL, all simulations
+are read.</p>
+</td>
+</tr>
+<tr>
+<td><code id="type">type</code></td>
+<td>
+<p>A character string indicating the type of simulation. One of
+"calib", "sa", or "all". If missing, the type is inferred from the
+<code>ctrl</code> argument. If type is provided it overrides the <code>ctrl$method</code> value.</p>
 </td>
 </tr>
 </table></main></div>
@@ -958,26 +1028,34 @@ parameter values or the entire calibration dataset. Defaults to
 <span><span class="va">best_params</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="16%">
-<col width="7%">
-<col width="13%">
-<col width="7%">
-<col width="14%">
-<col width="8%">
-<col width="3%">
-<col width="19%">
+<col width="12%">
 <col width="5%">
-<col width="3%">
+<col width="6%">
+<col width="14%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="10%">
+<col width="6%">
+<col width="10%">
+<col width="6%">
+<col width="2%">
+<col width="4%">
+<col width="2%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">sim_id</th>
 <th align="left">model</th>
+<th align="left">file</th>
+<th align="left">name</th>
+<th align="right">value</th>
+<th align="right">min</th>
+<th align="right">max</th>
 <th align="left">label</th>
 <th align="left">fit_type</th>
 <th align="right">parameter_value</th>
 <th align="right">fit_value</th>
 <th align="left">gen</th>
-<th align="left">name</th>
 <th align="left">group</th>
 <th align="left">par</th>
 </tr></thead>
@@ -985,120 +1063,160 @@ parameter values or the entire calibration dataset. Defaults to
 <tr class="odd">
 <td align="left">45819_glmaed_C_001</td>
 <td align="left">glm_aed</td>
+<td align="left">glm3.nml</td>
+<td align="left">light/Kw</td>
+<td align="right">0.701670</td>
+<td align="right">0.701670</td>
+<td align="right">0.701670</td>
 <td align="left">Kw</td>
 <td align="left">fit</td>
 <td align="right">0.701670</td>
 <td align="right">0.659773</td>
 <td align="left">1</td>
-<td align="left">light/Kw</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">45819_glmaed_C_001</td>
 <td align="left">glm_aed</td>
+<td align="left">glm3.nml</td>
+<td align="left">mixing/coef_mix_conv</td>
+<td align="right">0.130507</td>
+<td align="right">0.130507</td>
+<td align="right">0.130507</td>
 <td align="left">coef_mix_conv</td>
 <td align="left">fit</td>
 <td align="right">0.130507</td>
 <td align="right">0.659773</td>
 <td align="left">1</td>
-<td align="left">mixing/coef_mix_conv</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">45819_glmaed_C_001</td>
 <td align="left">glm_aed</td>
+<td align="left">glm3.nml</td>
+<td align="left">mixing/coef_mix_hyp</td>
+<td align="right">0.515081</td>
+<td align="right">0.515081</td>
+<td align="right">0.515081</td>
 <td align="left">coef_mix_hyp</td>
 <td align="left">fit</td>
 <td align="right">0.515081</td>
 <td align="right">0.659773</td>
 <td align="left">1</td>
-<td align="left">mixing/coef_mix_hyp</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">45819_glmaed_C_001</td>
 <td align="left">glm_aed</td>
+<td align="left">glm3.nml</td>
+<td align="left">mixing/coef_mix_shear</td>
+<td align="right">0.170018</td>
+<td align="right">0.170018</td>
+<td align="right">0.170018</td>
 <td align="left">coef_mix_shear</td>
 <td align="left">fit</td>
 <td align="right">0.170018</td>
 <td align="right">0.659773</td>
 <td align="left">1</td>
-<td align="left">mixing/coef_mix_shear</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">45819_glmaed_C_001</td>
 <td align="left">glm_aed</td>
+<td align="left">glm3.nml</td>
+<td align="left">mixing/coef_mix_turb</td>
+<td align="right">0.405187</td>
+<td align="right">0.405187</td>
+<td align="right">0.405187</td>
 <td align="left">coef_mix_turb</td>
 <td align="left">fit</td>
 <td align="right">0.405187</td>
 <td align="right">0.659773</td>
 <td align="left">1</td>
-<td align="left">mixing/coef_mix_turb</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">45819_glmaed_C_001</td>
 <td align="left">glm_aed</td>
+<td align="left">glm3.nml</td>
+<td align="left">mixing/coef_wind_stir</td>
+<td align="right">0.281625</td>
+<td align="right">0.281625</td>
+<td align="right">0.281625</td>
 <td align="left">coef_wind_stir</td>
 <td align="left">fit</td>
 <td align="right">0.281625</td>
 <td align="right">0.659773</td>
 <td align="left">1</td>
-<td align="left">mixing/coef_wind_stir</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">45819_glmaed_C_001</td>
 <td align="left">glm_aed</td>
+<td align="left">inf</td>
+<td align="left">inflow</td>
+<td align="right">1.436520</td>
+<td align="right">1.436520</td>
+<td align="right">1.436520</td>
 <td align="left">inflow</td>
 <td align="left">fit</td>
 <td align="right">1.436520</td>
 <td align="right">0.659773</td>
 <td align="left">1</td>
-<td align="left">inflow</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">45819_glmaed_C_001</td>
 <td align="left">glm_aed</td>
+<td align="left">wdr</td>
+<td align="left">outflow</td>
+<td align="right">1.356770</td>
+<td align="right">1.356770</td>
+<td align="right">1.356770</td>
 <td align="left">outflow</td>
 <td align="left">fit</td>
 <td align="right">1.356770</td>
 <td align="right">0.659773</td>
 <td align="left">1</td>
-<td align="left">outflow</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">45819_glmaed_C_001</td>
 <td align="left">glm_aed</td>
+<td align="left">met</td>
+<td align="left">MET_radswd</td>
+<td align="right">0.891542</td>
+<td align="right">0.891542</td>
+<td align="right">0.891542</td>
 <td align="left">radswd</td>
 <td align="left">fit</td>
 <td align="right">0.891542</td>
 <td align="right">0.659773</td>
 <td align="left">1</td>
-<td align="left">MET_radswd</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">45819_glmaed_C_001</td>
 <td align="left">glm_aed</td>
+<td align="left">met</td>
+<td align="left">MET_wndspd</td>
+<td align="right">0.755676</td>
+<td align="right">0.755676</td>
+<td align="right">0.755676</td>
 <td align="left">wndspd</td>
 <td align="left">fit</td>
 <td align="right">0.755676</td>
 <td align="right">0.659773</td>
 <td align="left">1</td>
-<td align="left">MET_wndspd</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
@@ -1111,10 +1229,11 @@ the simulated values to the observed values. This can be done using the
 <code class="sourceCode R"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>,</span>
 <span>                       param <span class="op">=</span> <span class="va">best_params</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                       return_aeme <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-09-22 00:18:49]</span></span>
-<span><span class="co">#&gt; GLM-AED running... [2025-09-22 00:18:49]</span></span>
-<span><span class="co">#&gt; GLM-AED run successful! [2025-09-22 00:18:50]</span></span>
-<span><span class="co">#&gt; Model run complete![2025-09-22 00:18:50]</span></span>
+<span><span class="co">#&gt; GLM nml checks passed with no issues.</span></span>
+<span><span class="co">#&gt; Running models... (Have you tried parallelizing?) [2025-10-21 03:25:58]</span></span>
+<span><span class="co">#&gt; GLM-AED running... [2025-10-21 03:25:58]</span></span>
+<span><span class="co">#&gt; GLM-AED run successful! [2025-10-21 03:25:59]</span></span>
+<span><span class="co">#&gt; Model run complete![2025-10-21 03:25:59]</span></span>
 <span><span class="co">#&gt; Retrieving and formatting temp for model glm_aed</span></span>
 <span><span class="co">#&gt; Retrieving and formatting salt for model glm_aed</span></span></code></pre></div>
 <p>The simulated values can be compared to the observed values using the
@@ -1194,7 +1313,7 @@ variable. These include:
 </div>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://limnotrack.github.io/AEME/reference/assess_model.html" class="external-link">assess_model</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="va">vars_sim</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://limnotrack.com/AEME/reference/assess_model.html" class="external-link">assess_model</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="va">vars_sim</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
 <col width="7%">
@@ -1234,16 +1353,16 @@ variable. These include:
 <tr class="odd">
 <td align="left">GLM-AED</td>
 <td align="left">HYD_temp</td>
-<td align="right">-0.950</td>
-<td align="right">1.659</td>
-<td align="right">1.826</td>
-<td align="right">0.092</td>
-<td align="right">0.656</td>
-<td align="right">0.174</td>
-<td align="right">0.871</td>
-<td align="right">0.894</td>
-<td align="right">0.759</td>
-<td align="right">0.565</td>
+<td align="right">-0.102</td>
+<td align="right">0.522</td>
+<td align="right">0.737</td>
+<td align="right">0.029</td>
+<td align="right">0.944</td>
+<td align="right">0.027</td>
+<td align="right">0.975</td>
+<td align="right">0.973</td>
+<td align="right">0.951</td>
+<td align="right">0.900</td>
 <td align="right">125</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -1251,16 +1370,16 @@ variable. These include:
 <tr class="even">
 <td align="left">GLM-AED</td>
 <td align="left">LKE_lvlwtr</td>
-<td align="right">0.694</td>
-<td align="right">0.694</td>
-<td align="right">0.742</td>
-<td align="right">0.029</td>
-<td align="right">-159.208</td>
-<td align="right">0.859</td>
-<td align="right">0.806</td>
-<td align="right">0.830</td>
-<td align="right">0.650</td>
-<td align="right">0.004</td>
+<td align="right">1.434</td>
+<td align="right">1.434</td>
+<td align="right">1.484</td>
+<td align="right">0.061</td>
+<td align="right">-639.528</td>
+<td align="right">0.928</td>
+<td align="right">0.800</td>
+<td align="right">0.878</td>
+<td align="right">0.640</td>
+<td align="right">0.001</td>
 <td align="right">8</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -1281,7 +1400,7 @@ multi-panel plot displaying residuals for:</p>
 <li>Residuals vs. quantiles of the observed values</li>
 </ul>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.github.io/AEME/reference/plot_resid.html" class="external-link">plot_resid</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="va">vars_sim</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.com/AEME/reference/plot_resid.html" class="external-link">plot_resid</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, var_sim <span class="op">=</span> <span class="va">vars_sim</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="water-temperature-residuals">Water temperature residuals<a class="anchor" aria-label="anchor" href="#water-temperature-residuals"></a>
 </h4>
