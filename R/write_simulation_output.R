@@ -19,7 +19,7 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
   lke <- AEME::lake(aeme)
   tme <- AEME::time(aeme)
   cfg <- AEME::configuration(aeme)
-  use_bgc <- !is.null(cfg[[model]]$ecosystem)
+  use_bgc <- cfg$use_bgc
 
   # Create function string
   fun_string <- lapply(FUN_list, deparse1)
