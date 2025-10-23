@@ -14,7 +14,7 @@
 #' @importFrom httr2 req_url_query req_url_path_append req_headers
 #' @importFrom httr2 req_perform
 #' @importFrom jsonlite toJSON
-#' @importFrom terra rast values time
+#' @importFrom terra rast values
 #' @importFrom dplyr bind_rows full_join
 #' @importFrom zip unzip
 #' @importFrom logger log_info log_error
