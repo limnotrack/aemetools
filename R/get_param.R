@@ -94,9 +94,13 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
                      .groups = "drop") |>
     as.data.frame()
   
-  if (length(uniq_pars) == 0) {
+  if (length(uniq_pars) > 0) {
     pars_df <- pars_df |> 
       dplyr::left_join(aeme_pars, by = c("model", "name"))
+  }
+  if (!"file" %in% colnames(pars_df)) {
+    pars_df <- pars_df |> 
+      dplyr::mutate(file = NA)
   }
   
   pars_df <- pars_df |> 
@@ -107,7 +111,7 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
         grepl("MET", name) ~ "met",
         grepl("outflow", name) ~ "wdr",
         grepl("inflow", name) ~ "inf",
-        .default = file
+        .default = .data$file
       )
     ) |> 
     dplyr::select(sim_id, model, file, name, value, min, max, 
