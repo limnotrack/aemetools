@@ -15,21 +15,21 @@
 #' @export
 
 get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
-
+  
   # lapply(calib, \(x) {
   if (!all(fit_col %in% calib$simulation_data$fit_type)) {
     stop("fit_col not in calib")
   }
   # })
-
+  
   sim_ids <- calib$simulation_metadata$sim_id
-
+  
   all_pars <- lapply(sim_ids, \(x) {
     # calib$fit <- calib[[fit_col]]
     model <- calib$simulation_metadata |>
       dplyr::filter(sim_id == x) |>
       dplyr::pull(model)
-
+    
     df_idx <- calib$simulation_data |>
       dplyr::filter(sim_id == x) |>
       dplyr::filter(fit_type == calib$simulation_data$fit_type[1]) |>
@@ -38,8 +38,8 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
       dplyr::mutate(index = 1:dplyr::n()) |>
       as.data.frame() |>
       dplyr::select(gen, run, index)
-
-
+    
+    
     calib$simulation_data |>
       dplyr::filter(sim_id == x) |>
       dplyr::left_join(df_idx, by = c("gen", "run")) |>
@@ -66,20 +66,23 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
   }) |>
     dplyr::bind_rows() |>
     dplyr::select(sim_id, model, gen, run, index, dplyr::everything())
-
-
-
+  
+  
+  
   if (!best) return(all_pars)
   
   uniq_pars <- unique(all_pars$name)
   # Remove "outflow", "inflow" and ones that contain "MET"
   uniq_pars <- uniq_pars[!uniq_pars %in% c("outflow", "inflow")]
   uniq_pars <- uniq_pars[!grepl("MET", uniq_pars)]
+  if (length(uniq_pars) > 0) {
+    aeme_pars <- AEME::get_aeme_parameters(name = uniq_pars) |> 
+      dplyr::select(model, file, name)
+  }
   
-  aeme_pars <- AEME::get_aeme_parameters(name = uniq_pars) |> 
-    dplyr::select(model, file, name)
-
-  all_pars |>
+  
+  
+  pars_df <- all_pars |>
     dplyr::filter(fit_value != na_value) |>
     dplyr::group_by(sim_id, model, label, fit_type) |>
     dplyr::summarise(parameter_value = parameter_value[which.min(fit_value)],
@@ -89,8 +92,14 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
                      group = group[which.min(fit_value)],
                      par = par[which.min(fit_value)],
                      .groups = "drop") |>
-    as.data.frame() |>
-    dplyr::left_join(aeme_pars, by = c("model", "name")) |> 
+    as.data.frame()
+  
+  if (length(uniq_pars) == 0) {
+    pars_df <- pars_df |> 
+      dplyr::left_join(aeme_pars, by = c("model", "name"))
+  }
+  
+  pars_df <- pars_df |> 
     dplyr::mutate(
       value = parameter_value,
       min = value, max = value,
@@ -101,7 +110,9 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
         .default = file
       )
     ) |> 
-    dplyr::select(sim_id, model, file, name, value, min, max, dplyr::everything()) 
+    dplyr::select(sim_id, model, file, name, value, min, max, 
+                  dplyr::everything()) 
+  return(pars_df)
 }
 
 
@@ -121,10 +132,10 @@ abbrev_pars <- function(par, model) {
       if (length(words) > 1) {
         # Extract the first letter of each word
         initials <- abbreviate(words, 3)
-
+        
         # Concatenate the initials to form the abbreviation
         abbreviation <- paste(initials, collapse = "_")
-
+        
         return(abbreviation)
       } else {
         return(string)
@@ -151,7 +162,7 @@ abbrev_pars <- function(par, model) {
     par2 <- sub("MET_", "", par2)
   }
   return(par2)
-
+  
   # names(params) <- params1
   # par_ref <- data.frame(parameter = params1, label = params)
 }
