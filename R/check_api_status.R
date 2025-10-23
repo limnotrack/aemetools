@@ -27,21 +27,21 @@ check_api_status <- function(api_url = "https://api.limnotrack.com") {
       jsonlite::fromJSON()
     
     if (parsed$api) {
-      message("✅ API is available")
+      message("API is available")
     }
     if (parsed$db) {
-      message("✅ Database connection is healthy")
+      message("Database connection is healthy")
     } else {
-      warning("⚠️ Database connection issue")
+      warning("Database connection issue")
     }
     return(TRUE)
   } else if (!is.null(res)) {
-    warning(sprintf("⚠️ API request failed [%s]: %s",
+    warning(sprintf("API request failed [%s]: %s",
                                 httr2::resp_status(res),
                                 httr2::resp_body_string(res)))
     return(FALSE)
   } else {
-    warning("❌ API request error or NULL response")
+    warning("API request error or NULL response")
     return(FALSE)
   }
 }
