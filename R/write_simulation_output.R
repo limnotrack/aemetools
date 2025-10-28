@@ -118,7 +118,8 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
         data.frame(sim_id = sim_id, variable = n, var = ctrl$vars_sim[[n]]$var,
                    depth_from = min(ctrl$vars_sim[[n]]$depth_range),
                    depth_to = max(ctrl$vars_sim[[n]]$depth_range),
-                   month = ctrl$vars_sim[[n]]$month)
+                   month = ctrl$vars_sim[[n]]$month,
+                   na_value = ctrl$na_value)
       }) |>
         dplyr::bind_rows()
     }
@@ -192,21 +193,60 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
 
 write_to_csv <- function(output, path, sim_id, gen_n, add_lake_meta = FALSE) {
   for (i in seq_along(output)) {
-    fname <- file.path(path, paste0(names(output)[i], ".csv"))
+    tbl_name <- names(output)[i]
+    fname <- file.path(path, paste0(tbl_name, ".csv"))
     file_chk <- file.exists(fname)
-    if (names(output)[i] == "lake_metadata") {
-      if (!add_lake_meta) next
+    
+    # Skip writing lake_metadata unless requested
+    if (tbl_name == "lake_metadata" && !add_lake_meta) next
+    
+    df <- output[[i]]
+    
+    # --- Handle sensitivity_metadata specifically ---
+    if (tbl_name == "sensitivity_metadata" && file_chk) {
+      # Read existing header (first line only)
+      existing_header <- names(read.csv(fname, nrows = 1, check.names = FALSE))
+      
+      # Add na_value column if missing
+      if (!"na_value" %in% existing_header) {
+        message("Adding missing column 'na_value' to 'sensitivity_metadata.csv'...")
+        
+        # Append column to existing CSV file
+        temp_file <- tempfile(fileext = ".csv")
+        
+        # Read full file, add column, rewrite
+        dat <- read.csv(fname, check.names = FALSE)
+        dat$na_value <- NA
+        write.csv(dat, temp_file, row.names = FALSE, quote = TRUE)
+        
+        # Replace old file with new one
+        file.copy(temp_file, fname, overwrite = TRUE)
+        unlink(temp_file)
+        
+        # Update local reference for appending
+        existing_header <- names(dat)
+      }
+      
+      # Add missing columns to df (so it matches CSV)
+      missing_cols <- setdiff(existing_header, names(df))
+      if (length(missing_cols) > 0) {
+        for (col in missing_cols) df[[col]] <- NA
+      }
+      
+      # Ensure column order matches
+      df <- df[, existing_header, drop = FALSE]
     }
-    if (gen_n == 1 & !file_chk) {
-      write.csv(output[[i]], fname, quote = TRUE,
-                row.names = FALSE)
-
+    
+    # --- Write / append to CSV ---
+    if (gen_n == 1 && !file_chk) {
+      write.csv(df, fname, quote = TRUE, row.names = FALSE)
     } else {
-      write.table(output[[i]], fname, append = TRUE, sep = ",",
+      write.table(df, fname, append = TRUE, sep = ",",
                   row.names = FALSE, col.names = FALSE)
     }
   }
 }
+
 
 #' Write output to database
 #'
@@ -227,17 +267,54 @@ write_to_db <- function(file, path, output, add_lake_meta = FALSE) {
   file_chk <- file.exists(file_path)
   con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file_path)
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
-
+  
   for (i in seq_along(output)) {
-    if (names(output)[i] == "lake_metadata") {
-      if (!add_lake_meta) next
+    tbl_name <- names(output)[i]
+    df <- output[[i]]
+    
+    # Skip writing lake_metadata unless requested
+    if (tbl_name == "lake_metadata" && !add_lake_meta) next
+    
+    # Replace NA groups in parameter_metadata
+    if (tbl_name == "parameter_metadata" && "group" %in% names(df)) {
+      df$group[is.na(df$group)] <- "NA"
     }
-    if (names(output)[i] == "parameter_metadata") {
-      if (any(is.na(output[[i]][["group"]]))) {
-        output[[i]][["group"]][is.na(output[[i]][["group"]])] <- "NA"
+    
+    # --- Strictly handle sensitivity_metadata schema ---
+    if (tbl_name == "sensitivity_metadata" &&
+        file_chk && tbl_name %in% DBI::dbListTables(con)) {
+      
+      existing_cols <- DBI::dbListFields(con, tbl_name)
+      
+      # Add 'na_value' column if missing
+      if (!"na_value" %in% existing_cols) {
+        message("Adding missing column 'na_value' (DOUBLE) to 'sensitivity_metadata'...")
+        DBI::dbExecute(
+          con,
+          "ALTER TABLE sensitivity_metadata ADD COLUMN na_value DOUBLE;"
+        )
       }
+      
+      # Refresh schema after ALTER TABLE
+      existing_cols <- DBI::dbListFields(con, tbl_name)
+      
+      # Add any missing columns that exist in DB but not in df
+      missing_cols <- setdiff(existing_cols, names(df))
+      if (length(missing_cols) > 0) {
+        for (col in missing_cols) df[[col]] <- NA
+      }
+      
+      # Ensure correct column order
+      df <- df[, existing_cols, drop = FALSE]
     }
-    DBI::dbWriteTable(con, names(output)[i], output[[i]],
-                      overwrite = !file_chk, append = file_chk)
+    
+    # --- Write or append table ---
+    DBI::dbWriteTable(
+      con,
+      tbl_name,
+      df,
+      overwrite = !file_chk,
+      append = file_chk
+    )
   }
 }
