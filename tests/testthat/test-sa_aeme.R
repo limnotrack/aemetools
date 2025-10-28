@@ -129,7 +129,11 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   
   sim_meta <- read_simulation_meta(ctrl = ctrl)
   sim_meta2 <- read_simulation_meta(ctrl = ctrl, type = "sa")
+  sa_res3 <- read_sa(file_name = ctrl$file_name, file_dir = ctrl$file_dir,
+                    sim_id = sim_id, boot = FALSE)
   testthat::expect_true(all(sim_meta2$type == "sa"))
+  testthat::expect_equal(sa_res3, read_sa(ctrl = ctrl, sim_id = sim_id,
+                                         boot = FALSE))
   
   sa_res <- read_sa(ctrl = ctrl, sim_id = sim_id, R = 2^2)
 
