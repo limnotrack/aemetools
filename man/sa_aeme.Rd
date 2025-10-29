@@ -6,32 +6,32 @@
 \usage{
 sa_aeme(
   aeme,
-  path = ".",
-  param,
   model,
+  param,
+  FUN_list,
+  path = ".",
   model_controls = NULL,
-  FUN_list = NULL,
-  ctrl = NULL,
+  ctrl,
   param_df = NULL
 )
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
+`gotm_wet`.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
-
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
-
 \item{FUN_list}{list of functions; named according to the variables in the
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
 to calculate model fit. If NULL, uses mean absolute error (MAE).}
+
+\item{path}{filepath; where input files are located relative to `config`.}
+
+\item{model_controls}{dataframe; of configuration loaded from
+"model_controls.csv".}
 
 \item{ctrl}{list; of controls for sensitivity analysis function created using
 the \code{\link{create_control}} function. See \link{create_control} for
