@@ -6,44 +6,44 @@
 \usage{
 calib_aeme(
   aeme,
-  path = ".",
-  param,
   model,
-  model_controls = NULL,
+  param,
   vars_sim = "HYD_temp",
-  FUN_list = NULL,
+  FUN_list,
+  weights,
+  path = ".",
+  model_controls = NULL,
   ctrl = NULL,
-  weights = c(1),
   param_df = NULL
 )
 }
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
+`gotm_wet`.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
-
-\item{model}{string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
-
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
 model fit. Currently only supports using one variable.}
 
 \item{FUN_list}{list of functions; named according to the variables in the
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
-to calculate model fit. If NULL, uses mean absolute error (MAE).}
+to calculate model fit. If nor provided, uses mean absolute error (MAE).}
+
+\item{weights}{vector; of weights for each variable in vars_sim. If not
+provided, defaults to 1 for each variable.}
+
+\item{path}{filepath; where input files are located relative to `config`.}
+
+\item{model_controls}{dataframe; of configuration loaded from
+"model_controls.csv".}
 
 \item{ctrl}{list; of controls for sensitivity analysis function created using
 the \code{\link{create_control}} function. See \link{create_control} for
 more details.}
-
-\item{weights}{vector; of weights for each variable in vars_sim. Default to
-c(1).}
 
 \item{param_df}{dataframe; of parameters to be used in the calibration.
 Requires the columns c("model", "file", "name", "value", "min", "max"). This

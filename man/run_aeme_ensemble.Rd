@@ -19,8 +19,8 @@ run_aeme_ensemble(
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
+\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
+`gotm_wet`.}
 
 \item{n}{numeric; number of ensemble members to generate.}
 

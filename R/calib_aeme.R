@@ -10,18 +10,16 @@
 #' @inheritParams AEME::build_aeme
 #' @param param dataframe; of parameters read in from a csv file. Requires the
 #' columns c("model", "file", "name", "value", "min", "max", "log")
-#' @param model string; for which model to calibrate. Only one model can be
-#' passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").
 #' @param vars_sim vector; of variables names to be used in the calculation of
 #' model fit. Currently only supports using one variable.
 #' @param FUN_list list of functions; named according to the variables in the
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
-#'  to calculate model fit. If NULL, uses mean absolute error (MAE).
+#'  to calculate model fit. If nor provided, uses mean absolute error (MAE).
 #' @param ctrl list; of controls for sensitivity analysis function created using
 #'  the \code{\link{create_control}} function. See \link{create_control} for
 #'  more details.
-#' @param weights vector; of weights for each variable in vars_sim. Default to
-#' c(1).
+#' @param weights vector; of weights for each variable in vars_sim. If not
+#' provided, defaults to 1 for each variable.
 #' @param param_df dataframe; of parameters to be used in the calibration.
 #' Requires the columns c("model", "file", "name", "value", "min", "max"). This
 #' is used to restart from a previous calibration.
@@ -37,10 +35,27 @@
 #'
 #' @export
 
-calib_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
-                       vars_sim = "HYD_temp", FUN_list = NULL, ctrl = NULL,
-                       weights = c(1), param_df = NULL) {
+calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list, 
+                       weights, path = ".", model_controls = NULL, ctrl = NULL,
+                       param_df = NULL) {
 
+  if (missing(FUN_list)) {
+    message(strwrap("No FUN_list supplied. Defaulting to mean absolute error for all
+            variables."))
+    # Default to mean absolute error
+    fit_fun <- function(df) {
+      mean(abs(df$obs - df$model), na.rm = TRUE)
+    }
+    FUN_list <- list()
+    for (v in vars_sim) {
+      FUN_list[[v]] <- fit_fun
+    }
+  }
+  if (missing(weights)) {
+    message("No weights supplied. Defaulting to 1 for all variables.")
+    weights <- rep(1, length(vars_sim))
+    names(weights) <- vars_sim
+  }
   # Check if vars_sim and weights are the same length
   if (length(vars_sim) != length(weights))
     stop("vars_sim and weights must be the same length")
