@@ -239,8 +239,6 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
   path <- file.path(tmpdir, "lake")
   aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
   # model <- c("gotm_wet", "glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
@@ -250,32 +248,16 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
 
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
-
-  # Function to calculate fitness
-  fit <- function(df) {
-    O <- df$obs
-    P <- df$model
-    -1 * (cor(x = O, y = P, method = "pearson") -
-            (mean(abs(O - P)) / (max(O) - min(O))))
-  }
-  mae <- function(df) {
-    mean(abs(df$obs - df$model))
-  }
-
-  FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = fit)
-
   ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
                          parallel = FALSE, file_type = "db",
                          file_name = "results.db")
 
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
-  weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 0.5)
 
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
-                       param = param, model = model,
-                       FUN_list = FUN_list, ctrl = ctrl,
-                       vars_sim = vars_sim, weights = weights)
+                       param = param, model = model, ctrl = ctrl,
+                       vars_sim = vars_sim)
 
   # calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
   calib <- read_calib(file_name = ctrl$file_name, file_dir = ctrl$file_dir, 
