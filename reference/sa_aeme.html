@@ -40,7 +40,7 @@ to run quicker."><meta property="og:image" content="https://limnotrack.github.io
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Run sensitivity analysis on AEME model parameters</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/aemetools/blob/main/R/sa_aeme.R" class="external-link"><code>R/sa_aeme.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/aemetools/blob/dev/R/sa_aeme.R" class="external-link"><code>R/sa_aeme.R</code></a></small>
       <div class="d-none name"><code>sa_aeme.Rd</code></div>
     </div>
 
@@ -82,8 +82,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")</p></dd>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").</p></dd>
+<dd><p>vector; of models to be used. Can be `dy_cd`, `glm_aed`,
+`gotm_wet`.</p></dd>
 
 
 <dt id="arg-model-controls">model_controls<a class="anchor" aria-label="anchor" href="#arg-model-controls"></a></dt>

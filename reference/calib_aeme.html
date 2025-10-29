@@ -40,7 +40,7 @@ to run quicker."><meta property="og:image" content="https://limnotrack.github.io
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Calibrate AEME model parameters using observations</h1>
-      <small class="dont-index">Source: <a href="https://github.com/limnotrack/aemetools/blob/main/R/calib_aeme.R" class="external-link"><code>R/calib_aeme.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/limnotrack/aemetools/blob/dev/R/calib_aeme.R" class="external-link"><code>R/calib_aeme.R</code></a></small>
       <div class="d-none name"><code>calib_aeme.Rd</code></div>
     </div>
 
@@ -54,14 +54,14 @@ to run quicker.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calib_aeme</span><span class="op">(</span></span>
 <span>  <span class="va">aeme</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"."</span>,</span>
-<span>  <span class="va">param</span>,</span>
 <span>  <span class="va">model</span>,</span>
-<span>  model_controls <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">param</span>,</span>
 <span>  vars_sim <span class="op">=</span> <span class="st">"HYD_temp"</span>,</span>
-<span>  FUN_list <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">FUN_list</span>,</span>
+<span>  <span class="va">weights</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  model_controls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ctrl <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
 <span>  param_df <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -74,23 +74,14 @@ to run quicker.</p>
 <dd><p>aeme; object.</p></dd>
 
 
-<dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
-<dd><p>filepath; where input files are located relative to `config`.</p></dd>
+<dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
+<dd><p>vector; of models to be used. Can be `dy_cd`, `glm_aed`,
+`gotm_wet`.</p></dd>
 
 
 <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
 <dd><p>dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")</p></dd>
-
-
-<dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").</p></dd>
-
-
-<dt id="arg-model-controls">model_controls<a class="anchor" aria-label="anchor" href="#arg-model-controls"></a></dt>
-<dd><p>dataframe; of configuration loaded from
-"model_controls.csv".</p></dd>
 
 
 <dt id="arg-vars-sim">vars_sim<a class="anchor" aria-label="anchor" href="#arg-vars-sim"></a></dt>
@@ -101,18 +92,27 @@ model fit. Currently only supports using one variable.</p></dd>
 <dt id="arg-fun-list">FUN_list<a class="anchor" aria-label="anchor" href="#arg-fun-list"></a></dt>
 <dd><p>list of functions; named according to the variables in the
 <code>vars_sim</code>. Funtions are of the form <code>function(df)</code> which will be used
-to calculate model fit. If NULL, uses mean absolute error (MAE).</p></dd>
+to calculate model fit. If nor provided, uses mean absolute error (MAE).</p></dd>
+
+
+<dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
+<dd><p>vector; of weights for each variable in vars_sim. If not
+provided, defaults to 1 for each variable.</p></dd>
+
+
+<dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
+<dd><p>filepath; where input files are located relative to `config`.</p></dd>
+
+
+<dt id="arg-model-controls">model_controls<a class="anchor" aria-label="anchor" href="#arg-model-controls"></a></dt>
+<dd><p>dataframe; of configuration loaded from
+"model_controls.csv".</p></dd>
 
 
 <dt id="arg-ctrl">ctrl<a class="anchor" aria-label="anchor" href="#arg-ctrl"></a></dt>
 <dd><p>list; of controls for sensitivity analysis function created using
 the <code><a href="create_control.html">create_control</a></code> function. See <a href="create_control.html">create_control</a> for
 more details.</p></dd>
-
-
-<dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
-<dd><p>vector; of weights for each variable in vars_sim. Default to
-c(1).</p></dd>
 
 
 <dt id="arg-param-df">param_df<a class="anchor" aria-label="anchor" href="#arg-param-df"></a></dt>
