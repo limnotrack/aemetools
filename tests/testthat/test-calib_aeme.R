@@ -265,8 +265,8 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
   testthat::expect_true("time_elapsed" %in% names(calib$calibration_metadata))
   testthat::expect_true(is.list(calib))
 
-  psum <- plot_calib(calib = calib, fit_col = vars_sim,
-                     na_value = ctrl$na_value)
+  psum <- plot_calib_summary(calib = calib)
+  testthat::expect_true(ggplot2::is_ggplot(psum))
 
   plist <- plot_calib(calib = calib, fit_col = "LKE_lvlwtr",
                       na_value = ctrl$na_value)
@@ -1058,9 +1058,9 @@ test_that("can calibrate temperature with LHC for AEME-GLM in series with DB out
   testthat::expect_true(is.data.frame(calib_meta))
 
 
-  psum <- plot_calib(calib = calib, fit_col = vars_sim,
-                     na_value = ctrl$na_value)
-
+  psum <- plot_calib_summary(calib = calib)
+  testthat::expect_true(ggplot2::is_ggplot(psum))
+  
   plist <- plot_calib(calib = calib, fit_col = "LKE_lvlwtr",
                       na_value = ctrl$na_value)
 
@@ -1121,9 +1121,9 @@ test_that("can calibrate temperature with LHC for AEME-GOTM in parallel with csv
   testthat::expect_true("time_elapsed" %in% names(calib$calibration_metadata))
   testthat::expect_true(is.list(calib))
 
-  psum <- plot_calib(calib = calib, fit_col = vars_sim,
-                     na_value = ctrl$na_value)
-
+  psum <- plot_calib_summary(calib = calib)
+  testthat::expect_true(ggplot2::is_ggplot(psum))
+  
   plist <- plot_calib(calib = calib, fit_col = "LKE_lvlwtr",
                       na_value = ctrl$na_value)
 
