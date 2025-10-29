@@ -78,23 +78,33 @@
 #'
 #' @export
 
-sa_aeme <- function(aeme, path = ".", param, model, model_controls = NULL,
-                    FUN_list = NULL, ctrl = NULL, param_df = NULL) {
+sa_aeme <- function(aeme, model, param, FUN_list, path = ".",
+                    model_controls = NULL, ctrl, param_df = NULL) {
 
-  # Check if vars_sim and weights are the same length
-  if (is.null(ctrl)) {
+  if (missing(ctrl) || is.null(ctrl)) {
     stop("ctrl must be supplied")
   }
   if (is.null(model_controls)) {
     config <- AEME::configuration(aeme = aeme)
     model_controls <- config$model_controls
   }
+  # Check if vars_sim and weights are the same length
   vars_sim <- sapply(ctrl$vars_sim, \(v) v$var) |>
     unique()
   weights <- rep(1, length(vars_sim))
   names(weights) <- vars_sim
-  # if (length(vars_sim) != length(weights))
-  #   stop("vars_sim and weights must be the same length")
+  
+  if (missing(FUN_list) || is.null(FUN_list)) {
+    # Default to mean
+    message(strwrap("No FUN_list supplied, defaulting to mean function for all
+                    variables."))
+    FUN_list <- list()
+    for (v in vars_sim) {
+      FUN_list[[v]] <- function(df) {
+        mean(df$model)
+      }
+    }
+  }
 
   if (!all(vars_sim %in% names(FUN_list)))
     stop("FUN_list must have names that match vars_sim")
