@@ -9,8 +9,8 @@ get_simulation_time(aeme, model, path, param, FUN_list, vars_sim, weights)
 \arguments{
 \item{aeme}{aeme; object.}
 
-\item{model}{string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
+\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
+`gotm_wet`.}
 
 \item{path}{filepath; where input files are located relative to `config`.}
 
@@ -19,13 +19,13 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 
 \item{FUN_list}{list of functions; named according to the variables in the
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
-to calculate model fit. If NULL, uses mean absolute error (MAE).}
+to calculate model fit. If nor provided, uses mean absolute error (MAE).}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
 model fit. Currently only supports using one variable.}
 
-\item{weights}{vector; of weights for each variable in vars_sim. Default to
-c(1).}
+\item{weights}{vector; of weights for each variable in vars_sim. If not
+provided, defaults to 1 for each variable.}
 }
 \value{
 numeric vector of simulation time for each model.
