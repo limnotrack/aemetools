@@ -44,63 +44,6 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
              stats::quantile(all_pars$fit2, 0.75, na.rm = TRUE))
   ylab <- ifelse(fit_col == "fit", "Fit", paste0("Fit (", fit_col, ")"))
 
-
-  # Summary plot of best parameter values for multiple fits ----
-  if (length(fit_col) > 1) {
-    err_bars <- summ |>
-      dplyr::group_by(sim_id, label) |>
-      dplyr::summarise(xmin = min(parameter_value, na.rm = TRUE),
-                       xmax = max(parameter_value, na.rm = TRUE),
-                       ymin = min(fit2, na.rm = TRUE),
-                       ymax = max(fit2, na.rm = TRUE), gen = dplyr::first(gen))
-    ylab <- "Fit"
-    plist <- lapply(sim_ids, \(s) {
-      ggplot2::ggplot() +
-        # ggplot2::geom_vline(data = summ[summ$sim_id == s, ],
-        #                     ggplot2::aes(xintercept = parameter_value, colour = gen)) +
-        ggplot2::geom_point(data = all_pars[all_pars$sim_id == s, ],
-                            ggplot2::aes(parameter_value, fit2, colour = gen,
-                                         group = sim_id, shape = fit_type),
-                            alpha = 0) +
-        # ggplot2::stat_ellipse(data = all_pars[all_pars$sim_id == s, ],
-        #                       ggplot2::aes(parameter_value, fit2, colour = gen,
-        #                                    group = fit_type)) +
-        ggplot2::geom_point(data = summ[summ$sim_id == s, ],
-                            ggplot2::aes(parameter_value, fit2, colour = gen,
-                                         group = model, shape = fit_type)) +
-        ggplot2::geom_point(data = summ[summ$sim_id == s, ],
-                            ggplot2::aes(parameter_value, fit2, colour = gen,
-                                         group = model, shape = fit_type)) +
-        # ggplot2::stat_ellipse(data = summ[summ$sim_id == s, ], level = 0.9,
-        #                       ggplot2::aes(parameter_value, fit2)) +
-        ggplot2::geom_errorbar(data = err_bars[err_bars$sim_id == s, ],
-                               ggplot2::aes(x = (xmin + xmax) / 2, ymin = ymin,
-                                            ymax = ymax), width = 0) +
-        ggplot2::geom_errorbarh(data = err_bars[err_bars$sim_id == s, ],
-                                ggplot2::aes(y = (ymin + ymax) / 2, xmin = xmin,
-                                             xmax = xmax), height = 0) +
-        {if (log_y) ggplot2::scale_y_log10()} +
-        ggplot2::scale_colour_viridis_d() +
-        ggplot2::coord_cartesian(ylim = ylims) +
-        ggplot2::xlab("") +
-        ggplot2::ylab(ylab) +
-        # annotate(geom = 'text', label = 'sometext', x = -Inf, y = Inf, hjust = 0,
-        #          vjust = 1) +
-        # ggplot2::geom_text(data = summ[summ$sim_id == s, ],
-        #                    ggplot2::aes(x = Inf, y = Inf,
-        #                                 label = signif(parameter_value, 3)),
-        #                    vjust = 4,
-        #                    hjust = 2, size = 3) +
-        # facet_wrap(model ~ param, scales = "free_x", nrow = nrow) +
-        ggplot2::facet_grid(sim_id ~ label, scales = "free_x") +
-        ggplot2::theme_bw(base_size = base_size)
-    })
-    pdotty <- patchwork::wrap_plots(plist, nrow = nsims,
-                                    guides = "collect")
-    return(pdotty)
-
-  }
-
   # Dotty plot ----
   plist <- lapply(sim_ids, \(s) {
     ggplot2::ggplot() +
