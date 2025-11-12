@@ -44,6 +44,12 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+          
+      # 🧩 Install the upstream dev branch AFTER dependencies
+      - name: Install upstream dev package
+        if: github.ref_name == 'dev'
+        run: |
+          Rscript -e 'remotes::install_github("limnotrack/AEME@dev")'
 
       - uses: r-lib/actions/check-r-package@v2
         with:
