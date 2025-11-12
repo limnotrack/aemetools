@@ -232,9 +232,9 @@ The `sa_aeme` function writes the results to the file specified. The
 # Run sensitivity analysis AEME model
 sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
                   model = model, ctrl = ctrl, FUN_list = FUN_list)
-#> Extracting indices for gotm_wet modelled variables [2025-11-12 20:26:02]
-#> Complete! [2025-11-12 20:26:06]
-#> Running sensitivity analysis in parallel for gotm_wet using 2 cores with 144 parameter sets [2025-11-12 20:26:06]
+#> Extracting indices for gotm_wet modelled variables [2025-11-12 21:19:18]
+#> Complete! [2025-11-12 21:19:22]
+#> Running sensitivity analysis in parallel for gotm_wet using 2 cores with 144 parameter sets [2025-11-12 21:19:22]
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
 #> mean                     4.851e-06                           0.52760
 #> median                   5.000e-06                           0.52700
@@ -247,8 +247,8 @@ sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
 #> mean       0.9965     0.9983 1.4930
 #> median     1.0000     1.0000 1.5000
 #> sd         0.1619     0.1606 0.5311
-#> Completed gotm_wet! [2025-11-12 20:31:47]
-#> Writing output for generation 1 to results.db with sim ID: 45819_gotmwet_S_001 [2025-11-12 20:31:47]
+#> Completed gotm_wet! [2025-11-12 21:25:51]
+#> Writing output for generation 1 to results.db with sim ID: 45819_gotmwet_S_001 [2025-11-12 21:25:51]
 ```
 
 ## Reading sensitivity analysis results
