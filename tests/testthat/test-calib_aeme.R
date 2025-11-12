@@ -1217,6 +1217,55 @@ test_that("can calibrate HYD_thmcln for AEME-GLM & GOTM in parallel", {
 
 })
 
+test_that("can calibrate HYD_strat for AEME-GLM & GOTM in parallel", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed", "gotm_wet")
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = FALSE)
+  
+  # Get parameters for calibration
+  utils::data("aeme_parameters", package = "AEME")
+  param <- aeme_parameters
+  
+  # Function to calculate fitness
+  fit <- function(df) {
+    -1 * mean(df$obs == df$model)
+  }
+  FUN_list <- list(HYD_strat = fit)
+  
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
+                         parallel = F, file_type = "db", na_value = 1e20,
+                         file_name = "results.db")
+  
+  vars_sim <- c("HYD_strat")
+  weights <- c("HYD_strat" = 1)
+  
+  # Calibrate AEME model
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
+  
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  
+  testthat::expect_true(is.list(calib))
+  
+  plist <- plot_calib(calib = calib, fit_col = "HYD_strat",
+                      na_value = ctrl$na_value)
+  
+  testthat::expect_true(is.list(plist))
+})
+
 test_that("can update bgc parameters for GLM-AED2", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
