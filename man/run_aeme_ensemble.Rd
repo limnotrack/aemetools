@@ -27,7 +27,8 @@ run_aeme_ensemble(
 \item{dist}{character; distribution to sample from. Default is "norm". Other
 options are "unif".}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 
 \item{parallel}{logical; whether to run in parallel. Default is FALSE.}
 
