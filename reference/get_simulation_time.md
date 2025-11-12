@@ -64,7 +64,7 @@ model <- c("glm_aed", "gotm_wet")
 aeme <- AEME::build_aeme(path = path, aeme = aeme,
 model = model, model_controls = model_controls,
 ext_elev = 5, use_bgc = FALSE)
-#> Building simulation for Wainamu [2025-11-12 20:17:29]
+#> Building simulation for Wainamu [2025-11-12 21:11:04]
 #> Using observed water level
 #> Missing values in observed water level
 #> Using constant water level
@@ -76,12 +76,12 @@ ext_elev = 5, use_bgc = FALSE)
 #> Building GOTM-WET for lake wainamu
 #> Copied all GOTM configuration files
 aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-#> Running models... (Have you tried parallelizing?) [2025-11-12 20:17:31]
-#> GLM-AED running... [2025-11-12 20:17:31]
-#> GLM-AED run successful! [2025-11-12 20:17:31]
-#> GOTM-WET running... [2025-11-12 20:17:31]
-#> GOTM-WET run successful! [2025-11-12 20:17:32]
-#> Model run complete![2025-11-12 20:17:32]
+#> Running models... (Have you tried parallelizing?) [2025-11-12 21:11:06]
+#> GLM-AED running... [2025-11-12 21:11:06]
+#> GLM-AED run successful! [2025-11-12 21:11:07]
+#> GOTM-WET running... [2025-11-12 21:11:07]
+#> GOTM-WET run successful! [2025-11-12 21:11:07]
+#> Model run complete![2025-11-12 21:11:07]
 #> Retrieving and formatting temp for model glm_aed
 #> Retrieving and formatting salt for model glm_aed
 #> Retrieving and formatting temp for model gotm_wet

@@ -51,10 +51,10 @@ current model setup is working.
 ``` r
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
                  path = path)
-#> Running models... (Have you tried parallelizing?) [2025-11-12 20:20:09]
-#> GLM-AED running... [2025-11-12 20:20:09]
-#> GLM-AED run successful! [2025-11-12 20:20:09]
-#> Model run complete![2025-11-12 20:20:09]
+#> Running models... (Have you tried parallelizing?) [2025-11-12 21:13:34]
+#> GLM-AED running... [2025-11-12 21:13:34]
+#> GLM-AED run successful! [2025-11-12 21:13:35]
+#> Model run complete![2025-11-12 21:13:35]
 #> Retrieving and formatting temp for model glm_aed
 #> Retrieving and formatting salt for model glm_aed
 plot(aeme)
@@ -144,10 +144,10 @@ is different to the `run_aeme` function in that it does not return an
 run_aeme_param(aeme = aeme, param = aeme_parameters,
                  model = model, path = path)
 #> GLM nml checks passed with no issues.
-#> Running models... (Have you tried parallelizing?) [2025-11-12 20:20:16]
-#> GLM-AED running... [2025-11-12 20:20:16]
-#> GLM-AED run successful! [2025-11-12 20:20:17]
-#> Model run complete![2025-11-12 20:20:17]
+#> Running models... (Have you tried parallelizing?) [2025-11-12 21:13:52]
+#> GLM-AED running... [2025-11-12 21:13:52]
+#> GLM-AED run successful! [2025-11-12 21:13:53]
+#> Model run complete![2025-11-12 21:13:53]
 ```
 
 ## Calibration setup
@@ -327,48 +327,48 @@ sim_id <- calib_aeme(aeme = aeme, path = path,
                      param = aeme_parameters, model = model,
                      FUN_list = FUN_list, ctrl = ctrl, 
                      vars_sim = vars_sim, weights = weights)
-#> Extracting indices for glm_aed modelled variables [2025-11-12 20:20:18]
-#> Completed glm_aed! [2025-11-12 20:20:19]
+#> Extracting indices for glm_aed modelled variables [2025-11-12 21:13:54]
+#> Completed glm_aed! [2025-11-12 21:13:55]
 #> Calibrating in parallel for glm_aed using 2 cores...
-#> Starting generation 1/10, 40 members. [2025-11-12 20:20:19]
+#> Starting generation 1/10, 40 members. [2025-11-12 21:13:56]
 #> Best fit: 1.04 (sd: 437.27)
 #>             Parameters: [2.01, 0.881, 1.01, 0.122, 0.27, 0.158, 0.42, 0.631, 1.79, 1.93]
-#> Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 20:20:53]
+#> Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:14:27]
 #> Survival rate: 0.75
-#> Starting generation 2/10, 40 members. [2025-11-12 20:20:53]
-#> Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 20:21:16]
+#> Starting generation 2/10, 40 members. [2025-11-12 21:14:27]
+#> Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:14:47]
 #> Best fit: 0.88042 (sd: 157.73)
 #> Survival rate: 0.98
-#> Starting generation 3/10, 40 members. [2025-11-12 20:21:16]
-#> Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 20:21:36]
+#> Starting generation 3/10, 40 members. [2025-11-12 21:14:47]
+#> Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:15:06]
 #> Best fit: 0.81292 (sd: 157.77)
 #> Survival rate: 0.98
-#> Starting generation 4/10, 40 members. [2025-11-12 20:21:36]
-#> Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 20:21:54]
+#> Starting generation 4/10, 40 members. [2025-11-12 21:15:06]
+#> Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:15:27]
 #> Best fit: 0.81292 (sd: 266.19)
 #> Survival rate: 0.92
-#> Starting generation 5/10, 40 members. [2025-11-12 20:21:54]
-#> Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 20:22:13]
+#> Starting generation 5/10, 40 members. [2025-11-12 21:15:27]
+#> Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:15:46]
 #> Best fit: 0.75111 (sd: 220.28)
 #> Survival rate: 0.95
-#> Starting generation 6/10, 40 members. [2025-11-12 20:22:13]
-#> Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 20:22:32]
+#> Starting generation 6/10, 40 members. [2025-11-12 21:15:46]
+#> Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:16:06]
 #> Best fit: 0.67665 (sd: 157.81)
 #> Survival rate: 0.98
-#> Starting generation 7/10, 40 members. [2025-11-12 20:22:32]
-#> Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 20:22:51]
+#> Starting generation 7/10, 40 members. [2025-11-12 21:16:06]
+#> Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:16:26]
 #> Best fit: 0.67665 (sd: 220.29)
 #> Survival rate: 0.95
-#> Starting generation 8/10, 40 members. [2025-11-12 20:22:51]
-#> Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 20:23:12]
+#> Starting generation 8/10, 40 members. [2025-11-12 21:16:27]
+#> Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:16:46]
 #> Best fit: 0.67665 (sd: 157.81)
 #> Survival rate: 0.98
-#> Starting generation 9/10, 40 members. [2025-11-12 20:23:12]
-#> Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 20:23:33]
+#> Starting generation 9/10, 40 members. [2025-11-12 21:16:46]
+#> Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:17:06]
 #> Best fit: 0.67609 (sd: 157.82)
 #> Survival rate: 0.98
-#> Starting generation 10/10, 40 members. [2025-11-12 20:23:33]
-#> Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 20:23:52]
+#> Starting generation 10/10, 40 members. [2025-11-12 21:17:06]
+#> Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:17:27]
 #> Best fit: 0.65977 (sd: 266.26)
 #> Survival rate: 0.92
 ```
@@ -510,10 +510,10 @@ aeme <- run_aeme_param(aeme = aeme, path = path,
                        param = best_params, model = model,
                        return_aeme = TRUE)
 #> GLM nml checks passed with no issues.
-#> Running models... (Have you tried parallelizing?) [2025-11-12 20:23:57]
-#> GLM-AED running... [2025-11-12 20:23:57]
-#> GLM-AED run successful! [2025-11-12 20:23:58]
-#> Model run complete![2025-11-12 20:23:58]
+#> Running models... (Have you tried parallelizing?) [2025-11-12 21:17:32]
+#> GLM-AED running... [2025-11-12 21:17:32]
+#> GLM-AED run successful! [2025-11-12 21:17:32]
+#> Model run complete![2025-11-12 21:17:32]
 #> Retrieving and formatting temp for model glm_aed
 #> Retrieving and formatting salt for model glm_aed
 ```
