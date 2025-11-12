@@ -290,7 +290,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
               }
             }
           })
-          if (class(out) %in% c("numeric", "logical")) {
+          if (!is.matrix(out)) {
             out <- matrix(out, nrow = 1, ncol = length(out))
           }
           out <- out * conv.fact
@@ -411,6 +411,9 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
               }
             }
           })
+          if ("logical" %in% class(out)) {
+            out <- matrix(out, nrow = 1, ncol = length(out))
+          }
           if ("numeric" %in% class(out)) {
             out <- matrix(out, nrow = 1, ncol = length(out))
           }
