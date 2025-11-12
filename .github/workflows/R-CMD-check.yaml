@@ -49,6 +49,7 @@ jobs:
       - name: Install upstream dev package
         if: github.ref_name == 'dev'
         run: |
+          install.packages("remotes")
           Rscript -e 'remotes::install_github("limnotrack/AEME@dev")'
 
       - uses: r-lib/actions/check-r-package@v2
