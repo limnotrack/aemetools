@@ -36,7 +36,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \item{vars_sim}{vector; of variables names to be used in the calculation of
 model fit. Currently only supports using one variable.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 
 \item{model_controls}{dataframe; of configuration loaded from
 "model_controls.csv".}
