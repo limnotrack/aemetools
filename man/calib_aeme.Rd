@@ -36,7 +36,8 @@ to calculate model fit. If nor provided, uses mean absolute error (MAE).}
 \item{weights}{vector; of weights for each variable in vars_sim. If not
 provided, defaults to 1 for each variable.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 
 \item{model_controls}{dataframe; of configuration loaded from
 "model_controls.csv".}

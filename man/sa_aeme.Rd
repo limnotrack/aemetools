@@ -28,7 +28,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
 to calculate model fit. If NULL, uses mean absolute error (MAE).}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
 
 \item{model_controls}{dataframe; of configuration loaded from
 "model_controls.csv".}
