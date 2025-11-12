@@ -1,0 +1,124 @@
+# Run sensitivity analysis on AEME model parameters
+
+`calib_model()` runs the model and compares it against observations
+provided. It can run in parallel by using multiple cores availlable on
+your computer to run quicker.
+
+## Usage
+
+``` r
+sa_aeme(
+  aeme,
+  model,
+  param,
+  FUN_list,
+  path = ".",
+  model_controls = NULL,
+  ctrl,
+  param_df = NULL
+)
+```
+
+## Arguments
+
+- aeme:
+
+  aeme; object.
+
+- model:
+
+  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
+  \`gotm_wet\`.
+
+- param:
+
+  dataframe; of parameters read in from a csv file. Requires the columns
+  c("model", "file", "name", "value", "min", "max", "log")
+
+- FUN_list:
+
+  list of functions; named according to the variables in the `vars_sim`.
+  Funtions are of the form `function(df)` which will be used to
+  calculate model fit. If NULL, uses mean absolute error (MAE).
+
+- path:
+
+  filepath; where input files are located relative to the current
+  working directory.
+
+- model_controls:
+
+  dataframe; of configuration loaded from "model_controls.csv".
+
+- ctrl:
+
+  list; of controls for sensitivity analysis function created using the
+  [`create_control`](https://limnotrack.github.io/aemetools/reference/create_control.md)
+  function. See
+  [create_control](https://limnotrack.github.io/aemetools/reference/create_control.md)
+  for more details.
+
+- param_df:
+
+  dataframe; of parameters to be used in the calibration. Requires the
+  columns c("model", "file", "name", "value", "min", "max"). This is
+  used to restart from a previous calibration.
+
+## Value
+
+string of simulation id to be used to read the simulation output.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+  # Run sensitivity analysis
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed")
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                                    model = model, model_controls = model_controls,
+                                    inf_factor = inf_factor, ext_elev = 5,
+                                    use_bgc = FALSE)
+
+  # Load parameters
+  utils::data("aeme_parameters", package = "AEME")
+  param <- aeme_parameters |>
+    dplyr::filter(file != "wdr")
+
+  # Function to calculate fitness
+  fit <- function(df) {
+    mean(df$model)
+  }
+
+  # Assign function to variable
+  FUN_list <- list(HYD_temp = fit)
+
+  # Set up control parameters for surface and bottom temperature
+  ctrl <- create_control(method = "sa", N = 2^3, ncore = 2L,
+                         parallel = TRUE,
+                         vars_sim = list(
+                                   surf_temp = list(var = "HYD_temp",
+                                                    month = c(10:12, 1:3),
+                                                    depth_range = c(0, 2)
+                                                    ),
+                                   bot_temp = list(var = "HYD_temp",
+                                                   month = c(10:12, 1:3),
+                                                   depth_range = c(10, 13)
+                                                   )
+                                   )
+  )
+
+  # Run sensitivity analysis AEME model
+  ctrl <- sa_aeme(aeme = aeme, path = path, param = param,
+                  model = model, ctrl = ctrl, model_controls = model_controls,
+                  FUN_list = FUN_list)
+} # }
+```
