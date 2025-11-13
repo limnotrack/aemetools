@@ -19,14 +19,13 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
   if (is.null(best_pars)) {
     best_pars <- param_df[which.min(param_df$fit), ]
   }
-
+  
   survivors1 <- param_df[param_df$fit != ctrl$na_value, ]
   if (nrow(survivors1) == 0) {
     survivors <- param_df[order(param_df$fit), ]
   }
   survivors1 <- survivors1[order(survivors1$fit), ]
-  names(survivors1) <- gsub("NA/", "", names(survivors1))
-  keep_cols <- which(names(survivors1) %in% param$name)
+  keep_cols <- which(names(survivors1) %in% param$name_full)
   if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
     message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2))
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
@@ -57,7 +56,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
                              keep_cols]
     g <- FME::Latinhyper(param[, c("min", "max")],
                          ctrl$NP)
-    colnames(g) <- param$name
+    colnames(g) <- param$name_full
     g <- as.data.frame(g)
   } else {
     g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP,
@@ -67,16 +66,16 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
 
   # Correct parameters outside ranges ----
   for (p in names(g)) {
-    g[[p]][g[[p]] < param$min[param$name == p]] <- param$min[param$name == p]
-    g[[p]][g[[p]] > param$max[param$name == p]] <- param$max[param$name == p]
+    g[[p]][g[[p]] < param$min[param$name_full == p]] <- param$min[param$name_full == p]
+    g[[p]][g[[p]] > param$max[param$name_full == p]] <- param$max[param$name_full == p]
   }
   # Add mutation ----
   if (add_mutation) {
     n_mut <- round(ctrl$NP * ctrl$mutate)
     for (p in names(g)) {
       g[[p]][sample(ctrl$NP, n_mut)] <- runif(n_mut,
-                                              min = param$min[param$name == p],
-                                              max = param$max[param$name == p])
+                                              min = param$min[param$name_full == p],
+                                              max = param$max[param$name_full == p])
     }
   }
   # Replace last parameter rather than adding
