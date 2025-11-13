@@ -58,8 +58,10 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
       {if (log_y) ggplot2::scale_y_log10()} +
       ggplot2::scale_colour_viridis_d() +
       ggplot2::coord_cartesian(ylim = ylims) +
-      ggplot2::xlab("") +
-      ggplot2::ylab(ylab) +
+      ggplot2::labs(title = paste("Simulation ID:", s), x = "Parameter value", 
+                    y = ylab) +
+      # ggplot2::xlab("") +
+      # ggplot2::ylab(ylab) +
       # annotate(geom = 'text', label = 'sometext', x = -Inf, y = Inf, hjust = 0,
       #          vjust = 1) +
       ggplot2::geom_text(data = summ[summ$sim_id == s, ],
@@ -67,8 +69,8 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
                                       label = signif(parameter_value, 3)),
                          vjust = 4,
                          hjust = 2, size = 3) +
-      # facet_wrap(model ~ param, scales = "free_x", nrow = nrow) +
-      ggplot2::facet_grid(sim_id ~ label, scales = "free_x") +
+      ggplot2::facet_wrap( ~ label, scales = "free_x", nrow = nrow) +
+      # ggplot2::facet_grid(sim_id ~ label, scales = "free_x") +
       ggplot2::theme_bw(base_size = base_size)
   })
   pdotty <- patchwork::wrap_plots(plist, nrow = nsims,
@@ -82,8 +84,10 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
       ggplot2::geom_point(data = all_pars[all_pars$sim_id == s, ],
                           ggplot2::aes(index, parameter_value, colour = gen, group = model)) +
       ggplot2::scale_colour_viridis_d() +
-      ggplot2::xlab("Iteration") +
-      ggplot2::facet_grid(label ~ sim_id, scales = "free") +
+      ggplot2::labs(title = paste("Simulation ID:", s), y = "Parameter value", 
+                    y = "Iteration") +
+      # ggplot2::facet_grid(label ~ sim_id, scales = "free") +
+      ggplot2::facet_wrap( ~ label, scales = "free_y", ncol = nrow) +
       ggplot2::theme_bw(base_size = base_size)
   })
   pconverge <- patchwork::wrap_plots(plist, nrow = nsims,
@@ -98,8 +102,10 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
                               ggplot2::aes(parameter_value, fill = gen), bins = 50) +
       ggplot2::geom_vline(data = summ[summ$sim_id == s, ],
                           ggplot2::aes(xintercept = parameter_value)) +
-      ggplot2::facet_grid(sim_id ~ label, scales = "free") +
-      ggplot2::xlab("Parameter value") +
+      # ggplot2::facet_grid(sim_id ~ label, scales = "free") +
+      ggplot2::facet_wrap( ~ label, scales = "free_x", nrow = nrow) +
+      ggplot2::labs(title = paste("Simulation ID:", s), x = "Parameter value", 
+                    y = "Count", fill = "Generation") +
       ggplot2::scale_fill_viridis_d(direction = -1) +
       ggplot2::theme_bw(base_size = base_size)
   })
