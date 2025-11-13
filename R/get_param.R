@@ -53,9 +53,9 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
           .default = fit_value
         )) |>
       dplyr::mutate(
-        label = abbrev_pars(parameter_name, model),
         gen = factor(gen),
-        name = stringr::str_split_i(parameter_name, "^[^/]*/", 2),
+        name = decode_param(parameter_name),
+        label = abbrev_pars(parameter_name, model),
         group = stringr::str_split_i(parameter_name, "/", 1),
         par = stringr::str_split_i(label, "%", 2)
       ) |>
@@ -145,6 +145,7 @@ abbrev_pars <- function(par, model) {
         return(string)
       }
     }
+    par1 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
     par2 <- sub("\\/.*", "", par1)
     par2 <- sapply(par2, \(x) {
       if (!grepl("MET_", x)) {
@@ -154,10 +155,9 @@ abbrev_pars <- function(par, model) {
       }
     })
   } else if (all(model == "glm_aed")) {
-    # par2 <- sub(".*\\.", "", par1)
-    par2 <- sub(".*/", "", par1)
+    par2 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
   } else if (all(model == "gotm_wet")) {
-    par2 <- sub(".*/", "", par1)
+    par2 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
     if ("constant_value" %in% par2) {
       par2[par2 == "constant_value"] <- sub(".*/([^/]+)/.*", "\\1",par1[par2 == "constant_value"])
     }
