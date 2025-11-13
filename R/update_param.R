@@ -30,7 +30,7 @@ update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
                          best_pars = NULL) {
 
   if (is.null(param)) {
-    param_column_names <- get_param_column_names()
+    param_column_names <- AEME::param_colnames(incl_opt = FALSE)
     param <- calib$parameter_metadata |>
       dplyr::select(all_of(param_column_names))
   }
@@ -78,7 +78,7 @@ update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
     param[idx, "min"] <- min_max$min[j]
     param[idx, "max"] <- min_max$max[j]
   }
-  calib_col_names <- get_param_column_names()
+  calib_col_names <- AEME::param_colnames(incl_opt = FALSE)
   param <- param |>
     dplyr::select(dplyr::all_of(calib_col_names))
 
@@ -100,13 +100,3 @@ update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
     return(aeme)
   }
 }
-
-#' Get the column names for the calibration data frame
-#'
-#' @noRd
-#'
-
-get_param_column_names <- function() {
-  c("model", "file", "name", "value", "min", "max", "module", "group" )
-}
-
