@@ -61,33 +61,28 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     config <- AEME::configuration(aeme = aeme)
     model_controls <- config$model_controls
   }
+  if (include_wlev & !"LKE_lvlwtr" %in% names(weights)) {
+    weights["LKE_lvlwtr"] <- 1
+    cli::cli_alert_info("Including water level in model fit with weight of 1.")
+  }
+  if (include_wlev & !"LKE_lvlwtr" %in% names(FUN_list)) {
+    FUN_list[["LKE_lvlwtr"]] <- FUN_list[[1]]
+    cli::cli_alert_info("Including water level in model fit using first 
+                        function in FUN_list.")
+  }
+  
   
   # Load data from AEME package ----
-  utils::data("key_naming", package = "AEME", envir = environment())
-  
-  if (any(vars_sim %in% key_naming$name[key_naming$derived])) {
-    lke <- AEME::lake(aeme)
-    if (lke$depth < 10) {
-      z_step <- 0.2
-    } else {
-      z_step <- 0.5
-    }
-    inp <- AEME::input(aeme)
-    bathy <- inp$hypsograph |>
-      dplyr::filter(depth <= 0)
-    bathy$depth <- max(bathy$elev) - bathy$elev
-    bthD <- (bathy$depth)
-    max_dep <- max(bthD)
-    bthA <- (bathy$area)
-    laz_fun_list <- list(HYD_thmcln = rLakeAnalyzer::thermo.depth,
-                         HYD_ctrbuy = rLakeAnalyzer::center.buoyancy,
-                         HYD_epidep = rLakeAnalyzer::meta.depths,
-                         HYD_hypdep = rLakeAnalyzer::meta.depths)
-  }
+  data("key_naming", package = "AEME", envir = environment())
+  inp <- AEME::input(aeme)
+  hyps <- inp$hypsograph
   
   nc <- run_aeme_param(aeme = aeme, param = param, model = model,
                        path = path, model_controls = model_controls,
                        na_value = na_value, return_nc = return_nc)
+  on.exit({
+    ncdf4::nc_close(nc)
+  })
   
   # Create a list for the return values
   return_list <- list()
@@ -102,21 +97,18 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   }
   
   if (!is.list(nc)) {
-    message("Error opening netCDF file. Returning na_value.")
+    cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
     return(return_list)
   }
   if (nc$error) {
-    message("Error opening netCDF file. Returning na_value.")
+    cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
     return(return_list)
   }
   # If error in running model, return na_value
   if (is.null(nc)) {
-    message("Error opening netCDF file. Returning na_value.")
+    cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
     return(return_list)
   }
-  on.exit({
-    ncdf4::nc_close(nc)
-  })
   
   if (fit | return_indices) {
     # Load AEME data
@@ -125,14 +117,15 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     obs <- AEME::observations(aeme)
     wbal <- AEME::water_balance(aeme)
     aeme_time <- AEME::time(aeme)
-    if (!is.null(obs$lake))
-      obs$lake$depth_mid <- (obs$lake$depth_to + obs$lake$depth_from) / 2
+    if (!is.null(obs$lake)) {
+      obs$lake$depth <- (obs$lake$depth_to + obs$lake$depth_from) / 2
+    }
     
     
     # Default function ----
     if (is.null(FUN_list)) {
       FUN_list <- function(df) {
-        mean(abs(df$model - df$obs))
+        mean(abs(df$model - df$obs), na.rm = TRUE)
       }
     }
     
@@ -150,32 +143,14 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     if (return_indices) {
       var_indices <- NULL
     }
-    
-    # Dimensions which will vary
-    if (model == "dy_cd") {
-      lyrs <- tryCatch({
-        ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")
-      }, error = \(e) return(NULL))
-      if (is.null(lyrs)) {
-        return(return_list)
-      }
-      lyrs <- lyrs[nrow(lyrs):1, ]
-      NS <- ncdf4::ncvar_get(nc, "dyresmLayerCount")
-    } else if(model == "glm_aed") {
-      NS <- ncdf4::ncvar_get(nc, "NS")
-      lyrs <- ncdf4::ncvar_get(nc, "z")
-      lyrs[lyrs > 1000000] <- NA
-    } else if (model == 'gotm_pclake' | model == "gotm_wet") {
-      z <- ncdf4::ncvar_get(nc, "z")
-      zi <- ncdf4::ncvar_get(nc, "zi")
-    }
-    
+
     # Get variable date & depth indices ----
     if (is.null(var_indices)) {
       if (method == "calib") {
+        all_vars <- AEME::get_vars_sim(vars_sim = vars_sim)
         var_indices <- AEME::get_var_indices(nc = nc, model = model,
                                              aeme = aeme, path = path,
-                                             vars_sim = vars_sim)
+                                             vars_sim = all_vars)
       } else if (method == "sa") {
         nmes <- names(sa_ctrl$var)
         names(nmes) <- nmes
@@ -197,220 +172,127 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
       if (method == "calib") {
         vars_out <- lapply(vars_sim, \(v) {
           
-          deriv_var <- key_naming$derived[key_naming$name %in% v]
-          if (deriv_var) {
-            v0 <- key_naming$derived_from[key_naming$name %in% v]
-            v1 <- key_naming[key_naming$name %in% v0, model]
+          deriv_chk <- key_naming |> 
+            dplyr::filter(name == v) |>
+            dplyr::pull(derived)
+          if (deriv_chk) {
+            extract_var <- AEME::get_deriv_inputs(v)
+            deriv_var <- v
           } else {
-            v1 <- key_naming[key_naming$name %in% v, model]
+            extract_var <- v
           }
-          v1 <- ifelse(model == "dy_cd", paste0("dyresm", v1, "_Var"), v1)
-          v1 <- ifelse(model == "dy_cd",
-                       paste0("dyresm", key_naming[key_naming$name %in% v, model],
-                              "_Var"),
-                       v1)
+          # Pull out the dimensions
+          depths <- var_indices[[extract_var[1]]][["depths"]]
+          date_index <- var_indices[[extract_var[1]]][["date_index"]]
+          dates <- var_indices[[extract_var[1]]][["dates"]]
           
-          this.var <- ncdf4::ncvar_get(nc, v1)
-          if (model == "dy_cd") {
-            this.var <- this.var[nrow(this.var):1, ]
-          }
-          
-          if(length(var_indices[[v]][["depths"]]) == 0 |
-             length(var_indices[[v]][["time"]]) == 0 |
-             is.null(ncol(this.var))) {
+          if (length(depths) == 0 | length(date_index) == 0) {
             return(return_list)
           }
           
-          conv.fact <- ifelse(model == "glm_aed",
+          out <- AEME::read_model_outputs(nc = nc, lake_dir = lake_dir,
+                                          model = model, vars_sim = extract_var, 
+                                          depths = depths, 
+                                          date_index = date_index, 
+                                          incl_fluxes = FALSE)
+          
+          if (deriv_chk) {
+            out <- AEME::add_deriv_output(out_list = out, hyps = hyps, 
+                                          vars_sim = deriv_var)
+          }
+          out <- out[[v]]
+          if (is.null(nrow(out))) {
+            depths <- NA_real_
+            each <- 1
+          } else {
+            each <- length(depths)
+          }
+          
+          
+          conv_fact <- ifelse(model == "glm_aed",
                               key_naming[key_naming$name == v, "conversion_aed"],
                               1)
           
-          na_idx <- which(apply(this.var, 2, \(x) all(is.na(x))))
-          
-          out <- sapply(var_indices[[v]][["time"]], FUN = \(i) {
-            if (i > ncol(this.var)) {
-              return(rep(na_value, length(var_indices[[v]][["depths"]])))
-            }
-            if (all(is.na(this.var[, i])) | sum(!is.na(this.var[, i])) == 1) {
-              return(rep(na_value, length(var_indices[[v]][["depths"]])))
-            }
-            
-            if (deriv_var) {
-              out_deps <- bthD
-            } else {
-              out_deps <- var_indices[[v]][["depths"]]
-            }
-            
-            if (model %in% c("glm_aed", "dy_cd")) {
-              z <- c(0, lyrs[1:NS[i], i])
-              z <- max(z) - z
-              elevs_mid <- stats::approx(z, n = length(z)*2 - 1)$y # extract mid layer depth
-              elevs_mid <- elevs_mid[-which(elevs_mid %in% z)]
-              vals <- stats::approx(x = elevs_mid, y = this.var[1:NS[i], i],
-                                    xout = out_deps, rule = 2)$y
-            } else if(model == "gotm_wet") {
-              vals <- stats::approx(x = z[, i], y = this.var[, i],
-                                    xout = out_deps, rule = 2)$y
-            }
-            if (!deriv_var) {
-              return(vals)
-            } else {
-              if (v == "HYD_schstb") {
-                idx2 <- which(!is.na(vals))
-                # if (length(idx2) <= 1) return(NA)
-                v_out <- rLakeAnalyzer::schmidt.stability(wtr = vals[idx2],
-                                                          depths = out_deps[idx2],
-                                                          bthA = bthA, bthD = bthD)
-                v_out[is.nan(v_out)] <- NA
-                v_out
-              } else if (v == "HYD_strat") {
-                idx2 <- which(!is.na(vals))
-                # if (length(idx2) <= 1) return(NA)
-                v_out <- AEME::is_strat(wtr = vals[idx2], 
-                                        depths = out_deps[idx2])
-                v_out[is.nan(v_out)] <- NA
-                v_out
-              } else if (v %in% names(laz_fun_list)) {
-                idx <- ifelse(v == "HYD_hypdep", 2, 1)
-                idx2 <- which(!is.na(vals))
-                if (length(idx2) <= 1) return(NA)
-                v_out <- laz_fun_list[[v]](wtr = vals[idx2], depths = out_deps[idx2])
-                v_out[is.nan(v_out)] <- NA
-                v_out <- ifelse(is.na(v_out) & v == "HYD_thmcln", max_dep,
-                                v_out)
-                v_out[idx]
-              } else if (v == "CHM_oxynal") {
-                idx2 <- which(!is.na(vals))
-                if (length(idx2) <= 1) return(NA)
-                
-                oxy_layers <- approx(y = vals[idx2], x = out_deps[idx2],
-                                     xout = seq(0, max(out_deps[idx2]),
-                                                by = z_step), rule = 2)$y
-                sum(oxy_layers < 1)
-              }
-            }
-          })
           if (!is.matrix(out)) {
             out <- matrix(out, nrow = 1, ncol = length(out))
           }
-          out <- out * conv.fact
-          rownames(out) <- var_indices[[v]][["depths"]]
-          colnames(out) <- as.character(var_indices[[v]][["dates"]])
-          out2 <- reshape2::melt(out, value.name = "model",
-                                 varnames = c("depth_mid", "Date"))
-          out2$Date <- as.Date(out2$Date)
-          out2$var_aeme <- v
+          out <- out * conv_fact
+          
+          # Build long dataframe for 2D variable
+          out2 <- data.frame(
+            Date     = rep(dates, each = each),
+            depth    = as.vector(depths),
+            model    = as.vector(out),
+            var_aeme = v
+          )
           return(out2)
         })
       } else if (method == "sa") {
         nmes <- names(sa_ctrl$var)
         names(nmes) <- nmes
         vars_out <- lapply(nmes, \(n) {
-          deriv_var <- key_naming$derived[key_naming$name %in%
-                                            sa_ctrl$vars_sim[[n]]$var]
-          if (deriv_var) {
-            v0 <- key_naming$derived_from[key_naming$name %in%
-                                            sa_ctrl$vars_sim[[n]]$var]
-            v1 <- key_naming[key_naming$name %in% v0, model]
-          } else {
-            v1 <- key_naming[key_naming$name %in% sa_ctrl$vars_sim[[n]]$var,
-                             model]
-          }
-          v1 <- ifelse(model == "dy_cd", paste0("dyresm", v1, "_Var"), v1)
+          v <- sa_ctrl$vars_sim[[n]]$var
+          # Pull out the dimensions
+          depths <- var_indices[[n]][["depths"]]
+          date_index <- var_indices[[n]][["date_index"]]
+          dates <- var_indices[[n]][["dates"]]
           
-          if (sa_ctrl$vars_sim[[n]]$var == "LKE_lvlwtr") {
-            if (model == "dy_cd") {
-              mod_layers <- ncdf4::ncvar_get(nc, "dyresmLAYER_HTS_Var")
-              depth <- apply(mod_layers, 2, \(x) max(x, na.rm = TRUE))
-            } else if (model == "glm_aed") {
-              depth <- ncdf4::ncvar_get(nc, "lake_level")
-            } else if (model == "gotm_wet") {
-              zi <- ncdf4::ncvar_get(nc, "zi")
-              if (is.null(ncol(zi))) {
-                return(return_list[[n]])
-              }
-              depth <- zi[nrow(zi), ] - zi[1, ]
-              depth[depth <= 0] <- 0
-            }
-            # depth <- depth[var_indices[[n]][["time"]]]
-            df <- data.frame(depth_mid = NA,
-                             Date = var_indices[[n]][["dates"]],
-                             model = depth[var_indices[[n]][["time"]]],
+          
+          if (v == "LKE_lvlwtr") {
+            depth <- AEME::read_model_outputs(nc = nc, lake_dir = lake_dir,
+                                              model = model, 
+                                              vars_sim = "HYD_temp", 
+                                              date_index = date_index, 
+                                              incl_fluxes = FALSE)
+            df <- data.frame(Date = var_indices[[n]][["dates"]],
+                             depth = NA, 
+                             model = depth[["LKE_lvlwtr"]],
                              var_aeme = "LKE_lvlwtr",
                              name = n)
             return(df)
           }
-          this.var <- ncdf4::ncvar_get(nc, v1)
-          if (model == "dy_cd") {
-            this.var <- this.var[nrow(this.var):1, ]
+          
+          deriv_chk <- key_naming |> 
+            dplyr::filter(name == v) |>
+            dplyr::pull(derived)
+          if (deriv_chk) {
+            extract_var <- AEME::get_deriv_inputs(v)
+            deriv_var <- v
+          } else {
+            extract_var <- v
           }
           
-          if(length(var_indices[[n]][["depths"]]) == 0 |
-             length(var_indices[[n]][["time"]]) == 0 |
-             is.null(ncol(this.var))) {
-            return(return_list[[n]])
+          if (length(depths) == 0 | length(date_index) == 0) {
+            return(return_list)
           }
           
-          conv.fact <- ifelse(model == "glm_aed",
-                              key_naming[key_naming$name == sa_ctrl$vars_sim[[n]]$var, "conversion_aed"],
+          out <- AEME::read_model_outputs(nc = nc, lake_dir = lake_dir,
+                                          model = model, vars_sim = extract_var, 
+                                          depths = depths, 
+                                          date_index = date_index, 
+                                          incl_fluxes = FALSE)
+          
+          if (deriv_chk) {
+            out <- AEME::add_deriv_output(out_list = out, hyps = hyps, 
+                                          vars_sim = deriv_var)
+          }
+          out <- out[[v]]
+          if (is.null(nrow(out))) {
+            depths <- NA_real_
+            each <- 1
+          } else {
+            each <- length(depths)
+          }
+          
+          
+          conv_fact <- ifelse(model == "glm_aed",
+                              key_naming[key_naming$name == v, "conversion_aed"],
                               1)
           
-          na_idx <- which(apply(this.var, 2, \(x) all(is.na(x))))
-          
-          out <- sapply(var_indices[[n]][["time"]], FUN = \(i) {
-            # print(i)
-            if (i > ncol(this.var)) {
-              return(rep(na_value, length(var_indices[[n]][["depths"]])))
-            }
-            if (all(is.na(this.var[, i])) | sum(!is.na(this.var[, i])) == 1) {
-              return(rep(na_value, length(var_indices[[n]][["depths"]])))
-            }
-            
-            if (model %in% c("glm_aed", "dy_cd")) {
-              z <- c(0, lyrs[1:NS[i], i])
-              z <- max(z) - z
-              elevs_mid <- stats::approx(z, n = length(z)*2 - 1)$y # extract mid layer depth
-              deps <- elevs_mid[-which(elevs_mid %in% z)]
-              vals <- stats::approx(x = deps, y = this.var[1:NS[i], i],
-                                    xout = var_indices[[n]][["depths"]],
-                                    rule = 2)$y
-            } else if(model == "gotm_wet") {
-              deps <- max(zi[, i]) - z[, i]
-              # idx <- which(var_indices[[n]][["depths"]] < max(deps))
-              
-              vals <- stats::approx(x = deps, y = this.var[, i],
-                                    xout = var_indices[[n]][["depths"]],
-                                    rule = 2)$y
-            }
-            if (!deriv_var) {
-              return(vals)
-            } else {
-              if (sa_ctrl$vars_sim[[n]]$var == "HYD_schstb") {
-                idx2 <- which(!is.na(vals))
-                # if (length(idx2) <= 1) return(NA)
-                v <- rLakeAnalyzer::schmidt.stability(wtr = vals[idx2],
-                                                      depths = var_indices[[n]][["depths"]][idx2],
-                                                      bthA = bthA, bthD = bthD)
-                v[is.nan(v)] <- NA
-                v
-              } else if (sa_ctrl$vars_sim[[n]]$var %in% names(laz_fun_list)) {
-                idx <- ifelse(sa_ctrl$vars_sim[[n]]$var == "HYD_hypdep", 2, 1)
-                idx2 <- which(!is.na(vals))
-                if (length(idx2) <= 1) return(NA)
-                v <- laz_fun_list[[sa_ctrl$vars_sim[[n]]$var]](wtr = vals[idx2],
-                                                               depths = var_indices[[n]][["depths"]][idx2])
-                v[is.nan(v)] <- NA
-                v[idx]
-              } else if (sa_ctrl$vars_sim[[n]]$var == "CHM_oxynal") {
-                idx2 <- which(!is.na(vals))
-                if (length(idx2) <= 1) return(NA)
-                
-                oxy_layers <- approx(y = vals[idx2], x = var_indices[[n]][["depths"]][idx2],
-                                     xout = seq(0, max(var_indices[[n]][["depths"]][idx2]), by = z_step), rule = 2)$y
-                sum(oxy_layers < 1)
-              }
-            }
-          })
+          if (!is.matrix(out)) {
+            out <- matrix(out, nrow = 1, ncol = length(out))
+          }
+          out <- out * conv_fact
           if ("logical" %in% class(out)) {
             out <- matrix(out, nrow = 1, ncol = length(out))
           }
@@ -420,22 +302,15 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
           if ("list" %in% class(out)) {
             out <- do.call(cbind, out)
           }
-          if (deriv_var) {
-            out2 <- data.frame(Date = var_indices[[n]][["dates"]],
-                               depth_mid = NA,
-                               var_aeme = sa_ctrl$vars_sim[[n]]$var,
-                               name = n,
-                               model = as.vector(unlist(out)))
-            return(out2)
-          }
-          out <- out * conv.fact
-          rownames(out) <- var_indices[[n]][["depths"]]
-          colnames(out) <- as.character(var_indices[[n]][["dates"]])
-          out2 <- reshape2::melt(out, value.name = "model",
-                                 varnames = c("depth_mid", "Date"))
-          out2$Date <- as.Date(out2$Date)
-          out2$var_aeme <- sa_ctrl$vars_sim[[n]]$var
-          out2$name <- n
+          
+          # Build long dataframe for 2D variable
+          out2 <- data.frame(
+            Date     = rep(dates, each = each),
+            depth    = as.vector(depths),
+            model    = as.vector(out),
+            var_aeme = v,
+            name = n
+          )
           return(out2)
         })
       }
@@ -483,10 +358,10 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
           is.na(model) ~ 0,
           .default = model
         ),
-        LID = NA, var_aeme = "DEPTH", depth_mid = NA,
+        LID = NA, var_aeme = "DEPTH", depth = NA,
         depth_from = NA, diff = model - value) |>
         dplyr::filter(!is.na(diff)) |>
-        dplyr::select(LID, Date, value, var_aeme, depth_mid, depth_from, model,
+        dplyr::select(LID, Date, value, var_aeme, depth, depth_from, model,
                       diff) |>
         dplyr::rename(obs = value)
     }
@@ -495,44 +370,36 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
       
       if (method == "calib") {
         obs_sub <- obs$lake |>
+          dplyr::select(Date, depth, var_aeme, value) |>
           dplyr::filter(Date %in% mod_out$Date) |>
+          dplyr::filter(var_aeme %in% vars_sim) |>
           dplyr::rename(obs = value)
         
         if (nrow(obs_sub) < 1) {
-          message("No observational data present.")
+          cli::cli_alert_warning("No observational data present.")
           return(return_list)
-        } #else {
-        tst <- dplyr::left_join(obs_sub, mod_out,
-                                by = c("Date", "depth_mid", "var_aeme")) |>
-          # dplyr::filter(!is.na(model)) |>
-          dplyr::filter(var_aeme %in% vars_sim) |>
-          # dplyr::mutate(
-          #   obs = dplyr::case_when(
-          #     is.na(obs) ~ na_value,
-          #     .default = obs
-          #   ),
-          #   model = dplyr::case_when(
-          #     is.na(model) ~ na_value,
-          #     .default = model
-          #   )) |>
+        }
+        comp_df <- obs_sub |> 
+          dplyr::left_join(mod_out,
+                           by = c("Date", "depth", "var_aeme")) |>
           dplyr::mutate(diff = model - obs)
       } else {
-        tst <- mod_out
+        comp_df <- mod_out
       }
       
-      if (nrow(tst) == 0) {
+      if (nrow(comp_df) == 0) {
         return(return_list)
       }
       
       if (return_df) {
-        return(tst)
+        return(comp_df)
       } else {
         
         if (method == "calib") {
-          vars_present <- unique(tst$var_aeme)
+          vars_present <- unique(comp_df$var_aeme)
           names(vars_present) <- vars_present
           res <- lapply(vars_present, \(v) {
-            sub <- tst |>
+            sub <- comp_df |>
               dplyr::filter(var_aeme == v)
             FUN_list[[v]](sub)
           })
@@ -540,10 +407,10 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
             return_list[[v]] <- res[[v]]  * weights[[v]]
           }
         } else if (method == "sa") {
-          nmes_present <- unique(tst$name)
+          nmes_present <- unique(comp_df$name)
           names(nmes_present) <- nmes_present
           res <- lapply(nmes_present, \(n) {
-            sub <- tst |>
+            sub <- comp_df |>
               dplyr::filter(name == n)
             FUN_list[[sa_ctrl$vars_sim[[n]]$var]](sub)
           })
