@@ -19,63 +19,58 @@ run_aeme_param <- function(aeme, param, model, path = ".",
                            model_controls = NULL,
                            na_value = 999, return_nc = FALSE,
                            return_aeme = FALSE, parallel = FALSE) {
-
+  
   # Function checks ----
   if (!is.data.frame(param))
-    stop("Parameter 'param' must be a data.frame.")
+    cli::cli_abort("{.arg param} must be a data.frame.")
   if (!is.character(model))
-    stop("Parameter 'model' must be a character string.")
+    cli::cli_abort("{.arg model} must be a character string.")
   if (return_nc & return_aeme)
-    stop("Only one of 'return_nc' and 'return_aeme' can be TRUE.")
-  # if (length(model) != 1)
-  #   stop("Only one model can be run at a time.")
+    cli::cli_abort("Only one of 'return_nc' and 'return_aeme' can be TRUE.")
+  if (return_nc & length(model) > 1)
+    cli::cli_abort("Only one model can be run when 'return_nc' is TRUE.")
+  
   if (is.null(model_controls)) {
     config <- AEME::configuration(aeme = aeme)
     model_controls <- config$model_controls
   }
-
+  
   # Load AEME data
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
   inp <- AEME::input(aeme)
   obs <- AEME::observations(aeme)
   obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
-
+  
   # Update parameter values ----
   AEME::input_model_parameters(aeme = aeme, model = model, param = param,
                                path = path)
-
+  
   # Run model ----
   aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path,
                          check_output = FALSE, parallel = parallel,
                          model_controls = model_controls, return = return_aeme)
-
-
+  
+  
   # Check if model output is produced ----
-  out_file <- dplyr::case_when(model == "dy_cd" ~
-                                 file.path(lake_dir,
-                                           model, "DYsim.nc"),
-                               model == "glm_aed" ~
-                                 file.path(lake_dir, model,
-                                           "output", "output.nc"),
-                               model == "gotm_pclake" ~
-                                 file.path(lake_dir, model,
-                                           "output", "output.nc"),
-                               model == "gotm_wet" ~
-                                 file.path(lake_dir, model,
-                                           "output", "output.nc")
-  )
-
-  out_file_chk <-  !file.exists(out_file)
+  out_file <- AEME::get_model_outfile(lake_dir = lake_dir, model = model)
+  
+  out_file_chk <- sapply(out_file, \(x) !file.exists(x)) |> 
+    unlist()
   if (any(out_file_chk)) {
-    message("No ", out_file[out_file_chk], " present.")
+    cli::cli_alert_danger("No ", out_file[out_file_chk], " present.")
     return(na_value)
   }
-
+  
   if (return_nc) {
-    nc <- ncdf4::nc_open(out_file, return_on_error = TRUE)
+    if (model == "gotm_wet") {
+      file <- out_file[[model]][["output"]]
+    } else {
+      file <- out_file[[model]]
+    }
+    nc <- AEME::open_nc_safe(file = file, model = model)
     return(nc)
   }
-
+  
   if (return_aeme) {
     return(aeme)
   }
