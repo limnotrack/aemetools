@@ -47,7 +47,7 @@ aeme <- AEME::build_aeme(path = path, aeme = aeme,
 model = model, model_controls = model_controls,
 ext_elev = 5, use_bgc = FALSE)
 aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-utils::data("aeme_parameters", package = "AEME")
+data("aeme_parameters", package = "AEME")
 param <- aeme_parameters
 # Function to calculate fitness
 fit <- function(df) {
