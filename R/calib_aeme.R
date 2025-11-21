@@ -74,6 +74,10 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
   if (is.null(ctrl$na_value)) {
     ctrl$na_value <- 999
   }
+  
+  # Add index to parameter name
+  param <- param |> 
+    dplyr::mutate(name_full = encode_param(group, name, index))
 
   include_wlev <- ifelse("LKE_lvlwtr" %in% vars_sim, TRUE, FALSE)
 
@@ -87,8 +91,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
 
     if (any(vars_sim != "LKE_lvlwtr")) {
       # Extract indices for modelled variables
-      message("Extracting indices for ", m, " modelled variables [",
-              format(Sys.time()), "]")
+      cli::cli_inform(c("i" = "Extracting indices for {.val {m}} modelled 
+                        variables [{format(Sys.time())}]"))
       suppressMessages(
         var_indices <- run_and_fit(aeme = aeme, param = param,
                                    model = m, path = path,
@@ -99,7 +103,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                                    include_wlev = include_wlev, fit = FALSE,
                                    timeout = ctrl$timeout)
       )
-      message("Completed ", m, "! [", format(Sys.time()), "]")
+      cli::cli_inform(c("v" = "Indices extracted for {.val {m}} modelled 
+                        variables [{format(Sys.time())}]"))
     }
 
     # Extract parameters for the model ----
@@ -122,18 +127,29 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
         ctrl$ngen <- 1
       }
       start_param <- FME::Latinhyper(param[, c("min", "max")], ctrl$NP)
-      # start_param <- apply(param[, c("min", "max")], 1,
-      #                      \(x) runif(ctrl$NP, x[1], x[2]))
-      colnames(start_param) <- paste0(param$group, "/", param$name)
+      colnames(start_param) <- param$name_full
       # colnames(start_param) <- param$name
-      start_param <- as.data.frame(start_param)
+      start_param <- as.data.frame(start_param) 
+      # start_param$iter <- 1:nrow(start_param)
+      # 
+      # # Convert to long format
+      # start_param <- start_param |> 
+      #   tidyr::pivot_longer(cols = -iter,
+      #                       names_to = c("name"),
+      #                       # names_sep = "/",
+      #                       values_to = "value") |> 
+      #   dplyr::mutate(
+      #     index = as.integer(stringr::str_extract(name, "(?<=\\[)\\d+(?=\\])")),
+      #     name  = stringr::str_remove(name, "\\[.*?\\]")  # optional: clean name
+      #   )
+
       gen_n <- 1
       tot_gen <- ctrl$ngen
     } else {
       # Add check for parameters to be the same
-      p_chk <- param$name %in% names(param_df)
+      p_chk <- param$name_full %in% names(param_df)
       if (any(!p_chk)) {
-        message("Warning! Not all parameters are in supplied parameter dataframe")
+        cli::cli_alert_warning("Not all parameters are in supplied parameter dataframe")
       }
       best_pars <- param_df[param_df$fit == min(param_df$fit), ]
       if (nrow(best_pars) > 1) {
@@ -163,7 +179,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
       temp_dirs <- make_temp_dir(m, lake_dir, n = ctrl$ncore)
       # list.files(temp_dirs[1], recursive = TRUE)
       ncores <- min((parallel::detectCores() - 1), ctrl$ncore, ctrl$NP)
-      message("Calibrating in parallel for ", m, " using ", ncores, " cores...")
+      cli::cli_inform(c("i" = "Using {.val {ncores}} cores for parallel 
+                        calibration for {.val {m}}."))
 
       cl <- parallel::makeCluster(ncores, outfile = "parallel.log")
       on.exit(parallel::stopCluster(cl))
@@ -172,15 +189,15 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                       "weights", "var_indices", "include_wlev")
       parallel::clusterExport(cl, varlist = varlist,
                               envir = environment())
-      message("Starting generation ", gen_n, "/", tot_gen,", ",
-              ctrl$NP, " members. ",
-              "[", format(Sys.time()), "]")
+      cli::cli_inform("Starting generation {.val {gen_n}}/{.val {tot_gen}}, 
+                      {.val {ctrl$NP}} members. [{format(Sys.time())}]")
       pr_df <- data.frame(rbind(signif(apply(start_param, 2, mean), 4),
                                 signif(apply(start_param, 2, median), 4),
                                 signif(apply(start_param, 2, sd), 4)),
                           row.names = c("mean", "median", "sd"))
-      names(pr_df) <- gsub("NA/", "", names(start_param))
-      print(pr_df)
+      names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(start_param)))
+      # print(pr_df)
+      cli::cli_inform("Parameter summary for generation {.val {gen_n}}:")
       # model_out <- lapply(seq_along(param_list), \(pars, i) {
       model_out <- parallel::parLapply(cl, seq_along(param_list), \(pars, i) {
 
@@ -192,13 +209,7 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
 
           # Update the parameter value in the parameter table
           for(n in names(pars[[i]])) {
-            grp <- strsplit(n, "/")[[1]][1]
-            nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
-            if (grp != "NA") {
-              param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
-            } else {
-              param$value[param$name == nme] <- pars[[i]][p, n]
-            }
+            param$value[param$name_full == n] <- pars[[i]][p, n]
           }
           # message(i, ", ", p)
 
@@ -276,7 +287,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                                   signif(apply(g, 2, median), 4),
                                   signif(apply(g, 2, sd), 4)),
                             row.names = c("mean", "median", "sd"))
-        names(pr_df) <- gsub("NA/", "", names(g))
+        names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(g)))
+        # names(pr_df) <- gsub("NA/", "", names(g))
         print(pr_df)
         suppressWarnings({
           param_list <- split(g, rep(1:ctrl$ncore, each = ctrl$ncore,
@@ -293,13 +305,7 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
 
             # Update the parameter value in the parameter table
             for(n in names(pars[[i]])) {
-              grp <- strsplit(n, "/")[[1]][1]
-              nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
-              if (grp != "NA") {
-                param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
-              } else {
-                param$value[param$name == nme] <- pars[[i]][p, n]
-              }
+              param$value[param$name_full == n] <- pars[[i]][p, n]
             }
             # print(i); print(p)
 
@@ -373,7 +379,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                                 signif(apply(start_param, 2, median), 4),
                                 signif(apply(start_param, 2, sd), 4)),
                           row.names = c("mean", "median", "sd"))
-      names(pr_df) <- gsub("NA/", "", names(start_param))
+      # names(pr_df) <- gsub("NA/", "", names(start_param))
+      names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(start_param)))
       print(pr_df)
       model_out <- lapply(seq_along(param_list), \(pars, i) {
 
@@ -387,13 +394,7 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
 
           # Update the parameter value in the parameter table
           for(n in names(pars[[i]])) {
-            grp <- strsplit(n, "/")[[1]][1]
-            nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
-            if (grp != "NA") {
-              param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
-            } else {
-              param$value[param$name == nme] <- pars[[i]][p, n]
-            }
+            param$value[param$name_full == n] <- pars[[i]][p, n]
           }
           # message(i, ", ", p)
 
@@ -467,7 +468,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                                   signif(apply(g, 2, median), 4),
                                   signif(apply(g, 2, sd), 4)),
                             row.names = c("mean", "median", "sd"))
-        names(pr_df) <- gsub("NA/", "", names(g))
+        # names(pr_df) <- gsub("NA/", "", names(g))
+        names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(g)))
         print(pr_df)
         suppressWarnings({
           param_list <- split(g, rep(1:ctrl$ncore, each = ctrl$ncore,
@@ -485,13 +487,7 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
 
             # Update the parameter value in the parameter table
             for(n in names(pars[[i]])) {
-              grp <- strsplit(n, "/")[[1]][1]
-              nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
-              if (grp != "NA") {
-                param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
-              } else {
-                param$value[param$name == nme] <- pars[[i]][p, n]
-              }
+              param$value[param$name_full == n] <- pars[[i]][p, n]
             }
             # print(i); print(p)
 
