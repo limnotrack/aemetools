@@ -50,11 +50,13 @@ plot_calib_summary <- function(calib, fit_col, nrow = 2, base_size = 8,
   
   # Summary plot of best parameter values for multiple fits ----
   err_bars <- summ |>
+    dplyr::mutate(label = abbrev_pars(name, model)) |> 
     dplyr::group_by(sim_id, label) |>
-    dplyr::summarise(xmin = min(parameter_value, na.rm = TRUE),
-                     xmax = max(parameter_value, na.rm = TRUE),
-                     ymin = min(fit2, na.rm = TRUE),
-                     ymax = max(fit2, na.rm = TRUE), gen = dplyr::first(gen), 
+    dplyr::summarise(xmin = min(value, na.rm = TRUE),
+                     xmax = max(value, na.rm = TRUE),
+                     ymin = min(fit_value, na.rm = TRUE),
+                     ymax = max(fit_value, na.rm = TRUE),
+                     gen = dplyr::first(gen), 
                      .groups = "drop")
   ylab <- "Fit"
   plist <- lapply(sim_ids, \(s) {
@@ -68,10 +70,10 @@ plot_calib_summary <- function(calib, fit_col, nrow = 2, base_size = 8,
                                        group = sim_id, shape = fit_type),
                           alpha = 0) +
       ggplot2::geom_point(data = sub_summ,
-                          ggplot2::aes(parameter_value, fit2, colour = gen,
+                          ggplot2::aes(value, fit2, colour = gen,
                                        group = model, shape = fit_type)) +
       ggplot2::geom_point(data = sub_summ,
-                          ggplot2::aes(parameter_value, fit2, colour = gen,
+                          ggplot2::aes(value, fit2, colour = gen,
                                        group = model, shape = fit_type)) +
       ggplot2::geom_errorbar(data = err_bars[err_bars$sim_id == s, ],
                              ggplot2::aes(x = (xmin + xmax) / 2, ymin = ymin,
@@ -88,11 +90,11 @@ plot_calib_summary <- function(calib, fit_col, nrow = 2, base_size = 8,
       #          vjust = 1) +
       # ggplot2::geom_text(data = summ[summ$sim_id == s, ],
       #                    ggplot2::aes(x = Inf, y = Inf,
-      #                                 label = signif(parameter_value, 3)),
+      #                                 label = signif(value, 3)),
       #                    vjust = 4,
       #                    hjust = 2, size = 3) +
-      # facet_wrap(model ~ param, scales = "free_x", nrow = nrow) +
-      ggplot2::facet_grid(sim_id ~ label, scales = "free_x") +
+      facet_wrap( ~ label, scales = "free_x", nrow = nrow) +
+      # ggplot2::facet_grid(sim_id ~ label, scales = "free_x") +
       ggplot2::theme_bw(base_size = base_size)
   })
   psum <- patchwork::wrap_plots(plist, nrow = nsims,
