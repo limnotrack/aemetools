@@ -14,7 +14,7 @@ test_that("can run an ensemble of AEME-GLM & GOTM in parallel", {
                            inf_factor = inf_factor, ext_elev = 5,
                            use_bgc = FALSE)
 
-  utils::data("aeme_parameters", package = "AEME")
+  data("aeme_parameters", package = "AEME")
 
   AEME::parameters(aeme) <- aeme_parameters
 
@@ -51,7 +51,7 @@ test_that("can run an ensemble of AEME-GLM in series", {
                                     model, "output", "output.nc"))
   testthat::expect_true(all(file_chk))
 
-  utils::data("aeme_parameters", package = "AEME")
+  data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
   # Function to calculate fitness
@@ -105,7 +105,7 @@ test_that("can run an ensemble of AEME-GOTM-WET in parallel and plot", {
                            inf_factor = inf_factor, ext_elev = 5,
                            use_bgc = FALSE)
 
-  utils::data("aeme_parameters", package = "AEME")
+  data("aeme_parameters", package = "AEME")
   aeme_parameters <- aeme_parameters |>
     dplyr::mutate(min = value - 0.1 * value,
                   max = value + 0.1 * value)
