@@ -31,7 +31,7 @@ plot_multiscatter <- function(sa) {
 
       params <- unique(df$label)
       dt <- df # data.table::data.table(df)
-      out <- t(utils::combn(params, 2))
+      out <- t(combn(params, 2))
       N <- nrow(t)
       Y <- dt$fit_value
       fit <- df |>

@@ -43,7 +43,7 @@
 #'                                     use_bgc = FALSE)
 #'
 #'   # Load parameters
-#'   utils::data("aeme_parameters", package = "AEME")
+#'   data("aeme_parameters", package = "AEME")
 #'   param <- aeme_parameters |>
 #'     dplyr::filter(file != "wdr")
 #'
