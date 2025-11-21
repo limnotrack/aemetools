@@ -1,3 +1,79 @@
+test_that("can run_and_fit sensitivity analysis for AEME-GLM", {
+  
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  inp <- AEME::input(aeme)
+  model_controls <- AEME::get_model_controls()
+  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  model <- c("glm_aed")
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           inf_factor = inf_factor, ext_elev = 5,
+                           use_bgc = FALSE)
+  
+  aeme <- AEME::run_aeme(aeme = aeme, model = model, verbose = FALSE,
+                         path = path)
+  
+  lke <- AEME::lake(aeme)
+  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
+                                                 tolower(lke$name)),
+                                    model, "output", "output.nc"))
+  testthat::expect_true(file_chk)
+  
+  utils::data("aeme_parameters", package = "AEME")
+  param <- aeme_parameters |>
+    dplyr::filter(file != "wdr")
+  
+  # Function to calculate fitness
+  fit <- function(df) {
+    mean(df$model)
+  }
+  fit2 <- function(df) {
+    median(df$model, na.rm = TRUE)
+  }
+  bot_deps <- c(inp$init_depth - 2, inp$init_depth)
+  FUN_list <- list(HYD_temp = fit, HYD_thmcln = fit2, LKE_lvlwtr = fit2)
+  db_file <- "results.db"
+  ctrl <- create_control(method = "sa", N = 2^2,
+                         file_type = "db", file_name = db_file,
+                         na_value = 1e20, ncore = 2,
+                         vars_sim = list(
+                           surf_temp = list(var = "HYD_temp",
+                                            month = c(12, 1:2),
+                                            depth_range = c(0, 2)
+                           ),
+                           bot_temp = list(var = "HYD_temp",
+                                           month = c(12, 1:2),
+                                           depth_range = bot_deps
+                           ),
+                           thm_cln = list(var = "HYD_thmcln",
+                                          month = c(12, 1:2),
+                                          depth_range = c(0, inp$init_depth)
+                           ),
+                           lke_lvl = list(var = "LKE_lvlwtr",
+                                          month = c(12, 1:2),
+                                          depth_range = c(0, inp$init_depth)
+                           )
+                         )
+  )
+  
+  vars_sim <- sapply(ctrl$vars_sim, \(v) v$var) |>
+    unique()
+  
+  out <- run_and_fit(aeme = aeme, path = path, param = param, method = "sa",
+                     model = model, sa_ctrl = ctrl, FUN_list = FUN_list, 
+                     weights = weights, vars_sim = vars_sim)
+  testthat::expect_true(is.list(out))
+  na_chk <- sapply(out, function(x) !is.na(x)) |>
+    all()
+  testthat::expect_true(na_chk)
+})
+
 test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 
   tmpdir <- tempdir()
@@ -102,7 +178,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   db_file <- "results.db"
   ctrl <- create_control(method = "sa", N = 2^2,
                          file_type = "db", file_name = db_file,
-                         na_value = 1e20, ncore = 2,
+                         na_value = 1e20, ncore = 20,
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
                                             month = c(12, 1:2),
@@ -265,7 +341,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   FUN_list <- list(HYD_temp = fit, HYD_thmcln = fit2, LKE_lvlwtr = fit2)
 
 
-  ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
+  ctrl <- create_control(method = "sa", N = 2^2, ncore = 28, parallel = TRUE,
                          file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
