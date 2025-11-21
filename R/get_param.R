@@ -84,15 +84,18 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
   
   pars_df <- all_pars |>
     dplyr::filter(fit_value != na_value) |>
-    dplyr::group_by(sim_id, model, label, fit_type) |>
+    dplyr::group_by(sim_id, model, parameter_name, fit_type) |>
     dplyr::summarise(parameter_value = parameter_value[which.min(fit_value)],
+                     label = label[which.min(fit_value)],
                      fit_value = min(fit_value),
                      gen = gen[which.min(fit_value)],
-                     name = name[which.min(fit_value)],
-                     group = group[which.min(fit_value)],
+                     # name = name[which.min(fit_value)],
+                     # group = group[which.min(fit_value)],
                      par = par[which.min(fit_value)],
                      .groups = "drop") |>
-    as.data.frame()
+    dplyr::mutate(
+      decode_param_full(parameter_name)
+    )
   
   if (length(uniq_pars) > 0) {
     pars_df <- pars_df |> 
@@ -103,6 +106,7 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
       dplyr::mutate(file = NA)
   }
   
+  param_names <- AEME::param_colnames(incl_opt = FALSE)
   pars_df <- pars_df |> 
     dplyr::mutate(
       value = parameter_value,
@@ -114,8 +118,8 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
         .default = .data$file
       )
     ) |> 
-    dplyr::select(sim_id, model, file, name, value, min, max, 
-                  dplyr::everything()) 
+    dplyr::select(dplyr::all_of(c("sim_id", param_names, "fit_value", "gen",
+                                  "fit_type"))) 
   return(pars_df)
 }
 
