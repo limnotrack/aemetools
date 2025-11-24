@@ -41,7 +41,7 @@ test_that("can run_and_fit sensitivity analysis for AEME-GLM", {
   db_file <- "results.db"
   ctrl <- create_control(method = "sa", N = 2^2,
                          file_type = "db", file_name = db_file,
-                         na_value = 1e20, ncore = 2,
+                         na_value = 1e20, ncore = 2L,
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
                                             month = c(12, 1:2),
@@ -112,7 +112,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 
   FUN_list <- list(HYD_temp = fit)
 
-  ctrl <- create_control(method = "sa", N = 2^1, ncore = 2, parallel = TRUE,
+  ctrl <- create_control(method = "sa", N = 2^1, ncore = 2L, parallel = TRUE,
                          file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
@@ -178,7 +178,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   db_file <- "results.db"
   ctrl <- create_control(method = "sa", N = 2^2,
                          file_type = "db", file_name = db_file,
-                         na_value = 1e20, ncore = 20,
+                         na_value = 1e20, ncore = 2L,
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
                                             month = c(12, 1:2),
@@ -267,7 +267,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel for just LK
 
   FUN_list <- list(LKE_lvlwtr = fit)
 
-  ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
+  ctrl <- create_control(method = "sa", N = 2^2, ncore = 2L, parallel = TRUE,
                          file_type = "csv",
                          vars_sim = list(
                            lke_lvl = list(var = "LKE_lvlwtr",
@@ -341,7 +341,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   FUN_list <- list(HYD_temp = fit, HYD_thmcln = fit2, LKE_lvlwtr = fit2)
 
 
-  ctrl <- create_control(method = "sa", N = 2^2, ncore = 28, parallel = TRUE,
+  ctrl <- create_control(method = "sa", N = 2^2, ncore = 2L, parallel = TRUE,
                          file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
@@ -416,7 +416,7 @@ test_that("can execute sensitivity analysis for derived variables", {
 
   FUN_list <- list(HYD_schstb = fit, HYD_thmcln = fit, CHM_oxynal = sum_fit)
 
-  ctrl <- create_control(method = "sa", N = 2^2, ncore = 2, parallel = TRUE,
+  ctrl <- create_control(method = "sa", N = 2^2, ncore = 2L, parallel = TRUE,
                          file_type = "db", file_name = "results.db",
                          vars_sim = list(
                            sch_stab = list(var = "HYD_schstb",
