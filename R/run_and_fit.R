@@ -202,9 +202,19 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
           }
           out <- out[[v]]
           if (is.null(nrow(out))) {
+            if (length(out) < length(dates)) {
+              cli::cli_alert_warning("Mismatch in number of dates and model output
+                                     for variable {v}. Returning na_value.")
+              dates <- dates[1:length(out)]
+            }
             depths <- NA_real_
             each <- 1
           } else {
+            if (ncol(out) != length(dates)) {
+              cli::cli_alert_warning("Mismatch in number of dates and model output
+                                     for variable {v}. Returning na_value.")
+              dates <- dates[1:ncol(out)]
+            }
             each <- length(depths)
           }
           
