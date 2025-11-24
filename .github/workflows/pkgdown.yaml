@@ -27,6 +27,13 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
 
+      # 🧩 Install the upstream dev branch AFTER dependencies
+      - name: Install upstream dev package
+        if: github.ref_name == 'dev'
+        run: |
+          Rscript -e 'install.packages("remotes")'
+          Rscript -e 'remotes::install_github("limnotrack/AEME@dev")'
+
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
         shell: Rscript {0}
