@@ -7,6 +7,8 @@
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #' @importFrom duckdb duckdb
 #' @importFrom dplyr bind_rows filter pull slice_tail
+#' @importFrom tidyr pivot_longer
+#' @importFrom cli cli_inform
 #'
 #' @return \code{write_calib_output} writes the calibration output to a file
 #' @noRd
@@ -167,9 +169,9 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
     gen_n <- sim_data[1, "gen"]
     
     file_to_print <- ifelse(type == "db", ctrl$file_name, "simulation_data.csv")
-    
-    message("Writing output for generation ", gen_n, " to ", file_to_print,
-            " with sim ID: ", sim_id, " [", format(Sys.time()), "]")
+    cli::cli_inform("Writing output for generation {.val {gen_n}} to
+    {.file {file_to_print}} with sim ID: {.val {sim_id}} 
+                    [{format(Sys.time())}]")
   }
   
   if (type == "csv") {
