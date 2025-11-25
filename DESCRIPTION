@@ -16,6 +16,7 @@ RoxygenNote: 7.3.3
 Imports: 
     AEME (>= 0.1.0),
     airGR,
+    cli,
     DBI,
     dbplyr,
     dplyr,
