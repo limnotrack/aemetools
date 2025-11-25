@@ -98,7 +98,7 @@ test_that("can run funs return same fit", {
   testthat::expect_equal(round(fit3$mae, 3), round(fit4$HYD_temp, 3))
   
   test_vars <- c("HYD_thmcln", "CHM_oxynal", "LKE_tli4")
-  v = test_vars[2]
+  v = test_vars[1]
   for (v in test_vars) {
     weights <- c(1)
     names(weights) <- c(v)
@@ -277,12 +277,12 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
                                    vars_sim = vars_sim, weights = weights)
   testthat::expect_true(all(sim_times < 3))
   
-  out <- run_and_fit(aeme = aeme, param = param,
-                     model = model, path = path, FUN_list = FUN_list,
-                     vars_sim = vars_sim, weights = weights, 
-                     return_indices = F,
-                     include_wlev = TRUE,
-                     fit = TRUE)
+  # out <- run_and_fit(aeme = aeme, param = param,
+  #                    model = model, path = path, FUN_list = FUN_list,
+  #                    vars_sim = vars_sim, weights = weights, 
+  #                    return_indices = F,
+  #                    include_wlev = TRUE,
+  #                    fit = TRUE)
   
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
@@ -571,7 +571,7 @@ test_that("can calibrate sediment parameters only for AEME-GLM", {
   
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 20,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = F, file_type = "csv",
+                         parallel = TRUE, file_type = "csv",
                          na_value = 999, ncore = 2L)
   
   vars_sim <- c("HYD_temp", "LKE_lvlwtr")
