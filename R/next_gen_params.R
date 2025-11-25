@@ -9,6 +9,8 @@
 #'
 #' @importFrom MASS mvrnorm
 #' @importFrom stats cov rnorm sd quantile
+#' @importFrom FME Latinhyper
+#' @importFrom cli cli_alert_info
 #'
 #' @return dataframe; with new parameters.
 #' @noRd
@@ -27,13 +29,17 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
   survivors1 <- survivors1[order(survivors1$fit), ]
   keep_cols <- which(names(survivors1) %in% param$name_full)
   if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
-    message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2))
+    cli::cli_alert_info(
+      "Survival rate: {round(nrow(survivors1) / nrow(param_df), 2)}"
+      )
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
                                                                ctrl$cutoff),
                              keep_cols]
   } else {
-    message("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2),
-            " is too low, using all individuals.")
+    cli::cli_alert_info(
+      "Survival rate: {round(nrow(survivors1) / nrow(param_df), 2)} is too low.
+      Using all individuals."
+      )
     survivors2 <- survivors1[, keep_cols]
   }
   if (is.null(nrow(survivors2))) {
@@ -48,7 +54,8 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
   #                            keep_cols]
   # }
   if (nrow(survivors2) <= 1) {
-    message("All parameter sets are NA. Generating base parameters...")
+    cli::cli_alert_info("All parameter sets are NA.
+                        Generating base parameters...")
     qt <- ctrl$cutoff * 3
     qt <- ifelse(qt > 1, 1, qt)
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,

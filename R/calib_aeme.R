@@ -189,15 +189,15 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                       "weights", "var_indices", "include_wlev")
       parallel::clusterExport(cl, varlist = varlist,
                               envir = environment())
-      cli::cli_inform("Starting generation {.val {gen_n}}/{.val {tot_gen}}, 
-                      {.val {ctrl$NP}} members. [{format(Sys.time())}]")
+      cli::cli_inform(c(">" = "Starting generation {.val {gen_n}}/{.val 
+      {tot_gen}}, {.val {ctrl$NP}} members. [{format(Sys.time())}]"))
       pr_df <- data.frame(rbind(signif(apply(start_param, 2, mean), 4),
                                 signif(apply(start_param, 2, median), 4),
                                 signif(apply(start_param, 2, sd), 4)),
                           row.names = c("mean", "median", "sd"))
       names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(start_param)))
-      # print(pr_df)
       cli::cli_inform("Parameter summary for generation {.val {gen_n}}:")
+      print(pr_df)
       # model_out <- lapply(seq_along(param_list), \(pars, i) {
       model_out <- parallel::parLapply(cl, seq_along(param_list), \(pars, i) {
 
@@ -247,11 +247,12 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
       }, pars = param_list)
 
       g1 <- dplyr::bind_rows(model_out)
-      message("Best fit: ", signif(min(g1$fit), 3), " (sd: ",
-              signif(sd(g1$fit), 5), ")
-            Parameters: [", paste0(signif(g1[which.min(g1$fit),
-                                             1:nrow(param)], 3),
-                                   collapse = ", "), "]")
+      best_pars <- signif(g1[which.min(g1$fit), 1:nrow(param)], 3)
+      cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
+                             for {.val {m}}. [{format(Sys.time())}]")
+      cli::cli_inform("Best fit: {.val {signif(min(g1$fit), 3)}} (sd: 
+                      {.val {signif(sd(g1$fit), 5)}})
+            Parameters: [ {.val {best_pars}} ]")
       g1$gen <- 1
       best_pars <- g1[which.min(g1$fit), ]
       out_df <- apply(g1, 2, signif, digits = 6)
@@ -264,12 +265,14 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
 
       if (ctrl$c_method == "LHC") {
         write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
-        message("Completed LHC calibration. [", format(Sys.time()), "]")
+        cli::cli_alert_success("LHC calibration complete for {.val {m}}. 
+                               [{format(Sys.time())}]")
         return(ctrl$sim_id)
       }
       if (min(g1$fit) < ctrl$VTR) {
         write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
-        message("Model fitness is less than VTR. Stopping simulation.")
+        cli::cli_alert_success("Model fitness is less than VTR. Stopping simulation for 
+                               {.val {m}}. [{format(Sys.time())}]")
         return(ctrl$sim_id)
       }
 
@@ -281,14 +284,14 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
       for (gen in 2:ctrl$ngen) {
 
         gen_n <- gen_n + 1
-        message("Starting generation ", gen_n, "/", tot_gen,", ", ctrl$NP,
-                " members. ", "[", format(Sys.time()), "]")
+        cli::cli_inform(c(">" = "Starting generation {.val {gen_n}}/{.val 
+        {tot_gen}}, {.val {ctrl$NP}} members. [{format(Sys.time())}]"))
         pr_df <- data.frame(rbind(signif(apply(g, 2, mean), 4),
                                   signif(apply(g, 2, median), 4),
                                   signif(apply(g, 2, sd), 4)),
                             row.names = c("mean", "median", "sd"))
         names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(g)))
-        # names(pr_df) <- gsub("NA/", "", names(g))
+        cli::cli_inform("Parameter summary for generation {.val {gen_n}}:")
         print(pr_df)
         suppressWarnings({
           param_list <- split(g, rep(1:ctrl$ncore, each = ctrl$ncore,
@@ -352,18 +355,23 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                                 FUN_list = FUN_list, sim_id = ctrl$sim_id,
                                 append_metadata = FALSE)
 
-        message("Best fit: ", signif(min(g$fit), 5), " (sd: ",
-                signif(sd(g$fit), 5), ")")
+        cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
+                               for {.val {m}}. [{format(Sys.time())}]")
+        cli::cli_inform("Best fit: {.val {signif(min(g$fit), 5)}} (sd: 
+                        {.val {signif(sd(g$fit), 5)}})")
         if(min(g$fit) < best_pars$fit) {
           best_pars <- g[which.min(g$fit), ]
         }
 
         if (min(g$fit) < ctrl$VTR) {
-          message("Model fitness is less than VTR. Stopping simulation.")
+          cli::cli_alert_success("Model fitness is less than VTR. Stopping simulation for 
+                                 {.val {m}}. [{format(Sys.time())}]")
           return(ctrl$sim_id)
         }
         if(sd(g$fit) < ctrl$reltol) {
-          message("Model has converged. Stopping simulation.")
+          cli::cli_alert_success("Model fitness has converged (sd < reltol). 
+                                 Stopping simulation for {.val {m}}. 
+                                 [{format(Sys.time())}]")
           return(ctrl$sim_id)
         }
 
@@ -372,14 +380,13 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
       }
     } else {
       # Run in serial ----
-      message("Starting generation ", gen_n, "/", tot_gen,", ",
-              ctrl$NP, " members. ",
-              "[", format(Sys.time()), "]")
+      cli::cli_inform("Using serial calibration for {.val {m}}.")
+      cli::cli_inform(c(">" = "Starting generation {.val {gen_n}}/{.val 
+      {tot_gen}}, {.val {ctrl$NP}} members. [{format(Sys.time())}]"))
       pr_df <- data.frame(rbind(signif(apply(start_param, 2, mean), 4),
                                 signif(apply(start_param, 2, median), 4),
                                 signif(apply(start_param, 2, sd), 4)),
                           row.names = c("mean", "median", "sd"))
-      # names(pr_df) <- gsub("NA/", "", names(start_param))
       names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(start_param)))
       print(pr_df)
       model_out <- lapply(seq_along(param_list), \(pars, i) {
@@ -433,12 +440,12 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
       }, pars = param_list)
 
       g1 <- dplyr::bind_rows(model_out)
-      message("Best fit: ", signif(min(g1$fit), 3), " (sd: ",
-              signif(sd(g1$fit), 3), ")
-            Parameters: [", paste0(signif(g1[which.min(g1$fit),
-                                             1:nrow(param)], 3),
-                                   collapse = ", "), "]")
-      g1$gen <- gen_n
+      cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
+                             for {.val {m}}. [{format(Sys.time())}]")
+      best_pars <- signif(g1[which.min(g1$fit), 1:nrow(param)], 3)
+      cli::cli_inform("Best fit: {.val {signif(min(g1$fit), 3)}} (sd: 
+                      {.val {signif(sd(g1$fit), 5)}})
+            Parameters: [ {.val {best_pars}} ]")
       out_df <- apply(g1, 2, signif, digits = 6)
       nsim <- nsim + nrow(out_df)
       best_pars <- g1[which.min(g1$fit), ]
@@ -462,8 +469,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
       for (gen in 2:ctrl$ngen) {
 
         gen_n <- gen_n + 1
-        message("Starting generation ", gen_n, "/", tot_gen,", ", ctrl$NP,
-                " members. ", "[", format(Sys.time()), "]")
+        cli::cli_inform(c(">" = "Starting generation {.val {gen_n}}/{.val 
+        {tot_gen}}, {.val {ctrl$NP}} members. [{format(Sys.time())}]"))
         pr_df <- data.frame(rbind(signif(apply(g, 2, mean), 4),
                                   signif(apply(g, 2, median), 4),
                                   signif(apply(g, 2, sd), 4)),
@@ -524,6 +531,9 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
           }
           return(pars[[i]])
         }, pars = param_list)
+        
+        cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
+                               for {.val {m}}. [{format(Sys.time())}]")
 
         g <- dplyr::bind_rows(model_out)
         g$gen <- gen_n
@@ -535,18 +545,21 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                                 FUN_list = FUN_list, sim_id = ctrl$sim_id,
                                 append_metadata = FALSE)
 
-        message("Best fit: ", signif(min(g$fit), 5), " (sd: ",
-                signif(sd(g$fit), 5), ")")
+        cli::cli_inform("Best fit: {.val {signif(min(g$fit), 5)}} (sd: 
+                        {.val {signif(sd(g$fit), 5)}})")
         if(min(g$fit) < best_pars$fit) {
           best_pars <- g[which.min(g$fit), ]
         }
 
         if (min(g$fit) < ctrl$VTR) {
-          message("Model fitness is less than VTR. Stopping simulation.")
+          cli::cli_alert_success("Model fitness is less than VTR. Stopping 
+          simulation for {.val {m}}. [{format(Sys.time())}]")
           return(ctrl$sim_id)
         }
         if(sd(g$fit) < ctrl$reltol) {
-          message("Model has converged. Stopping simulation.")
+          cli::cli_alert_success("Model fitness has converged (sd < reltol). 
+                                 Stopping simulation for {.val {m}}. 
+                                 [{format(Sys.time())}]")
           return(ctrl$sim_id)
         }
 
