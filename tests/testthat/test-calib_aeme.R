@@ -712,7 +712,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 20,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
                          parallel = TRUE, file_type = "csv",
-                         na_value = 999, ncore = 2LL)
+                         na_value = 999, ncore = 2L)
   
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -781,7 +781,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 20,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
                          parallel = TRUE, file_type = "csv",
-                         na_value = 999, ncore = 2LL)
+                         na_value = 999, ncore = 2L)
   
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -859,7 +859,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 20,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
                          parallel = TRUE, file_type = "csv",
-                         na_value = 999, ncore = 2LL)
+                         na_value = 999, ncore = 2L)
   
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -942,7 +942,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 20,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
                          parallel = TRUE, file_type = "csv",
-                         na_value = 1e20, ncore = 2LL)
+                         na_value = 1e20, ncore = 2L)
   
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -1019,7 +1019,7 @@ test_that("can calibrate lake level with no data for target time period", {
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 20,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
                          parallel = TRUE, file_type = "csv",
-                         na_value = 1e20, ncore = 2LL)
+                         na_value = 1e20, ncore = 2L)
   
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
