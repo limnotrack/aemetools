@@ -29,7 +29,11 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
 
   all_pars <- get_param(calib, na_value = na_value, fit_col = fit_col,
                         best = FALSE)
-  summ <- get_param(calib, na_value = na_value, fit_col = fit_col, best = TRUE)
+  all_pars_label <- all_pars |> 
+    dplyr::distinct(name, label)
+  summ <- get_param(calib, na_value = na_value, fit_col = fit_col, 
+                    best = TRUE) |> 
+    dplyr::left_join(all_pars_label, by = "name")
   if (min(all_pars$fit2, na.rm = TRUE) <= 0 & log_y) {
     adj <- ceiling(abs(min(all_pars$fit2, na.rm = TRUE)))
     message(strwrap(paste0("Negative fit values detected, adding ", adj,
@@ -51,22 +55,22 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
                           ggplot2::aes(parameter_value, fit2, colour = gen,
                                        group = model)) +
       ggplot2::geom_point(data = summ[summ$sim_id == s, ],
-                          ggplot2::aes(parameter_value, fit2),
+                          ggplot2::aes(value, fit2),
                           colour = "red") +
       ggplot2::geom_vline(data = summ[summ$sim_id == s, ],
-                          ggplot2::aes(xintercept = parameter_value)) +
+                          ggplot2::aes(xintercept = value)) +
       {if (log_y) ggplot2::scale_y_log10()} +
       ggplot2::scale_colour_viridis_d() +
       ggplot2::coord_cartesian(ylim = ylims) +
       ggplot2::labs(title = paste("Simulation ID:", s), x = "Parameter value", 
-                    y = ylab) +
+                    y = ylab, colour = "Generation") +
       # ggplot2::xlab("") +
       # ggplot2::ylab(ylab) +
       # annotate(geom = 'text', label = 'sometext', x = -Inf, y = Inf, hjust = 0,
       #          vjust = 1) +
       ggplot2::geom_text(data = summ[summ$sim_id == s, ],
                          ggplot2::aes(x = Inf, y = Inf,
-                                      label = signif(parameter_value, 3)),
+                                      label = signif(value, 3)),
                          vjust = 4,
                          hjust = 2, size = 3) +
       ggplot2::facet_wrap( ~ label, scales = "free_x", nrow = nrow) +
@@ -80,12 +84,13 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
   plist <- lapply(sim_ids, \(s) {
     ggplot2::ggplot() +
       ggplot2::geom_hline(data = summ[summ$sim_id == s, ],
-                          ggplot2::aes(yintercept = parameter_value)) +
+                          ggplot2::aes(yintercept = value)) +
       ggplot2::geom_point(data = all_pars[all_pars$sim_id == s, ],
-                          ggplot2::aes(index, parameter_value, colour = gen, group = model)) +
+                          ggplot2::aes(index, parameter_value, colour = gen,
+                                       group = model)) +
       ggplot2::scale_colour_viridis_d() +
       ggplot2::labs(title = paste("Simulation ID:", s), y = "Parameter value", 
-                    y = "Iteration") +
+                    y = "Iteration", colour = "Generation") +
       # ggplot2::facet_grid(label ~ sim_id, scales = "free") +
       ggplot2::facet_wrap( ~ label, scales = "free_y", ncol = nrow) +
       ggplot2::theme_bw(base_size = base_size)
@@ -99,9 +104,10 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
   plist <- lapply(sim_ids, \(s) {
     ggplot2::ggplot() +
       ggplot2::geom_histogram(data = all_pars[all_pars$sim_id == s, ],
-                              ggplot2::aes(parameter_value, fill = gen), bins = 50) +
+                              ggplot2::aes(parameter_value, fill = gen),
+                              bins = 50) +
       ggplot2::geom_vline(data = summ[summ$sim_id == s, ],
-                          ggplot2::aes(xintercept = parameter_value)) +
+                          ggplot2::aes(xintercept = value)) +
       # ggplot2::facet_grid(sim_id ~ label, scales = "free") +
       ggplot2::facet_wrap( ~ label, scales = "free_x", nrow = nrow) +
       ggplot2::labs(title = paste("Simulation ID:", s), x = "Parameter value", 
