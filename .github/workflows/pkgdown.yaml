@@ -23,15 +23,15 @@ jobs:
           use-public-rspm: true
 
       # 🧩 Install the upstream dev branch BEFORE dependencies
-      - name: Install upstream dev package
-        if: github.ref_name == 'dev'
-        run: |
-          Rscript -e 'install.packages("remotes")'
-          Rscript -e 'remotes::install_github("limnotrack/AEME@dev")'
+      # - name: Install upstream dev package
+      #   if: github.ref_name == 'dev'
+      #   run: |
+      #     Rscript -e 'install.packages("remotes")'
+      #     Rscript -e 'remotes::install_github("limnotrack/AEME@dev")'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, local::.
+          extra-packages: any::pkgdown, local::., limnotrack/AEME@dev
           needs: website
 
       - name: Build site
