@@ -63,6 +63,10 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     config <- AEME::configuration(aeme = aeme)
     model_controls <- config$model_controls
   }
+  if (missing(weights)) {
+    cli::cli_inform("No weights supplied. Defaulting to 1 for all variables.")
+    weights <- set_weights(vars_sim = vars_sim)
+  }
   if (include_wlev & !"LKE_lvlwtr" %in% names(weights)) {
     weights["LKE_lvlwtr"] <- 1
     cli::cli_alert_info("Including water level in model fit with weight of 1.")
@@ -72,19 +76,6 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     cli::cli_alert_info("Including water level in model fit using first 
                         function in FUN_list.")
   }
-  
-  
-  # Load data from AEME package ----
-  data("key_naming", package = "AEME", envir = environment())
-  inp <- AEME::input(aeme)
-  hyps <- inp$hypsograph
-  
-  nc <- run_aeme_param(aeme = aeme, param = param, model = model,
-                       path = path, model_controls = model_controls,
-                       na_value = na_value, return_nc = return_nc)
-  on.exit({
-    ncdf4::nc_close(nc)
-  })
   
   # Create a list for the return values
   return_list <- list()
@@ -97,6 +88,27 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
       return_list[[n]] <- na_value
     }
   }
+  
+  
+  # Load data from AEME package ----
+  data("key_naming", package = "AEME", envir = environment())
+  inp <- AEME::input(aeme)
+  hyps <- inp$hypsograph
+  
+  nc <- run_aeme_param(aeme = aeme, param = param, model = model,
+                       path = path, model_controls = model_controls,
+                       na_value = na_value, return_nc = return_nc)
+  # if nc is not ncdf4 object, return return_list
+  if (!is.list(nc) & !inherits(nc, "ncdf4")) {
+    cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
+    return(return_list)
+  }
+  
+  on.exit({
+    ncdf4::nc_close(nc)
+  })
+  
+
   
   if (!is.list(nc)) {
     cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
