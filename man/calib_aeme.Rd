@@ -27,7 +27,7 @@ calib_aeme(
 columns c("model", "file", "name", "value", "min", "max", "log")}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
-model fit. Currently only supports using one variable.}
+model fit.}
 
 \item{FUN_list}{list of functions; named according to the variables in the
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
