@@ -276,6 +276,15 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                                               vars_sim = "HYD_temp", 
                                               date_index = date_index, 
                                               incl_fluxes = FALSE)
+            
+            if (AEME::is_model_error(depth)) {
+              cli::cli_div(theme = list(span.emph = list(color = "red")))
+              cli::cli_alert_warning("Error reading model outputs for variable
+                                   {v}: {.emph {out$reason}}. Returning
+                                   na_value.")
+              return(return_list)
+            }
+            
             df <- data.frame(Date = var_indices[[n]][["dates"]],
                              depth = NA, 
                              model = depth[["LKE_lvlwtr"]],
@@ -303,6 +312,13 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                                           depths = depths, 
                                           date_index = date_index, 
                                           incl_fluxes = FALSE)
+          if (AEME::is_model_error(out)) {
+            cli::cli_div(theme = list(span.emph = list(color = "red")))
+            cli::cli_alert_warning("Error reading model outputs for variable
+                                   {v}: {.emph {out$reason}}. Returning
+                                   na_value.")
+            return(return_list)
+          }
           
           if (deriv_chk) {
             out <- AEME::add_deriv_output(out_list = out, hyps = hyps, 
