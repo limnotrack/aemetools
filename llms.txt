@@ -204,6 +204,8 @@ See the vignette
   : Run GR model
 - [`sa_aeme()`](https://limnotrack.github.io/aemetools/reference/sa_aeme.md)
   : Run sensitivity analysis on AEME model parameters
+- [`set_weights()`](https://limnotrack.github.io/aemetools/reference/set_weights.md)
+  : Set weights for simulated variables
 - [`update_param()`](https://limnotrack.github.io/aemetools/reference/update_param.md)
   : Update parameter values in param based on best_pars
 - [`write_csv_to_db()`](https://limnotrack.github.io/aemetools/reference/write_csv_to_db.md)

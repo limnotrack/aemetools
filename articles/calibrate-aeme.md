@@ -51,13 +51,13 @@ current model setup is working.
 ``` r
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
                  path = path)
-#> Running models... (Have you tried parallelizing?) [2025-11-12 21:13:34]
-#> GLM-AED running... [2025-11-12 21:13:34]
-#> GLM-AED run successful! [2025-11-12 21:13:35]
-#> Model run complete![2025-11-12 21:13:35]
-#> Retrieving and formatting temp for model glm_aed
-#> Retrieving and formatting salt for model glm_aed
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-26 02:30:34]
+#> → GLM-AED2 running... [2025-11-26 02:30:34]
+#> ✔ GLM-AED2 run successful! [2025-11-26 02:30:35]
+#> ✔ Model run complete! [2025-11-26 02:30:35]
 plot(aeme)
+#> ! Variable 'HYD_temp' not in output for model(s): 
+#> dy_cd, gotm_wet
 ```
 
 ![Water temperature contour plotfor the model
@@ -108,32 +108,35 @@ aeme_parameters[aeme_parameters$model == "glm_aed" &
 aeme_parameters
 ```
 
-| model    | file          | name                               |   value |    min |      max | module       | group |
-|:---------|:--------------|:-----------------------------------|--------:|-------:|---------:|:-------------|:------|
-| glm_aed  | glm3.nml      | light/Kw                           | 1.0e-01 |  0.100 | 5.52e+00 | hydrodynamic | NA    |
-| glm_aed  | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| glm_aed  | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| glm_aed  | glm3.nml      | mixing/coef_mix_conv               | 1.4e-01 |  0.100 | 2.00e-01 | hydrodynamic | NA    |
-| glm_aed  | glm3.nml      | mixing/coef_wind_stir              | 2.1e-01 |  0.200 | 3.00e-01 | hydrodynamic | NA    |
-| glm_aed  | glm3.nml      | mixing/coef_mix_shear              | 1.4e-01 |  0.100 | 2.00e-01 | hydrodynamic | NA    |
-| glm_aed  | glm3.nml      | mixing/coef_mix_turb               | 5.6e-01 |  0.200 | 7.00e-01 | hydrodynamic | NA    |
-| glm_aed  | glm3.nml      | mixing/coef_mix_hyp                | 7.4e-01 |  0.400 | 8.00e-01 | hydrodynamic | NA    |
-| glm_aed  | wdr           | outflow                            | 1.0e+00 |  0.500 | 2.50e+00 | hydrodynamic | NA    |
-| glm_aed  | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | hydrodynamic | NA    |
-| gotm_wet | gotm.yaml     | turbulence/turb_param/k_min        | 6.0e-07 |  0.000 | 1.00e-05 | hydrodynamic | NA    |
-| gotm_wet | gotm.yaml     | light_extinction/A/constant_value  | 5.5e-01 |  0.395 | 6.59e-01 | hydrodynamic | NA    |
-| gotm_wet | gotm.yaml     | light_extinction/g1/constant_value | 5.9e-01 |  0.440 | 7.40e-01 | hydrodynamic | NA    |
-| gotm_wet | gotm.yaml     | light_extinction/g2/constant_value | 2.0e-01 |  0.050 | 2.70e+00 | hydrodynamic | NA    |
-| gotm_wet | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| gotm_wet | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| gotm_wet | wdr           | outflow                            | 1.0e+00 |  0.500 | 2.50e+00 | hydrodynamic | NA    |
-| gotm_wet | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | hydrodynamic | NA    |
-| dy_cd    | cfg           | light_extinction_coefficient/7     | 9.0e-01 |  0.100 | 1.40e+00 | hydrodynamic | NA    |
-| dy_cd    | dyresm3p1.par | vert_mix_coeff/15                  | 2.0e+02 | 50.000 | 7.50e+02 | hydrodynamic | NA    |
-| dy_cd    | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| dy_cd    | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| dy_cd    | wdr           | outflow                            | 1.0e+00 |  0.500 | 2.50e+00 | hydrodynamic | NA    |
-| dy_cd    | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | hydrodynamic | NA    |
+| model    | file          | name                               |   value |    min |      max | group | index | module       |
+|:---------|:--------------|:-----------------------------------|--------:|-------:|---------:|:------|------:|:-------------|
+| glm_aed  | glm3.nml      | light/Kw                           | 1.0e-01 |  0.100 | 5.52e+00 | NA    |    NA | hydrodynamic |
+| glm_aed  | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| glm_aed  | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | mixing/coef_mix_conv               | 1.4e-01 |  0.100 | 2.00e-01 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | mixing/coef_wind_stir              | 2.1e-01 |  0.200 | 3.00e-01 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | mixing/coef_mix_shear              | 1.4e-01 |  0.100 | 2.00e-01 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | mixing/coef_mix_turb               | 5.6e-01 |  0.200 | 7.00e-01 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | mixing/coef_mix_hyp                | 7.4e-01 |  0.400 | 8.00e-01 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | sediment/n_zones                   | 1.0e+00 |  1.000 | 1.00e+00 | NA    |    NA | sediment     |
+| glm_aed  | glm3.nml      | sediment/sed_temp_mean             | 1.2e+01 |  6.000 | 1.80e+01 | NA    |     1 | sediment     |
+| glm_aed  | glm3.nml      | sediment/sed_temp_peak_doy         | 3.0e+01 |  1.000 | 9.00e+01 | NA    |     1 | sediment     |
+| glm_aed  | wdr           | outflow                            | 1.0e+00 |  0.500 | 2.50e+00 | NA    |    NA | hydrodynamic |
+| glm_aed  | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | NA    |    NA | hydrodynamic |
+| gotm_wet | gotm.yaml     | turbulence/turb_param/k_min        | 6.0e-07 |  0.000 | 1.00e-05 | NA    |    NA | hydrodynamic |
+| gotm_wet | gotm.yaml     | light_extinction/A/constant_value  | 5.5e-01 |  0.395 | 6.59e-01 | NA    |    NA | hydrodynamic |
+| gotm_wet | gotm.yaml     | light_extinction/g1/constant_value | 5.9e-01 |  0.440 | 7.40e-01 | NA    |    NA | hydrodynamic |
+| gotm_wet | gotm.yaml     | light_extinction/g2/constant_value | 2.0e-01 |  0.050 | 2.70e+00 | NA    |    NA | hydrodynamic |
+| gotm_wet | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| gotm_wet | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| gotm_wet | wdr           | outflow                            | 1.0e+00 |  0.500 | 2.50e+00 | NA    |    NA | hydrodynamic |
+| gotm_wet | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | NA    |    NA | hydrodynamic |
+| dy_cd    | cfg           | light_extinction_coefficient/7     | 9.0e-01 |  0.100 | 1.40e+00 | NA    |    NA | hydrodynamic |
+| dy_cd    | dyresm3p1.par | vert_mix_coeff/15                  | 2.0e+02 | 50.000 | 7.50e+02 | NA    |    NA | hydrodynamic |
+| dy_cd    | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| dy_cd    | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| dy_cd    | wdr           | outflow                            | 1.0e+00 |  0.500 | 2.50e+00 | NA    |    NA | hydrodynamic |
+| dy_cd    | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | NA    |    NA | hydrodynamic |
 
 This dataframe can be passed to the `run_aeme_param` function to run
 AEME with the parameter values specified in the dataframe. This function
@@ -143,11 +146,13 @@ is different to the `run_aeme` function in that it does not return an
 ``` r
 run_aeme_param(aeme = aeme, param = aeme_parameters,
                  model = model, path = path)
-#> GLM nml checks passed with no issues.
-#> Running models... (Have you tried parallelizing?) [2025-11-12 21:13:52]
-#> GLM-AED running... [2025-11-12 21:13:52]
-#> GLM-AED run successful! [2025-11-12 21:13:53]
-#> Model run complete![2025-11-12 21:13:53]
+#> ✔ GLM nml validation completed - no issues detected.
+#> ℹ Deleted previous output for model GLM-AED at
+#>   C:\Users\runneradmin\AppData\Local\Temp\RtmpWS9zub\lake/45819_wainamu/glm_aed/output/output.nc
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-26 02:30:41]
+#> → GLM-AED2 running... [2025-11-26 02:30:41]
+#> ✔ GLM-AED2 run successful! [2025-11-26 02:30:42]
+#> ✔ Model run complete! [2025-11-26 02:30:42]
 ```
 
 ## Calibration setup
@@ -168,18 +173,10 @@ available_vars <- AEME::get_mod_obs_vars(aeme = aeme, model = model)
 available_vars
 ```
 
-| var_aeme   |   n | n_depth | n_dates |
-|:-----------|----:|--------:|--------:|
-| CHM_oxymom |   7 |       1 |       7 |
-| CHM_oxynal |  10 |       1 |      10 |
-| CHM_salt   | 125 |      13 |      10 |
-| HYD_ctrbuy |  10 |       1 |      10 |
-| HYD_epidep |   7 |       1 |       7 |
-| HYD_hypdep |   7 |       1 |       7 |
-| HYD_schstb |  10 |       1 |      10 |
-| HYD_temp   | 125 |      13 |      10 |
-| HYD_thmcln |  10 |       1 |      10 |
-| LKE_lvlwtr |   8 |       1 |       8 |
+| var_aeme |   n | n_depth | n_dates |
+|:---------|----:|--------:|--------:|
+| CHM_salt | 125 |      13 |      10 |
+| HYD_temp | 125 |      13 |      10 |
 
 There are 10 variables available for calibration, this includes derived
 variables such as thermocline depth (HYD_thmcln) and Schmidt stability
@@ -309,7 +306,7 @@ the following arguments:
 | `aeme`           | aeme; object.                                                                                                                                                                                              |
 | `model`          | vector; of models to be used. Can be 'dy_cd', 'glm_aed', 'gotm_wet'.                                                                                                                                       |
 | `param`          | dataframe; of parameters read in from a csv file. Requires the columns c("model", "file", "name", "value", "min", "max", "log")                                                                            |
-| `vars_sim`       | vector; of variables names to be used in the calculation of model fit. Currently only supports using one variable.                                                                                         |
+| `vars_sim`       | vector; of variables names to be used in the calculation of model fit.                                                                                                                                     |
 | `FUN_list`       | list of functions; named according to the variables in the `vars_sim`. Funtions are of the form `⁠function(df)⁠` which will be used to calculate model fit. If nor provided, uses mean absolute error (MAE). |
 | `weights`        | vector; of weights for each variable in vars_sim. If not provided, defaults to 1 for each variable.                                                                                                        |
 | `path`           | filepath; where input files are located relative to the current working directory.                                                                                                                         |
@@ -327,50 +324,111 @@ sim_id <- calib_aeme(aeme = aeme, path = path,
                      param = aeme_parameters, model = model,
                      FUN_list = FUN_list, ctrl = ctrl, 
                      vars_sim = vars_sim, weights = weights)
-#> Extracting indices for glm_aed modelled variables [2025-11-12 21:13:54]
-#> Completed glm_aed! [2025-11-12 21:13:55]
-#> Calibrating in parallel for glm_aed using 2 cores...
-#> Starting generation 1/10, 40 members. [2025-11-12 21:13:56]
-#> Best fit: 1.04 (sd: 437.27)
-#>             Parameters: [2.01, 0.881, 1.01, 0.122, 0.27, 0.158, 0.42, 0.631, 1.79, 1.93]
-#> Writing output for generation 1 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:14:27]
-#> Survival rate: 0.75
-#> Starting generation 2/10, 40 members. [2025-11-12 21:14:27]
-#> Writing output for generation 2 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:14:47]
-#> Best fit: 0.88042 (sd: 157.73)
-#> Survival rate: 0.98
-#> Starting generation 3/10, 40 members. [2025-11-12 21:14:47]
-#> Writing output for generation 3 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:15:06]
-#> Best fit: 0.81292 (sd: 157.77)
-#> Survival rate: 0.98
-#> Starting generation 4/10, 40 members. [2025-11-12 21:15:06]
-#> Writing output for generation 4 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:15:27]
-#> Best fit: 0.81292 (sd: 266.19)
-#> Survival rate: 0.92
-#> Starting generation 5/10, 40 members. [2025-11-12 21:15:27]
-#> Writing output for generation 5 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:15:46]
-#> Best fit: 0.75111 (sd: 220.28)
-#> Survival rate: 0.95
-#> Starting generation 6/10, 40 members. [2025-11-12 21:15:46]
-#> Writing output for generation 6 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:16:06]
-#> Best fit: 0.67665 (sd: 157.81)
-#> Survival rate: 0.98
-#> Starting generation 7/10, 40 members. [2025-11-12 21:16:06]
-#> Writing output for generation 7 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:16:26]
-#> Best fit: 0.67665 (sd: 220.29)
-#> Survival rate: 0.95
-#> Starting generation 8/10, 40 members. [2025-11-12 21:16:27]
-#> Writing output for generation 8 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:16:46]
-#> Best fit: 0.67665 (sd: 157.81)
-#> Survival rate: 0.98
-#> Starting generation 9/10, 40 members. [2025-11-12 21:16:46]
-#> Writing output for generation 9 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:17:06]
-#> Best fit: 0.67609 (sd: 157.82)
-#> Survival rate: 0.98
-#> Starting generation 10/10, 40 members. [2025-11-12 21:17:06]
-#> Writing output for generation 10 to simulation_data.csv with sim ID: 45819_glmaed_C_001 [2025-11-12 21:17:27]
-#> Best fit: 0.65977 (sd: 266.26)
-#> Survival rate: 0.92
+#> ℹ Variables not found: `LKE_lvlwtr`.
+#> Adding them to model_controls.
+#> ℹ Extracting indices for "glm_aed" modelled variables [2025-11-26 02:30:43]
+#> ✔ Indices extracted for "glm_aed" modelled variables [2025-11-26 02:30:44]
+#> ℹ Using 2 cores for parallel calibration for "glm_aed".
+#> → Starting generation 1/10, 40 members. [2025-11-26 02:30:44]
+#> Parameter summary for generation 1:
+#> ✔ Completed generation 1/10 
+#> for "glm_aed". [2025-11-26 02:31:15]
+#> 
+#> Best fit: 1.02 (sd: 403.97) Parameters: [ 4.32, 1.07, 1.18, 0.168, 0.211,
+#> 0.102, 0.45, 0.587, 1, 12.8, 54.9, 1.71, and 1.74 ]
+#> Writing output for generation 1 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2025-11-26 02:31:15]
+#> ℹ Survival rate: 0.8
+#> 
+#> → Starting generation 2/10, 40 members. [2025-11-26 02:31:15]
+#> Parameter summary for generation 2:
+#> Writing output for generation 2 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2025-11-26 02:31:38]
+#> ✔ Completed generation 2/10 
+#> for "glm_aed". [2025-11-26 02:31:38]
+#> 
+#> Best fit: 0.87992 (sd: 266.1)
+#> ℹ Survival rate: 0.92
+#> 
+#> → Starting generation 3/10, 40 members. [2025-11-26 02:31:38]
+#> Parameter summary for generation 3:
+#> Writing output for generation 3 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2025-11-26 02:32:05]
+#> ✔ Completed generation 3/10 
+#> for "glm_aed". [2025-11-26 02:32:05]
+#> 
+#> Best fit: 0.87992 (sd: 157.77)
+#> ℹ Survival rate: 0.98
+#> 
+#> → Starting generation 4/10, 40 members. [2025-11-26 02:32:05]
+#> Parameter summary for generation 4:
+#> Writing output for generation 4 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2025-11-26 02:32:30]
+#> ✔ Completed generation 4/10 
+#> for "glm_aed". [2025-11-26 02:32:30]
+#> 
+#> Best fit: 0.86534 (sd: 220.26)
+#> ℹ Survival rate: 0.95
+#> 
+#> → Starting generation 5/10, 40 members. [2025-11-26 02:32:30]
+#> Parameter summary for generation 5:
+#> Writing output for generation 5 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2025-11-26 02:32:53]
+#> ✔ Completed generation 5/10 
+#> for "glm_aed". [2025-11-26 02:32:53]
+#> 
+#> Best fit: 0.80713 (sd: 220.29)
+#> ℹ Survival rate: 0.95
+#> 
+#> → Starting generation 6/10, 40 members. [2025-11-26 02:32:53]
+#> Parameter summary for generation 6:
+#> Writing output for generation 6 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2025-11-26 02:33:17]
+#> ✔ Completed generation 6/10 
+#> for "glm_aed". [2025-11-26 02:33:17]
+#> 
+#> Best fit: 0.7818 (sd: 220.28)
+#> ℹ Survival rate: 0.95
+#> 
+#> → Starting generation 7/10, 40 members. [2025-11-26 02:33:17]
+#> Parameter summary for generation 7:
+#> Writing output for generation 7 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2025-11-26 02:33:39]
+#> ✔ Completed generation 7/10 
+#> for "glm_aed". [2025-11-26 02:33:39]
+#> 
+#> Best fit: 0.77567 (sd: 220.31)
+#> ℹ Survival rate: 0.95
+#> 
+#> → Starting generation 8/10, 40 members. [2025-11-26 02:33:39]
+#> Parameter summary for generation 8:
+#> Writing output for generation 8 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2025-11-26 02:34:00]
+#> ✔ Completed generation 8/10 
+#> for "glm_aed". [2025-11-26 02:34:00]
+#> 
+#> Best fit: 0.77567 (sd: 303.25)
+#> ℹ Survival rate: 0.9
+#> 
+#> → Starting generation 9/10, 40 members. [2025-11-26 02:34:00]
+#> Parameter summary for generation 9:
+#> Writing output for generation 9 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2025-11-26 02:34:22]
+#> ✔ Completed generation 9/10 
+#> for "glm_aed". [2025-11-26 02:34:22]
+#> 
+#> Best fit: 0.77567 (sd: 220.31)
+#> ℹ Survival rate: 0.95
+#> 
+#> → Starting generation 10/10, 40 members. [2025-11-26 02:34:22]
+#> Parameter summary for generation 10:
+#> Writing output for generation 10 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2025-11-26 02:34:44]
+#> ✔ Completed generation 10/10 
+#> for "glm_aed". [2025-11-26 02:34:44]
+#> 
+#> Best fit: 0.76949 (sd: 220.3)
+#> ℹ Survival rate: 0.95
 ```
 
 ## Visualise calibration results
@@ -488,18 +546,21 @@ best_params <- get_param(calib, na_value = ctrl$na_value, fit_col = "fit",
 best_params
 ```
 
-| sim_id             | model   | file     | name                  |    value |      min |      max | label          | fit_type | parameter_value | fit_value | gen | group | par |
-|:-------------------|:--------|:---------|:----------------------|---------:|---------:|---------:|:---------------|:---------|----------------:|----------:|:----|:------|:----|
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | light/Kw              | 0.701670 | 0.701670 | 0.701670 | Kw             | fit      |        0.701670 |  0.659773 | 1   | NA    | NA  |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_conv  | 0.130507 | 0.130507 | 0.130507 | coef_mix_conv  | fit      |        0.130507 |  0.659773 | 1   | NA    | NA  |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_hyp   | 0.515081 | 0.515081 | 0.515081 | coef_mix_hyp   | fit      |        0.515081 |  0.659773 | 1   | NA    | NA  |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_shear | 0.170018 | 0.170018 | 0.170018 | coef_mix_shear | fit      |        0.170018 |  0.659773 | 1   | NA    | NA  |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_turb  | 0.405187 | 0.405187 | 0.405187 | coef_mix_turb  | fit      |        0.405187 |  0.659773 | 1   | NA    | NA  |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_wind_stir | 0.281625 | 0.281625 | 0.281625 | coef_wind_stir | fit      |        0.281625 |  0.659773 | 1   | NA    | NA  |
-| 45819_glmaed_C_001 | glm_aed | inf      | inflow                | 1.436520 | 1.436520 | 1.436520 | inflow         | fit      |        1.436520 |  0.659773 | 1   | NA    | NA  |
-| 45819_glmaed_C_001 | glm_aed | wdr      | outflow               | 1.356770 | 1.356770 | 1.356770 | outflow        | fit      |        1.356770 |  0.659773 | 1   | NA    | NA  |
-| 45819_glmaed_C_001 | glm_aed | met      | MET_radswd            | 0.891542 | 0.891542 | 0.891542 | radswd         | fit      |        0.891542 |  0.659773 | 1   | NA    | NA  |
-| 45819_glmaed_C_001 | glm_aed | met      | MET_wndspd            | 0.755676 | 0.755676 | 0.755676 | wndspd         | fit      |        0.755676 |  0.659773 | 1   | NA    | NA  |
+| sim_id             | model   | file     | name                       |     value |       min |       max | group | index | fit_value | gen | fit_type |
+|:-------------------|:--------|:---------|:---------------------------|----------:|----------:|----------:|:------|------:|----------:|:----|:---------|
+| 45819_glmaed_C_001 | glm_aed | met      | MET_radswd                 |  1.116410 |  1.116410 |  1.116410 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | met      | MET_wndspd                 |  1.046560 |  1.046560 |  1.046560 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | inf      | inflow                     |  1.372190 |  1.372190 |  1.372190 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | light/Kw                   |  1.437080 |  1.437080 |  1.437080 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_conv       |  0.161560 |  0.161560 |  0.161560 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_hyp        |  0.506658 |  0.506658 |  0.506658 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_shear      |  0.150386 |  0.150386 |  0.150386 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_turb       |  0.646885 |  0.646885 |  0.646885 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_wind_stir      |  0.266191 |  0.266191 |  0.266191 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | wdr      | outflow                    |  1.412480 |  1.412480 |  1.412480 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | sediment/n_zones           |  1.000000 |  1.000000 |  1.000000 | NA    |    NA |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | sediment/sed_temp_mean     |  8.625300 |  8.625300 |  8.625300 | NA    |     1 |  0.769486 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | sediment/sed_temp_peak_doy | 44.898300 | 44.898300 | 44.898300 | NA    |     1 |  0.769486 | 1   | fit      |
 
 The best parameter values can be used to run the model and compare the
 simulated values to the observed values. This can be done using the
@@ -509,13 +570,13 @@ simulated values to the observed values. This can be done using the
 aeme <- run_aeme_param(aeme = aeme, path = path,
                        param = best_params, model = model,
                        return_aeme = TRUE)
-#> GLM nml checks passed with no issues.
-#> Running models... (Have you tried parallelizing?) [2025-11-12 21:17:32]
-#> GLM-AED running... [2025-11-12 21:17:32]
-#> GLM-AED run successful! [2025-11-12 21:17:32]
-#> Model run complete![2025-11-12 21:17:32]
-#> Retrieving and formatting temp for model glm_aed
-#> Retrieving and formatting salt for model glm_aed
+#> ✔ GLM nml validation completed - no issues detected.
+#> ℹ Deleted previous output for model GLM-AED at
+#>   C:\Users\runneradmin\AppData\Local\Temp\RtmpWS9zub\lake/45819_wainamu/glm_aed/output/output.nc
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-26 02:34:51]
+#> → GLM-AED2 running... [2025-11-26 02:34:51]
+#> ✔ GLM-AED2 run successful! [2025-11-26 02:34:52]
+#> ✔ Model run complete! [2025-11-26 02:34:52]
 ```
 
 The simulated values can be compared to the observed values using the
@@ -570,10 +631,10 @@ variable. These include:
 assess_model(aeme = aeme, model = model, var_sim = vars_sim)
 ```
 
-| Model   | var_sim    |   bias |   mae |  rmse |  nmae |      nse |    d2 |     r |    rs |    r2 |     B |   n | obs_na | sim_na |
-|:--------|:-----------|-------:|------:|------:|------:|---------:|------:|------:|------:|------:|------:|----:|-------:|-------:|
-| GLM-AED | HYD_temp   | -0.102 | 0.522 | 0.737 | 0.029 |    0.944 | 0.027 | 0.975 | 0.973 | 0.951 | 0.900 | 125 |      0 |      0 |
-| GLM-AED | LKE_lvlwtr |  1.434 | 1.434 | 1.484 | 0.061 | -639.528 | 0.928 | 0.800 | 0.878 | 0.640 | 0.001 |   8 |      0 |      0 |
+| Model   | var_sim    |  bias |   mae |  rmse |  nmae |     nse |    d2 |     r |    rs |    r2 |     B |   n | obs_na | sim_na | name_text         | name_parse              |
+|:--------|:-----------|------:|------:|------:|------:|--------:|------:|------:|------:|------:|------:|----:|-------:|-------:|:------------------|:------------------------|
+| GLM-AED | HYD_temp   | 0.115 | 0.744 | 1.033 | 0.041 |   0.890 | 0.054 | 0.946 | 0.946 | 0.895 | 0.806 | 125 |      0 |      0 | Water temperature | Temperature_((degree)C) |
+| GLM-AED | LKE_lvlwtr | 0.020 | 0.225 | 0.279 | 0.010 | -21.645 | 8.503 | 0.444 | 0.464 | 0.197 | 0.008 |   8 |      0 |      0 | Water level       | Water_(level)(m)        |
 
 ### Visualise model performance
 

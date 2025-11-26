@@ -38,7 +38,6 @@ get_simulation_time(aeme, model, path, param, FUN_list, vars_sim, weights)
 - vars_sim:
 
   vector; of variables names to be used in the calculation of model fit.
-  Currently only supports using one variable.
 
 - weights:
 
@@ -64,29 +63,27 @@ model <- c("glm_aed", "gotm_wet")
 aeme <- AEME::build_aeme(path = path, aeme = aeme,
 model = model, model_controls = model_controls,
 ext_elev = 5, use_bgc = FALSE)
-#> Building simulation for Wainamu [2025-11-12 21:11:04]
-#> Using observed water level
-#> Missing values in observed water level
-#> Using constant water level
-#> Correcting water balance using estimated outflows (method = 2).
-#> Calculating lake level using lake depth and a sinisoidal function.
-#> Building GLM3-AED2 model for lake wainamu
-#> Copied in GLM nml file
-#> GLM nml checks passed with no issues.
-#> Building GOTM-WET for lake wainamu
-#> Copied all GOTM configuration files
+#> ℹ Using observed water level
+#> ! Missing values in observed water level
+#> ℹ Insufficient water level observations. Using constant water level
+#> ℹ Correcting water balance using estimated outflows (method = 2).
+#> ℹ Calculating lake level using lake depth and a sinisoidal function.
+#> Building AEME object ■■■■■■■■■■■■■■■■                  50% | Writing GLM-AED2 c…
+#> ℹ Building GLM-AED2 for lake wainamu
+#> ℹ Copied in GLM nml file
+#> ℹ Building GOTM-WET model for lake wainamu
+#> ℹ Copied in GOTM configuration files
+#> ✔ GOTM YAML validation completed - no issues detected.
+#> ✔ GLM nml validation completed - no issues detected.
+#> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■           75% | Writing GOTM-WET c…
 aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-#> Running models... (Have you tried parallelizing?) [2025-11-12 21:11:06]
-#> GLM-AED running... [2025-11-12 21:11:06]
-#> GLM-AED run successful! [2025-11-12 21:11:07]
-#> GOTM-WET running... [2025-11-12 21:11:07]
-#> GOTM-WET run successful! [2025-11-12 21:11:07]
-#> Model run complete![2025-11-12 21:11:07]
-#> Retrieving and formatting temp for model glm_aed
-#> Retrieving and formatting salt for model glm_aed
-#> Retrieving and formatting temp for model gotm_wet
-#> Retrieving and formatting salt for model gotm_wet
-utils::data("aeme_parameters", package = "AEME")
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-26 02:28:24]
+#> → GLM-AED2 running... [2025-11-26 02:28:24]
+#> ✔ GLM-AED2 run successful! [2025-11-26 02:28:24]
+#> → GOTM-WET running... [2025-11-26 02:28:24]
+#> ✔ GOTM-WET run successful! [2025-11-26 02:28:25]
+#> ✔ Model run complete! [2025-11-26 02:28:25]
+data("aeme_parameters", package = "AEME")
 param <- aeme_parameters
 # Function to calculate fitness
 fit <- function(df) {
