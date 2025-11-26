@@ -23,19 +23,25 @@
 
 plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
                        base_size = 8, return_pars = FALSE, log_y = TRUE) {
-
+  
   nsims <- nrow(calib$simulation_metadata)
   sim_ids <- calib$simulation_metadata$sim_id
-
+  
   all_pars <- get_param(calib, na_value = na_value, fit_col = fit_col,
-                        best = FALSE)
+                        best = FALSE) |> 
+    dplyr::mutate(
+      label = dplyr::case_when(
+        !is.na(group) ~ paste0(group, "/", label),
+        .default = label
+      )
+    )
   all_pars_label <- all_pars |> 
-    dplyr::distinct(name, label)
+    dplyr::distinct(name, group, label)
   summ <- get_param(calib, na_value = na_value, fit_col = fit_col, 
                     best = TRUE) |> 
-    dplyr::left_join(all_pars_label, by = "name")
+    dplyr::left_join(all_pars_label, by = c("name", "group"))
   if (min(all_pars$fit2, na.rm = TRUE) <= 0 & log_y) {
-    adj <- ceiling(abs(min(all_pars$fit2, na.rm = TRUE)))
+    adj <- ceiling(abs(min(all_pars$fit2, na.rm = TRUE))) + 0.1
     message(strwrap(paste0("Negative fit values detected, adding ", adj,
                            " to all values to ensure log scale is possible."),
                     exdent = 2))
@@ -46,8 +52,14 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
   }
   ylims <- c(min(all_pars$fit2, na.rm = TRUE),
              stats::quantile(all_pars$fit2, 0.75, na.rm = TRUE))
-  ylab <- ifelse(fit_col == "fit", "Fit", paste0("Fit (", fit_col, ")"))
-
+  if (fit_col != "fit") {
+    data("key_naming", package = "AEME", envir = environment())
+    var_name <- key_naming |> 
+      dplyr::filter(name == fit_col) |>
+      dplyr::pull(name_text)
+  }
+  ylab <- ifelse(fit_col == "fit", "Fit", paste0("Fit (", var_name, ")"))
+  
   # Dotty plot ----
   plist <- lapply(sim_ids, \(s) {
     ggplot2::ggplot() +
@@ -79,7 +91,7 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
   })
   pdotty <- patchwork::wrap_plots(plist, nrow = nsims,
                                   guides = "collect")
-
+  
   # Convergence plot ----
   plist <- lapply(sim_ids, \(s) {
     ggplot2::ggplot() +
@@ -97,9 +109,9 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
   })
   pconverge <- patchwork::wrap_plots(plist, nrow = nsims,
                                      guides = "collect")
-
+  
   all_pars$gen <- forcats::fct_rev(all_pars$gen)
-
+  
   # Histogram ----
   plist <- lapply(sim_ids, \(s) {
     ggplot2::ggplot() +
