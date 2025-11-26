@@ -32,13 +32,6 @@ jobs:
           extra-packages: any::covr
           needs: coverage
           
-      # 🧩 Install the upstream dev branch AFTER dependencies
-      - name: Install upstream dev package
-        if: github.ref_name == 'dev'
-        run: |
-          install.packages("remotes")
-          Rscript -e 'remotes::install_github("limnotrack/AEME@dev")'
-
       - name: Test coverage
         run: |
           covr::codecov(
