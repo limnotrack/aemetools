@@ -77,12 +77,12 @@ ext_elev = 5, use_bgc = FALSE)
 #> ✔ GLM nml validation completed - no issues detected.
 #> Building AEME object ■■■■■■■■■■■■■■■■■■■■■■■           75% | Writing GOTM-WET c…
 aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-11-26 02:28:24]
-#> → GLM-AED2 running... [2025-11-26 02:28:24]
-#> ✔ GLM-AED2 run successful! [2025-11-26 02:28:24]
-#> → GOTM-WET running... [2025-11-26 02:28:24]
-#> ✔ GOTM-WET run successful! [2025-11-26 02:28:25]
-#> ✔ Model run complete! [2025-11-26 02:28:25]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-11-26 22:23:56]
+#> → GLM-AED2 running... [2025-11-26 22:23:56]
+#> ✔ GLM-AED2 run successful! [2025-11-26 22:23:57]
+#> → GOTM-WET running... [2025-11-26 22:23:57]
+#> ✔ GOTM-WET run successful! [2025-11-26 22:23:58]
+#> ✔ Model run complete! [2025-11-26 22:23:58]
 data("aeme_parameters", package = "AEME")
 param <- aeme_parameters
 # Function to calculate fitness
