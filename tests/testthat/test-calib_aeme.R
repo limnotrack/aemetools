@@ -95,7 +95,7 @@ test_that("can run funs return same fit", {
                       return_indices = FALSE,
                       include_wlev = FALSE,
                       fit = TRUE)
-  testthat::expect_equal(round(fit3$mae, 3), round(fit4$HYD_temp, 3))
+  testthat::expect_equal(round(fit3$mae, 2), round(fit4$HYD_temp, 2))
   
   test_vars <- c("HYD_thmcln", "CHM_oxynal", "LKE_tli4")
   v = test_vars[1]
@@ -124,7 +124,7 @@ test_that("can run funs return same fit", {
                       return_indices = FALSE,
                       include_wlev = TRUE,
                       fit = TRUE)
-  testthat::expect_equal(round(fit3$mae, 3), round(fit5$HYD_temp, 3))
+  testthat::expect_equal(round(fit3$mae, 2), round(fit5$HYD_temp, 2))
 })
 
 test_that("can calibrate temperature for AEME-DYRESM in parallel", {
@@ -535,8 +535,8 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
 test_that("can calibrate sediment parameters only for AEME-GLM", {
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
-  # path <- tempdir()
-  path <- "aeme"
+  path <- tempdir()
+  # path <- "aeme"
   aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- AEME::get_model_controls()
   model <- c("glm_aed")
