@@ -96,8 +96,8 @@ sa_aeme <- function(aeme, model, param, FUN_list, path = ".",
   
   if (missing(FUN_list) || is.null(FUN_list)) {
     # Default to mean
-    message(strwrap("No FUN_list supplied, defaulting to mean function for all
-                    variables."))
+    cli::cli_alert_info("No FUN_list supplied, defaulting to mean function for 
+                        all variables.")
     FUN_list <- list()
     for (v in vars_sim) {
       FUN_list[[v]] <- function(df) {
@@ -107,7 +107,7 @@ sa_aeme <- function(aeme, model, param, FUN_list, path = ".",
   }
 
   if (!all(vars_sim %in% names(FUN_list)))
-    stop("FUN_list must have names that match vars_sim")
+    cli::cli_abort("FUN_list must have names that match vars_sim")
 
   if (is.null(ctrl$na_value)) {
     ctrl$na_value <- 999
@@ -121,8 +121,8 @@ sa_aeme <- function(aeme, model, param, FUN_list, path = ".",
     var_indices <- NULL
     if (any(vars_sim != "LKE_lvlwtr")) {
       # Extract indices for modelled variables
-      message("Extracting indices for ", m, " modelled variables [",
-              format(Sys.time()), "]")
+      cli::cli_alert_info("Extracting variable indices for {.val {m}} modelled 
+                          variables {.val {vars_sim}}. [{format(Sys.time())}]")
       suppressMessages(
         var_indices <- run_and_fit(aeme = aeme, param = param,
                                    model = m, path = path, FUN_list = FUN_list,
@@ -134,7 +134,8 @@ sa_aeme <- function(aeme, model, param, FUN_list, path = ".",
                                    method = "sa", sa_ctrl = ctrl,
                                    fit = FALSE, timeout = ctrl$timeout)
       )
-      message("Complete! [", format(Sys.time()), "]")
+      cli::cli_alert_success("Variable indices extracted for {.val {m}}. 
+                         [{format(Sys.time())}]")
     }
 
     # Extract parameters for the model ----
@@ -168,9 +169,10 @@ sa_aeme <- function(aeme, model, param, FUN_list, path = ".",
       # list.files(temp_dirs[1], recursive = TRUE)
       ncores <- min(c((parallel::detectCores() - 1), ctrl$ncore))
       nmes <- names(ctrl$vars_sim)
-      message("Running sensitivity analysis in parallel for ", m, " using ",
-              ncores, " cores with ", nrow(param_df), " parameter sets [",
-              format(Sys.time()), "]")
+      cli::cli_alert_info("Starting parallel sensitivity analysis for 
+                          {.val {m}} using {.val {ncores}} cores with 
+                          {.val {nrow(param_df)}} parameter sets. 
+                          [{format(Sys.time())}]")
 
       cl <- parallel::makeCluster(ncores, outfile = "parallel.log")
       on.exit(parallel::stopCluster(cl))
@@ -245,7 +247,9 @@ sa_aeme <- function(aeme, model, param, FUN_list, path = ".",
         return(pars[[i]])
       }, pars = param_list)
 
-      message("Completed ", m, "! [", format(Sys.time()), "]")
+      cli::cli_alert_success("Parallel sensitivity analysis for 
+                          {.val {m}} completed. 
+                          [{format(Sys.time())}]")
 
       g1 <- dplyr::bind_rows(model_out)
       out_df <- apply(g1, 2, signif, digits = 6)
@@ -256,8 +260,9 @@ sa_aeme <- function(aeme, model, param, FUN_list, path = ".",
                                              append_metadata = TRUE)
     } else {
       # Run in serial ----
-      message("Running sensitivity analysis in serial for ", m, " with ",
-              nrow(param_df), " parameter sets [", format(Sys.time()), "]")
+      cli::cli_alert_info("Starting serial sensitivity analysis for 
+                          {.val {m}} with {.val {nrow(param_df)}} 
+                          parameter sets. [{format(Sys.time())}]")
       pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
                                 signif(apply(param_df, 2, median), 4),
                                 signif(apply(param_df, 2, sd), 4)),
@@ -334,7 +339,9 @@ sa_aeme <- function(aeme, model, param, FUN_list, path = ".",
                                              param = param,
                                              append_metadata = TRUE)
 
-      message("Completed ", m, "! [", format(Sys.time()), "]")
+      cli::cli_alert_success("Serial sensitivity analysis for 
+                          {.val {m}} completed. 
+                          [{format(Sys.time())}]")
     }
     ctrl$sim_id
   })
