@@ -87,29 +87,32 @@ param <- aeme_parameters |>
 param
 ```
 
-| model    | file          | name                               |   value |    min |      max | module       | group |
-|:---------|:--------------|:-----------------------------------|--------:|-------:|---------:|:-------------|:------|
-| glm_aed  | glm3.nml      | light/Kw                           | 5.8e-01 |  0.100 | 5.52e+00 | hydrodynamic | NA    |
-| glm_aed  | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| glm_aed  | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| glm_aed  | glm3.nml      | mixing/coef_mix_conv               | 1.4e-01 |  0.100 | 2.00e-01 | hydrodynamic | NA    |
-| glm_aed  | glm3.nml      | mixing/coef_wind_stir              | 2.1e-01 |  0.200 | 3.00e-01 | hydrodynamic | NA    |
-| glm_aed  | glm3.nml      | mixing/coef_mix_shear              | 1.4e-01 |  0.100 | 2.00e-01 | hydrodynamic | NA    |
-| glm_aed  | glm3.nml      | mixing/coef_mix_turb               | 5.6e-01 |  0.200 | 7.00e-01 | hydrodynamic | NA    |
-| glm_aed  | glm3.nml      | mixing/coef_mix_hyp                | 7.4e-01 |  0.400 | 8.00e-01 | hydrodynamic | NA    |
-| glm_aed  | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | hydrodynamic | NA    |
-| gotm_wet | gotm.yaml     | turbulence/turb_param/k_min        | 6.0e-07 |  0.000 | 1.00e-05 | hydrodynamic | NA    |
-| gotm_wet | gotm.yaml     | light_extinction/A/constant_value  | 5.5e-01 |  0.395 | 6.59e-01 | hydrodynamic | NA    |
-| gotm_wet | gotm.yaml     | light_extinction/g1/constant_value | 5.9e-01 |  0.440 | 7.40e-01 | hydrodynamic | NA    |
-| gotm_wet | gotm.yaml     | light_extinction/g2/constant_value | 2.0e-01 |  0.050 | 2.70e+00 | hydrodynamic | NA    |
-| gotm_wet | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| gotm_wet | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| gotm_wet | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | hydrodynamic | NA    |
-| dy_cd    | cfg           | light_extinction_coefficient/7     | 9.0e-01 |  0.100 | 1.40e+00 | hydrodynamic | NA    |
-| dy_cd    | dyresm3p1.par | vert_mix_coeff/15                  | 2.0e+02 | 50.000 | 7.50e+02 | hydrodynamic | NA    |
-| dy_cd    | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| dy_cd    | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | hydrodynamic | NA    |
-| dy_cd    | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | hydrodynamic | NA    |
+| model    | file          | name                               |   value |    min |      max | group | index | module       |
+|:---------|:--------------|:-----------------------------------|--------:|-------:|---------:|:------|------:|:-------------|
+| glm_aed  | glm3.nml      | light/Kw                           | 5.8e-01 |  0.100 | 5.52e+00 | NA    |    NA | hydrodynamic |
+| glm_aed  | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| glm_aed  | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | mixing/coef_mix_conv               | 1.4e-01 |  0.100 | 2.00e-01 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | mixing/coef_wind_stir              | 2.1e-01 |  0.200 | 3.00e-01 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | mixing/coef_mix_shear              | 1.4e-01 |  0.100 | 2.00e-01 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | mixing/coef_mix_turb               | 5.6e-01 |  0.200 | 7.00e-01 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | mixing/coef_mix_hyp                | 7.4e-01 |  0.400 | 8.00e-01 | NA    |    NA | hydrodynamic |
+| glm_aed  | glm3.nml      | sediment/n_zones                   | 1.0e+00 |  1.000 | 1.00e+00 | NA    |    NA | sediment     |
+| glm_aed  | glm3.nml      | sediment/sed_temp_mean             | 1.2e+01 |  6.000 | 1.80e+01 | NA    |     1 | sediment     |
+| glm_aed  | glm3.nml      | sediment/sed_temp_peak_doy         | 3.0e+01 |  1.000 | 9.00e+01 | NA    |     1 | sediment     |
+| glm_aed  | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | NA    |    NA | hydrodynamic |
+| gotm_wet | gotm.yaml     | turbulence/turb_param/k_min        | 6.0e-07 |  0.000 | 1.00e-05 | NA    |    NA | hydrodynamic |
+| gotm_wet | gotm.yaml     | light_extinction/A/constant_value  | 5.5e-01 |  0.395 | 6.59e-01 | NA    |    NA | hydrodynamic |
+| gotm_wet | gotm.yaml     | light_extinction/g1/constant_value | 5.9e-01 |  0.440 | 7.40e-01 | NA    |    NA | hydrodynamic |
+| gotm_wet | gotm.yaml     | light_extinction/g2/constant_value | 2.0e-01 |  0.050 | 2.70e+00 | NA    |    NA | hydrodynamic |
+| gotm_wet | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| gotm_wet | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| gotm_wet | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | NA    |    NA | hydrodynamic |
+| dy_cd    | cfg           | light_extinction_coefficient/7     | 9.0e-01 |  0.100 | 1.40e+00 | NA    |    NA | hydrodynamic |
+| dy_cd    | dyresm3p1.par | vert_mix_coeff/15                  | 2.0e+02 | 50.000 | 7.50e+02 | NA    |    NA | hydrodynamic |
+| dy_cd    | met           | MET_wndspd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| dy_cd    | met           | MET_radswd                         | 1.0e+00 |  0.700 | 1.30e+00 | NA    |    NA | hydrodynamic |
+| dy_cd    | inf           | inflow                             | 1.0e+00 |  0.500 | 2.50e+00 | NA    |    NA | hydrodynamic |
 
 ## Sensitivity analysis setup
 
@@ -232,9 +235,9 @@ The `sa_aeme` function writes the results to the file specified. The
 # Run sensitivity analysis AEME model
 sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
                   model = model, ctrl = ctrl, FUN_list = FUN_list)
-#> Extracting indices for gotm_wet modelled variables [2025-11-12 21:19:18]
-#> Complete! [2025-11-12 21:19:22]
-#> Running sensitivity analysis in parallel for gotm_wet using 2 cores with 144 parameter sets [2025-11-12 21:19:22]
+#> Extracting indices for gotm_wet modelled variables [2025-11-26 02:36:03]
+#> Complete! [2025-11-26 02:36:07]
+#> Running sensitivity analysis in parallel for gotm_wet using 2 cores with 144 parameter sets [2025-11-26 02:36:07]
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
 #> mean                     4.851e-06                           0.52760
 #> median                   5.000e-06                           0.52700
@@ -247,8 +250,9 @@ sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
 #> mean       0.9965     0.9983 1.4930
 #> median     1.0000     1.0000 1.5000
 #> sd         0.1619     0.1606 0.5311
-#> Completed gotm_wet! [2025-11-12 21:25:51]
-#> Writing output for generation 1 to results.db with sim ID: 45819_gotmwet_S_001 [2025-11-12 21:25:51]
+#> Completed gotm_wet! [2025-11-26 02:42:05]
+#> Writing output for generation 1 to results.db with sim ID:
+#> "45819_gotmwet_S_001" [2025-11-26 02:42:05]
 ```
 
 ## Reading sensitivity analysis results
@@ -283,10 +287,10 @@ head(sa_res[[1]]$df)
 |:--------------------|:---------|----:|----:|:-------------------------------------|----------------:|:----------|----------:|:------|
 | 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/turbulence/turb_param/k_min       |        0.000005 | surf_temp |  21.91650 | k_min |
 | 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/turbulence/turb_param/k_min       |        0.000005 | bot_temp  |  20.22430 | k_min |
-| 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/turbulence/turb_param/k_min       |        0.000005 | surf_chla |   6.24598 | k_min |
+| 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/turbulence/turb_param/k_min       |        0.000005 | surf_chla |   6.24595 | k_min |
 | 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/light_extinction/A/constant_value |        0.527000 | surf_temp |  21.91650 | A     |
 | 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/light_extinction/A/constant_value |        0.527000 | bot_temp  |  20.22430 | A     |
-| 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/light_extinction/A/constant_value |        0.527000 | surf_chla |   6.24598 | A     |
+| 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/light_extinction/A/constant_value |        0.527000 | surf_chla |   6.24595 | A     |
 
 - `sobol_indices`: list of the Sobol indices for each variable an it’s
   senstivity to the parameters.
@@ -379,23 +383,23 @@ sa_res[[1]]$sobol_indices
 #> 
 #> Total number of model runs: 144 
 #> 
-#> Sum of first order indices: 1.550933 
+#> Sum of first order indices: 1.550858 
 #>        original       bias std.error     low.ci   high.ci sensitivity
 #>           <num>      <num>     <num>      <num>     <num>      <char>
-#>  1:  0.32269124 0.01023520 0.5659217 -0.7967301 1.4216422          Si
-#>  2:  1.05027188 0.11306256 0.9990551 -1.0209026 2.8953213          Si
-#>  3: -0.30316633 0.29567904 1.0323232 -2.6221617 1.4244709          Si
-#>  4: -0.15825364 0.36295002 1.2030186 -2.8790767 1.8366694          Si
-#>  5: -0.01156204 0.37263086 1.2558619 -2.8456370 2.0772512          Si
-#>  6:  0.29820771 0.49429548 1.7427490 -3.6118130 3.2196375          Si
-#>  7:  0.35274448 0.56672764 1.7669414 -3.6771247 3.2491584          Si
-#>  8:  0.18557630 0.03732472 0.1514318 -0.1485494 0.4450525          Ti
-#>  9:  0.76615571 0.15992460 0.5411401 -0.4543841 1.6668463          Ti
-#> 10:  0.61202724 0.11811155 0.4088231 -0.3073628 1.2951942          Ti
-#> 11:  0.78401451 0.18349901 0.5937370 -0.5631877 1.7642187          Ti
-#> 12:  0.84361060 0.19849079 0.6142423 -0.5587730 1.8490126          Ti
-#> 13:  1.53857955 0.46191530 1.7958231 -2.4430844 4.5964129          Ti
-#> 14:  1.48390095 0.50695979 1.6213401 -2.2008271 4.1547094          Ti
+#>  1:  0.32269456 0.01023705 0.5659237 -0.7967325 1.4216476          Si
+#>  2:  1.05025585 0.11306542 0.9990525 -1.0209165 2.8952973          Si
+#>  3: -0.30317455 0.29568104 1.0323225 -2.6221706 1.4244594          Si
+#>  4: -0.15826536 0.36295263 1.2030190 -2.8790918 1.8366559          Si
+#>  5: -0.01157238 0.37263327 1.2558620 -2.8456499 2.0772386          Si
+#>  6:  0.29819308 0.49429868 1.7427494 -3.6118316 3.2196204          Si
+#>  7:  0.35272656 0.56672838 1.7669353 -3.6771314 3.2491278          Si
+#>  8:  0.18557652 0.03732521 0.1514335 -0.1485528 0.4450554          Ti
+#>  9:  0.76614888 0.15992657 0.5411396 -0.4543917 1.6668363          Ti
+#> 10:  0.61202723 0.11811212 0.4088247 -0.3073665 1.2951968          Ti
+#> 11:  0.78401396 0.18349986 0.5937390 -0.5631930 1.7642212          Ti
+#> 12:  0.84360830 0.19849255 0.6142457 -0.5587837 1.8490152          Ti
+#> 13:  1.53857328 0.46191868 1.7958260 -2.4430997 4.5964089          Ti
+#> 14:  1.48389312 0.50696179 1.6213410 -2.2008385 4.1547012          Ti
 #>     parameters
 #>         <char>
 #>  1:      k_min
@@ -430,8 +434,8 @@ sa_res[[1]]$sobol_dummy
 #> 
 #> $surf_chla
 #>    original        bias std.error low.ci   high.ci sensitivity parameters
-#> 1 0.4045744  0.08401036 0.2742260      0 0.8580371          Si      dummy
-#> 2 0.0000000 -0.08171439 0.8925427      0 1.2171421          Ti      dummy
+#> 1 0.4045758  0.08401069 0.2742272      0 0.8580405          Si      dummy
+#> 2 0.0000000 -0.08171512 0.8925429      0 1.2171487          Ti      dummy
 ```
 
 ## Visualising sensitivity analysis results

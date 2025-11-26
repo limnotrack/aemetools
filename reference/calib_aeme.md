@@ -40,7 +40,6 @@ calib_aeme(
 - vars_sim:
 
   vector; of variables names to be used in the calculation of model fit.
-  Currently only supports using one variable.
 
 - FUN_list:
 

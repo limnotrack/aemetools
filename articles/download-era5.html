@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aemetools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,9 +142,9 @@ precipitation for the year 2021.</p>
 <span><span class="va">vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MET_tmpair"</span>, <span class="st">"MET_pprain"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">met</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_era5_isimip_point.html">get_era5_isimip_point</a></span><span class="op">(</span><span class="va">lon</span>, <span class="va">lat</span>, <span class="va">years</span>, <span class="va">vars</span><span class="op">)</span></span>
-<span><span class="co">#&gt; INFO [2025-11-12 21:17:49] job submitted</span></span>
-<span><span class="co">#&gt; INFO [2025-11-12 21:17:49] downloading</span></span>
-<span><span class="co">#&gt; INFO [2025-11-12 21:17:50] extracting</span></span>
+<span><span class="co">#&gt; INFO [2025-11-26 02:35:06] job submitted</span></span>
+<span><span class="co">#&gt; INFO [2025-11-26 02:35:06] downloading</span></span>
+<span><span class="co">#&gt; INFO [2025-11-26 02:35:07] extracting</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">met</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Date              MET_tmpair      MET_pprain      </span></span>
 <span><span class="co">#&gt;  Min.   :2021-01-01   Min.   :19.08   Min.   : 0.06125  </span></span>
@@ -475,9 +475,9 @@ variables.</p>
 <p>With these simple steps, you can download and derive meteorological
 data for your location of interest. This data can be used to drive
 hydrological and hydrodynamic models for your study area.</p>
-<p>Head over to the <a href="https://limnotrack.github.io/AEME/articles/getting-started.html" class="external-link">AEME
-Getting Started</a> vignette to learn more about how to use the
-meteorological data to drive hydrodynamic models.</p>
+<p>Head over to the <a href="https://limnotrack.com/AEME/articles/aeme-inputs.html" class="external-link">AEME
+Inputs</a> vignette to learn more about how to use the meteorological
+data to drive hydrodynamic models.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aemetools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ to calculate model fit. If nor provided, uses mean absolute error (MAE).</p></dd
 
 <dt id="arg-vars-sim">vars_sim<a class="anchor" aria-label="anchor" href="#arg-vars-sim"></a></dt>
 <dd><p>vector; of variables names to be used in the calculation of
-model fit. Currently only supports using one variable.</p></dd>
+model fit.</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
@@ -107,29 +107,27 @@ provided, defaults to 1 for each variable.</p></dd>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/AEME/reference/build_aeme.html" class="external-link">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>,</span></span>
 <span class="r-in"><span>model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span></span>
 <span class="r-in"><span>ext_elev <span class="op">=</span> <span class="fl">5</span>, use_bgc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building simulation for Wainamu [2025-11-12 21:11:04]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using observed water level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Missing values in observed water level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using constant water level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Correcting water balance using estimated outflows (method = 2).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating lake level using lake depth and a sinisoidal function.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building GLM3-AED2 model for lake wainamu</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Copied in GLM nml file</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM nml checks passed with no issues.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Building GOTM-WET for lake wainamu</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Copied all GOTM configuration files</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Insufficient water level observations. Using constant water level</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Calculating lake level using lake depth and a sinisoidal function.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building AEME object <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | Writing GLM-AED2 c…</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED2 for lake wainamu</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GLM nml file</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GOTM-WET model for lake wainamu</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GOTM configuration files</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GOTM YAML validation completed - no issues detected.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Building AEME object <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  75% | Writing GOTM-WET c…</span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/AEME/reference/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Running models... (Have you tried parallelizing?) [2025-11-12 21:11:06]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED running... [2025-11-12 21:11:06]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GLM-AED run successful! [2025-11-12 21:11:07]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GOTM-WET running... [2025-11-12 21:11:07]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> GOTM-WET run successful! [2025-11-12 21:11:07]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Model run complete![2025-11-12 21:11:07]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting temp for model glm_aed</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting salt for model glm_aed</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting temp for model gotm_wet</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving and formatting salt for model gotm_wet</span>
-<span class="r-in"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"aeme_parameters"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2025-11-26 02:28:24]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED2 running... [2025-11-26 02:28:24]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED2 run successful! [2025-11-26 02:28:24]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → GOTM-WET running... [2025-11-26 02:28:24]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2025-11-26 02:28:25]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2025-11-26 02:28:25]</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"aeme_parameters"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="va">aeme_parameters</span></span></span>
 <span class="r-in"><span><span class="co"># Function to calculate fitness</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span></span></span>
