@@ -11,7 +11,7 @@
 #' @param param dataframe; of parameters read in from a csv file. Requires the
 #' columns c("model", "file", "name", "value", "min", "max", "log")
 #' @param vars_sim vector; of variables names to be used in the calculation of
-#' model fit. Currently only supports using one variable.
+#' model fit.
 #' @param FUN_list list of functions; named according to the variables in the
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If nor provided, uses mean absolute error (MAE).
@@ -52,9 +52,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
     }
   }
   if (missing(weights)) {
-    message("No weights supplied. Defaulting to 1 for all variables.")
-    weights <- rep(1, length(vars_sim))
-    names(weights) <- vars_sim
+    cli::cli_inform("No weights supplied. Defaulting to 1 for all variables.")
+    weights <- set_weights(vars_sim = vars_sim)
   }
   # Check if vars_sim and weights are the same length
   if (length(vars_sim) != length(weights))
@@ -67,6 +66,11 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
     config <- AEME::configuration(aeme = aeme)
     model_controls <- config$model_controls
   }
+  
+  # Ensure all the target variables are switched on in model_controls
+  model_controls <- AEME::set_vars_sim(model_controls = model_controls, 
+                                       vars_sim = vars_sim, simulate = TRUE,
+                                       exclusive = TRUE)
 
   if (is.null(ctrl)) {
     ctrl <- create_control(method = "calib", NP = NA, itermax = 200)
@@ -455,6 +459,13 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                                              aeme = aeme, model = m,
                                              param = param,
                                              append_metadata = TRUE)
+      
+      if (ctrl$c_method == "LHC") {
+        write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
+        cli::cli_alert_success("LHC calibration complete for {.val {m}}. 
+                               [{format(Sys.time())}]")
+        return(ctrl$sim_id)
+      }
 
       if (min(g1$fit) < ctrl$VTR) {
         message("Model fitness is less than VTR. Stopping simulation.")
@@ -526,8 +537,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
             }
 
             pars[[i]][["fit"]][p] <- res1
-            # print(pars[[i]][["fit"]][p])
-            print(pars[[i]][p, ])
+            print(pars[[i]][["fit"]][p])
+            # print(pars[[i]][p, ])
           }
           return(pars[[i]])
         }, pars = param_list)
