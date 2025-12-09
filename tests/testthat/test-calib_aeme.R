@@ -1343,7 +1343,7 @@ test_that("can calibrate HYD_strat for AEME-GLM & GOTM in parallel", {
   testthat::expect_true(is.list(plist))
 })
 
-test_that("can update bgc parameters for GLM-AED2", {
+test_that("can update bgc parameters for GLM-AED", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -1353,19 +1353,24 @@ test_that("can update bgc parameters for GLM-AED2", {
   aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
   model_controls <- AEME::get_model_controls()
   model_controls <- AEME::set_vars_sim(model_controls, vars_sim = vars_sim)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  model <- c("glm_aed", "gotm_wet")
+  model <- c("glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = TRUE)
-  aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model)
+                           ext_elev = 5, use_bgc = TRUE)
+  aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model, verbose = T)
   
   # Get parameters for calibration
   data("aeme_parameters", package = "AEME")
   phy_param <- AEME::get_aeme_parameters(model = model,
-                                         module = "phytoplankton")
+                                         file = c(#"fabm.yaml", 
+                                                  "aed_phyto_pars.csv"),
+                                         module = "phytoplankton") |> 
+    dplyr::filter(grepl("p_initial|p0|Xcc|R_growth|theta_growth|T_std|T_opt|
+                        T_max|R_resp|theta_resp|k_fres", name))
+  
+  sed_param <- AEME::get_aeme_parameters(model = model,
+                                         file = c("aed.nml"),
+                                         module = "sed_const2d")
   param <- dplyr::bind_rows(aeme_parameters, phy_param)
   
   # Function to calculate fitness
@@ -1377,8 +1382,11 @@ test_that("can update bgc parameters for GLM-AED2", {
   FUN_list <- list(PHY_tchla = fit)
   
   ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2L,
-                         parallel = TRUE, file_type = "db", na_value = 1e20,
+                         parallel = F, file_type = "db", na_value = 1e20,
                          file_name = "results.db", c_method = "LHC")
+  
+  run_and_fit(aeme = aeme, param = param, model = model, vars_sim = vars_sim,
+              path = path, model_controls = model_controls, FUN_list = FUN_list)
   
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
