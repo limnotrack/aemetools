@@ -56,7 +56,7 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   
   out_file_chk <- sapply(out_file, \(x) !file.exists(x)) |> 
     unlist()
-  if (any(out_file_chk)) {
+  if (any(out_file_chk) | length(out_file_chk) == 0) {
     out_file_unl <- unlist(out_file)
     cli::cli_alert_danger("No {.file {out_file_unl[out_file_chk]}} present.")
     return(na_value)
