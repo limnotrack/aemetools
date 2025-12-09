@@ -28,18 +28,13 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
   sim_ids <- calib$simulation_metadata$sim_id
   
   all_pars <- get_param(calib, na_value = na_value, fit_col = fit_col,
-                        best = FALSE) |> 
-    dplyr::mutate(
-      label = dplyr::case_when(
-        !is.na(group) ~ paste0(group, "/", label),
-        .default = label
-      )
-    )
+                        best = FALSE) 
   all_pars_label <- all_pars |> 
-    dplyr::distinct(name, group, label)
+    dplyr::distinct(parameter_name, name, group, label)
   summ <- get_param(calib, na_value = na_value, fit_col = fit_col, 
                     best = TRUE) |> 
-    dplyr::left_join(all_pars_label, by = c("name", "group"))
+    dplyr::mutate(parameter_name = encode_param(group, name, index)) |> 
+    dplyr::left_join(all_pars_label, by = c("parameter_name"))
   if (min(all_pars$fit2, na.rm = TRUE) <= 0 & log_y) {
     adj <- ceiling(abs(min(all_pars$fit2, na.rm = TRUE))) + 0.1
     message(strwrap(paste0("Negative fit values detected, adding ", adj,

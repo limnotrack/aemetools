@@ -32,7 +32,11 @@ plot_calib_summary <- function(calib, fit_col, nrow = 2, base_size = 8,
   
   all_pars <- get_param(calib, na_value = na_value, fit_col = fit_col,
                         best = FALSE)
-  summ <- get_param(calib, na_value = na_value, fit_col = fit_col, best = TRUE)
+  summ <- get_param(calib, na_value = na_value, fit_col = fit_col, 
+                    best = TRUE) |> 
+    dplyr::mutate(
+      enc_name = encode_param(group, name, index),
+      label = abbrev_pars(enc_name, model))
   if (min(all_pars$fit2, na.rm = TRUE) <= 0 & log_y) {
     adj <- ceiling(abs(min(all_pars$fit2, na.rm = TRUE)))
     message(strwrap(paste0("Negative fit values detected, adding ", adj,
@@ -43,58 +47,54 @@ plot_calib_summary <- function(calib, fit_col, nrow = 2, base_size = 8,
   } else {
     summ$fit2 <- summ$fit_value
   }
-  ylims <- c(min(all_pars$fit2, na.rm = TRUE),
-             stats::quantile(all_pars$fit2, 0.75, na.rm = TRUE))
-  # ylab <- ifelse(fit_col == "fit", "Fit", paste0("Fit (", fit_col, ")"))
-  
-  
   # Summary plot of best parameter values for multiple fits ----
   err_bars <- summ |>
-    dplyr::mutate(label = abbrev_pars(name, model)) |> 
     dplyr::group_by(sim_id, label) |>
     dplyr::summarise(xmin = min(value, na.rm = TRUE),
                      xmax = max(value, na.rm = TRUE),
-                     ymin = min(fit_value, na.rm = TRUE),
-                     ymax = max(fit_value, na.rm = TRUE),
+                     ymin = min(fit2, na.rm = TRUE),
+                     ymax = max(fit2, na.rm = TRUE),
                      gen = dplyr::first(gen), 
-                     .groups = "drop")
+                     .groups = "drop") |> 
+    dplyr::mutate(xmid = (xmin + xmax) / 2,
+                  ymid = (ymin + ymax) / 2)
+  
+  ylims <- c(min(all_pars$fit2, na.rm = TRUE),
+             max(c(quantile(all_pars$fit2, 0.75, na.rm = TRUE), 
+                   err_bars$ymax)))
+  # ylab <- ifelse(fit_col == "fit", "Fit", paste0("Fit (", fit_col, ")"))
+  
+  
   ylab <- "Fit"
   plist <- lapply(sim_ids, \(s) {
     sub_all_pars <- all_pars |> 
       dplyr::filter(sim_id == s, !is.na(fit2))
     sub_summ <- summ |>
       dplyr::filter(sim_id == s)
+    sub_err <- err_bars |>
+      dplyr::filter(sim_id == s)
     ggplot2::ggplot() +
+      facet_wrap( ~ label, scales = "free_x", nrow = nrow) +
       ggplot2::geom_point(data = sub_all_pars,
-                          ggplot2::aes(parameter_value, fit2, colour = gen,
-                                       group = sim_id, shape = fit_type),
+                          ggplot2::aes(parameter_value, fit2, colour = fit_type,
+                                       group = sim_id),
                           alpha = 0) +
       ggplot2::geom_point(data = sub_summ,
-                          ggplot2::aes(value, fit2, colour = gen,
-                                       group = model, shape = fit_type)) +
+                          ggplot2::aes(value, fit2, colour = fit_type,
+                                       group = model)) +
       ggplot2::geom_point(data = sub_summ,
-                          ggplot2::aes(value, fit2, colour = gen,
-                                       group = model, shape = fit_type)) +
-      ggplot2::geom_errorbar(data = err_bars[err_bars$sim_id == s, ],
-                             ggplot2::aes(x = (xmin + xmax) / 2, ymin = ymin,
+                          ggplot2::aes(value, fit2, colour = fit_type,
+                                       group = model)) +
+      ggplot2::geom_errorbar(data = sub_err,
+                             ggplot2::aes(x = xmid, ymin = ymin,
                                           ymax = ymax), width = 0) +
-      ggplot2::geom_errorbar(data = err_bars[err_bars$sim_id == s, ],
-                              ggplot2::aes(y = (ymin + ymax) / 2, xmin = xmin,
+      ggplot2::geom_errorbar(data = sub_err,
+                              ggplot2::aes(y = ymid, xmin = xmin,
                                            xmax = xmax), width = 0) +
       {if (log_y) ggplot2::scale_y_log10()} +
-      ggplot2::scale_colour_viridis_d() +
       ggplot2::coord_cartesian(ylim = ylims) +
       ggplot2::xlab("") +
       ggplot2::ylab(ylab) +
-      # annotate(geom = 'text', label = 'sometext', x = -Inf, y = Inf, hjust = 0,
-      #          vjust = 1) +
-      # ggplot2::geom_text(data = summ[summ$sim_id == s, ],
-      #                    ggplot2::aes(x = Inf, y = Inf,
-      #                                 label = signif(value, 3)),
-      #                    vjust = 4,
-      #                    hjust = 2, size = 3) +
-      facet_wrap( ~ label, scales = "free_x", nrow = nrow) +
-      # ggplot2::facet_grid(sim_id ~ label, scales = "free_x") +
       ggplot2::theme_bw(base_size = base_size)
   })
   psum <- patchwork::wrap_plots(plist, nrow = nsims,
