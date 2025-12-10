@@ -13,7 +13,7 @@ get_param(calib, na_value, fit_col = "fit", best = FALSE)
 - calib:
 
   A list with the calibration results loaded using
-  [`read_calib`](https://limnotrack.github.io/aemetools/reference/read_simulation_output.md).
+  [`read_calib`](read_simulation_output.md).
 
 - na_value:
 

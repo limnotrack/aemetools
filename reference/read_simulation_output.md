@@ -29,10 +29,8 @@ read_calib(
 - ctrl:
 
   list; of controls for sensitivity analysis function created using the
-  [`create_control`](https://limnotrack.github.io/aemetools/reference/create_control.md)
-  function. See
-  [create_control](https://limnotrack.github.io/aemetools/reference/create_control.md)
-  for more details.
+  [`create_control`](create_control.md) function. See
+  [create_control](create_control.md) for more details.
 
 - file_name:
 

@@ -13,7 +13,7 @@ plot_scatter(sa, cutoff = NA)
 - sa:
 
   list; of sensitivity analysis results read in with
-  [`read_sa`](https://limnotrack.github.io/aemetools/reference/read_sa.md)
+  [`read_sa`](read_sa.md)
 
 - cutoff:
 

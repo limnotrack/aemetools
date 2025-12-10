@@ -13,10 +13,7 @@ set_weights(vars_sim, weights = 1)
 - vars_sim:
 
   vector; of variables names to be used in the calculation of model fit
-  in
-  [`calib_aeme()`](https://limnotrack.github.io/aemetools/reference/calib_aeme.md)
-  or
-  [`sa_aeme()`](https://limnotrack.github.io/aemetools/reference/sa_aeme.md).
+  in [`calib_aeme()`](calib_aeme.md) or [`sa_aeme()`](sa_aeme.md).
 
 - weights:
 

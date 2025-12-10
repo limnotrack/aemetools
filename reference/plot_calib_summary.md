@@ -12,8 +12,7 @@ plot_calib_summary(calib, fit_col, nrow = 2, base_size = 8, log_y = TRUE)
 
 - calib:
 
-  dataframe; output from
-  [`read_calib`](https://limnotrack.github.io/aemetools/reference/read_simulation_output.md)
+  dataframe; output from [`read_calib`](read_simulation_output.md)
 
 - fit_col:
 

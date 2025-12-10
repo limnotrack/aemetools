@@ -20,8 +20,7 @@ plot_calib(
 
 - calib:
 
-  dataframe; output from
-  [`read_calib`](https://limnotrack.github.io/aemetools/reference/read_simulation_output.md)
+  dataframe; output from [`read_calib`](read_simulation_output.md)
 
 - na_value:
 

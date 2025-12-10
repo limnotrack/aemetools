@@ -28,8 +28,8 @@ check_api_status()
 
 There are shape files for all lakes in the LimnoTrack database. These
 can be accessed using the
-[`get_lake_shape()`](https://limnotrack.github.io/aemetools/reference/get_lake_shape.md)
-function. You need to provide the lake ID (e.g. FENZ ID or Lernzmp ID).
+[`get_lake_shape()`](../reference/get_lake_shape.md) function. You need
+to provide the lake ID (e.g. FENZ ID or Lernzmp ID).
 
 ``` r
 lake <- get_lake_shape(id = 15022)
@@ -56,10 +56,10 @@ tm_shape(lake) +
 ## Lake catchment data
 
 Lake catchment data can be accessed using the
-[`get_catchment_data()`](https://limnotrack.github.io/aemetools/reference/get_catchment_data.md)
-function. You need to provide the lake ID (e.g. FENZ ID or Lernzmp ID).
-The downloaded data is a list which includes the catchment, reaches,
-lakes, subcatchments, and LCDB data.
+[`get_catchment_data()`](../reference/get_catchment_data.md) function.
+You need to provide the lake ID (e.g. FENZ ID or Lernzmp ID). The
+downloaded data is a list which includes the catchment, reaches, lakes,
+subcatchments, and LCDB data.
 
 ``` r
 catchment <- get_catchment_data(id = 15022)
@@ -86,8 +86,8 @@ tm_shape(catchment$catchment, name = "Catchment") +
 For many lakes in the LimnoTrack database, there is an associated Aeme
 object that contains model parameters and other information. You can
 access the Aeme object using the
-[`get_aeme()`](https://limnotrack.github.io/aemetools/reference/get_aeme.md)
-function. You need to provide the lake ID (e.g. FENZ ID or Lernzmp ID).
+[`get_aeme()`](../reference/get_aeme.md) function. You need to provide
+the lake ID (e.g. FENZ ID or Lernzmp ID).
 
 ``` r
 aeme <- get_aeme(id = 15022)
@@ -107,8 +107,8 @@ aeme
 #>     Use biogeochemical model: 
 #>           Physical   |   Biogeochemical
 #> DY-CD    : Absent     |   Absent 
-#> GLM-AED  : Present    |   Present
-#> GOTM-WET : Present    |   Present
+#> GLM-AED  : Present    |   Absent 
+#> GOTM-WET : Present    |   Absent 
 #> -------------------------------------------------------------------
 #>   Observations
 #> Lake: Present; Level: Absent
