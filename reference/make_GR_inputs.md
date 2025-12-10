@@ -60,5 +60,4 @@ make_GR_inputs(
 
 ## Value
 
-list of inputs for
-[`run_GR()`](https://limnotrack.github.io/aemetools/reference/run_GR.md).
+list of inputs for [`run_GR()`](run_GR.md).

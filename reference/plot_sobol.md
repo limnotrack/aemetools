@@ -14,7 +14,7 @@ plot_sobol(sa, order = "first", add_errorbars = TRUE, use_dummy = TRUE)
 - sa:
 
   list; of sensitivity analysis results read in with
-  [`read_sa`](https://limnotrack.github.io/aemetools/reference/read_sa.md)
+  [`read_sa`](read_sa.md)
 
 - order:
 

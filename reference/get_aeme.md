@@ -50,8 +50,8 @@ aeme
 #>     Use biogeochemical model: 
 #>           Physical   |   Biogeochemical
 #> DY-CD    : Absent     |   Absent 
-#> GLM-AED  : Present    |   Present
-#> GOTM-WET : Present    |   Present
+#> GLM-AED  : Present    |   Absent 
+#> GOTM-WET : Present    |   Absent 
 #> -------------------------------------------------------------------
 #>   Observations
 #> Lake: Present; Level: Absent

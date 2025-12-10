@@ -49,8 +49,7 @@ ecmwfr::wf_set_key(key = Sys.getenv("CDS_KEY"),
 
 #### Point timeseries data
 
-The
-[`get_era5_isimip_point()`](https://limnotrack.github.io/aemetools/reference/get_era5_isimip_point.md)
+The [`get_era5_isimip_point()`](../reference/get_era5_isimip_point.md)
 function can be used to download ERA5 meteorological data for a specific
 point location. This uses the ISIMIP3a dataset which is a subset of the
 ERA5 dataset and is accessed via the [ISIMIP
@@ -73,9 +72,11 @@ years <- 2021
 vars <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_isimip_point(lon, lat, years, vars)
-#> INFO [2025-11-26 23:04:55] job submitted
-#> INFO [2025-11-26 23:04:55] downloading
-#> INFO [2025-11-26 23:04:56] extracting
+#> INFO [2025-12-09 23:54:18] job submitted
+#> INFO [2025-12-09 23:54:22] job updated
+#> INFO [2025-12-09 23:54:26] job updated
+#> INFO [2025-12-09 23:54:26] downloading
+#> INFO [2025-12-09 23:54:27] extracting
 summary(met)
 #>       Date              MET_tmpair      MET_pprain      
 #>  Min.   :2021-01-01   Min.   :19.08   Min.   : 0.06125  
@@ -88,8 +89,7 @@ summary(met)
 
 #### GRIB files
 
-The
-[`download_era5_grib()`](https://limnotrack.github.io/aemetools/reference/download_era5_grib.md)
+The [`download_era5_grib()`](../reference/download_era5_grib.md)
 function can be used to download ERA5 meteorological data from the
 Copernicus Data Store (CDS). This function requires the latitude,
 longitude, variable, year, and month to be specified. The data will be
@@ -161,9 +161,9 @@ tm_shape(coords) +
 
 Now we can download the ERA5 data for the 2m temperature for January
 2024. We can use the
-[`download_era5_grib()`](https://limnotrack.github.io/aemetools/reference/download_era5_grib.md)
-function to download the data using the shapefile we downloaded earlier
-or the latitude and longitude of the location.
+[`download_era5_grib()`](../reference/download_era5_grib.md) function to
+download the data using the shapefile we downloaded earlier or the
+latitude and longitude of the location.
 
 ``` r
 year <- 2024
@@ -219,8 +219,7 @@ plet(r)
 
 As you can see it gives us a spatial grid of the 2m temperature for the
 month of January 2024. However it is at a 1-hour temporal resolution. We
-can use the
-[`read_grib_point()`](https://limnotrack.github.io/aemetools/reference/read_grib_point.md)
+can use the [`read_grib_point()`](../reference/read_grib_point.md)
 function to extract the timeseries data at a specific point location.
 
 ``` r
@@ -280,7 +279,7 @@ tm_shape(coords) +
 
 Now we can download the ERA5 data for the air temperature and
 precipitation for the years 2000-2001. We can use the
-[`get_era5_land_point_nz()`](https://limnotrack.github.io/aemetools/reference/get_era5_land_point_nz.md)
+[`get_era5_land_point_nz()`](../reference/get_era5_land_point_nz.md)
 function to download the data.
 
 The function will return a dataframe with the daily meteorological data
@@ -382,17 +381,15 @@ and elevation of the site. Elevation is required to calculate the mean
 sea level pressure and cloud cover.
 
 We can access the elevation data using the
-[`get_dem_value()`](https://limnotrack.github.io/aemetools/reference/get_dem_value.md)
-function. This function uses the LINZ data service to obtain the
-elevation value for a given latitude and longitude using the national 8m
-digital elevation model (DEM) layer (ID: 51768).
+[`get_dem_value()`](../reference/get_dem_value.md) function. This
+function uses the LINZ data service to obtain the elevation value for a
+given latitude and longitude using the national 8m digital elevation
+model (DEM) layer (ID: 51768).
 
 This requires a LINZ API key which can be obtained by visiting the [LINZ
 website](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/)
 and registering for an account. Then adding it to your R session using
-the
-[`add_linz_key()`](https://limnotrack.github.io/aemetools/reference/add_linz_key.md)
-function.
+the [`add_linz_key()`](../reference/add_linz_key.md) function.
 
 ``` r
 

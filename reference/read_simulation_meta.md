@@ -15,10 +15,8 @@ read_simulation_meta(ctrl = NULL, file_name, file_dir, type)
 - ctrl:
 
   A list with the control parameters used in
-  [`calib_aeme()`](https://limnotrack.github.io/aemetools/reference/calib_aeme.md)
-  or
-  [`sa_aeme()`](https://limnotrack.github.io/aemetools/reference/sa_aeme.md).
-  If `ctrl` is provided, the `file_name` and `file_dir` arguments are
+  [`calib_aeme()`](calib_aeme.md) or [`sa_aeme()`](sa_aeme.md). If
+  `ctrl` is provided, the `file_name` and `file_dir` arguments are
   ignored.
 
 - file_name:
