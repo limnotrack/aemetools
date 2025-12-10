@@ -104,8 +104,7 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                                    model_controls = model_controls,
                                    vars_sim = vars_sim, weights = weights,
                                    return_indices = TRUE,
-                                   include_wlev = include_wlev, fit = FALSE,
-                                   timeout = ctrl$timeout)
+                                   include_wlev = include_wlev, fit = FALSE)
       )
       cli::cli_inform(c("v" = "Indices extracted for {.val {m}} modelled 
                         variables [{format(Sys.time())}]"))
