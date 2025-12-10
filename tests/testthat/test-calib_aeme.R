@@ -17,8 +17,7 @@ test_that("can run AEME-GLM with parameters", {
   data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
   
-  run_aeme_param(aeme = aeme, param = param,
-                 model = model, path = path)
+  run_aeme_param(aeme = aeme, param = param, model = model, path = path)
   lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -314,6 +313,50 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
   
 })
 
+test_that("can return NA if timeout is too low", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
+  model <- c("glm_aed", "gotm_wet")
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           ext_elev = 5, use_bgc = FALSE)
+  aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
+  # AEME::plot(aeme, model = model)
+  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
+  file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
+  testthat::expect_true(all(file_chk))
+  
+  data("aeme_parameters", package = "AEME")
+  param <- aeme_parameters
+  
+  # Function to calculate fitness
+  fit <- function(df) {
+    mean(abs(df$obs - df$model))
+  }
+  FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
+  
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
+                         parallel = FALSE, file_type = "db",
+                         file_name = "results.db")
+  
+  vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+  weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
+  
+  sim_times <- get_simulation_time(aeme = aeme, model = model, path = path,
+                                   param = param, FUN_list = FUN_list,
+                                   vars_sim = vars_sim, weights = weights)
+  ctrl$timeout <- 0.1
+  sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
+                       param = param, FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
+  
+})
+
 test_that("can calibrate lake level for AEME-GOTM in parallel", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
@@ -504,7 +547,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   sim_times <- get_simulation_time(aeme = aeme, model = model, path = path,
                                    param = param, FUN_list = FUN_list,
                                    vars_sim = vars_sim, weights = weights)
-  
+
   testthat::expect_error({
     ctrl$timeout <- 0.01
     # Calibrate AEME model
