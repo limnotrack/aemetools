@@ -13,7 +13,8 @@ run_aeme_param(
   na_value = 999,
   return_nc = FALSE,
   return_aeme = FALSE,
-  parallel = FALSE
+  parallel = FALSE,
+  timeout = Inf
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ working directory.}
 \item{return_aeme}{boolean; return AEME object}
 
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
+
+\item{timeout}{Timeout for the process, in seconds, or as a \code{difftime}
+object. If it is not finished before this, it will be killed.}
 }
 \value{
 \code{na_value} if model run is unsuccessful
