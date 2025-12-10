@@ -55,9 +55,6 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                         method = "calib", sa_ctrl = NULL,
                         fit = TRUE, timeout = Inf) {
   
-  # Set timeout for each simulation
-  setTimeLimit(cpu = timeout)
-  
   return_nc <- ifelse(fit | return_indices, TRUE, FALSE)
   if (is.null(model_controls)) {
     config <- AEME::configuration(aeme = aeme)
@@ -97,7 +94,8 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   
   nc <- run_aeme_param(aeme = aeme, param = param, model = model,
                        path = path, model_controls = model_controls,
-                       na_value = na_value, return_nc = return_nc)
+                       na_value = na_value, return_nc = return_nc,
+                       timeout = timeout)
   # if nc is not ncdf4 object, return return_list
   if (!is.list(nc) & !inherits(nc, "ncdf4")) {
     cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
