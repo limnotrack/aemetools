@@ -14,7 +14,8 @@ run_aeme_param(
   na_value = 999,
   return_nc = FALSE,
   return_aeme = FALSE,
-  parallel = FALSE
+  parallel = FALSE,
+  timeout = Inf
 )
 ```
 
@@ -58,6 +59,11 @@ run_aeme_param(
 - parallel:
 
   logical; run models in parallel. Defaults to FALSE.
+
+- timeout:
+
+  Timeout for the process, in seconds, or as a `difftime` object. If it
+  is not finished before this, it will be killed.
 
 ## Value
 

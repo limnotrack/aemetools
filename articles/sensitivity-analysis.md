@@ -236,13 +236,13 @@ The `sa_aeme` function writes the results to the file specified. The
 sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
                   model = model, ctrl = ctrl, FUN_list = FUN_list)
 #> ℹ Extracting variable indices for "gotm_wet" modelled 
-#> variables "HYD_temp" and "PHY_tchla". [2025-12-09 23:55:54]
+#> variables "HYD_temp" and "PHY_tchla". [2025-12-14 23:06:24]
 #> ✔ Variable indices extracted for "gotm_wet". 
-#> [2025-12-09 23:55:58]
+#> [2025-12-14 23:06:29]
 #> ℹ Starting parallel sensitivity analysis for 
 #> "gotm_wet" using 2 cores with 
 #> 144 parameter sets. 
-#> [2025-12-09 23:55:58]
+#> [2025-12-14 23:06:29]
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
 #> mean                     4.851e-06                           0.52760
 #> median                   5.000e-06                           0.52700
@@ -257,9 +257,9 @@ sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
 #> sd         0.1619     0.1606 0.5311
 #> ✔ Parallel sensitivity analysis for 
 #> "gotm_wet" completed. 
-#> [2025-12-10 00:02:23]
+#> [2025-12-14 23:14:22]
 #> Writing output for generation 1 to results.db with sim ID:
-#> "45819_gotmwet_S_001" [2025-12-10 00:02:23]
+#> "45819_gotmwet_S_001" [2025-12-14 23:14:22]
 ```
 
 ## Reading sensitivity analysis results
@@ -294,10 +294,10 @@ head(sa_res[[1]]$df)
 |:--------------------|:---------|----:|----:|:-------------------------------------|----------------:|:----------|----------:|:------|
 | 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/turbulence/turb_param/k_min       |        0.000005 | surf_temp |  21.91650 | k_min |
 | 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/turbulence/turb_param/k_min       |        0.000005 | bot_temp  |  20.22430 | k_min |
-| 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/turbulence/turb_param/k_min       |        0.000005 | surf_chla |   6.24595 | k_min |
+| 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/turbulence/turb_param/k_min       |        0.000005 | surf_chla |   6.37335 | k_min |
 | 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/light_extinction/A/constant_value |        0.527000 | surf_temp |  21.91650 | A     |
 | 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/light_extinction/A/constant_value |        0.527000 | bot_temp  |  20.22430 | A     |
-| 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/light_extinction/A/constant_value |        0.527000 | surf_chla |   6.24595 | A     |
+| 45819_gotmwet_S_001 | gotm_wet |   1 |   1 | NA/light_extinction/A/constant_value |        0.527000 | surf_chla |   6.37335 | A     |
 
 - `sobol_indices`: list of the Sobol indices for each variable an it’s
   senstivity to the parameters.
@@ -390,23 +390,23 @@ sa_res[[1]]$sobol_indices
 #> 
 #> Total number of model runs: 144 
 #> 
-#> Sum of first order indices: 1.550858 
-#>        original       bias std.error     low.ci   high.ci sensitivity
-#>           <num>      <num>     <num>      <num>     <num>      <char>
-#>  1:  0.32269456 0.01023705 0.5659237 -0.7967325 1.4216476          Si
-#>  2:  1.05025585 0.11306542 0.9990525 -1.0209165 2.8952973          Si
-#>  3: -0.30317455 0.29568104 1.0323225 -2.6221706 1.4244594          Si
-#>  4: -0.15826536 0.36295263 1.2030190 -2.8790918 1.8366559          Si
-#>  5: -0.01157238 0.37263327 1.2558620 -2.8456499 2.0772386          Si
-#>  6:  0.29819308 0.49429868 1.7427494 -3.6118316 3.2196204          Si
-#>  7:  0.35272656 0.56672838 1.7669353 -3.6771314 3.2491278          Si
-#>  8:  0.18557652 0.03732521 0.1514335 -0.1485528 0.4450554          Ti
-#>  9:  0.76614888 0.15992657 0.5411396 -0.4543917 1.6668363          Ti
-#> 10:  0.61202723 0.11811212 0.4088247 -0.3073665 1.2951968          Ti
-#> 11:  0.78401396 0.18349986 0.5937390 -0.5631930 1.7642212          Ti
-#> 12:  0.84360830 0.19849255 0.6142457 -0.5587837 1.8490152          Ti
-#> 13:  1.53857328 0.46191868 1.7958260 -2.4430997 4.5964089          Ti
-#> 14:  1.48389312 0.50696179 1.6213410 -2.2008385 4.1547012          Ti
+#> Sum of first order indices: 3.072232 
+#>        original          bias std.error      low.ci   high.ci sensitivity
+#>           <num>         <num>     <num>       <num>     <num>      <char>
+#>  1:  0.09149162  0.0681798007 0.4459914 -0.85081535 0.8974390          Si
+#>  2:  0.84603006  0.0232106771 0.9387981 -1.01719115 2.6628299          Si
+#>  3:  0.66651999 -0.0229642840 0.7834441 -0.84603791 2.2250065          Si
+#>  4: -0.16794649 -0.1515125964 0.9175641 -1.81482655 1.7819588          Si
+#>  5:  0.79308701  0.0022025237 0.8604685 -0.89560271 2.4773717          Si
+#>  6:  0.28315408 -0.0748473234 0.7319316 -1.07655812 1.7925609          Si
+#>  7:  0.55989577 -0.0544140218 0.8858235 -1.12187234 2.3504919          Si
+#>  8:  0.11370711  0.0315890074 0.1341257 -0.18076347 0.3449997          Ti
+#>  9:  0.74911573  0.0474935086 0.4307708 -0.14267307 1.5459175          Ti
+#> 10:  0.41765702  0.0125918438 0.3478004 -0.27661102 1.0867414          Ti
+#> 11:  0.62272737  0.0212406631 0.1880643  0.23288738 0.9700860          Ti
+#> 12:  0.62616238  0.0014545105 0.3112504  0.01466823 1.2347475          Ti
+#> 13:  0.43589444  0.0001640663 0.1474307  0.14677142 0.7246893          Ti
+#> 14:  0.59830295  0.0126394775 0.2300776  0.13471975 1.0366072          Ti
 #>     parameters
 #>         <char>
 #>  1:      k_min
@@ -440,9 +440,9 @@ sa_res[[1]]$sobol_dummy
 #> 2 0.000000 0.003311261 0.68567059 0.000000 0.3838079          Ti      dummy
 #> 
 #> $surf_chla
-#>    original        bias std.error low.ci   high.ci sensitivity parameters
-#> 1 0.4045758  0.08401069 0.2742272      0 0.8580405          Si      dummy
-#> 2 0.0000000 -0.08171512 0.8925429      0 1.2171487          Ti      dummy
+#>    original       bias std.error low.ci   high.ci sensitivity parameters
+#> 1 0.3453333 0.06727255 0.1894443      0 0.6493648          Si      dummy
+#> 2 0.0000000 0.01811441 0.7152924      0 0.9759759          Ti      dummy
 ```
 
 ## Visualising sensitivity analysis results

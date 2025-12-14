@@ -55,7 +55,8 @@
 <span>  na_value <span class="op">=</span> <span class="fl">999</span>,</span>
 <span>  return_nc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  return_aeme <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="cn">Inf</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -101,6 +102,11 @@ working directory.</p></dd>
 
 <dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
 <dd><p>logical; run models in parallel. Defaults to FALSE.</p></dd>
+
+
+<dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
+<dd><p>Timeout for the process, in seconds, or as a <code>difftime</code>
+object. If it is not finished before this, it will be killed.</p></dd>
 
 </dl></div>
     <div class="section level2">
