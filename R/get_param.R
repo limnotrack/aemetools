@@ -159,7 +159,9 @@ abbrev_pars <- function(par, model) {
       }
     })
   } else if (all(model == "glm_aed")) {
-    par2 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
+    par1 <- sub("^NA/", "", par)
+    par2 <- sub("\\[NA\\]", "", par1)
+    # par2 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
   } else if (all(model == "gotm_wet")) {
     par2 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
     if ("constant_value" %in% par2) {
