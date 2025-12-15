@@ -167,6 +167,8 @@ abbrev_pars <- function(par, model) {
     if ("constant_value" %in% par2) {
       par2[par2 == "constant_value"] <- sub(".*/([^/]+)/.*", "\\1",par1[par2 == "constant_value"])
     }
+  } else {
+    par2 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
   }
   if (any(grepl("MET_", par2))) {
     par2 <- sub("MET_", "", par2)
