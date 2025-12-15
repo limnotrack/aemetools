@@ -36,7 +36,8 @@ plot_calib_summary <- function(calib, fit_col, nrow = 2, base_size = 8,
                     best = TRUE) |> 
     dplyr::mutate(
       enc_name = encode_param(group, name, index),
-      label = abbrev_pars(enc_name, model))
+      label = abbrev_pars(enc_name, model)
+      )
   if (min(all_pars$fit2, na.rm = TRUE) <= 0 & log_y) {
     adj <- ceiling(abs(min(all_pars$fit2, na.rm = TRUE)))
     message(strwrap(paste0("Negative fit values detected, adding ", adj,
@@ -47,6 +48,7 @@ plot_calib_summary <- function(calib, fit_col, nrow = 2, base_size = 8,
   } else {
     summ$fit2 <- summ$fit_value
   }
+  
   # Summary plot of best parameter values for multiple fits ----
   err_bars <- summ |>
     dplyr::group_by(sim_id, label) |>
