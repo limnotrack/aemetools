@@ -1426,7 +1426,8 @@ test_that("can update bgc parameters for GLM-AED", {
   
   ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2L,
                          parallel = F, file_type = "db", na_value = 1e20,
-                         file_name = "results.db", c_method = "LHC")
+                         file_name = "results.db", c_method = "LHC", 
+                         timeout = 5)
   
   run_and_fit(aeme = aeme, param = param, model = model, vars_sim = vars_sim,
               path = path, model_controls = model_controls, FUN_list = FUN_list)
