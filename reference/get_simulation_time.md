@@ -75,12 +75,12 @@ ext_elev = 5, use_bgc = FALSE)
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-12-15 20:59:37]
-#> → GLM-AED running... [2025-12-15 20:59:37]
-#> ✔ GLM-AED2 run successful! [2025-12-15 20:59:38]
-#> → GOTM-WET running... [2025-12-15 20:59:38]
-#> ✔ GOTM-WET run successful! [2025-12-15 20:59:38]
-#> ✔ Model run complete! [2025-12-15 20:59:38]
+#> ℹ Running models... (Have you tried parallelizing?) [2025-12-15 22:41:46]
+#> → GLM-AED running... [2025-12-15 22:41:46]
+#> ✔ GLM-AED2 run successful! [2025-12-15 22:41:46]
+#> → GOTM-WET running... [2025-12-15 22:41:46]
+#> ✔ GOTM-WET run successful! [2025-12-15 22:41:47]
+#> ✔ Model run complete! [2025-12-15 22:41:47]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 data("aeme_parameters", package = "AEME")
