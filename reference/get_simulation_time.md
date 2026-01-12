@@ -64,8 +64,29 @@ aeme <- AEME::build_aeme(path = path, aeme = aeme,
 model = model, model_controls = model_controls,
 ext_elev = 5, use_bgc = FALSE)
 #> ℹ Using observed water level
-#> ! Missing values in observed water level
-#> ℹ Insufficient water level observations. Using constant water level
+#> ℹ No missing values in observed water level. Using observed water level
+
+#> Optimization Complete:
+#>   Best C: 0.3355
+#>   Best h_inv: 23.4916
+#>   Final RMSE: 0.1397
+
+
+
+
+
+
+
+#> Optimization Complete:
+#>   Best C: 0.3335
+#>   Best h_inv: 23.4857
+#>   Final RMSE: 0.1429
+
+
+
+
+
+
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
@@ -75,12 +96,12 @@ ext_elev = 5, use_bgc = FALSE)
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2025-12-15 22:41:46]
-#> → GLM-AED running... [2025-12-15 22:41:46]
-#> ✔ GLM-AED2 run successful! [2025-12-15 22:41:46]
-#> → GOTM-WET running... [2025-12-15 22:41:46]
-#> ✔ GOTM-WET run successful! [2025-12-15 22:41:47]
-#> ✔ Model run complete! [2025-12-15 22:41:47]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-01-12 22:38:58]
+#> → GLM-AED running... [2026-01-12 22:38:58]
+#> ✔ GLM-AED run successful! [2026-01-12 22:38:58]
+#> → GOTM-WET running... [2026-01-12 22:38:58]
+#> ✔ GOTM-WET run successful! [2026-01-12 22:38:58]
+#> ✔ Model run complete! [2026-01-12 22:38:58]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 data("aeme_parameters", package = "AEME")

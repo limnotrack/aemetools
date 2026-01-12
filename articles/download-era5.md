@@ -72,9 +72,11 @@ years <- 2021
 vars <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_isimip_point(lon, lat, years, vars)
-#> INFO [2025-12-15 22:48:47] job submitted
-#> INFO [2025-12-15 22:48:47] downloading
-#> INFO [2025-12-15 22:48:47] extracting
+#> INFO [2026-01-12 22:45:47] job submitted
+#> INFO [2026-01-12 22:45:52] job updated
+#> INFO [2026-01-12 22:45:56] job updated
+#> INFO [2026-01-12 22:45:56] downloading
+#> INFO [2026-01-12 22:45:57] extracting
 summary(met)
 #>       Date              MET_tmpair      MET_pprain      
 #>  Min.   :2021-01-01   Min.   :19.08   Min.   : 0.06125  
@@ -401,6 +403,7 @@ variables.
 
 ``` r
 met <- AEME::expand_met(met, lat = lat, lon = lon, elev = elev)
+#> Warning in sqrt((1 - df$swr/df$Ho)/0.65): NaNs produced
 summary(met)
 #>       Date              MET_radswd        MET_radlwd      MET_cldcvr    
 #>  Min.   :2022-01-01   Min.   :  8.615   Min.   :186.7   Min.   :0.1580  
