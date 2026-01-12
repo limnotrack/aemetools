@@ -35,7 +35,8 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
       dplyr::filter(fit_type == calib$simulation_data$fit_type[1]) |>
       tidyr::pivot_wider(id_cols = c("gen", "run"), names_from = parameter_name,
                          values_from = parameter_value) |>
-      dplyr::mutate(index = 1:dplyr::n()) |>
+      # dplyr::mutate(index = 1:dplyr::n()) |>
+      dplyr::mutate(index = gen * run) |>
       as.data.frame() |>
       dplyr::select(gen, run, index)
     
