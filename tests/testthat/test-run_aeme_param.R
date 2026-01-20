@@ -231,7 +231,10 @@ test_that("running GLM-AED works with bgc_params", {
   utils::data("glm_aed_parameters", package = "AEME")
   param <- glm_aed_parameters
   param <- param |>
-    dplyr::filter(grepl("aed2_carbon|aed2_oxygen|aed2_phytoplankton|aed2_nitrogen|aed2_organic_matter|aed2_phosphorus|phyto_data|zoop_params", name))
+    dplyr::filter(
+      grepl("aed_carbon|aed_oxygen|aed_phytoplankton|aed_nitrogen|aed_organic_matter|aed_phosphorus|phyto_data|zoop_params", name),
+      !grepl("aed2", file), !grepl("the_phytos", name)
+      )
 
   aeme <- run_aeme_param(aeme = aeme, model = model,
                          param = param, path = path,
