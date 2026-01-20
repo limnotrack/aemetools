@@ -15,6 +15,7 @@ run_aeme_param(
   return_nc = FALSE,
   return_aeme = FALSE,
   parallel = FALSE,
+  verbose = FALSE,
   timeout = Inf
 )
 ```
@@ -59,6 +60,10 @@ run_aeme_param(
 - parallel:
 
   logical; run models in parallel. Defaults to FALSE.
+
+- verbose:
+
+  logical; print model output to console. Defaults to FALSE.
 
 - timeout:
 
