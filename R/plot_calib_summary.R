@@ -30,7 +30,7 @@ plot_calib_summary <- function(calib, fit_col, nrow = 2, base_size = 8,
       unique()
   }
   
-  all_pars <- get_param(calib, na_value = na_value, fit_col = fit_col,
+  all_pars <- get_param(calib = calib, na_value = na_value, fit_col = fit_col,
                         best = FALSE)
   summ <- get_param(calib, na_value = na_value, fit_col = fit_col, 
                     best = TRUE) |> 
