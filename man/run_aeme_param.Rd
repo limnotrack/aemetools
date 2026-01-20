@@ -14,6 +14,7 @@ run_aeme_param(
   return_nc = FALSE,
   return_aeme = FALSE,
   parallel = FALSE,
+  verbose = FALSE,
   timeout = Inf
 )
 }
@@ -39,6 +40,8 @@ working directory.}
 \item{return_aeme}{boolean; return AEME object}
 
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
+
+\item{verbose}{logical; print model output to console. Defaults to FALSE.}
 
 \item{timeout}{Timeout for the process, in seconds, or as a \code{difftime}
 object. If it is not finished before this, it will be killed.}

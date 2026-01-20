@@ -18,7 +18,7 @@
 run_aeme_param <- function(aeme, param, model, path = ".",
                            model_controls = NULL, na_value = 999, 
                            return_nc = FALSE, return_aeme = FALSE, 
-                           parallel = FALSE, timeout = Inf) {
+                           parallel = FALSE, verbose = FALSE, timeout = Inf) {
   
   # Function checks ----
   if (!is.data.frame(param))
@@ -49,7 +49,7 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   mod_out <- tryCatch({
     AEME::run_aeme(aeme = aeme, model = model, path = path,
                    check_output = FALSE, parallel = parallel,
-                   model_controls = model_controls, 
+                   model_controls = model_controls, verbose = verbose, 
                    return_type = "both", timeout = timeout)
   }, error = function(e) {
     cli::cli_alert_danger("Error running AEME: {e$message}. Probably due to a 
