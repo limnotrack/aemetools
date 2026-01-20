@@ -106,8 +106,6 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     ncdf4::nc_close(nc)
   })
   
-
-  
   if (!is.list(nc)) {
     cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
     return(return_list)
@@ -370,11 +368,12 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     
     if (include_wlev & method == "calib") {
       #### PROBABLY NEED CATCHES HERE FOR NO WATER LEVEL OUTPUT #####
-      balance <- aemetools::get_wlevel(lake_dir = lake_dir, model = model,
-                                       nlev = 10, return_df = TRUE)
+      balance <- AEME::read_model_wlev(nc = nc, model = model)
+      # balance <- aemetools::get_wlevel(lake_dir = lake_dir, model = model,
+      #                                  nlev = 10, return_df = TRUE)
       if (is.null(ncol(balance))) {
         return(return_list)
-      } else if (any(balance[["lvl"]] <= 0) | any(is.na(balance[["lvl"]]))) {
+      } else if (any(balance[["LKE_lvlwtr"]] <= 0) | any(is.na(balance[["LKE_lvlwtr"]]))) {
         return(return_list)
       }
       tme <- AEME::time(aeme)
@@ -399,14 +398,14 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
       df_lvl <- dplyr::left_join(balance, lvl_adj, by = "Date")
       
       df_lvl <- df_lvl |>
-        dplyr::rename(model = lvl) |>
+        dplyr::rename(model = LKE_lvlwtr) |>
         dplyr::mutate(model = dplyr::case_when(
           is.na(model) ~ 0,
           .default = model
         ),
         LID = NA, var_aeme = "DEPTH", depth = NA,
         depth_from = NA, diff = model - value) |>
-        dplyr::filter(!is.na(diff)) |>
+        dplyr::filter(!is.na(diff), Date >= tme$start, Date <= tme$stop) |>
         dplyr::select(LID, Date, value, var_aeme, depth, depth_from, model,
                       diff) |>
         dplyr::rename(obs = value)
@@ -476,8 +475,10 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     } else {
       # plot(df_lvl$Date, df_lvl$model, type = "l")
       # graphics::points(df_lvl$Date, df_lvl$obs, col = "red")
-      res1 <- FUN_list$LKE_lvlwtr(df_lvl) * wlev_weight
-      return_list[["LKE_lvlwtr"]] <- ifelse(is.nan(res1), na_value, res1)
+      if (nrow(df_lvl) > 0) {
+        res1 <- FUN_list$LKE_lvlwtr(df_lvl) * wlev_weight
+        return_list[["LKE_lvlwtr"]] <- ifelse(is.nan(res1), na_value, res1)
+      }
       return(return_list)
     }
   }
