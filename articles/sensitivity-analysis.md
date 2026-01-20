@@ -43,9 +43,43 @@ aeme <- build_aeme(path = path, aeme = aeme,
                        model = model, model_controls = model_controls,
                        inf_factor = inf_factor, ext_elev = 5,
                        use_bgc = TRUE)
+#> Parameters: C = 0.5 , h_inv = 22.9904
 ```
 
-![](sensitivity-analysis_files/figure-html/build-aeme-example-1.png)![](sensitivity-analysis_files/figure-html/build-aeme-example-2.png)![](sensitivity-analysis_files/figure-html/build-aeme-example-3.png)![](sensitivity-analysis_files/figure-html/build-aeme-example-4.png)![](sensitivity-analysis_files/figure-html/build-aeme-example-5.png)![](sensitivity-analysis_files/figure-html/build-aeme-example-6.png)![](sensitivity-analysis_files/figure-html/build-aeme-example-7.png)
+![](sensitivity-analysis_files/figure-html/build-aeme-example-1.png)
+
+    #> Parameters: C = 0.5 , h_inv = 22.9904 
+    #> Parameters: C = 0.501 , h_inv = 22.9904 
+    #> Parameters: C = 0.499 , h_inv = 22.9904 
+    #> Parameters: C = 0.5 , h_inv = 22.9914 
+    #> Parameters: C = 0.5 , h_inv = 22.9894 
+    #> Parameters: C = 0.262 , h_inv = 23.6504 
+    #> Parameters: C = 0.263 , h_inv = 23.6504 
+    #> Parameters: C = 0.261 , h_inv = 23.6504 
+    #> Parameters: C = 0.262 , h_inv = 23.6504 
+    #> Parameters: C = 0.262 , h_inv = 23.6494 
+    #> Parameters: C = 0.3889 , h_inv = 23.3727 
+    #> Parameters: C = 0.3899 , h_inv = 23.3727 
+    #> Parameters: C = 0.3879 , h_inv = 23.3727 
+    #> Parameters: C = 0.3889 , h_inv = 23.3737 
+    #> Parameters: C = 0.3889 , h_inv = 23.3717 
+    #> Parameters: C = 0.3253 , h_inv = 23.512 
+    #> Parameters: C = 0.3263 , h_inv = 23.512 
+    #> Parameters: C = 0.3243 , h_inv = 23.512 
+    #> Parameters: C = 0.3253 , h_inv = 23.513 
+    #> Parameters: C = 0.3253 , h_inv = 23.511 
+    #> Parameters: C = 0.3337 , h_inv = 23.4821 
+    #> Parameters: C = 0.3347 , h_inv = 23.4821 
+    #> Parameters: C = 0.3327 , h_inv = 23.4821 
+    #> Parameters: C = 0.3337 , h_inv = 23.4831 
+    #> Parameters: C = 0.3337 , h_inv = 23.4811 
+    #> Parameters: C = 0.3294 , h_inv = 23.4973 
+    #> Parameters: C = 0.3304 , h_inv = 23.4973 
+    #> Parameters: C = 0.3284 , h_inv = 23.4973 
+    #> Parameters: C = 0.3294 , h_inv = 23.4983 
+    #> Parameters: C = 0.3294 , h_inv = 23.4963
+
+![](sensitivity-analysis_files/figure-html/build-aeme-example-2.png)
 
 ## Description of Sensitivity Analysis method
 
@@ -238,13 +272,13 @@ The `sa_aeme` function writes the results to the file specified. The
 sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
                   model = model, ctrl = ctrl, FUN_list = FUN_list)
 #> ℹ Extracting variable indices for "gotm_wet" modelled 
-#> variables "HYD_temp" and "PHY_tchla". [2026-01-12 22:47:05]
+#> variables "HYD_temp" and "PHY_tchla". [2026-01-20 03:43:46]
 #> ✔ Variable indices extracted for "gotm_wet". 
-#> [2026-01-12 22:47:10]
+#> [2026-01-20 03:43:51]
 #> ℹ Starting parallel sensitivity analysis for 
 #> "gotm_wet" using 2 cores with 
 #> 144 parameter sets. 
-#> [2026-01-12 22:47:10]
+#> [2026-01-20 03:43:51]
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
 #> mean                     4.851e-06                           0.52760
 #> median                   5.000e-06                           0.52700
@@ -259,9 +293,9 @@ sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
 #> sd         0.1619     0.1606 0.5311
 #> ✔ Parallel sensitivity analysis for 
 #> "gotm_wet" completed. 
-#> [2026-01-12 22:54:10]
+#> [2026-01-20 03:51:49]
 #> Writing output for generation 1 to results.db with sim ID:
-#> "45819_gotmwet_S_001" [2026-01-12 22:54:10]
+#> "45819_gotmwet_S_001" [2026-01-20 03:51:49]
 ```
 
 ## Reading sensitivity analysis results
