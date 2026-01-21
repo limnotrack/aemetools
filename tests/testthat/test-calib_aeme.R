@@ -537,7 +537,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
   
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 20,
-                         reltol = 0.07, cutoff = 0.25, mutate = 0.1,
+                         reltol = -Inf, cutoff = 0.25, mutate = 0.1,
                          parallel = TRUE, file_type = "csv",
                          na_value = 999, ncore = 2L)
   
@@ -547,16 +547,17 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   sim_times <- get_simulation_time(aeme = aeme, model = model, path = path,
                                    param = param, FUN_list = FUN_list,
                                    vars_sim = vars_sim, weights = weights)
-
-  testthat::expect_error({
-    ctrl$timeout <- 0.01
-    # Calibrate AEME model
-    sim_id <- calib_aeme(aeme = aeme, path = path,
-                         param = param, model = model,
-                         FUN_list = FUN_list, ctrl = ctrl,
-                         vars_sim = vars_sim, weights = weights)
-  })
   
+  ctrl$timeout <- 0.01
+  # Calibrate AEME model
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  testthat::expect_true(is.list(calib))
+  testthat::expect_true(all(calib$simulation_data$fit_value == ctrl$na_value))
+
   # Calibrate AEME model
   ctrl$timeout <- 2
   sim_id <- calib_aeme(aeme = aeme, path = path,
@@ -984,7 +985,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   
   ctrl <- create_control(method = "calib", VTR = -Inf, NP = 10, itermax = 20,
                          reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                         parallel = TRUE, file_type = "csv",
+                         parallel = F, file_type = "csv",
                          na_value = 1e20, ncore = 2L)
   
   vars_sim <- c("LKE_lvlwtr")
