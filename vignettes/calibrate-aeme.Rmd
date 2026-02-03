@@ -400,7 +400,10 @@ each variable. This is a multi-panel plot displaying residuals for:
 -   Residuals vs. quantiles of the observed values
 
 ```{r plot-residuals}
-pl <- plot_resid(aeme = aeme, model = model, var_sim = vars_sim)
+pl <- lapply(vars_sim, \(v) {
+  plot_resid(aeme = aeme, model = model, var_sim = v)
+})
+names(pl) <- vars_sim
 
 ```
 
