@@ -14,6 +14,7 @@ calib_aeme(
   path = ".",
   model_controls = NULL,
   ctrl = NULL,
+  param_var_matrix = NULL,
   param_df = NULL
 )
 }
@@ -45,6 +46,12 @@ working directory.}
 \item{ctrl}{list; of controls for sensitivity analysis function created using
 the \code{\link{create_control}} function. See \link{create_control} for
 more details.}
+
+\item{param_var_matrix}{list of dataframes; with parameters as rows and
+response variables as columns. Created using
+\code{\link{create_param_var_matrix}}. This is used to specify which
+parameters are associated with which response variables, and therefore which
+parameters are updated in each generation of the calibration.}
 
 \item{param_df}{dataframe; of parameters to be used in the calibration.
 Requires the columns c("model", "file", "name", "value", "min", "max"). This
