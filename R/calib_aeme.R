@@ -20,6 +20,11 @@
 #'  more details.
 #' @param weights vector; of weights for each variable in vars_sim. If not
 #' provided, defaults to 1 for each variable.
+#' @param param_var_matrix list of dataframes; with parameters as rows and 
+#' response variables as columns. Created using 
+#' \code{\link{create_param_var_matrix}}. This is used to specify which 
+#' parameters are associated with which response variables, and therefore which 
+#' parameters are updated in each generation of the calibration.
 #' @param param_df dataframe; of parameters to be used in the calibration.
 #' Requires the columns c("model", "file", "name", "value", "min", "max"). This
 #' is used to restart from a previous calibration.
@@ -37,7 +42,7 @@
 
 calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list, 
                        weights, path = ".", model_controls = NULL, ctrl = NULL,
-                       param_df = NULL) {
+                       param_var_matrix = NULL, param_df = NULL) {
 
   if (missing(FUN_list)) {
     message(strwrap("No FUN_list supplied. Defaulting to mean absolute error for all
@@ -92,6 +97,9 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
     var_indices <- list()
     t0 <- Sys.time() # Time check for calibration
     nsim <- 0 # Counter for number of simulations
+    if (!is.null(param_var_matrix)) {
+      param_var_matrix <- param_var_matrix[[m]]
+    }
 
     if (any(vars_sim != "LKE_lvlwtr")) {
       # Extract indices for modelled variables
@@ -131,21 +139,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
       }
       start_param <- FME::Latinhyper(param[, c("min", "max")], ctrl$NP)
       colnames(start_param) <- param$name_full
-      # colnames(start_param) <- param$name
-      start_param <- as.data.frame(start_param) 
-      # start_param$iter <- 1:nrow(start_param)
-      # 
-      # # Convert to long format
-      # start_param <- start_param |> 
-      #   tidyr::pivot_longer(cols = -iter,
-      #                       names_to = c("name"),
-      #                       # names_sep = "/",
-      #                       values_to = "value") |> 
-      #   dplyr::mutate(
-      #     index = as.integer(stringr::str_extract(name, "(?<=\\[)\\d+(?=\\])")),
-      #     name  = stringr::str_remove(name, "\\[.*?\\]")  # optional: clean name
-      #   )
-
+      start_param <- as.data.frame(start_param)
+      
       gen_n <- 1
       tot_gen <- ctrl$ngen
     } else {
@@ -282,7 +277,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
 
       # Select survivors ----
       g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
-                           best_pars = best_pars)
+                           best_pars = best_pars, 
+                           param_var_matrix = param_var_matrix)
 
       for (gen in 2:ctrl$ngen) {
 
@@ -379,7 +375,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
         }
 
         g <- next_gen_params(param_df = g, param = param, ctrl = ctrl,
-                             best_pars = best_pars)
+                             best_pars = best_pars, 
+                             param_var_matrix = param_var_matrix)
       }
     } else {
       # Run in serial ----
@@ -474,7 +471,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
 
       # Select survivors ----
       g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
-                           best_pars = best_pars)
+                           best_pars = best_pars, 
+                           param_var_matrix = param_var_matrix)
 
       for (gen in 2:ctrl$ngen) {
 
@@ -574,7 +572,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
         }
 
         g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
-                             best_pars = best_pars)
+                             best_pars = best_pars, 
+                             param_var_matrix = param_var_matrix)
       }
     }
     write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
