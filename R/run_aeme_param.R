@@ -23,6 +23,11 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   # Function checks ----
   if (!is.data.frame(param))
     cli::cli_abort("{.arg param} must be a data.frame.")
+  if (missing(model)) {
+    model <- AEME::list_models(aeme)
+  } else {
+    model <- AEME::check_model(model)
+  }
   if (!is.character(model))
     cli::cli_abort("{.arg model} must be a character string.")
   if (return_nc & return_aeme)
@@ -62,7 +67,7 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   aeme <- mod_out$aeme
   
   # Check for timeout ----
-  for (m in model) {
+  for (m in names(model)) {
     if (mod_out$exec_result[[m]]$timeout) {
       cli::cli_alert_danger("Model {.strong {m}} run timed out.")
       return(na_value)
