@@ -8,6 +8,16 @@ encode_param <- function(group, name, index) {
   paste0(group, "/", name, "[", index, "]")
 }
 
+#' Display parameter information in a human-readable format.
+#' @param group The group name (can be NA).
+#' @param name The parameter name.
+#' @param index The index of the parameter (can be NA).
+display_param_name <- function(group, name, index) {
+  grp <- ifelse(is.na(group), "", paste0(group, "/"))
+  idx <- ifelse(is.na(index), "", paste0("[", index, "]"))
+  paste0(grp, name, idx)
+}
+
 #' Decode a full parameter name to extract the base name.
 #' @param name_full The full parameter name in the format "group/name\[index]".
 #' @return The base parameter name without group and index.
