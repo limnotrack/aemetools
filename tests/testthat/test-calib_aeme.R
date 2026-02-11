@@ -65,7 +65,7 @@ test_that("can run funs return same fit", {
   
   aeme <- run_aeme_param(aeme = aeme, param = param, model = model, path = path,
                          return_aeme = TRUE)
-  fit3 <- AEME::assess_model(aeme = aeme, model = model)
+  fit3 <- AEME::assess_model(aeme = aeme, model = model, var_sim = "HYD_temp")
   
   # MAE fun
   # Function to calculate fitness
@@ -1624,9 +1624,9 @@ test_that("can calibrate with param_var_matrix for AEME-GLM & GOTM in parallel",
   
   
   plot_calib_summary(calib = calib)
-  pstrat$dotty
-  ptemp$dotty
-  poxy$dotty
+  # pstrat$dotty
+  # ptemp$dotty
+  # poxy$dotty
   pfit$dotty
   
   testthat::expect_true(is.list(ptemp))
