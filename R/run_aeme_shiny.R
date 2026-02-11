@@ -48,7 +48,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
   cfg <- AEME::configuration(aeme)
   # Which models are not NULL in cfg
   models <- names(cfg)
-  models <- models[!models %in% c("model_controls")]
+  models <- models[!models %in% c("model_controls", "use_bgc")]
   names(models) <- c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET")
   idx <- sapply(models, \(x) !is.null(cfg[[x]][["hydrodynamic"]]))
   models <- models[idx]
