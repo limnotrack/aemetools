@@ -28,9 +28,8 @@ values indicating whether the parameter is associated with the variable.
 ## Examples
 
 ``` r
+data(aeme_parameters, package = "AEME")
 param <- aeme_parameters
-#> Error: object 'aeme_parameters' not found
 vars_sim <- c("HYD_temp", "CHM_oxy", "PHY_tchla")
 param_var_matrix <- create_param_var_matrix(param, vars_sim)
-#> Error: object 'param' not found
 ```
