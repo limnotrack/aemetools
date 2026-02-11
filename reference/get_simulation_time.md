@@ -69,17 +69,18 @@ ext_elev = 5, use_bgc = FALSE)
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED2 for lake wainamu
 #> ℹ Copied in GLM nml file
+#> ℹ Copied in AED nml file and supporting files
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-03 02:19:49]
-#> → GLM-AED running... [2026-02-03 02:19:49]
-#> ✔ GLM-AED run successful! [2026-02-03 02:19:50]
-#> → GOTM-WET running... [2026-02-03 02:19:50]
-#> ✔ GOTM-WET run successful! [2026-02-03 02:19:50]
-#> ✔ Model run complete! [2026-02-03 02:19:50]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-11 19:58:16]
+#> → GLM-AED running... [2026-02-11 19:58:16]
+#> ✔ GLM-AED run successful! [2026-02-11 19:58:16]
+#> → GOTM-WET running... [2026-02-11 19:58:16]
+#> ✔ GOTM-WET run successful! [2026-02-11 19:58:17]
+#> ✔ Model run complete! [2026-02-11 19:58:17]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 data("aeme_parameters", package = "AEME")

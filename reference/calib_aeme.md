@@ -17,6 +17,7 @@ calib_aeme(
   path = ".",
   model_controls = NULL,
   ctrl = NULL,
+  param_var_matrix = NULL,
   param_df = NULL
 )
 ```
@@ -66,6 +67,15 @@ calib_aeme(
   list; of controls for sensitivity analysis function created using the
   [`create_control`](create_control.md) function. See
   [create_control](create_control.md) for more details.
+
+- param_var_matrix:
+
+  list of dataframes; with parameters as rows and response variables as
+  columns. Created using
+  [`create_param_var_matrix`](create_param_var_matrix.md). This is used
+  to specify which parameters are associated with which response
+  variables, and therefore which parameters are updated in each
+  generation of the calibration.
 
 - param_df:
 

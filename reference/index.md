@@ -14,8 +14,20 @@
 - [`create_control()`](create_control.md) : Create control list for
   calibration or sensitivity analysis
 - [`create_linz_key()`](create_linz_key.md) : Create LINZ API key
+- [`create_param_var_matrix()`](create_param_var_matrix.md) : Create a
+  parameter-variable matrix for each model
+- [`decode_param()`](decode_param.md) : Decode a full parameter name to
+  extract the base name.
+- [`decode_param_full()`](decode_param_full.md) : Decode a full
+  parameter name into group, name, and index.
+- [`display_param_name()`](display_param_name.md) : Display parameter
+  information in a human-readable format.
 - [`download_era5_grib()`](download_era5_grib.md) : Download ERA5 GRIB
   files
+- [`edit_param_var_matrix()`](edit_param_var_matrix.md) : Edit
+  parameter–response matrix in a Shiny gadget
+- [`encode_param()`](encode_param.md) : Encode a parameter name with its
+  group and index.
 - [`era5_ref_table`](era5_ref_table.md) : ERA5 reference table
 - [`get_aeme()`](get_aeme.md) : Get Aeme object from LimnoTrack API
 - [`get_catchment_data()`](get_catchment_data.md) : Get Catchment Data
