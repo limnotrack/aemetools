@@ -45,6 +45,8 @@
   basemap tile
 - [`get_param()`](get_param.md) : Get parameter values from calibration
   results
+- [`get_pareto_front()`](get_pareto_front.md) : Get the Pareto front
+  from a data frame based on specified objective columns.
 - [`get_raster_layer_value()`](get_raster_layer_value.md) : Get raster
   layer value for a given latitude and longitude
 - [`get_raster_tile()`](get_raster_tile.md) : Get a raster tile from
@@ -59,6 +61,8 @@
   object of aerial imagery metadata for New Zealand.
 - [`nz_dem_metadata`](nz_dem_metadata.md) : sf object of Digital
   Elevation Model (DEM) metadata for New Zealand.
+- [`param_var_matrix`](param_var_matrix.md) : AEME parameters-response
+  matrix
 - [`plot_calib()`](plot_calib.md) : Plot calibration results
 - [`plot_calib_summary()`](plot_calib_summary.md) : Plot calibration
   results

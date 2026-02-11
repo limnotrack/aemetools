@@ -36,6 +36,7 @@
 <url><loc>/reference/get_layer_ids.html</loc></url>
 <url><loc>/reference/get_linz_basemap_tile.html</loc></url>
 <url><loc>/reference/get_param.html</loc></url>
+<url><loc>/reference/get_pareto_front.html</loc></url>
 <url><loc>/reference/get_raster_layer_value.html</loc></url>
 <url><loc>/reference/get_raster_tile.html</loc></url>
 <url><loc>/reference/get_simulation_time.html</loc></url>
@@ -45,6 +46,7 @@
 <url><loc>/reference/make_GR_inputs.html</loc></url>
 <url><loc>/reference/nz_aerial_imagery_metadata.html</loc></url>
 <url><loc>/reference/nz_dem_metadata.html</loc></url>
+<url><loc>/reference/param_var_matrix.html</loc></url>
 <url><loc>/reference/plot_calib.html</loc></url>
 <url><loc>/reference/plot_calib_summary.html</loc></url>
 <url><loc>/reference/plot_ensemble.html</loc></url>
