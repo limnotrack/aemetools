@@ -87,6 +87,19 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
   # Add index to parameter name
   param <- param |> 
     dplyr::mutate(name_full = encode_param(group, name, index))
+  if (!is.null(param_var_matrix)) {
+    # Select logical columnms
+    mat <- param_var_matrix |> 
+      dplyr::select(dplyr::all_of(vars_sim))
+    rem_pars <- setdiff(param$name_full, param_var_matrix$name_full[apply(mat, 1, any)])
+    if (length(rem_pars) > 0) {
+      cli::cli_alert_warning("The following parameters are not associated with 
+                             any of the response variables and will not be 
+                             updated during calibration: {.val {rem_pars}}")
+      param <- param |> 
+        dplyr::filter(!name_full %in% rem_pars)
+    }
+  }
 
   include_wlev <- ifelse("LKE_lvlwtr" %in% vars_sim, TRUE, FALSE)
 
@@ -98,7 +111,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
     t0 <- Sys.time() # Time check for calibration
     nsim <- 0 # Counter for number of simulations
     if (!is.null(param_var_matrix)) {
-      param_var_matrix <- param_var_matrix[[m]]
+      param_var_matrix <- param_var_matrix |> 
+        dplyr::filter(model == m)
     }
 
     if (any(vars_sim != "LKE_lvlwtr")) {
@@ -246,10 +260,12 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
 
       g1 <- dplyr::bind_rows(model_out)
       best_pars <- signif(g1[which.min(g1$fit), 1:nrow(param)], 3)
+      rep_vars <- g1 |> 
+        dplyr::filter(fit != ctrl$na_value)
       cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
                              for {.val {m}}. [{format(Sys.time())}]")
-      cli::cli_inform("Best fit: {.val {signif(min(g1$fit), 3)}} (sd: 
-                      {.val {signif(sd(g1$fit), 5)}})
+      cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd: 
+                      {.val {signif(sd(rep_vars$fit), 5)}})
             Parameters: [ {.val {best_pars}} ]")
       g1$gen <- 1
       best_pars <- g1[which.min(g1$fit), ]
@@ -354,10 +370,17 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                                 FUN_list = FUN_list, sim_id = ctrl$sim_id,
                                 append_metadata = FALSE)
 
+        rep_vars <- g |> 
+          dplyr::filter(fit != ctrl$na_value)
         cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
-                               for {.val {m}}. [{format(Sys.time())}]")
-        cli::cli_inform("Best fit: {.val {signif(min(g$fit), 5)}} (sd: 
-                        {.val {signif(sd(g$fit), 5)}})")
+                             for {.val {m}}. [{format(Sys.time())}]")
+        cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd: 
+                      {.val {signif(sd(rep_vars$fit), 5)}})")
+        
+        # cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
+        #                        for {.val {m}}. [{format(Sys.time())}]")
+        # cli::cli_inform("Best fit: {.val {signif(min(g$fit), 5)}} (sd: 
+        #                 {.val {signif(sd(g$fit), 5)}})")
         if(min(g$fit) < best_pars$fit) {
           best_pars <- g[which.min(g$fit), ]
         }
@@ -440,12 +463,22 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
       }, pars = param_list)
 
       g1 <- dplyr::bind_rows(model_out)
+      best_pars <- signif(g1[which.min(g1$fit), 1:nrow(param)], 3)
+      rep_vars <- g1 |> 
+        dplyr::filter(fit != ctrl$na_value)
       cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
                              for {.val {m}}. [{format(Sys.time())}]")
-      best_pars <- signif(g1[which.min(g1$fit), 1:nrow(param)], 3)
-      cli::cli_inform("Best fit: {.val {signif(min(g1$fit), 3)}} (sd: 
-                      {.val {signif(sd(g1$fit), 5)}})
+      cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd: 
+                      {.val {signif(sd(rep_vars$fit), 5)}})
             Parameters: [ {.val {best_pars}} ]")
+      
+      
+      
+      # cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
+      #                        for {.val {m}}. [{format(Sys.time())}]")
+      # cli::cli_inform("Best fit: {.val {signif(min(g1$fit), 3)}} (sd: 
+      #                 {.val {signif(sd(g1$fit), 5)}})
+      #       Parameters: [ {.val {best_pars}} ]")
       out_df <- apply(g1, 2, signif, digits = 6)
       nsim <- nsim + nrow(out_df)
       best_pars <- g1[which.min(g1$fit), ]
@@ -540,8 +573,6 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
           return(pars[[i]])
         }, pars = param_list)
         
-        cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
-                               for {.val {m}}. [{format(Sys.time())}]")
 
         g <- dplyr::bind_rows(model_out)
         g$gen <- gen_n
@@ -553,8 +584,18 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
                                 FUN_list = FUN_list, sim_id = ctrl$sim_id,
                                 append_metadata = FALSE)
 
-        cli::cli_inform("Best fit: {.val {signif(min(g$fit), 5)}} (sd: 
-                        {.val {signif(sd(g$fit), 5)}})")
+        
+        rep_vars <- g |> 
+          dplyr::filter(fit != ctrl$na_value)
+        cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
+                             for {.val {m}}. [{format(Sys.time())}]")
+        cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd: 
+                      {.val {signif(sd(rep_vars$fit), 5)}})")
+        
+        # cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
+        #                        for {.val {m}}. [{format(Sys.time())}]")
+        # cli::cli_inform("Best fit: {.val {signif(min(g$fit), 5)}} (sd: 
+        #                 {.val {signif(sd(g$fit), 5)}})")
         if(min(g$fit) < best_pars$fit) {
           best_pars <- g[which.min(g$fit), ]
         }
