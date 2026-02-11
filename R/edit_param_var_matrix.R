@@ -1,7 +1,10 @@
 #' Edit parameter–response matrix in a Shiny gadget
 #'
-#' @param param_var_matrix a named list of matrices, where each matrix corresponds to a model and has
-#' parameters as rows and response variables as columns. This is the output of \code{get_param_var_matrix()}.
+#' @param param_var_matrix a data frame with columns 'model', 'file', 
+#' 'name_full', and variable names as columns. The 'name_full' column 
+#' should be encoded as 'group/name\[index\]'. The variable columns should 
+#' contain TRUE/FALSE values indicating whether the parameter is associated with
+#' the variable or not. This is the output of \code{get_param_var_matrix()}.
 #'
 #' @returns a named list of edited matrices, with the same structure as the 
 #' input. If the user cancels the editing, the original input is returned.
@@ -22,7 +25,7 @@
 
 edit_param_var_matrix <- function(param_var_matrix) {
   
-  models <- names(param_var_matrix)
+  models <- unique(param_var_matrix[["model"]])
   stopifnot(length(models) > 0)
   
   ui <- miniUI::miniPage(
@@ -45,33 +48,36 @@ edit_param_var_matrix <- function(param_var_matrix) {
     
     # store matrices for all models
     rv <- shiny::reactiveVal(
-      lapply(param_var_matrix, as.data.frame)
+      param_var_matrix |> 
+        dplyr::mutate(
+          decode_param_full(name_full)
+        )
     )
     
     output$table <- rhandsontable::renderRHandsontable({
       shiny::req(input$model)
-      
-      rn <- rownames(rv()[[input$model]]) |>  
-        decode_param_full() |> 
-        dplyr::mutate(display_name = display_param_name(group, name, index)) |> 
-        dplyr::pull(display_name)
-      
-      width <- max(nchar(rn)) * 7  # ~7px per character
-      width <- max(200, min(width, 600))
-      
-      rhandsontable::rhandsontable(
-        rv()[[input$model]],
-        rowHeaders     = rn,
-        rowHeaderWidth = width,
-        useTypes       = TRUE
-      )
+      rv() |> 
+        dplyr::filter(
+          model == input$model
+        ) |> 
+        dplyr::select(-model, -name_full) |>
+        dplyr::select(file, group, name, index, dplyr::everything()) |>
+        rhandsontable::rhandsontable()
     })
     
     shiny::observeEvent(input$table, {
-      mats <- rv()
-      mats[[input$model]] <-
-        rhandsontable::hot_to_r(input$table)
-      rv(mats)
+      shiny::req(input$model)
+      edited_tbl <- rhandsontable::hot_to_r(input$table) |>
+        dplyr::mutate(
+          model = input$model,
+          name_full = encode_param(group, name, index)
+        )
+      
+      updated <- rv() |>
+        dplyr::filter(model != input$model) |>
+        dplyr::bind_rows(edited_tbl)
+      
+      rv(updated)
     })
     
     shiny::observeEvent(input$done, {
@@ -88,6 +94,9 @@ edit_param_var_matrix <- function(param_var_matrix) {
   if (is.null(edited)) {
     return(param_var_matrix)
   }
+  
+  edited <- edited |> 
+    dplyr::select(dplyr::all_of(colnames(param_var_matrix)))
   
   return(edited)
 }

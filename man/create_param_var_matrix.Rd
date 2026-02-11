@@ -14,9 +14,9 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 model fit.}
 }
 \value{
-A list of data frames, one for each model, with parameters as rows
-and variables as columns. The values in the data frames indicate whether a
-parameter is associated with a variable (TRUE) or not (FALSE).
+A data frame with columns for model, file, name_full, and one
+column for each variable in vars_sim. The variable columns contain TRUE/FALSE
+values indicating whether the parameter is associated with the variable.
 }
 \description{
 Create a parameter-variable matrix for each model
