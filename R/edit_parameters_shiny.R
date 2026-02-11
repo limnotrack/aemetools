@@ -107,9 +107,9 @@ edit_parameters_shiny <- function(param) {
         rhandsontable::hot_col("group", type = "text") |>
         
         # make non-editable columns read-only
-        rhandsontable::hot_cols(
-          colWidths = 120
-        ) |>
+        # rhandsontable::hot_cols(
+        #   colWidths = 120
+        # ) |>
         rhandsontable::hot_col(
           col = setdiff(
             names(filtered_data()),
