@@ -33,14 +33,97 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
     vars_sim <- names(param_var_matrix)[!names(param_var_matrix) %in% c("model", "file", "name_full", "group", "name", "index") ]
     # pareto_front <- get_pareto_front(survivors1, vars_sim)
     # print(nrow(survivors2))
-    survivors2 <- lapply(vars_sim, \(v) {
+    block_pops <- lapply(vars_sim, \(v) {
+      
       sel_param <- param_var_matrix[["name_full"]][param_var_matrix[[v]]]
-      sel_cols <- c(sel_param, vars_sim)
+      sel_cols  <- c(sel_param, vars_sim)
+      
       sel_survivors <- survivors1 |>
         dplyr::select(dplyr::all_of(sel_cols))
-      get_pareto_front(sel_survivors, vars_sim)
       
-    }) 
+      pf <- get_pareto_front(sel_survivors, vars_sim) |>
+        dplyr::select(dplyr::all_of(sel_param))
+      
+      as.data.frame(
+        MASS::mvrnorm(
+          n     = ctrl$NP,
+          mu    = apply(pf, 2, mean),
+          Sigma = stats::cov(pf),
+          tol   = 1
+        )
+      )
+    })
+    
+    names(block_pops) <- vars_sim
+    
+    all_params <- unique(param_var_matrix$name_full)
+    
+    g <- as.data.frame(
+      matrix(NA_real_, nrow = ctrl$NP, ncol = length(all_params))
+    )
+    
+    colnames(g) <- all_params
+    
+    for (p in all_params) {
+      
+      # Which blocks contain this parameter?
+      blocks_with_p <- vars_sim[
+        sapply(vars_sim, function(v) {
+          p %in% param_var_matrix$name_full[param_var_matrix[[v]]]
+        })
+      ]
+      
+      if (length(blocks_with_p) == 1) {
+        
+        # Only one block → take full column
+        b <- blocks_with_p
+        g[[p]] <- block_pops[[b]][[p]]
+        
+      } else if (length(blocks_with_p) >= 2) {
+        
+        # --- get weights for relevant blocks ---
+        w <- weights[blocks_with_p]
+        
+        # if some blocks missing weights → assume 1
+        w[is.na(w)] <- 1
+        
+        # normalise
+        w <- w / sum(w)
+        
+        # --- number of rows per block ---
+        n_per_block <- floor(w * ctrl$NP)
+        
+        # ensure total exactly equals NP
+        remainder <- ctrl$NP - sum(n_per_block)
+        if (remainder > 0) {
+          # distribute remainder to largest weights
+          ord <- order(w, decreasing = TRUE)
+          n_per_block[ord[seq_len(remainder)]] <-
+            n_per_block[ord[seq_len(remainder)]] + 1
+        }
+        
+        # --- random row assignment ---
+        idx <- sample(seq_len(ctrl$NP))
+        
+        start <- 1
+        for (i in seq_along(blocks_with_p)) {
+          
+          end <- start + n_per_block[i] - 1
+          rows_i <- idx[start:end]
+          
+          block_name <- blocks_with_p[i]
+          
+          g[[p]][rows_i] <-
+            block_pops[[block_name]][[p]][rows_i]
+          
+          start <- end + 1
+        }
+      }
+    }
+    
+    survivors2 <- g
+    
+    
     # sel_survivors[sel_survivors[[v]] <= stats::quantile(sel_survivors[[v]],
     #                                                     ctrl$cutoff), ]# |>
     # dplyr::select(-dplyr::all_of(v))
@@ -87,29 +170,29 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
     g <- as.data.frame(g)
   } else if (!is.null(param_var_matrix)) {
     
-    best_pars_long <- best_pars |> 
-      dplyr::select(dplyr::all_of(param$name_full)) |>
-      tidyr::pivot_longer(cols = dplyr::all_of(param$name_full), names_to = "param")
-    
-    summ_survivors <- survivors2 |> 
-      dplyr::select(dplyr::all_of(param$name_full)) |>
-      tidyr::pivot_longer(cols = dplyr::all_of(param$name_full), names_to = "param") |> 
-      dplyr::group_by(param) |>
-      dplyr::summarise(n = sum(!is.na(value)),
-                       min = min(value, na.rm = TRUE),
-                       # min = quantile(value, 0.1, na.rm = TRUE),
-                       max = max(value, na.rm = TRUE),
-                       # max = quantile(value, 0.9, na.rm = TRUE),
-                       .groups = "drop") |>
-      dplyr::left_join(best_pars_long, by = "param") |>
-      dplyr::mutate(
-        min = pmin(min, value),
-        max = pmax(max, value)
-      ) 
-    
-    g <- FME::Latinhyper(summ_survivors[, c("min", "max")],
-                         ctrl$NP)
-    colnames(g) <- summ_survivors$param
+    # best_pars_long <- best_pars |> 
+    #   dplyr::select(dplyr::all_of(param$name_full)) |>
+    #   tidyr::pivot_longer(cols = dplyr::all_of(param$name_full), names_to = "param")
+    # 
+    # summ_survivors <- survivors2 |> 
+    #   dplyr::select(dplyr::all_of(param$name_full)) |>
+    #   tidyr::pivot_longer(cols = dplyr::all_of(param$name_full), names_to = "param") |> 
+    #   dplyr::group_by(param) |>
+    #   dplyr::summarise(n = sum(!is.na(value)),
+    #                    min = min(value, na.rm = TRUE),
+    #                    # min = quantile(value, 0.1, na.rm = TRUE),
+    #                    max = max(value, na.rm = TRUE),
+    #                    # max = quantile(value, 0.9, na.rm = TRUE),
+    #                    .groups = "drop") |>
+    #   dplyr::left_join(best_pars_long, by = "param") |>
+    #   dplyr::mutate(
+    #     min = pmin(min, value),
+    #     max = pmax(max, value)
+    #   ) 
+    # 
+    # g <- FME::Latinhyper(summ_survivors[, c("min", "max")],
+    #                      ctrl$NP)
+    # colnames(g) <- summ_survivors$param
     g <- as.data.frame(g)
   } else {
     g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP,
