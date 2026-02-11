@@ -11,6 +11,7 @@
 #' @importFrom AEME check_model
 #'
 #' @examples
+#' data(aeme_parameters, package = "AEME")
 #' param <- aeme_parameters
 #' vars_sim <- c("HYD_temp", "CHM_oxy", "PHY_tchla")
 #' param_var_matrix <- create_param_var_matrix(param, vars_sim)
