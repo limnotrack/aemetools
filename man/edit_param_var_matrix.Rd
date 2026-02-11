@@ -7,8 +7,11 @@
 edit_param_var_matrix(param_var_matrix)
 }
 \arguments{
-\item{param_var_matrix}{a named list of matrices, where each matrix corresponds to a model and has
-parameters as rows and response variables as columns. This is the output of \code{get_param_var_matrix()}.}
+\item{param_var_matrix}{a data frame with columns 'model', 'file',
+'name_full', and variable names as columns. The 'name_full' column
+should be encoded as 'group/name[index]'. The variable columns should
+contain TRUE/FALSE values indicating whether the parameter is associated with
+the variable or not. This is the output of \code{get_param_var_matrix()}.}
 }
 \value{
 a named list of edited matrices, with the same structure as the

@@ -2,9 +2,9 @@
 #'
 #' @inheritParams calib_aeme
 #'
-#' @returns A list of data frames, one for each model, with parameters as rows 
-#' and variables as columns. The values in the data frames indicate whether a 
-#' parameter is associated with a variable (TRUE) or not (FALSE).
+#' @returns A data frame with columns for model, file, name_full, and one 
+#' column for each variable in vars_sim. The variable columns contain TRUE/FALSE
+#' values indicating whether the parameter is associated with the variable.
 #' @export
 #' 
 #' @importFrom dplyr filter pull
@@ -15,26 +15,72 @@
 #' vars_sim <- c("HYD_temp", "CHM_oxy", "PHY_tchla")
 #' param_var_matrix <- create_param_var_matrix(param, vars_sim)
 
+
 create_param_var_matrix <- function(param, vars_sim) {
   
   model <- unique(param$model)
   model <- AEME::check_model(model)
-  out_list <- lapply(model, \(m) {
-    param_m <- param |> 
-      dplyr::filter(model == m) 
-    param_full <- encode_param(group = param_m$group, name = param_m$name, 
-                               index = param_m$index) 
+  
+  
+  out <- lapply(model, \(m) {
     
-    # param_vars_matrix <- matrix(1, nrow = length(param_full), 
-    #                             ncol = length(vars_sim))
-    param_vars_matrix <- matrix(TRUE, nrow = length(param_full),
-                                ncol = length(vars_sim)) |> 
-      as.data.frame()
+    param_m <- param |>
+      dplyr::filter(model == m)
     
-    rownames(param_vars_matrix) <- param_full
-    colnames(param_vars_matrix) <- vars_sim
+    name_full <- encode_param(
+      group = param_m$group,
+      name  = param_m$name,
+      index = param_m$index
+    )
+    
+    param_vars_matrix <- matrix(
+      FALSE,
+      nrow = length(name_full),
+      ncol = length(vars_sim),
+      dimnames = list(NULL, vars_sim)
+    ) |>
+      as.data.frame() |> 
+      dplyr::mutate(
+        model = m,
+        file = param_m$file,
+        name_full = name_full,
+        group = param_m$group,
+        name = param_m$name,
+        index = param_m$index,
+      ) |> 
+      dplyr::select(model, file, name_full, group, name, index,
+                    dplyr::everything())
+    
+    # populate from var_sim column if present
+    if ("var_sim" %in% colnames(param_m)) {
+      
+      var_list <- strsplit(
+        param_m$var_sim,
+        "|",
+        fixed = TRUE
+      )
+      
+      for (i in seq_along(name_full)) {
+        vars_i <- var_list[[i]]
+        
+        if (!any(is.na(vars_i))) {
+          vars_i <- intersect(vars_i, vars_sim)
+          param_vars_matrix[i, vars_i] <- TRUE
+        }
+      }
+      
+    } else {
+      # fallback: everything TRUE if no mapping provided
+      param_vars_matrix[,] <- TRUE
+    }
+    
     param_vars_matrix
-  }) 
-  names(out_list) <- model
-  return(out_list)
+  }) |> 
+    dplyr::bind_rows() |> 
+    dplyr::select(model, file, name_full, group, name, index, 
+                  dplyr::everything()) |> 
+    dplyr::arrange(model, file, group, name, index) |> 
+    dplyr::select(-group, -name, -index)
+  
+  return(out)
 }
