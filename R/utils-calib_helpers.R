@@ -54,3 +54,31 @@ decode_param_full <- function(name_full) {
     stringsAsFactors = FALSE
   )
 }
+
+#' Check if a solution is dominated by any other solution in the objective space.
+#' This function is used to identify whether a given solution (row) in the objective matrix
+#' is dominated by any other solution. A solution i is dominated if there exists another solution j such that
+#' all objective values of j are less than or equal to those of i, and at
+#' least one objective value of j is strictly less than that of i.
+#' @param i The index of the solution to check for dominance.
+#' @return TRUE if the solution is dominated, FALSE otherwise.
+#' @noRd
+is_dominated <- function(obj, i) {
+  any(apply(obj, 1, function(j)
+    all(j <= obj[i, ]) && any(j < obj[i, ])
+  ))
+}
+
+#' Get the Pareto front from a data frame based on specified objective columns.
+#' @param df A data frame containing the results of a multi-objective optimization.
+#' @param obj_cols A character vector of column names in df that represent the
+#' objective values to be minimized. The function will identify the rows that are
+#' not dominated by any other row in terms of these objective values.
+#' @return A data frame containing only the rows that are on the Pareto front.
+#' @export
+get_pareto_front <- function(df, obj_cols) {
+  obj <- as.matrix(df[, obj_cols])
+  pareto_idx <- which(!sapply(seq_len(nrow(obj)), is_dominated, obj = obj))
+  
+  df[pareto_idx, ]
+}
