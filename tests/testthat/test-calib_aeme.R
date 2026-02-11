@@ -1539,3 +1539,111 @@ test_that("can write csv output to database", {
   testthat::expect_true(file.exists(db_file))
   
 })
+
+test_that("can calibrate with param_var_matrix for AEME-GLM & GOTM in parallel", {
+  tmpdir <- tempdir()
+  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  # Copy files from package into tempdir
+  file.copy(aeme_dir, tmpdir, recursive = TRUE)
+  path <- file.path(tmpdir, "lake")
+  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  model_controls <- AEME::get_model_controls()
+  model <- c("glm_aed")
+  path <- "aeme"
+  sed_param <- AEME::glm_sed_params(n_zones = 2, zone_heights = c(8, 15))
+  aeme <- AEME::add_param(aeme = aeme, param = sed_param)
+  
+  aeme <- AEME::build_aeme(path = path, aeme = aeme,
+                           model = model, model_controls = model_controls,
+                           ext_elev = 5, use_bgc = TRUE)
+  aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model)
+  AEME::plot_output(aeme, model = model, var_sim = "CHM_oxy")
+  
+  glm_sed <- AEME::get_aed_sed_const2d_param(aeme, path) |> 
+    dplyr::filter(
+      !grepl("n_zones|active_zone", name)
+    )
+  
+  # Get parameters for calibration
+  sed_param_cal <- sed_param |> 
+    dplyr::filter(grepl("sed_temp_mean|sed_temp_peak_doy|sed_temp_amplitude", name))
+  
+  data("aeme_parameters", package = "AEME")
+  data("aeme_parameters_bgc", package = "AEME")
+  param <- aeme_parameters |> 
+    dplyr::bind_rows(aeme_parameters_bgc) |> 
+    dplyr::filter(
+      !grepl("sediment", name)
+    ) |> 
+    dplyr::filter(model %in% c("glm_aed"), !grepl("zone_heights|sed_roughness|aed_sed_const2d|n_zones|inflow|benthic_mode|sed_heat_Ksoil|sed_temp_depth|sed_reflectivity", name),
+                  !duplicated(name)) |>
+    dplyr::bind_rows(sed_param_cal) |>
+    dplyr::bind_rows(glm_sed) |>
+    # dplyr::select(dplyr::all_of(AEME::param_colnames(incl_opt = FALSE))) |> 
+    as.data.frame()
+  
+  # Function to calculate fitness
+  nse <- function(df) {
+    # Calculate Nash-Sutcliffe Efficiency
+    nse <- 1 - (sum((df$obs - df$model)^2) / sum((df$obs - mean(df$obs))^2))
+    -1 * nse
+  }
+  vars_sim <- c("HYD_temp", "HYD_thmcln", "LKE_lvlwtr", "CHM_oxy", "PHY_tchla")
+  FUN_list <- list(HYD_temp = nse, HYD_thmcln = nse, LKE_lvlwtr = nse,
+                   CHM_oxy = nse, PHY_tchla = nse)
+  
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 10 * 3, ncore = 2L,
+                         parallel = TRUE, file_type = "db", na_value = 1e20,
+                         cutoff = 0.15, file_name = "results.db")
+  
+  weights <- set_weights(vars_sim = vars_sim)
+  
+  data("param_var_matrix", package = "aemetools")
+  # param_var_matrix <- edit_param_var_matrix(param_var_matrix)
+
+  # Calibrate AEME model
+  sim_id <- calib_aeme(aeme = aeme, path = path,
+                       param = param, model = model,
+                       FUN_list = FUN_list, ctrl = ctrl,
+                       vars_sim = vars_sim, weights = weights,
+                       param_var_matrix = param_var_matrix)
+  
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  
+  testthat::expect_true(is.list(calib))
+  
+  ptemp <- plot_calib(calib = calib, na_value = ctrl$na_value, 
+                      fit_col = "HYD_temp")
+  poxy <- plot_calib(calib = calib, na_value = ctrl$na_value, 
+                      fit_col = "CHM_oxy")
+  pstrat <- plot_calib(calib = calib, na_value = ctrl$na_value, 
+                      fit_col = "HYD_thmcln")
+  pfit <- plot_calib(calib = calib, na_value = ctrl$na_value)
+  
+  pfit$convergence
+  
+  
+  plot_calib_summary(calib = calib)
+  pstrat$dotty
+  ptemp$dotty
+  poxy$dotty
+  pfit$dotty
+  
+  testthat::expect_true(is.list(ptemp))
+  
+  best_params <- get_param(calib, na_value = ctrl$na_value, fit_col = "fit", 
+                           best = TRUE)
+  best_params |> 
+    print(n = 50)
+  
+  aeme <- run_aeme_param(aeme = aeme, path = path,
+                         param = best_params, model = model,
+                         return_aeme = TRUE)
+  AEME::plot_output(aeme)
+  AEME::plot_output(aeme, var_sim = "CHM_oxy")
+  AEME::plot_output(aeme, var_sim = "HYD_thmcln")
+  AEME::plot_output(aeme, var_sim = "PHY_tchla")
+  AEME::assess_model(aeme = aeme)
+  
+  
+})
