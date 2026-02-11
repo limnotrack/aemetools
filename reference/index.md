@@ -24,6 +24,8 @@
   information in a human-readable format.
 - [`download_era5_grib()`](download_era5_grib.md) : Download ERA5 GRIB
   files
+- [`edit_parameters_shiny()`](edit_parameters_shiny.md) : Edit model
+  parameters using a Shiny gadget
 - [`edit_param_var_matrix()`](edit_param_var_matrix.md) : Edit
   parameter–response matrix in a Shiny gadget
 - [`encode_param()`](encode_param.md) : Encode a parameter name with its
