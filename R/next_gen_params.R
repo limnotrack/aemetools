@@ -30,18 +30,22 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
   survivors1 <- survivors1[order(survivors1$fit), ]
   keep_cols <- which(names(survivors1) %in% param$name_full)
   if (!is.null(param_var_matrix)) {
-    vars_sim <- names(param_var_matrix)
+    vars_sim <- names(param_var_matrix)[!names(param_var_matrix) %in% c("model", "file", "name_full", "group", "name", "index") ]
+    # pareto_front <- get_pareto_front(survivors1, vars_sim)
+    # print(nrow(survivors2))
     survivors2 <- lapply(vars_sim, \(v) {
-      sel_param <- rownames(param_var_matrix)[param_var_matrix[[v]]]
-      sel_cols <- c(sel_param, v)
-      sel_survivors <- survivors1 |> 
+      sel_param <- param_var_matrix[["name_full"]][param_var_matrix[[v]]]
+      sel_cols <- c(sel_param, vars_sim)
+      sel_survivors <- survivors1 |>
         dplyr::select(dplyr::all_of(sel_cols))
-      sel_survivors[sel_survivors[[v]] <= stats::quantile(sel_survivors[[v]],
-                                                          ctrl$cutoff), ] |> 
-        dplyr::select(-dplyr::all_of(v))
-    }) |> 
-      dplyr::bind_rows() |> 
-      dplyr::select(dplyr::all_of(param$name_full))
+      get_pareto_front(sel_survivors, vars_sim)
+      
+    }) 
+    # sel_survivors[sel_survivors[[v]] <= stats::quantile(sel_survivors[[v]],
+    #                                                     ctrl$cutoff), ]# |>
+    # dplyr::select(-dplyr::all_of(v))
+    
+    # pf2 <- get_pareto_front(survivors2, vars_sim)
   } else  if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
     cli::cli_alert_info(
       "Survival rate: {round(nrow(survivors1) / nrow(param_df), 2)}"
@@ -83,13 +87,25 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
     g <- as.data.frame(g)
   } else if (!is.null(param_var_matrix)) {
     
+    best_pars_long <- best_pars |> 
+      dplyr::select(dplyr::all_of(param$name_full)) |>
+      tidyr::pivot_longer(cols = dplyr::all_of(param$name_full), names_to = "param")
+    
     summ_survivors <- survivors2 |> 
+      dplyr::select(dplyr::all_of(param$name_full)) |>
       tidyr::pivot_longer(cols = dplyr::all_of(param$name_full), names_to = "param") |> 
       dplyr::group_by(param) |>
       dplyr::summarise(n = sum(!is.na(value)),
                        min = min(value, na.rm = TRUE),
+                       # min = quantile(value, 0.1, na.rm = TRUE),
                        max = max(value, na.rm = TRUE),
-                       .groups = "drop") 
+                       # max = quantile(value, 0.9, na.rm = TRUE),
+                       .groups = "drop") |>
+      dplyr::left_join(best_pars_long, by = "param") |>
+      dplyr::mutate(
+        min = pmin(min, value),
+        max = pmax(max, value)
+      ) 
     
     g <- FME::Latinhyper(summ_survivors[, c("min", "max")],
                          ctrl$NP)
@@ -117,8 +133,12 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
   }
   # Replace last parameter rather than adding
   if (keep_best_pars) {
+    best_pars <- best_pars |> 
+      dplyr::select(dplyr::all_of(names(g)))
+    
     g <- g |> 
-      dplyr::bind_rows(best_pars[, keep_cols])
+      dplyr::slice_tail(n = -nrow(best_pars)) |>
+      dplyr::bind_rows(best_pars)
   }
 
   return(g)
