@@ -1540,7 +1540,7 @@ test_that("can write csv output to database", {
   
 })
 
-test_that("can calibrate with param_var_matrix for AEME-GLM & GOTM in parallel", {
+test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
   # Copy files from package into tempdir
@@ -1612,6 +1612,14 @@ test_that("can calibrate with param_var_matrix for AEME-GLM & GOTM in parallel",
   
   testthat::expect_true(is.list(calib))
   
+  param_wide <- calib$simulation_data |>
+    dplyr::filter(fit_type == "fit") |>
+    tidyr::pivot_wider(id_cols = c("gen", "run"), names_from = parameter_name,
+                       values_from = parameter_value)
+  
+  testthat::expect_true(is.data.frame(param_wide))
+  testthat::expect_true(all(param_wide$`NA/aed_sed_const2d/fsed_oxy[1]` <= param_wide$`NA/aed_sed_const2d/fsed_oxy[2]`))
+  testthat::expect_true(all(param_wide$`NA/sediment/sed_temp_mean[1]` <= param_wide$`NA/sediment/sed_temp_mean[2]`))
   ptemp <- plot_calib(calib = calib, na_value = ctrl$na_value, 
                       fit_col = "HYD_temp")
   poxy <- plot_calib(calib = calib, na_value = ctrl$na_value, 
