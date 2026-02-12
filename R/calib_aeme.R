@@ -40,7 +40,7 @@
 #'
 #' @export
 
-calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list, 
+calib_aeme <- function(aeme, model, param, vars_sim = "HYD_temp", FUN_list, 
                        weights, path = ".", model_controls = NULL, ctrl = NULL,
                        param_var_matrix = NULL, param_df = NULL) {
 
@@ -180,6 +180,8 @@ calib_aeme <- function(aeme, model,  param, vars_sim = "HYD_temp", FUN_list,
 
     # Correct N of splits if ncore is greater than number of parameters
     splts <- min(ctrl$NP, ctrl$ncore)
+    
+    start_param <- adj_index_params(start_param, param = param)
 
     suppressWarnings({
       param_list <- split(start_param, 1:splts)

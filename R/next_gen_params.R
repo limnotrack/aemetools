@@ -214,6 +214,10 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
                                               max = param$max[param$name_full == p])
     }
   }
+  
+  # Correct indexed parameters ----
+  g <- adj_index_params(g, param)
+  
   # Replace last parameter rather than adding
   if (keep_best_pars) {
     best_pars <- best_pars |> 
