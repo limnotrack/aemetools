@@ -87,6 +87,19 @@ calib_aeme <- function(aeme, model, param, vars_sim = "HYD_temp", FUN_list,
   # Add index to parameter name
   param <- param |> 
     dplyr::mutate(name_full = encode_param(group, name, index))
+  
+  # Check for parameters where value, min, max are equal
+  eq_pars <- param[param$value == param$min & param$value == param$max, ]
+  if (nrow(eq_pars) > 0) {
+    cli::cli_alert_warning("The following parameters have the same value, min, 
+                           and max and will not be updated during calibration: {.val {eq_pars$name}}")
+    AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars, 
+                                 path = path)
+    
+    param <- param |> 
+      dplyr::filter(!name_full %in% eq_pars$name_full)
+  }
+  
   if (!is.null(param_var_matrix)) {
     # Select logical columnms
     mat <- param_var_matrix |> 
