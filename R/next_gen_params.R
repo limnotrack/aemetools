@@ -6,6 +6,7 @@
 #' @param best_pars dataframe; with best parameters. Default is NULL.
 #' @param add_mutation logical; add mutation to parameters. Default is TRUE.
 #' @param keep_best_pars logical; keep best parameters. Default is TRUE.
+#' @inheritParams calib_aeme
 #'
 #' @importFrom MASS mvrnorm
 #' @importFrom stats cov rnorm sd quantile
@@ -17,7 +18,7 @@
 
 next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
                             add_mutation = TRUE, keep_best_pars = TRUE,
-                            param_var_matrix = NULL) {
+                            param_var_matrix = NULL, weights) {
 
   if (is.null(best_pars)) {
     best_pars <- param_df[which.min(param_df$fit), ]
