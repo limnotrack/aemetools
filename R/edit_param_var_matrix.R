@@ -145,7 +145,8 @@ edit_param_var_matrix <- function(param_var_matrix) {
   }
   
   # remove .row_id before returning
-  edited <- edited |> dplyr::select(-.row_id)
+  param_var_matrix <- param_var_matrix |>
+    dplyr::select(-.row_id)
   
   # make sure columns match original
   edited <- edited |> dplyr::select(dplyr::all_of(colnames(param_var_matrix)))
