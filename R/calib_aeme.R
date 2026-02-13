@@ -296,7 +296,8 @@ calib_aeme <- function(aeme, model, param, vars_sim = "HYD_temp", FUN_list,
       # Select survivors ----
       g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
                            best_pars = best_pars, 
-                           param_var_matrix = param_var_matrix)
+                           param_var_matrix = param_var_matrix, 
+                           weights = weights)
 
       for (gen in 2:ctrl$ngen) {
 
@@ -401,7 +402,8 @@ calib_aeme <- function(aeme, model, param, vars_sim = "HYD_temp", FUN_list,
 
         g <- next_gen_params(param_df = g, param = param, ctrl = ctrl,
                              best_pars = best_pars, 
-                             param_var_matrix = param_var_matrix)
+                             param_var_matrix = param_var_matrix, 
+                             weights = weights)
       }
     } else {
       # Run in serial ----
@@ -507,7 +509,8 @@ calib_aeme <- function(aeme, model, param, vars_sim = "HYD_temp", FUN_list,
       # Select survivors ----
       g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
                            best_pars = best_pars, 
-                           param_var_matrix = param_var_matrix)
+                           param_var_matrix = param_var_matrix, 
+                           weights = weights)
 
       for (gen in 2:ctrl$ngen) {
 
@@ -616,7 +619,8 @@ calib_aeme <- function(aeme, model, param, vars_sim = "HYD_temp", FUN_list,
 
         g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
                              best_pars = best_pars, 
-                             param_var_matrix = param_var_matrix)
+                             param_var_matrix = param_var_matrix, 
+                             weights = weights)
       }
     }
     write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
