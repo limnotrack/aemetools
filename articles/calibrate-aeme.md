@@ -51,10 +51,10 @@ current model setup is working.
 ``` r
 aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
                  path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-13 02:06:51]
-#> → GLM-AED running... [2026-02-13 02:06:51]
-#> ✔ GLM-AED run successful! [2026-02-13 02:06:51]
-#> ✔ Model run complete! [2026-02-13 02:06:51]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-13 04:02:26]
+#> → GLM-AED running... [2026-02-13 04:02:26]
+#> ✔ GLM-AED run successful! [2026-02-13 04:02:27]
+#> ✔ Model run complete! [2026-02-13 04:02:27]
 plot(aeme)
 ```
 
@@ -145,11 +145,11 @@ is different to the `run_aeme` function in that it does not return an
 run_aeme_param(aeme = aeme, param = aeme_parameters,
                  model = model, path = path)
 #> ℹ Deleted previous output for model GLM-AED at
-#>   C:/Users/runneradmin/AppData/Local/Temp/RtmpquU1jd/lake/45819_wainamu/glm_aed/output/output.nc
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-13 02:06:56]
-#> → GLM-AED running... [2026-02-13 02:06:56]
-#> ✔ GLM-AED run successful! [2026-02-13 02:06:57]
-#> ✔ Model run complete! [2026-02-13 02:06:57]
+#>   C:/Users/runneradmin/AppData/Local/Temp/RtmpklDnYm/lake/45819_wainamu/glm_aed/output/output.nc
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-13 04:02:31]
+#> → GLM-AED running... [2026-02-13 04:02:31]
+#> ✔ GLM-AED run successful! [2026-02-13 04:02:32]
+#> ✔ Model run complete! [2026-02-13 04:02:32]
 ```
 
 ## Calibration setup
@@ -330,109 +330,111 @@ sim_id <- calib_aeme(aeme = aeme, path = path,
                      vars_sim = vars_sim, weights = weights)
 #> ℹ Variables not found: `LKE_lvlwtr`.
 #> Adding them to model_controls.
-#> ℹ Extracting indices for "glm_aed" modelled variables [2026-02-13 02:06:59]
-#> ✔ Indices extracted for "glm_aed" modelled variables [2026-02-13 02:07:00]
+#> ! The following parameters have the same value, min, 
+#> and max and will not be updated during calibration: "sediment/n_zones"
+#> ℹ Extracting indices for "glm_aed" modelled variables [2026-02-13 04:02:33]
+#> ✔ Indices extracted for "glm_aed" modelled variables [2026-02-13 04:02:34]
 #> ℹ Using 2 cores for parallel calibration for "glm_aed".
-#> → Starting generation 1/10, 40 members. [2026-02-13 02:07:00]
+#> → Starting generation 1/10, 40 members. [2026-02-13 04:02:35]
 #> Parameter summary for generation 1:
 #> ✔ Completed generation 1/10 
-#> for "glm_aed". [2026-02-13 02:07:33]
+#> for "glm_aed". [2026-02-13 04:03:03]
 #> 
-#> Best fit: 0.965 (sd: 0.40394) Parameters: [ 4.32, 1.07, 1.18, 0.168, 0.211,
-#> 0.102, 0.45, 0.587, 1, 12.8, 54.9, 1.71, and 1.74 ]
+#> Best fit: 0.844 (sd: 0.5547) Parameters: [ 2.01, 0.881, 1.01, 0.122, 0.27,
+#> 0.158, 0.42, 0.631, 13.7, 64.7, 1.29, and 1.29 ]
 #> Writing output for generation 1 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-02-13 02:07:33]
-#> ℹ Survival rate: 0.72
+#> "45819_glmaed_C_001" [2026-02-13 04:03:03]
+#> ℹ Survival rate: 0.7
 #> 
-#> → Starting generation 2/10, 40 members. [2026-02-13 02:07:33]
+#> → Starting generation 2/10, 40 members. [2026-02-13 04:03:03]
 #> Parameter summary for generation 2:
 #> Writing output for generation 2 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-02-13 02:07:59]
+#> "45819_glmaed_C_001" [2026-02-13 04:03:24]
 #> ✔ Completed generation 2/10 
-#> for "glm_aed". [2026-02-13 02:07:59]
+#> for "glm_aed". [2026-02-13 04:03:24]
 #> 
-#> Best fit: 0.965 (sd: 0.4379)
+#> Best fit: 0.753 (sd: 0.35065)
 #> ℹ Survival rate: 0.95
 #> 
-#> → Starting generation 3/10, 40 members. [2026-02-13 02:07:59]
+#> → Starting generation 3/10, 40 members. [2026-02-13 04:03:24]
 #> Parameter summary for generation 3:
 #> Writing output for generation 3 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-02-13 02:08:24]
+#> "45819_glmaed_C_001" [2026-02-13 04:03:45]
 #> ✔ Completed generation 3/10 
-#> for "glm_aed". [2026-02-13 02:08:24]
+#> for "glm_aed". [2026-02-13 04:03:45]
 #> 
-#> Best fit: 0.77 (sd: 0.37966)
-#> ℹ Survival rate: 0.98
-#> 
-#> → Starting generation 4/10, 40 members. [2026-02-13 02:08:25]
-#> Parameter summary for generation 4:
-#> Writing output for generation 4 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-02-13 02:08:50]
-#> ✔ Completed generation 4/10 
-#> for "glm_aed". [2026-02-13 02:08:50]
-#> 
-#> Best fit: 0.77 (sd: 0.28383)
+#> Best fit: 0.691 (sd: 0.18093)
 #> ℹ Survival rate: 0.92
 #> 
-#> → Starting generation 5/10, 40 members. [2026-02-13 02:08:50]
+#> → Starting generation 4/10, 40 members. [2026-02-13 04:03:45]
+#> Parameter summary for generation 4:
+#> Writing output for generation 4 to simulation_data.csv with sim ID:
+#> "45819_glmaed_C_001" [2026-02-13 04:04:05]
+#> ✔ Completed generation 4/10 
+#> for "glm_aed". [2026-02-13 04:04:05]
+#> 
+#> Best fit: 0.673 (sd: 0.38988)
+#> ℹ Survival rate: 0.9
+#> 
+#> → Starting generation 5/10, 40 members. [2026-02-13 04:04:05]
 #> Parameter summary for generation 5:
 #> Writing output for generation 5 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-02-13 02:09:15]
+#> "45819_glmaed_C_001" [2026-02-13 04:04:25]
 #> ✔ Completed generation 5/10 
-#> for "glm_aed". [2026-02-13 02:09:15]
+#> for "glm_aed". [2026-02-13 04:04:25]
 #> 
-#> Best fit: 0.755 (sd: 0.23989)
+#> Best fit: 0.673 (sd: 0.29184)
 #> ℹ Survival rate: 0.95
 #> 
-#> → Starting generation 6/10, 40 members. [2026-02-13 02:09:15]
+#> → Starting generation 6/10, 40 members. [2026-02-13 04:04:25]
 #> Parameter summary for generation 6:
 #> Writing output for generation 6 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-02-13 02:09:40]
+#> "45819_glmaed_C_001" [2026-02-13 04:04:46]
 #> ✔ Completed generation 6/10 
-#> for "glm_aed". [2026-02-13 02:09:40]
+#> for "glm_aed". [2026-02-13 04:04:46]
 #> 
-#> Best fit: 0.738 (sd: 0.29262)
+#> Best fit: 0.644 (sd: 0.43366)
 #> ℹ Survival rate: 0.95
 #> 
-#> → Starting generation 7/10, 40 members. [2026-02-13 02:09:40]
+#> → Starting generation 7/10, 40 members. [2026-02-13 04:04:46]
 #> Parameter summary for generation 7:
 #> Writing output for generation 7 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-02-13 02:10:05]
+#> "45819_glmaed_C_001" [2026-02-13 04:05:09]
 #> ✔ Completed generation 7/10 
-#> for "glm_aed". [2026-02-13 02:10:05]
+#> for "glm_aed". [2026-02-13 04:05:09]
 #> 
-#> Best fit: 0.73 (sd: 0.1162)
-#> ℹ Survival rate: 0.9
+#> Best fit: 0.618 (sd: 0.30628)
+#> ℹ Survival rate: 0.92
 #> 
-#> → Starting generation 8/10, 40 members. [2026-02-13 02:10:05]
+#> → Starting generation 8/10, 40 members. [2026-02-13 04:05:09]
 #> Parameter summary for generation 8:
 #> Writing output for generation 8 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-02-13 02:10:29]
+#> "45819_glmaed_C_001" [2026-02-13 04:05:31]
 #> ✔ Completed generation 8/10 
-#> for "glm_aed". [2026-02-13 02:10:29]
+#> for "glm_aed". [2026-02-13 04:05:31]
 #> 
-#> Best fit: 0.73 (sd: 0.18374)
-#> ℹ Survival rate: 0.9
+#> Best fit: 0.61 (sd: 0.33802)
+#> ℹ Survival rate: 0.92
 #> 
-#> → Starting generation 9/10, 40 members. [2026-02-13 02:10:29]
+#> → Starting generation 9/10, 40 members. [2026-02-13 04:05:31]
 #> Parameter summary for generation 9:
 #> Writing output for generation 9 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-02-13 02:10:51]
+#> "45819_glmaed_C_001" [2026-02-13 04:05:51]
 #> ✔ Completed generation 9/10 
-#> for "glm_aed". [2026-02-13 02:10:51]
+#> for "glm_aed". [2026-02-13 04:05:51]
 #> 
-#> Best fit: 0.726 (sd: 0.21649)
+#> Best fit: 0.596 (sd: 0.44246)
 #> ℹ Survival rate: 0.95
 #> 
-#> → Starting generation 10/10, 40 members. [2026-02-13 02:10:51]
+#> → Starting generation 10/10, 40 members. [2026-02-13 04:05:51]
 #> Parameter summary for generation 10:
 #> Writing output for generation 10 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-02-13 02:11:12]
+#> "45819_glmaed_C_001" [2026-02-13 04:06:15]
 #> ✔ Completed generation 10/10 
-#> for "glm_aed". [2026-02-13 02:11:12]
+#> for "glm_aed". [2026-02-13 04:06:15]
 #> 
-#> Best fit: 0.719 (sd: 0.23906)
-#> ℹ Survival rate: 0.95
+#> Best fit: 0.596 (sd: 0.27642)
+#> ℹ Survival rate: 0.98
 ```
 
 ## Visualise calibration results
@@ -550,21 +552,20 @@ best_params <- get_param(calib, na_value = ctrl$na_value, fit_col = "fit",
 best_params
 ```
 
-| sim_id             | model   | file     | name                       |    value |      min |      max | group | index | fit_value | gen | fit_type |
-|:-------------------|:--------|:---------|:---------------------------|---------:|---------:|---------:|:------|------:|----------:|:----|:---------|
-| 45819_glmaed_C_001 | glm_aed | met      | MET_radswd                 | 1.051250 | 1.051250 | 1.051250 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | met      | MET_wndspd                 | 1.022550 | 1.022550 | 1.022550 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | inf      | inflow                     | 1.452770 | 1.452770 | 1.452770 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | light/Kw                   | 1.038340 | 1.038340 | 1.038340 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_conv       | 0.149620 | 0.149620 | 0.149620 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_hyp        | 0.506658 | 0.506658 | 0.506658 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_shear      | 0.154519 | 0.154519 | 0.154519 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_turb       | 0.391536 | 0.391536 | 0.391536 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_wind_stir      | 0.249225 | 0.249225 | 0.249225 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | wdr      | outflow                    | 1.404980 | 1.404980 | 1.404980 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | sediment/n_zones           | 1.000000 | 1.000000 | 1.000000 | NA    |    NA |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | sediment/sed_temp_mean     | 8.206850 | 8.206850 | 8.206850 | NA    |     1 |  0.719258 | 1   | fit      |
-| 45819_glmaed_C_001 | glm_aed | glm3.nml | sediment/sed_temp_peak_doy | 9.478170 | 9.478170 | 9.478170 | NA    |     1 |  0.719258 | 1   | fit      |
+| sim_id             | model   | file     | name                       |     value |       min |       max | group | index | fit_value | gen | fit_type |
+|:-------------------|:--------|:---------|:---------------------------|----------:|----------:|----------:|:------|------:|----------:|:----|:---------|
+| 45819_glmaed_C_001 | glm_aed | met      | MET_radswd                 |  0.958283 |  0.958283 |  0.958283 | NA    |    NA |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | met      | MET_wndspd                 |  0.855020 |  0.855020 |  0.855020 | NA    |    NA |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | inf      | inflow                     |  1.113110 |  1.113110 |  1.113110 | NA    |    NA |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | light/Kw                   |  0.839013 |  0.839013 |  0.839013 | NA    |    NA |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_conv       |  0.146163 |  0.146163 |  0.146163 | NA    |    NA |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_hyp        |  0.618546 |  0.618546 |  0.618546 | NA    |    NA |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_shear      |  0.145682 |  0.145682 |  0.145682 | NA    |    NA |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_mix_turb       |  0.520322 |  0.520322 |  0.520322 | NA    |    NA |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | mixing/coef_wind_stir      |  0.286626 |  0.286626 |  0.286626 | NA    |    NA |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | wdr      | outflow                    |  1.096410 |  1.096410 |  1.096410 | NA    |    NA |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | sediment/sed_temp_mean     | 10.066400 | 10.066400 | 10.066400 | NA    |     1 |  0.595971 | 1   | fit      |
+| 45819_glmaed_C_001 | glm_aed | glm3.nml | sediment/sed_temp_peak_doy | 61.211200 | 61.211200 | 61.211200 | NA    |     1 |  0.595971 | 1   | fit      |
 
 The best parameter values can be used to run the model and compare the
 simulated values to the observed values. This can be done using the
@@ -575,11 +576,11 @@ aeme <- run_aeme_param(aeme = aeme, path = path,
                        param = best_params, model = model,
                        return_aeme = TRUE)
 #> ℹ Deleted previous output for model GLM-AED at
-#>   C:/Users/runneradmin/AppData/Local/Temp/RtmpquU1jd/lake/45819_wainamu/glm_aed/output/output.nc
-#> ℹ Running models... (Have you tried parallelizing?) [2026-02-13 02:11:18]
-#> → GLM-AED running... [2026-02-13 02:11:18]
-#> ✔ GLM-AED run successful! [2026-02-13 02:11:19]
-#> ✔ Model run complete! [2026-02-13 02:11:19]
+#>   C:/Users/runneradmin/AppData/Local/Temp/RtmpklDnYm/lake/45819_wainamu/glm_aed/output/output.nc
+#> ℹ Running models... (Have you tried parallelizing?) [2026-02-13 04:06:21]
+#> → GLM-AED running... [2026-02-13 04:06:21]
+#> ✔ GLM-AED run successful! [2026-02-13 04:06:22]
+#> ✔ Model run complete! [2026-02-13 04:06:22]
 ```
 
 The simulated values can be compared to the observed values using the
@@ -634,10 +635,10 @@ variable. These include:
 assess_model(aeme = aeme, model = model, var_sim = vars_sim)
 ```
 
-| Model   | var_sim    |  bias |   mae |  rmse |  nmae |     nse |    d2 |     r |     rs |    r2 |     B |   n | obs_na | sim_na | name_text         | name_parse              |
-|:--------|:-----------|------:|------:|------:|------:|--------:|------:|------:|-------:|------:|------:|----:|-------:|-------:|:------------------|:------------------------|
-| GLM-AED | HYD_temp   | 0.016 | 0.685 | 0.976 | 0.038 |   0.902 | 0.048 | 0.951 |  0.945 | 0.905 | 0.824 | 125 |      0 |      0 | Water temperature | Temperature_((degree)C) |
-| GLM-AED | LKE_lvlwtr | 0.324 | 0.329 | 0.368 | 0.014 | -38.484 | 0.754 | 0.202 | -0.073 | 0.041 | 0.001 |   8 |      0 |      0 | Water level       | Water_(level)(m)        |
+| Model   | var_sim    |  bias |   mae |  rmse |  nmae |     nse |    d2 |     r |    rs |    r2 |     B |   n | obs_na | sim_na | name_text         | name_parse              |
+|:--------|:-----------|------:|------:|------:|------:|--------:|------:|------:|------:|------:|------:|----:|-------:|-------:|:------------------|:------------------------|
+| GLM-AED | HYD_temp   | 0.038 | 0.571 | 0.826 | 0.032 |   0.930 | 0.033 | 0.968 | 0.964 | 0.936 | 0.875 | 125 |      0 |      0 | Water temperature | Temperature_((degree)C) |
+| GLM-AED | LKE_lvlwtr | 0.211 | 0.231 | 0.254 | 0.010 | -17.822 | 0.750 | 0.341 | 0.098 | 0.117 | 0.006 |   8 |      0 |      0 | Water level       | Water_(level)(m)        |
 
 ### Visualise model performance
 
