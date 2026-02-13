@@ -62,18 +62,31 @@ edit_param_var_matrix <- function(param_var_matrix) {
     
     # update file choices based on model
     output$file_ui <- shiny::renderUI({
+      shiny::selectInput(
+        "file_filter",
+        "File",
+        choices = "All"
+      )
+    })
+    
+    # update file choices when model changes
+    observeEvent(input$model_filter, {
+      
       files <- rv() |>
         dplyr::filter(model == input$model_filter) |>
         dplyr::pull(file) |>
         unique()
       
-      shiny::selectInput(
+      shiny::updateSelectInput(
+        session,
         "file_filter",
-        "File",
         choices = c("All", files),
-        selected = "All"
+        selected = isolate(input$file_filter) |> 
+          {\(x) if (!is.null(x) && x %in% c("All", files)) x else "All"}()
       )
-    })
+      
+    }, ignoreInit = FALSE)
+    
     
     # reactive filtered table
     filtered_data <- shiny::reactive({
