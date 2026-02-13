@@ -1592,9 +1592,10 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
   FUN_list <- list(HYD_temp = nse, HYD_thmcln = nse, LKE_lvlwtr = nse,
                    CHM_oxy = nse, PHY_tchla = nse)
   
-  ctrl <- create_control(method = "calib", NP = 10, itermax = 10 * 3, ncore = 2L,
-                         parallel = TRUE, file_type = "db", na_value = 1e20,
-                         cutoff = 0.15, file_name = "results.db")
+  ctrl <- create_control(method = "calib", NP = 10, itermax = 10 * 3,
+                         ncore = 2L, parallel = TRUE, file_type = "db", 
+                         na_value = 1e20, cutoff = 0.15, 
+                         file_name = "results.db")
   
   weights <- set_weights(vars_sim = vars_sim)
   
