@@ -60,7 +60,7 @@ test_that("can run funs return same fit", {
                            inf_factor = inf_factor, ext_elev = 5,
                            use_bgc = TRUE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-  fit2 <- AEME::assess_model(aeme = aeme, model = model)
+  fit2 <- AEME::assess_model(aeme = aeme, model = model, var_sim = "HYD_temp")
   
   
   aeme <- run_aeme_param(aeme = aeme, param = param, model = model, path = path,
