@@ -34,7 +34,7 @@ model fit.}
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
 to calculate model fit. If nor provided, uses mean absolute error (MAE).}
 
-\item{weights}{vector; of weights for each variable in vars_sim. If not
+\item{weights}{a named vector; of weights for each variable in vars_sim. If not
 provided, defaults to 1 for each variable.}
 
 \item{path}{filepath; where input files are located relative to the current 
@@ -64,4 +64,36 @@ string of simulation id to be used to read the simulation output.
 \code{calib_model()} runs the model and compares it against observations provided.
 It can run in parallel by using multiple cores availlable on your computer
 to run quicker.
+}
+\examples{
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme <- readRDS(aeme_file)
+model_controls <- AEME::get_model_controls()
+model <- c("glm_aed", "gotm_wet")
+aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path, 
+                         model_controls = model_controls,
+                         ext_elev = 5, use_bgc = FALSE)
+aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
+
+data("aeme_parameters", package = "AEME")
+param <- aeme_parameters
+
+# Function to calculate fitness
+fit <- function(df) {
+  mean(abs(df$obs - df$model))
+}
+FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
+
+ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
+                       parallel = TRUE, file_type = "db",
+                       file_name = "results.db")
+
+vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
+
+# Calibrate AEME model
+sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
+                     param = param, FUN_list = FUN_list, ctrl = ctrl,
+                     vars_sim = vars_sim, weights = weights)
+
 }

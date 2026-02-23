@@ -25,7 +25,7 @@ to calculate model fit. If nor provided, uses mean absolute error (MAE).}
 \item{vars_sim}{vector; of variables names to be used in the calculation of
 model fit.}
 
-\item{weights}{vector; of weights for each variable in vars_sim. If not
+\item{weights}{a named vector; of weights for each variable in vars_sim. If not
 provided, defaults to 1 for each variable.}
 }
 \value{

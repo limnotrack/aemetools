@@ -18,7 +18,7 @@
 #' @param ctrl list; of controls for sensitivity analysis function created using
 #'  the \code{\link{create_control}} function. See \link{create_control} for
 #'  more details.
-#' @param weights vector; of weights for each variable in vars_sim. If not
+#' @param weights a named vector; of weights for each variable in vars_sim. If not
 #' provided, defaults to 1 for each variable.
 #' @param param_var_matrix list of dataframes; with parameters as rows and 
 #' response variables as columns. Created using 
@@ -37,6 +37,37 @@
 #' @importFrom dplyr mutate bind_rows
 #'
 #' @return string of simulation id to be used to read the simulation output.
+#' 
+#' @examples
+#' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+#' aeme <- readRDS(aeme_file)
+#' model_controls <- AEME::get_model_controls()
+#' model <- c("glm_aed", "gotm_wet")
+#' aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path, 
+#'                          model_controls = model_controls,
+#'                          ext_elev = 5, use_bgc = FALSE)
+#' aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
+#' 
+#' data("aeme_parameters", package = "AEME")
+#' param <- aeme_parameters
+#' 
+#' # Function to calculate fitness
+#' fit <- function(df) {
+#'   mean(abs(df$obs - df$model))
+#' }
+#' FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
+#' 
+#' ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
+#'                        parallel = TRUE, file_type = "db",
+#'                        file_name = "results.db")
+#' 
+#' vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+#' weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
+#' 
+#' # Calibrate AEME model
+#' sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
+#'                      param = param, FUN_list = FUN_list, ctrl = ctrl,
+#'                      vars_sim = vars_sim, weights = weights)
 #'
 #' @export
 
@@ -60,12 +91,18 @@ calib_aeme <- function(aeme, model, param, vars_sim = "HYD_temp", FUN_list,
     cli::cli_inform("No weights supplied. Defaulting to 1 for all variables.")
     weights <- set_weights(vars_sim = vars_sim)
   }
-  # Check if vars_sim and weights are the same length
-  if (length(vars_sim) != length(weights))
-    stop("vars_sim and weights must be the same length")
+  # Check if vars_sim are in weights names
+  if (!all(vars_sim %in% names(weights))){
+    missing_weights <- setdiff(vars_sim, names(weights))
+    cli::cli_abort("The following variables in vars_sim are not in weights: 
+                   {.val {missing_weights}}")
+  }
 
-  if (!all(vars_sim %in% names(FUN_list)))
-    stop("FUN_list must have names that match vars_sim")
+  if (!all(vars_sim %in% names(FUN_list))) {
+    missing_FUN <- setdiff(vars_sim, names(FUN_list))
+    cli::cli_abort("The following variables in vars_sim are not in FUN_list: 
+                   {.val {missing_FUN}}")
+  }
 
   if (is.null(model_controls)) {
     config <- AEME::configuration(aeme = aeme)

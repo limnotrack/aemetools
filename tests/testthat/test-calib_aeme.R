@@ -238,16 +238,12 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
 })
 
 test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
   model_controls <- AEME::get_model_controls()
   model <- c("glm_aed", "gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
+  aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path, 
+                           model_controls = model_controls,
                            ext_elev = 5, use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
   # AEME::plot(aeme, model = model)
