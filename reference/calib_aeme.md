@@ -50,8 +50,8 @@ calib_aeme(
 
 - weights:
 
-  vector; of weights for each variable in vars_sim. If not provided,
-  defaults to 1 for each variable.
+  a named vector; of weights for each variable in vars_sim. If not
+  provided, defaults to 1 for each variable.
 
 - path:
 
@@ -86,3 +86,40 @@ calib_aeme(
 ## Value
 
 string of simulation id to be used to read the simulation output.
+
+## Examples
+
+``` r
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme <- readRDS(aeme_file)
+model_controls <- AEME::get_model_controls()
+model <- c("glm_aed", "gotm_wet")
+aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path, 
+                         model_controls = model_controls,
+                         ext_elev = 5, use_bgc = FALSE)
+#> Error: object 'path' not found
+aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
+#> Error: object 'path' not found
+
+data("aeme_parameters", package = "AEME")
+param <- aeme_parameters
+
+# Function to calculate fitness
+fit <- function(df) {
+  mean(abs(df$obs - df$model))
+}
+FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
+
+ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
+                       parallel = TRUE, file_type = "db",
+                       file_name = "results.db")
+
+vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
+
+# Calibrate AEME model
+sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
+                     param = param, FUN_list = FUN_list, ctrl = ctrl,
+                     vars_sim = vars_sim, weights = weights)
+#> Error in AEME::set_vars_sim(model_controls = model_controls, vars_sim = vars_sim,     simulate = TRUE, exclusive = TRUE): "var_aeme" %in% names(model_controls) is not TRUE
+```
