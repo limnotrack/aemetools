@@ -242,10 +242,11 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
   aeme <- readRDS(aeme_file)
   model_controls <- AEME::get_model_controls()
   model <- c("glm_aed", "gotm_wet")
+  path <- tempdir()
   aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path, 
                            model_controls = model_controls,
-                           ext_elev = 5, use_bgc = FALSE)
-  aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
+                           ext_elev = 5) |> 
+    AEME::run_aeme()
   # AEME::plot(aeme, model = model)
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
   file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
@@ -1552,8 +1553,15 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
                            ext_elev = 5, use_bgc = TRUE)
-  aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model)
+  cfg <- AEME::configuration(aeme)
+  cfg$glm_aed$hydrodynamic$sediment$n_zones
+  AEME::get_glm_sed_zones(aeme, path)
+  AEME::set_aed_sed_const2d(aeme = aeme, path = path)
+  
+  
+  aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model, verbose = T)
   AEME::plot_output(aeme, model = model, var_sim = "CHM_oxy")
+  AEME::plot_output(aeme, model = model, var_sim = "PHY_tchla")
   
   glm_sed <- AEME::get_aed_sed_const2d_param(aeme, path) |> 
     dplyr::filter(
@@ -1596,6 +1604,16 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
   weights <- set_weights(vars_sim = vars_sim)
   
   data("param_var_matrix", package = "aemetools")
+  param_var_matrix_err <- param_var_matrix |> 
+    dplyr::mutate(HYD_temp = FALSE)
+  testthat::expect_error({
+    # Calibrate AEME model
+    sim_id <- calib_aeme(aeme = aeme, path = path,
+                         param = param, model = model,
+                         FUN_list = FUN_list, ctrl = ctrl,
+                         vars_sim = vars_sim, weights = weights,
+                         param_var_matrix = param_var_matrix_err)
+  })
   # param_var_matrix <- edit_param_var_matrix(param_var_matrix)
 
   # Calibrate AEME model
