@@ -78,9 +78,15 @@
 #'
 #' @export
 
-sa_aeme <- function(aeme, model, param, FUN_list, path = ".",
+sa_aeme <- function(aeme, model, param, FUN_list, path,
                     model_controls = NULL, ctrl, param_df = NULL) {
 
+  if (missing(model)) {
+    model <- AEME::list_models(aeme = aeme)
+  }
+  if (missing(path)) {
+    path <- AEME::get_aeme_path(aeme = aeme)
+  }
   if (missing(ctrl) || is.null(ctrl)) {
     stop("ctrl must be supplied")
   }

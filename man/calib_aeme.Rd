@@ -8,10 +8,10 @@ calib_aeme(
   aeme,
   model,
   param,
+  path,
   vars_sim = "HYD_temp",
   FUN_list,
   weights,
-  path = ".",
   model_controls = NULL,
   ctrl = NULL,
   param_var_matrix = NULL,
@@ -27,6 +27,9 @@ calib_aeme(
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
 
+\item{path}{filepath; where input files are located relative to the current 
+working directory.}
+
 \item{vars_sim}{vector; of variables names to be used in the calculation of
 model fit.}
 
@@ -36,9 +39,6 @@ to calculate model fit. If nor provided, uses mean absolute error (MAE).}
 
 \item{weights}{a named vector; of weights for each variable in vars_sim. If not
 provided, defaults to 1 for each variable.}
-
-\item{path}{filepath; where input files are located relative to the current 
-working directory.}
 
 \item{model_controls}{dataframe; of configuration loaded from
 "model_controls.csv".}
