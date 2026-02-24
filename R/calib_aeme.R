@@ -71,9 +71,16 @@
 #'
 #' @export
 
-calib_aeme <- function(aeme, model, param, vars_sim = "HYD_temp", FUN_list, 
-                       weights, path = ".", model_controls = NULL, ctrl = NULL,
+calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list, 
+                       weights, model_controls = NULL, ctrl = NULL,
                        param_var_matrix = NULL, param_df = NULL) {
+  
+  if (missing(model)) {
+    model <- AEME::list_models(aeme = aeme)
+  }
+  if (missing(path)) {
+    path <- AEME::get_aeme_path(aeme = aeme)
+  }
 
   if (missing(FUN_list)) {
     message(strwrap("No FUN_list supplied. Defaulting to mean absolute error for all
@@ -138,6 +145,14 @@ calib_aeme <- function(aeme, model, param, vars_sim = "HYD_temp", FUN_list,
   }
   
   if (!is.null(param_var_matrix)) {
+    # Check all variables have parameters
+    for (v in vars_sim) {
+      sel_param <- param_var_matrix[["name_full"]][param_var_matrix[[v]]]
+      if (length(sel_param) == 0) {
+        cli::cli_abort("No parameters associated with variable {.val {v}} in param_var_matrix.")
+      }
+    }
+    
     # Select logical columnms
     mat <- param_var_matrix |> 
       dplyr::select(dplyr::all_of(vars_sim))
