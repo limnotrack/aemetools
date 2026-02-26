@@ -7,8 +7,6 @@
 #' @param best_pars A data frame with the best parameters from `get_param`.
 #' Defaults to NULL. When NULL, `get_param` is called to get the best
 #' parameters.
-#' @param na_value The value to replace NA values with. Defaults to NULL. When
-#' NULL, the value is extracted from `calib$calibration_metadata$na_value`.
 #' @param aeme aeme; object. Defaults to NULL. When NULL, a dataframe of the
 #' updated parameter values is returned. When provided, the updated parameter
 #' values are added to the aeme object and the aeme object is returned.
@@ -25,24 +23,27 @@
 #'  `run_aeme_param`
 #' @export
 
-update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
-                         replace = FALSE, quantile = 0.1, fit_col = "fit",
-                         best_pars = NULL) {
+update_param <- function(calib, param, aeme, replace = FALSE, quantile = 0.1,
+                         fit_col = "fit", best_pars) {
   
   param_column_names <- AEME::param_colnames(incl_opt = FALSE)
-  if (is.null(param)) {
+  if (missing(param)) {
     param <- calib$parameter_metadata |>
       dplyr::select(all_of(param_column_names)) |> 
       dplyr::mutate(
         name_full = encode_param(group, name, index)
       )
   }
-  if (is.null(na_value)) {
-    na_value <- calib$calibration_metadata$na_value[1]
-  }
-  if (is.null(best_pars)) {
+  
+  na_value <- calib$calibration_metadata$na_value[1]
+  
+  if (missing(best_pars)) {
     best_pars <- get_param(calib = calib, na_value = na_value,
-                           fit_col = fit_col, best = TRUE, quantile = quantile)
+                           fit_col = fit_col, best = TRUE,
+                           quantile = quantile) |> 
+      dplyr::mutate(
+        name_full = encode_param(group, name, index)
+      )
   }
   pars <- get_param(calib = calib, na_value = na_value,
                     fit_col = fit_col, best = FALSE)
@@ -107,7 +108,7 @@ update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
   param <- param |>
     dplyr::select(dplyr::all_of(param_column_names))
   
-  if (is.null(aeme)) {
+  if (missing(aeme)) {
     return(param)
   } else {
     if (replace) {
