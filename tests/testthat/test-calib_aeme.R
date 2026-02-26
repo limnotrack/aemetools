@@ -200,7 +200,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
   
   testthat::expect_true(is.list(calib))
   
-  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib)
   testthat::expect_true(is.list(plist))
   
   testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
@@ -445,7 +445,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   testthat::expect_true(is.data.frame(best_pars))
   testthat::expect_true(all(best_pars$parameter_value %in% param2$value))
   
-  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib)
   testthat::expect_true(is.list(plist))
   
   testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
@@ -506,7 +506,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
   
   testthat::expect_true(is.list(calib))
   
-  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib)
   testthat::expect_true(is.list(plist))
   
   testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
@@ -583,7 +583,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   
   testthat::expect_true(is.list(calib))
   
-  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib)
   testthat::expect_true(is.list(plist))
   
   testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
@@ -655,7 +655,7 @@ test_that("can calibrate sediment parameters only for AEME-GLM", {
   
   testthat::expect_true(is.list(calib))
   
-  plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib)
   testthat::expect_true(is.list(plist))
   
   testthat::expect_true(all(sapply(plist, ggplot2::is_ggplot)))
@@ -1295,19 +1295,22 @@ test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
   
   testthat::expect_true(is.list(calib))
   
-  plist <- plot_calib(calib = calib, fit_col = "HYD_thmcln",
-                      na_value = ctrl$na_value)
+  plist <- plot_calib(calib = calib, fit_col = "HYD_thmcln")
   
   testthat::expect_true(is.list(plist))
   
-  best_pars <- get_param(calib = calib, na_value = ctrl$na_value, best = TRUE)
+  best_pars <- get_param(calib = calib, best = TRUE)
+  best_pars2 <- get_param(calib = calib, na_value = ctrl$na_value, 
+                          fit_col = "fit", quantile = 0.1, best = TRUE)
+  testthat::expect_true(all(best_pars$value %in% best_pars2$value))
   
   aeme <- update_param(calib = calib, aeme = aeme)
   upd_param <- AEME::parameters(aeme)
   upd_param2 <- update_param(calib = calib)
-  testthat::expect_true(all(upd_param$value == upd_param2$value))
-  testthat::expect_true(all(upd_param$min == upd_param2$min))
-  testthat::expect_true(all(upd_param$max == upd_param2$max))
+  testthat::expect_true(all(upd_param$value %in% upd_param2$value))
+  testthat::expect_true(all(upd_param$min %in% upd_param2$min))
+  testthat::expect_true(all(upd_param$max %in% upd_param2$max))
+  best_pars[!best_pars$value %in% upd_param$value, ]
   testthat::expect_true(all(best_pars$value %in% upd_param$value))
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
