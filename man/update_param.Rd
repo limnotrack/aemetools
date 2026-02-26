@@ -6,13 +6,12 @@
 \usage{
 update_param(
   calib,
-  param = NULL,
-  na_value = NULL,
-  aeme = NULL,
+  param,
+  aeme,
   replace = FALSE,
   quantile = 0.1,
   fit_col = "fit",
-  best_pars = NULL
+  best_pars
 )
 }
 \arguments{
@@ -21,9 +20,6 @@ update_param(
 
 \item{param}{A data frame with parameters to update. Defaults to NULL. When
 NULL, the parameter values are extracted from \code{calib$parameter_metadata}.}
-
-\item{na_value}{The value to replace NA values with. Defaults to NULL. When
-NULL, the value is extracted from \code{calib$calibration_metadata$na_value}.}
 
 \item{aeme}{aeme; object. Defaults to NULL. When NULL, a dataframe of the
 updated parameter values is returned. When provided, the updated parameter

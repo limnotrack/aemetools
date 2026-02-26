@@ -2,8 +2,6 @@
 #'
 #' @param calib A list with the calibration results loaded using
 #' \code{\link{read_calib}}.
-#' @param na_value A numeric value which corresponds to the NA value used in
-#' the calibration.
 #' @param best A logical value indicating whether to return the best parameter
 #' values or all parameter values.
 #' @inheritParams plot_calib
@@ -15,7 +13,7 @@
 #' @return A data frame with the parameter values.
 #' @export
 
-get_param <- function(calib, na_value, fit_col = "fit", best = FALSE, 
+get_param <- function(calib, fit_col = "fit", best = FALSE, 
                       quantile = 0.05) {
   
   # lapply(calib, \(x) {
@@ -23,6 +21,7 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE,
     stop("fit_col not in calib")
   }
   # })
+  na_value <- calib$calibration_metadata$na_value[1]
   
   sim_ids <- calib$simulation_metadata$sim_id
   
