@@ -1,12 +1,13 @@
 #' Update parameter values in param based on best_pars
 #'
 #' @inheritParams AEME::build_aeme
+#' @inheritParams plot_calib
 #' @inheritParams get_param
 #' @param param A data frame with parameters to update. Defaults to NULL. When
 #' NULL, the parameter values are extracted from `calib$parameter_metadata`.
-#' @param best_pars A data frame with the best parameters from `get_param`.
-#' Defaults to NULL. When NULL, `get_param` is called to get the best
-#' parameters.
+#' @param best_pars A data frame with the best parameters from \code{\link{`get_param`}}.
+#' Defaults to NULL. When NULL, \code{\link{`get_param`}} is called to get the 
+#' best parameters.
 #' @param aeme aeme; object. Defaults to NULL. When NULL, a dataframe of the
 #' updated parameter values is returned. When provided, the updated parameter
 #' values are added to the aeme object and the aeme object is returned.
@@ -37,8 +38,7 @@ update_param <- function(calib, param, na_value, aeme, replace = FALSE, quantile
   if (missing(na_value)) {
     na_value <- calib$calibration_metadata$na_value[1]
   }
-  na_value <- calib$calibration_metadata$na_value[1]
-  
+
   if (missing(best_pars)) {
     best_pars <- get_param(calib = calib, na_value = na_value,
                            fit_col = fit_col, best = TRUE,
@@ -52,22 +52,24 @@ update_param <- function(calib, param, na_value, aeme, replace = FALSE, quantile
   
   # Calculate min/max for each sim_id and parameter for the top quantile of the
   # fit_value
-  min_max <- pars |>
-    dplyr::filter(fit_value != na_value) |>
-    dplyr::group_by(sim_id, parameter_name) |>
-    dplyr::filter(fit_value <= quantile(fit_value, quantile)) |>
-    dplyr::summarise(min = min(parameter_value),
-                     max = max(parameter_value), .groups = "drop") |> 
-    dplyr::rename(name_full = parameter_name) |>
-    dplyr::mutate(
-      decode_param_full(name_full)
-    )
+  # min_max <- pars |>
+  #   dplyr::filter(fit_value != na_value) |>
+  #   dplyr::group_by(sim_id, parameter_name) |>
+  #   dplyr::filter(fit_value <= quantile(fit_value, quantile)) |>
+  #   dplyr::summarise(min = min(parameter_value),
+  #                    value = parameter_value[which.min(fit_value)],
+  #                    max = max(parameter_value), 
+  #                    .groups = "drop") |> 
+  #   dplyr::rename(name_full = parameter_name) |>
+  #   dplyr::mutate(
+  #     decode_param_full(name_full)
+  #   )
   
   for (i in seq_len(nrow(best_pars))) {
     idx <- best_pars$name_full[i] == param$name_full &
       grepl(best_pars$model[i], param$model)
-    j <- which(min_max$name_full == best_pars$name_full[i] &
-                 min_max$sim_id == best_pars$sim_id[i])
+    # j <- which(min_max$name_full == best_pars$name_full[i] &
+    #              min_max$sim_id == best_pars$sim_id[i])
     
     # if (is.na(best_pars$group[i])) {
     #   idx <- grepl(best_pars$name[i], param$name) &
@@ -104,9 +106,10 @@ update_param <- function(calib, param, na_value, aeme, replace = FALSE, quantile
       )
     }
     param[idx, "value"] <- best_pars$value[i]
-    param[idx, "min"] <- min_max$min[j]
-    param[idx, "max"] <- min_max$max[j]
+    param[idx, "min"] <- best_pars$min[i]
+    param[idx, "max"] <- best_pars$max[i]
   }
+  # param$value %in% best_pars$value
   param <- param |>
     dplyr::select(dplyr::all_of(param_column_names))
   
@@ -118,8 +121,9 @@ update_param <- function(calib, param, na_value, aeme, replace = FALSE, quantile
     } else {
       old_pars <- AEME::parameters(aeme)
       if (nrow(old_pars) > 0) {
-        par_diff <- dplyr::anti_join(old_pars, param, by = c("model", "name",
-                                                             "group", "index"))
+        par_diff <- dplyr::anti_join(old_pars, param, by = c("model", "file",
+                                                             "name", "group",
+                                                             "index"))
         param <- dplyr::bind_rows(par_diff, param) |>
           dplyr::arrange(model, group, name)
       }
