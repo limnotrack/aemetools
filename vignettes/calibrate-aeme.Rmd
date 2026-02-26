@@ -47,33 +47,31 @@ list.files(path, recursive = TRUE)
 ## Build AEME ensemble
 
 Using the `AEME` functions, we will build the AEME model setup. For this
-example, we will use the `glm_aed` model. The `build_aeme` function will
+example, we will use the `glm_aed` model. The `build_aeme` function will build the model setup and the `run_aeme` function will run the model. The model output is stored in the lake folder.
+
+Note that `AEME` funtions can be used in pipelines to allow for more efficient code. For example, the `build_aeme` function can be used in a pipeline with the `run_aeme` function to build and run the model in one step.
 
 ```{r build-aeme-example, warning=FALSE, message=FALSE}
 
 aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 model_controls <- AEME::get_model_controls()
-inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model, 
                    model_controls = model_controls, inf_factor = inf_factor, 
-                   ext_elev = 5, use_bgc = FALSE)
+                   ext_elev = 5, use_bgc = FALSE) |> 
+  run_aeme()
 
 ```
 
-Run the model ensemble using the `run_aeme` function to make sure the current
-model setup is working.
+
 
 ```{r}
-#| label: run-aeme-example
+#| label: plot-aeme-example
 #| fig.height: 4
 #| fig.width: 8
 #| cache: false
 #| fig.cap: Water temperature contour plotfor the model output.
 
-aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
-                 path = path)
 plot(aeme)
 ```
 
