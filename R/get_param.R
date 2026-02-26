@@ -7,6 +7,7 @@
 #' @param best A logical value indicating whether to return the best parameter
 #' values or all parameter values.
 #' @inheritParams plot_calib
+#' @inheritParams update_param
 #'
 #' @importFrom dplyr case_when filter group_by mutate summarise
 #' @importFrom stringr str_split_i
@@ -14,7 +15,8 @@
 #' @return A data frame with the parameter values.
 #' @export
 
-get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
+get_param <- function(calib, na_value, fit_col = "fit", best = FALSE, 
+                      quantile = 0.05) {
   
   # lapply(calib, \(x) {
   if (!all(fit_col %in% calib$simulation_data$fit_type)) {
@@ -40,7 +42,6 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
       # dplyr::mutate(index = gen * run) |>
       as.data.frame() |>
       dplyr::select(gen, run, index)
-    
     
     calib$simulation_data |>
       dplyr::filter(sim_id == x) |>
@@ -73,42 +74,60 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
   
   if (!best) return(all_pars)
   
-  uniq_pars <- unique(all_pars$name)
-  # Remove "outflow", "inflow" and ones that contain "MET"
-  uniq_pars <- uniq_pars[!uniq_pars %in% c("outflow", "inflow")]
-  uniq_pars <- uniq_pars[!grepl("MET", uniq_pars)]
-  if (length(uniq_pars) > 0) {
-    aeme_pars <- AEME::get_aeme_parameters(name = uniq_pars) |> 
-      dplyr::select(model, file, name)
-  }
+  param <- calib$parameter_metadata |> 
+    dplyr::mutate(parameter_name = encode_param(group = group, name = name, 
+                                                index = index)) |> 
+    dplyr::select(sim_id, model, file, name, group, index, parameter_name)
   
   
+  # uniq_pars <- unique(all_pars$name)
+  # # Remove "outflow", "inflow" and ones that contain "MET"
+  # uniq_pars <- uniq_pars[!uniq_pars %in% c("outflow", "inflow")]
+  # uniq_pars <- uniq_pars[!grepl("MET", uniq_pars)]
+  # if (length(uniq_pars) > 0) {
+  #   aeme_pars <- AEME::get_aeme_parameters(name = uniq_pars) |> 
+  #     dplyr::select(sim_id, model, file, name)
+  # }
+  
+  qtile <- all_pars |> 
+    dplyr::filter(fit_value != na_value) |> 
+    dplyr::group_by(sim_id) |> 
+    dplyr::summarise(q10 = quantile(fit_value, probs = quantile, na.rm = TRUE),
+                     .groups = "drop")
   
   pars_df <- all_pars |>
-    dplyr::filter(fit_value != na_value) |>
-    dplyr::group_by(sim_id, model, parameter_name, fit_type) |>
-    dplyr::summarise(parameter_value = parameter_value[which.min(fit_value)],
-                     label = label[which.min(fit_value)],
+    dplyr::left_join(qtile, by = "sim_id") |>
+    dplyr::filter(fit_value != na_value, fit_value <= q10) |>
+    dplyr::group_by(sim_id, parameter_name) |>
+    dplyr::summarise(label = label[which.min(fit_value)],
                      fit_value = min(fit_value),
                      gen = gen[which.min(fit_value)],
-                     # name = name[which.min(fit_value)],
-                     # group = group[which.min(fit_value)],
+                     min = min(parameter_value), 
+                     max = max(parameter_value),
+                     parameter_value = parameter_value[which.min(fit_value)],
                      par = par[which.min(fit_value)],
-                     .groups = "drop") |>
-    dplyr::mutate(
-      decode_param_full(parameter_name)
-    )
-  
-  if (length(uniq_pars) > 0) {
-    pars_df <- pars_df |> 
-      dplyr::left_join(aeme_pars, by = c("model", "name"))
-  }
-  if (!"file" %in% colnames(pars_df)) {
-    pars_df <- pars_df |> 
-      dplyr::mutate(file = NA)
-  }
+                     .groups = "drop") |> 
+    dplyr::select(sim_id, parameter_name, parameter_value, min, max, fit_value,
+                  gen) |> 
+    dplyr::rename(value = parameter_value)
   
   param_names <- AEME::param_colnames(incl_opt = FALSE)
+  param_df <- param |> 
+    dplyr::left_join(pars_df, by = c("sim_id", "parameter_name")) |> 
+    dplyr::arrange(sim_id, model, file, name, group, index) |> 
+    dplyr::select(dplyr::all_of(c("sim_id", param_names, "fit_value", "gen"))) 
+  return(param_df)
+  
+  
+  # if (length(uniq_pars) > 0) {
+  #   pars_df <- pars_df |> 
+  #     dplyr::left_join(aeme_pars, by = c("model", "name"))
+  # }
+  # if (!"file" %in% colnames(pars_df)) {
+  #   pars_df <- pars_df |> 
+  #     dplyr::mutate(file = NA_character_)
+  # }
+  # 
   pars_df <- pars_df |> 
     dplyr::mutate(
       value = parameter_value,

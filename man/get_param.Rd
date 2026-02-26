@@ -4,7 +4,7 @@
 \alias{get_param}
 \title{Get parameter values from calibration results}
 \usage{
-get_param(calib, na_value, fit_col = "fit", best = FALSE)
+get_param(calib, na_value, fit_col = "fit", best = FALSE, quantile = 0.05)
 }
 \arguments{
 \item{calib}{A list with the calibration results loaded using
@@ -18,6 +18,9 @@ the calibration.}
 
 \item{best}{A logical value indicating whether to return the best parameter
 values or all parameter values.}
+
+\item{quantile}{The quantile to use for the top quantile of the fit_value.
+Defaults to 0.1.}
 }
 \value{
 A data frame with the parameter values.

@@ -36,9 +36,6 @@ provided.}
 \item{quantile}{The quantile to use for the top quantile of the fit_value.
 Defaults to 0.1.}
 
-\item{fit_col}{character; name of column containing fit values. Default is
-\code{"fit"}.}
-
 \item{best_pars}{A data frame with the best parameters from \code{get_param}.
 Defaults to NULL. When NULL, \code{get_param} is called to get the best
 parameters.}
