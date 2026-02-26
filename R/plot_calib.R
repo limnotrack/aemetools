@@ -1,7 +1,8 @@
 #' Plot calibration results
 #'
 #' @param calib dataframe; output from \code{\link{read_calib}}
-#' @param na_value numeric; value to replace NA values with
+#' @param na_value A numeric value which corresponds to the NA value used in
+#' the calibration.
 #' @param fit_col character; name of column containing fit values. Default is
 #'  \code{"fit"}.
 #' @param nrow integer; number of rows in plot
@@ -18,6 +19,51 @@
 #' @importFrom forcats fct_reorder
 #' @importFrom patchwork wrap_plots
 #'
+#' @examples
+#' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+#' aeme <- readRDS(aeme_file)
+#' model_controls <- AEME::get_model_controls()
+#' model <- c("glm_aed", "gotm_wet")
+#' path <- "aeme"
+#' aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path,
+#'                          model_controls = model_controls, ext_elev = 5) |>
+#'   AEME::run_aeme()
+#' 
+#' data("aeme_parameters", package = "AEME")
+#' param <- aeme_parameters
+#' 
+#' # Function to calculate fitness
+#' nse <- function(df) {
+#' # Calculate Nash-Sutcliffe Efficiency
+#'   nse <- 1 - (sum((df$obs - df$model)^2) / sum((df$obs - mean(df$obs))^2))
+#'   -1 * nse
+#' }
+#' FUN_list <- list(HYD_temp = nse, LKE_lvlwtr = nse)
+#' 
+#' ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
+#'                        parallel = TRUE, file_type = "db",
+#'                        file_name = "results.db")
+#' 
+#' vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+#' weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
+#' 
+#' # Calibrate AEME model
+#' sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
+#'                      param = param, FUN_list = FUN_list, ctrl = ctrl,
+#'                      vars_sim = vars_sim, weights = weights)
+#'                      
+#' # Read calibration output                      
+#' calib <- read_calib(sim_id = sim_id, ctrl = ctrl)
+#' plist <- plot_calib(calib = calib)
+#' 
+#' # Dotty plot
+#' plist$dotty
+#' 
+#' # Convergence plot
+#' plist$convergence
+#' 
+#' # Histogram plot
+#' plist$histogram
 #' @return list of plots
 #' @export
 
