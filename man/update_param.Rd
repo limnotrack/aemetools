@@ -16,8 +16,7 @@ update_param(
 )
 }
 \arguments{
-\item{calib}{A list with the calibration results loaded using
-\code{\link{read_calib}}.}
+\item{calib}{dataframe; output from \code{\link{read_calib}}}
 
 \item{param}{A data frame with parameters to update. Defaults to NULL. When
 NULL, the parameter values are extracted from \code{calib$parameter_metadata}.}
@@ -36,9 +35,12 @@ provided.}
 \item{quantile}{The quantile to use for the top quantile of the fit_value.
 Defaults to 0.1.}
 
-\item{best_pars}{A data frame with the best parameters from \code{get_param}.
-Defaults to NULL. When NULL, \code{get_param} is called to get the best
-parameters.}
+\item{fit_col}{character; name of column containing fit values. Default is
+\code{"fit"}.}
+
+\item{best_pars}{A data frame with the best parameters from \code{\link{`get_param`}}.
+Defaults to NULL. When NULL, \code{\link{`get_param`}} is called to get the
+best parameters.}
 }
 \value{
 data frame with updated parameter values for running the model with
