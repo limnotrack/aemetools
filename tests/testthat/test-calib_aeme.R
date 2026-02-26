@@ -1675,6 +1675,10 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
                        param_var_matrix = param_var_matrix)
   
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  plist <- plot_calib(calib = calib)
+  plist$dotty
+  p <- plot_pareto_generations(calib)
+  testthat::expect_true(ggplot2::is_ggplot(p))
   
   testthat::expect_true(is.list(calib))
   
@@ -1708,7 +1712,7 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
   best_params <- get_param(calib, na_value = ctrl$na_value, fit_col = "fit", 
                            best = TRUE)
   best_params |> 
-    print(n = 50)
+    print()
   
   aeme <- run_aeme_param(aeme = aeme, path = path,
                          param = best_params, model = model,
