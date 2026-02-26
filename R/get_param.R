@@ -2,8 +2,6 @@
 #'
 #' @param calib A list with the calibration results loaded using
 #' \code{\link{read_calib}}.
-#' @param na_value A numeric value which corresponds to the NA value used in
-#' the calibration.
 #' @param best A logical value indicating whether to return the best parameter
 #' values or all parameter values.
 #' @inheritParams plot_calib
@@ -16,7 +14,7 @@
 #' @export
 
 get_param <- function(calib, na_value, fit_col = "fit", best = FALSE, 
-                      quantile = 0.05) {
+                      quantile = 0.1) {
   
   # lapply(calib, \(x) {
   if (!all(fit_col %in% calib$simulation_data$fit_type)) {
@@ -103,12 +101,12 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE,
     dplyr::filter(fit_value != na_value, fit_value <= q10) |>
     dplyr::group_by(sim_id, parameter_name) |>
     dplyr::summarise(label = label[which.min(fit_value)],
-                     fit_value = min(fit_value),
                      gen = gen[which.min(fit_value)],
                      min = min(parameter_value), 
                      max = max(parameter_value),
                      parameter_value = parameter_value[which.min(fit_value)],
                      par = par[which.min(fit_value)],
+                     fit_value = min(fit_value),
                      .groups = "drop") |> 
     dplyr::select(sim_id, parameter_name, parameter_value, min, max, fit_value,
                   gen) |> 
