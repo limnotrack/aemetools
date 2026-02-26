@@ -43,19 +43,21 @@
 #' aeme <- readRDS(aeme_file)
 #' model_controls <- AEME::get_model_controls()
 #' model <- c("glm_aed", "gotm_wet")
-#' aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path, 
-#'                          model_controls = model_controls,
-#'                          ext_elev = 5, use_bgc = FALSE)
-#' aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
+#' path <- "aeme"
+#' aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path,
+#'                          model_controls = model_controls, ext_elev = 5) |>
+#'   AEME::run_aeme()
 #' 
 #' data("aeme_parameters", package = "AEME")
 #' param <- aeme_parameters
 #' 
 #' # Function to calculate fitness
-#' fit <- function(df) {
-#'   mean(abs(df$obs - df$model))
+#' nse <- function(df) {
+#' # Calculate Nash-Sutcliffe Efficiency
+#'   nse <- 1 - (sum((df$obs - df$model)^2) / sum((df$obs - mean(df$obs))^2))
+#'   -1 * nse
 #' }
-#' FUN_list <- list(HYD_temp = fit, LKE_lvlwtr = fit)
+#' FUN_list <- list(HYD_temp = nse, LKE_lvlwtr = nse)
 #' 
 #' ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
 #'                        parallel = TRUE, file_type = "db",
