@@ -384,9 +384,8 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
                            inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
-  aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, path = path)
+                           use_bgc = FALSE) |> 
+    AEME::run_aeme()
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
@@ -425,6 +424,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   calib_meta <- read_calib_meta(file = ctrl$file_name, file_dir = ctrl$file_dir)
   testthat::expect_true(is.data.frame(calib_meta))
   
+  param2 <- get_param(calib = calib, best = TRUE)
   param2 <- update_param(calib = calib)
   mod_param <- param |> 
     dplyr::filter(model == "gotm_wet")
@@ -434,12 +434,13 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   mod_pars1 <- param |>
     dplyr::filter(model == "gotm_wet")
   mod_pars2 <- param2 |>
-    dplyr::filter(model == "gotm_wet")
+    dplyr::filter(model == "gotm_wet") |> 
+    dplyr::arrange(match(name, mod_pars1$name))
   
   testthat::expect_true(all(mod_pars2$min >= mod_pars1$min))
   testthat::expect_true(all(mod_pars2$max <= mod_pars1$max))
   
-  best_pars <- get_param(calib = calib, na_value = ctrl$na_value, best = TRUE)
+  best_pars <- get_param(calib = calib, best = TRUE)
   
   testthat::expect_true(is.data.frame(best_pars))
   testthat::expect_true(all(best_pars$parameter_value %in% param2$value))
