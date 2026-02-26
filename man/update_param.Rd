@@ -7,6 +7,7 @@
 update_param(
   calib,
   param,
+  na_value,
   aeme,
   replace = FALSE,
   quantile = 0.1,
@@ -20,6 +21,9 @@ update_param(
 
 \item{param}{A data frame with parameters to update. Defaults to NULL. When
 NULL, the parameter values are extracted from \code{calib$parameter_metadata}.}
+
+\item{na_value}{A numeric value which corresponds to the NA value used in
+the calibration.}
 
 \item{aeme}{aeme; object. Defaults to NULL. When NULL, a dataframe of the
 updated parameter values is returned. When provided, the updated parameter

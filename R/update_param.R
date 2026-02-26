@@ -23,7 +23,7 @@
 #'  `run_aeme_param`
 #' @export
 
-update_param <- function(calib, param, aeme, replace = FALSE, quantile = 0.1,
+update_param <- function(calib, param, na_value, aeme, replace = FALSE, quantile = 0.1,
                          fit_col = "fit", best_pars) {
   
   param_column_names <- AEME::param_colnames(incl_opt = FALSE)
@@ -34,7 +34,9 @@ update_param <- function(calib, param, aeme, replace = FALSE, quantile = 0.1,
         name_full = encode_param(group, name, index)
       )
   }
-  
+  if (missing(na_value)) {
+    na_value <- calib$calibration_metadata$na_value[1]
+  }
   na_value <- calib$calibration_metadata$na_value[1]
   
   if (missing(best_pars)) {
