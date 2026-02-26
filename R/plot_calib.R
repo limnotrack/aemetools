@@ -26,6 +26,9 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
   
   nsims <- nrow(calib$simulation_metadata)
   sim_ids <- calib$simulation_metadata$sim_id
+  if (missing(na_value)) {
+    na_value <- calib$calibration_metadata$na_value[1]
+  }
   
   all_pars <- get_param(calib, na_value = na_value, fit_col = fit_col,
                         best = FALSE) 
