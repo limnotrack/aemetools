@@ -4,7 +4,7 @@
 \alias{get_param}
 \title{Get parameter values from calibration results}
 \usage{
-get_param(calib, na_value, fit_col = "fit", best = FALSE, quantile = 0.05)
+get_param(calib, na_value, fit_col = "fit", best = FALSE, quantile = 0.1)
 }
 \arguments{
 \item{calib}{A list with the calibration results loaded using
