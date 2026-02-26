@@ -42,8 +42,7 @@ update_param <- function(calib, param = NULL, na_value = NULL, aeme = NULL,
   }
   if (is.null(best_pars)) {
     best_pars <- get_param(calib = calib, na_value = na_value,
-                           fit_col = fit_col, best = TRUE) |> 
-      dplyr::mutate(name_full = encode_param(group, name, index))
+                           fit_col = fit_col, best = TRUE, quantile = quantile)
   }
   pars <- get_param(calib = calib, na_value = na_value,
                     fit_col = fit_col, best = FALSE)
