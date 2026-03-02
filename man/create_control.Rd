@@ -10,60 +10,42 @@ create_control(method, ...)
 \item{method}{The method to be used. It can be either "calib" for calibration
 or "sa" for sensitivity analysis.}
 
-\item{...}{Additional arguments to be passed to the function
-\code{create_control}. The arguments are different for calibration and
-sensitivity analysis. There are arguments which are common to both methods:
+\item{...}{Additional arguments passed to \code{create_control()}.
+
+\strong{Common arguments (both methods):}
 \itemize{
-\item \code{file_type} string; file type to write the output to. Options are c("csv",
-"db"). Defaults to "db".
-\item \code{file_name} string; file name to write the output to. Defaults to
-"results.db" if \code{file_type} is "db" and "simulation_metadata.csv" if
-\code{file_type} is "csv".
-\item \code{file_dir} string; directory to write the output to. Defaults to the
-directory "calib_sa" in the current working directory. If the directory does
-not exist, it will be created.
-\item \code{na_value} value to replace NA values with in observations. Defaults to 999.
-\item \code{parallel} boolean; run calibration in parallel. Default to TRUE
-\item \code{ncore}: The number of cores to use for the calibration. This is only used
-if \code{parallel = TRUE}. Default to \code{parallel::detectCores() - 1}.
-\item \code{timeout}: The maximum time in seconds to run the calibration. Default to
-Inf. If the calibration takes longer than the timeout, the calibration will
-stop and return the best parameter set found so far.
+\item \code{file_type} Character. Output type: \code{"csv"} or \code{"db"}. Default \code{"db"}.
+\item \code{file_name} Character. Output file name. Defaults to
+\code{"results.db"} (db) or \code{"simulation_metadata.csv"} (csv).
+\item \code{file_dir} Character. Output directory. Defaults to \code{"calib_sa"}
+in the working directory (created if needed).
+\item \code{na_value} Numeric. Replacement for \code{NA} in observations. Default \code{999}.
+\item \code{parallel} Logical. Run in parallel? Default \code{TRUE}.
+\item \code{ncore} Integer. Number of cores (used if \code{parallel = TRUE}).
+Default \code{parallel::detectCores() - 1}.
+\item \code{timeout} Numeric. Maximum runtime in seconds. Default \code{Inf}.
 }
 
-For calibration, the arguments are:
+\strong{Calibration-only arguments (\code{method = "calib"}):}
 \itemize{
-\item \code{VTR} Value to be reached. The optimization process will stop if
-either the maximum number of iterations itermax is reached or the best
-parameter vector bestmem has found a value fn(bestmem) <= VTR. Default to
--Inf.
-\item \code{NP} number of population members. Defaults to NA; if the user does not
-change the value of NP from NA it is reset as
-\code{10 * sum(param$model == model)}. For many  problems it is best to set NP
-to be at least 10 times the length of the parameter vector.
-\item \code{itermax} the maximum iteration (population generation) allowed.
-Default is 200.
-\item \code{reltol} relative convergence tolerance. The algorithm stops if it is
-unable to reduce the value by a factor of \code{reltol * (abs(val) + reltol)}.
-Default = 0.07
-\item \code{cutoff}: The quantile cutoff used to select the parents for the next
-generation. For example, if \code{cutoff = 0.25}, the best 25\% of the population
-will be used as parents for the next generation.
-\item \code{mutate} fraction of population to undergo mutation (0-1).
-\item \code{c_method} character; the method to use for calibration. Options are
-"CMAES" and "LHC". Defaults to "CMAES".
+\item \code{VTR} Numeric. Target objective value. Default \code{-Inf}.
+\item \code{NP} Integer. Population size. Default \code{NA} (internally reset).
+\item \code{itermax} Integer. Maximum iterations. Default \code{200}.
+\item \code{reltol} Numeric. Relative convergence tolerance. Default \code{0.07}.
+\item \code{cutoff} Numeric. Quantile cutoff for parent selection (0–1).
+\item \code{mutate} Numeric. Fraction of population to mutate (0–1).
+\item \code{c_method} Character. Calibration method: \code{"CMAES"} or \code{"LHC"}.
+Default \code{"CMAES"}.
 }
 
-For sensitivity analysis, the arguments are:
+\strong{Sensitivity-analysis-only arguments (\code{method = "sa"}):}
 \itemize{
-\item \code{N}: The initial sample size of the base sample matrix.
-\item \code{vars_sim}: A named list of output variables for sensitivity analysis.
-The name is user defined but each list must contain:
+\item \code{N} Integer. Base sample size.
+\item \code{vars_sim} Named list describing output variables. Each element must contain:
 \itemize{
-\item \code{var}: The variable name to use for the sensitivity analysis.
-\item \code{month}: A vector of months to use for the sensitivity analysis.
-\item \code{depth_range}: A vector of length 2 with the minimum and maximum depth
-range to use for the sensitivity analysis.
+\item \code{var} Character. Variable name.
+\item \code{month} Integer vector. Months to include.
+\item \code{depth_range} Numeric vector (length 2). Min/max depth.
 }
 }}
 }
