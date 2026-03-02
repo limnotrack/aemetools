@@ -7,13 +7,13 @@ Update parameter values in param based on best_pars
 ``` r
 update_param(
   calib,
-  param = NULL,
-  na_value = NULL,
-  aeme = NULL,
+  param,
+  na_value,
+  aeme,
   replace = FALSE,
   quantile = 0.1,
   fit_col = "fit",
-  best_pars = NULL
+  best_pars
 )
 ```
 
@@ -21,8 +21,7 @@ update_param(
 
 - calib:
 
-  A list with the calibration results loaded using
-  [`read_calib`](read_simulation_output.md).
+  dataframe; output from [`read_calib`](read_simulation_output.md)
 
 - param:
 
@@ -31,8 +30,8 @@ update_param(
 
 - na_value:
 
-  The value to replace NA values with. Defaults to NULL. When NULL, the
-  value is extracted from `calib$calibration_metadata$na_value`.
+  A numeric value which corresponds to the NA value used in the
+  calibration.
 
 - aeme:
 
@@ -57,10 +56,11 @@ update_param(
 
 - best_pars:
 
-  A data frame with the best parameters from `get_param`. Defaults to
-  NULL. When NULL, `get_param` is called to get the best parameters.
+  A data frame with the best parameters from
+  [`get_param`](get_param.md). Defaults to NULL. When NULL,
+  [`get_param`](get_param.md) is called to get the best parameters.
 
 ## Value
 
 data frame with updated parameter values for running the model with
-`run_aeme_param`
+[`run_aeme_param`](run_aeme_param.md)

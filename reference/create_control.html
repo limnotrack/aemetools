@@ -59,48 +59,29 @@ or "sa" for sensitivity analysis.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments to be passed to the function
-<code>create_control</code>. The arguments are different for calibration and
-sensitivity analysis. There are arguments which are common to both methods:</p><ul><li><p><code>file_type</code> string; file type to write the output to. Options are c("csv",
-"db"). Defaults to "db".</p></li>
-<li><p><code>file_name</code> string; file name to write the output to. Defaults to
-"results.db" if <code>file_type</code> is "db" and "simulation_metadata.csv" if
-<code>file_type</code> is "csv".</p></li>
-<li><p><code>file_dir</code> string; directory to write the output to. Defaults to the
-directory "calib_sa" in the current working directory. If the directory does
-not exist, it will be created.</p></li>
-<li><p><code>na_value</code> value to replace NA values with in observations. Defaults to 999.</p></li>
-<li><p><code>parallel</code> boolean; run calibration in parallel. Default to TRUE</p></li>
-<li><p><code>ncore</code>: The number of cores to use for the calibration. This is only used
-if <code>parallel = TRUE</code>. Default to <code>parallel::detectCores() - 1</code>.</p></li>
-<li><p><code>timeout</code>: The maximum time in seconds to run the calibration. Default to
-Inf. If the calibration takes longer than the timeout, the calibration will
-stop and return the best parameter set found so far.</p></li>
-</ul><p>For calibration, the arguments are:</p><ul><li><p><code>VTR</code> Value to be reached. The optimization process will stop if
-either the maximum number of iterations itermax is reached or the best
-parameter vector bestmem has found a value fn(bestmem) &lt;= VTR. Default to
--Inf.</p></li>
-<li><p><code>NP</code> number of population members. Defaults to NA; if the user does not
-change the value of NP from NA it is reset as
-<code>10 * sum(param$model == model)</code>. For many  problems it is best to set NP
-to be at least 10 times the length of the parameter vector.</p></li>
-<li><p><code>itermax</code> the maximum iteration (population generation) allowed.
-Default is 200.</p></li>
-<li><p><code>reltol</code> relative convergence tolerance. The algorithm stops if it is
-unable to reduce the value by a factor of <code>reltol * (abs(val) + reltol)</code>.
-Default = 0.07</p></li>
-<li><p><code>cutoff</code>: The quantile cutoff used to select the parents for the next
-generation. For example, if <code>cutoff = 0.25</code>, the best 25% of the population
-will be used as parents for the next generation.</p></li>
-<li><p><code>mutate</code> fraction of population to undergo mutation (0-1).</p></li>
-<li><p><code>c_method</code> character; the method to use for calibration. Options are
-"CMAES" and "LHC". Defaults to "CMAES".</p></li>
-</ul><p>For sensitivity analysis, the arguments are:</p><ul><li><p><code>N</code>: The initial sample size of the base sample matrix.</p></li>
-<li><p><code>vars_sim</code>: A named list of output variables for sensitivity analysis.
-The name is user defined but each list must contain:</p><ul><li><p><code>var</code>: The variable name to use for the sensitivity analysis.</p></li>
-<li><p><code>month</code>: A vector of months to use for the sensitivity analysis.</p></li>
-<li><p><code>depth_range</code>: A vector of length 2 with the minimum and maximum depth
-range to use for the sensitivity analysis.</p></li>
+<dd><p>Additional arguments passed to <code>create_control()</code>.</p>
+<p><strong>Common arguments (both methods):</strong></p><ul><li><p><code>file_type</code> Character. Output type: <code>"csv"</code> or <code>"db"</code>. Default <code>"db"</code>.</p></li>
+<li><p><code>file_name</code> Character. Output file name. Defaults to
+<code>"results.db"</code> (db) or <code>"simulation_metadata.csv"</code> (csv).</p></li>
+<li><p><code>file_dir</code> Character. Output directory. Defaults to <code>"calib_sa"</code>
+in the working directory (created if needed).</p></li>
+<li><p><code>na_value</code> Numeric. Replacement for <code>NA</code> in observations. Default <code>999</code>.</p></li>
+<li><p><code>parallel</code> Logical. Run in parallel? Default <code>TRUE</code>.</p></li>
+<li><p><code>ncore</code> Integer. Number of cores (used if <code>parallel = TRUE</code>).
+Default <code>parallel::detectCores() - 1</code>.</p></li>
+<li><p><code>timeout</code> Numeric. Maximum runtime in seconds. Default <code>Inf</code>.</p></li>
+</ul><p><strong>Calibration-only arguments (<code>method = "calib"</code>):</strong></p><ul><li><p><code>VTR</code> Numeric. Target objective value. Default <code>-Inf</code>.</p></li>
+<li><p><code>NP</code> Integer. Population size. Default <code>NA</code> (internally reset).</p></li>
+<li><p><code>itermax</code> Integer. Maximum iterations. Default <code>200</code>.</p></li>
+<li><p><code>reltol</code> Numeric. Relative convergence tolerance. Default <code>0.07</code>.</p></li>
+<li><p><code>cutoff</code> Numeric. Quantile cutoff for parent selection (0–1).</p></li>
+<li><p><code>mutate</code> Numeric. Fraction of population to mutate (0–1).</p></li>
+<li><p><code>c_method</code> Character. Calibration method: <code>"CMAES"</code> or <code>"LHC"</code>.
+Default <code>"CMAES"</code>.</p></li>
+</ul><p><strong>Sensitivity-analysis-only arguments (<code>method = "sa"</code>):</strong></p><ul><li><p><code>N</code> Integer. Base sample size.</p></li>
+<li><p><code>vars_sim</code> Named list describing output variables. Each element must contain:</p><ul><li><p><code>var</code> Character. Variable name.</p></li>
+<li><p><code>month</code> Integer vector. Months to include.</p></li>
+<li><p><code>depth_range</code> Numeric vector (length 2). Min/max depth.</p></li>
 </ul></li>
 </ul></dd>
 

@@ -42,8 +42,8 @@ nz_shapefile
 #> Bounding box:  xmin: 1067061 ymin: 4701317 xmax: 2523320 ymax: 6242140
 #> Projected CRS: NZGD2000 / New Zealand Transverse Mercator 2000
 #> # A tibble: 17 × 9
-#>    gml_id          REGC2023_V1_00 REGC2023_V1_00_NAME     REGC2023_V1_00_NAME_…¹
-#>    <chr>           <chr>          <chr>                   <chr>                 
+#>    id              REGC2023_V1_00 REGC2023_V1_00_NAME     REGC2023_V1_00_NAME_…¹
+#>  * <chr>           <chr>          <chr>                   <chr>                 
 #>  1 layer-111182.1  01             Northland Region        Northland Region      
 #>  2 layer-111182.2  02             Auckland Region         Auckland Region       
 #>  3 layer-111182.3  03             Waikato Region          Waikato Region        
@@ -51,7 +51,7 @@ nz_shapefile
 #>  5 layer-111182.5  05             Gisborne Region         Gisborne Region       
 #>  6 layer-111182.6  06             Hawke's Bay Region      Hawke's Bay Region    
 #>  7 layer-111182.7  07             Taranaki Region         Taranaki Region       
-#>  8 layer-111182.8  08             Manawat?-Whanganui Reg… Manawatu-Whanganui Re…
+#>  8 layer-111182.8  08             Manawatū-Whanganui Reg… Manawatu-Whanganui Re…
 #>  9 layer-111182.9  09             Wellington Region       Wellington Region     
 #> 10 layer-111182.10 12             West Coast Region       West Coast Region     
 #> 11 layer-111182.11 13             Canterbury Region       Canterbury Region     

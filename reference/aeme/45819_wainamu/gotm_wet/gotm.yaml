@@ -1,0 +1,511 @@
+title: GOTM simulation
+location:
+  name: wainamu
+  latitude: -36.8898
+  longitude: 174.46898
+  depth: 13.07
+  hypsograph: inputs/hypsograph.dat
+water_balance_method: 3.0
+time:
+  method: 2.0
+  start: 2020-07-31 00:00:00
+  stop: 2021-06-30 00:00:00
+  dt: 3600.0
+  cnpar: 1.0
+grid:
+  nlev: 41
+  method: 1.0
+  ddu: 1.0
+  ddl: 0.0
+  file: inputs/lyrs.dat
+temperature:
+  method: 2.0
+  file: inputs/t_prof_file.dat
+  column: 1.0
+  scale_factor: 1.0
+  offset: 0.0
+  analytical:
+    method: 1
+    z_t1: 30.0
+    t_1: 4.0
+    z_t2: 40.0
+    t_2: 15.0
+    obs_NN: 0.000256
+  relax:
+    tau: 1.0e+15
+    h_s: 0.0
+    tau_s: 1.0e+15
+    h_b: 0.0
+    tau_b: 1.0e+15
+salinity:
+  method: 2.0
+  file: inputs/s_prof_file.dat
+  column: 1.0
+  scale_factor: 1.0
+  offset: 0.0
+  analytical:
+    method: 1
+    z_s1: 30.0
+    s_1: 20.0
+    z_s2: 40.0
+    s_2: 15.0
+    obs_NN: 0.000256
+  relax:
+    tau: 1.0e+15
+    h_s: 0.0
+    tau_s: 1.0e+15
+    h_b: 0.0
+    tau_b: 1.0e+15
+surface:
+  fluxes:
+    method: 2
+    heat:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    tx:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    ty:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+  meteo:
+    u10:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/meteo.dat
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    v10:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/meteo.dat
+      column: 2
+      scale_factor: 1.0
+      offset: 0.0
+    airp:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/meteo.dat
+      column: 3
+      scale_factor: 1.0
+      offset: 0.0
+    airt:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/meteo.dat
+      column: 4
+      scale_factor: 1.0
+      offset: 0.0
+    hum:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/meteo.dat
+      column: 5
+      scale_factor: 1.0
+      offset: 0.0
+      type: 3.0
+    cloud:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/meteo.dat
+      column: 6
+      scale_factor: 1.0
+      offset: 0.0
+    swr:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/meteo_swr.dat
+      column: 1.0
+      scale_factor: 1.0
+      offset: 0.0
+    precip:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/meteo.dat
+      column: 7
+      scale_factor: 1.0
+      offset: 0.0
+      flux_impact: true
+    calc_evaporation: true
+    ssuv_method: 0
+  longwave_radiation:
+    method: 1
+    file: 
+    column: 1
+    scale_factor: 1.0
+    offset: 0.0
+  albedo:
+    method: 0
+    constant_value: 0.08
+  sst:
+    method: 0
+    constant_value: 11.0
+    file: 
+    column: 1
+    scale_factor: 1.0
+    offset: 0.0
+  sss:
+    method: 0
+    constant_value: 0.0
+    file: 
+    column: 1
+    scale_factor: 1.0
+    offset: 0.0
+  wave:
+    Hs:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    Tz:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    phiw:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+  ice:
+    model: 2
+    H: 0.0
+    ocean_ice_flux: 0.0
+  roughness:
+    charnock: false
+    charnock_val: 1400.0
+    z0s_min: 0.02
+bottom:
+  h0b: 0.05
+  MaxItz0b: 1
+light_extinction:
+  method: 7.0
+  A:
+    method: 0
+    constant_value: 0.55
+    file: 
+    column: 1
+    scale_factor: 1.0
+    offset: 0.0
+  g1:
+    method: 0
+    constant_value: 0.59
+    file: 
+    column: 1
+    scale_factor: 1.0
+    offset: 0.0
+  g2:
+    method: 0.0
+    constant_value: 0.2
+    file: 
+    column: 1
+    scale_factor: 1.0
+    offset: 0.0
+turbulence:
+  turb_method: 3
+  tke_method: 2
+  len_scale_method: 8
+  stab_method: 3
+  bc:
+    k_ubc: 1
+    k_lbc: 1
+    psi_ubc: 1
+    psi_lbc: 1
+    ubc_type: 1
+    lbc_type: 1
+  turb_param:
+    cm0_fix: 0.5477
+    Prandtl0_fix: 0.74
+    cw: 100.0
+    compute_kappa: false
+    kappa: 0.4
+    compute_c3: true
+    Ri_st: 0.25
+    length_lim: true
+    galp: 0.53
+    const_num: 0.0005
+    const_nuh: 0.0005
+    k_min: 6.32e-07
+    eps_min: 1.0e-12
+    kb_min: 1.0e-10
+    epsb_min: 1.0e-14
+  generic:
+    compute_param: false
+    gen_m: 1.0
+    gen_n: -0.67
+    gen_p: 3.0
+    cpsi1: 1.0
+    cpsi2: 1.22
+    cpsi3minus: 0.05
+    cpsi3plus: 1.0
+    sig_kpsi: 0.8
+    sig_psi: 1.07
+    gen_d: -1.2
+    gen_alpha: -2.0
+    gen_l: 0.2
+  keps:
+    ce1: 1.44
+    ce2: 1.92
+    ce3minus: -0.4
+    ce3plus: 1.0
+    sig_k: 1.0
+    sig_e: 1.3
+    sig_peps: false
+  my:
+    e1: 1.8
+    e2: 1.33
+    e3: 1.8
+    sq: 0.2
+    sl: 0.2
+    length: 3
+    new_constr: false
+  scnd:
+    method: 1
+    kb_method: 1
+    epsb_method: 1
+    scnd_coeff: 5
+    cc1: 3.6
+    cc2: 0.8
+    cc3: 1.2
+    cc4: 1.2
+    cc5: 0.0
+    cc6: 0.3
+    ct1: 3.28
+    ct2: 0.4
+    ct3: 0.4
+    ct4: 0.0
+    ct5: 0.4
+    ctt: 0.8
+  iw:
+    model: 0
+    alpha: 0.7
+    klim: 1.0e-06
+    rich_cr: 0.7
+    numshear: 0.005
+    num: 0.0001
+    nuh: 1.0e-05
+  epsprof:
+    method: 0
+    file: 
+    column: 1
+    scale_factor: 1.0
+    offset: 0.0
+mimic_3d:
+  ext_pressure:
+    mode: 0
+    dpdx:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+      AmpM: 0.0
+      PhaseM: 0.0
+      AmpS: 0.0
+      PhaseS: 0.0
+    dpdy:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+      AmpM: 0.0
+      PhaseM: 0.0
+      AmpS: 0.0
+      PhaseS: 0.0
+    h:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    PeriodM: 44714.0
+    PeriodS: 43200.0
+  int_press:
+    dtdx:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    dtdy:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    dsdx:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    dsdy:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    t_adv: false
+    s_adv: false
+  zeta:
+    method: 3.0
+    constant_value: 0.0
+    file: waterlevel.dat
+    column: 1
+    scale_factor: 1.0
+    offset: 0.0
+    period_1: 44714.0
+    amp_1: 1.0
+    phase_1: 0.0
+    period_2: 43200.0
+    amp_2: 0.5
+    phase_2: 0.0
+  w:
+    max:
+      method: 0
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    height:
+      method: 1
+      constant_value: 0.0
+      file: 
+      column: 1
+      scale_factor: 1.0
+      offset: 0.0
+    adv_discr: 4
+velocities:
+  u:
+    method: 0
+    file: 
+    column: 1
+    scale_factor: 1.0
+    offset: 0.0
+  v:
+    method: 0
+    file: 
+    column: 1
+    scale_factor: 1.0
+    offset: 0.0
+  relax:
+    tau: 1.0e+15
+    ramp: 1.0e+15
+o2:
+  scale_factor: 1.0
+  offset: 0.0
+fabm:
+  use: false
+  freshwater_impact: true
+  feedbacks:
+    bottom_everywhere: true
+    shade: false
+    albedo: false
+    surface_drag: false
+  repair_state: true
+  numerics:
+    ode_method: 10
+    split_factor: 1
+    w_adv_discr: 6
+    cnpar: 1.0
+  debug:
+    save_inputs: false
+  configuration_method: -1
+physical_constants:
+  gravity: 9.81
+  rho_0: 1000.0
+  cp: 3985.0
+  avmolu: 1.3e-06
+  avmolt: 1.4e-07
+  avmols: 1.1e-09
+buoyancy:
+  method: 1
+  surf_ini: 0.0
+  NN_ini: 0.0001
+eq_state:
+  mode: 2
+  method: 2
+  T0: 10.0
+  S0: 35.0
+  p0: 0.0
+  dtr0: -0.17
+  dsr0: 0.78
+restart:
+  load: false
+  allow_missing_variable: false
+streams:
+  FWMT:
+    method: 1.0
+    zu: 0.0
+    zl: -1.0
+    flow:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/inf_flow_FWMT.dat
+      column: 1.0
+      scale_factor: 1.0
+      offset: 0.0
+    temp:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/inf_temp_FWMT.dat
+      column: 1.0
+      scale_factor: 1.0
+      offset: 0.0
+    salt:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/inf_salt_FWMT.dat
+      column: 1.0
+      scale_factor: 1.0
+      offset: 0.0
+  outflow:
+    method: 1.0
+    zu: 0.0
+    zl: -1.0
+    flow:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/outf_outflow.dat
+      column: 1.0
+      scale_factor: 1.0
+      offset: 0.0
+  wbal:
+    method: 1.0
+    zu: 0.0
+    zl: -1.0
+    flow:
+      method: 2.0
+      constant_value: 0.0
+      file: inputs/outf_wbal.dat
+      column: 1.0
+      scale_factor: 1.0
+      offset: 0.0
