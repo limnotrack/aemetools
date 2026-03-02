@@ -158,12 +158,12 @@ is used to restart from a previous calibration.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Copied in GOTM configuration files</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GOTM YAML validation completed - no issues detected.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-03-02 21:14:14]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-03-02 21:14:14]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-03-02 21:14:15]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → GOTM-WET running... [2026-03-02 21:14:15]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-03-02 21:14:15]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-03-02 21:14:15]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-03-02 21:48:18]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-03-02 21:48:18]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-03-02 21:48:18]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → GOTM-WET running... [2026-03-02 21:48:18]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-03-02 21:48:19]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-03-02 21:48:19]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span>
 <span class="r-in"><span></span></span>
@@ -181,6 +181,10 @@ is used to restart from a previous calibration.</p></dd>
 <span class="r-in"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_control.html">create_control</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"calib"</span>, NP <span class="op">=</span> <span class="fl">10</span>, itermax <span class="op">=</span> <span class="fl">20</span>, ncore <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>                       parallel <span class="op">=</span> <span class="cn">TRUE</span>, file_type <span class="op">=</span> <span class="st">"db"</span>,</span></span>
 <span class="r-in"><span>                       file_name <span class="op">=</span> <span class="st">"results.db"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`create_control()` was deprecated in aemetools 0.2.0.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use `create_calibration_control()` instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Use `create_calibration_control()` when method = 'calib'. Use</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   `create_sa_control()` when method = 'sa'.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">vars_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span>, <span class="st">"LKE_lvlwtr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYD_temp"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"LKE_lvlwtr"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
@@ -194,11 +198,10 @@ is used to restart from a previous calibration.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> The following parameters have the same value, min, </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> and max and will not be updated during calibration: <span style="color: #0000BB;">"sediment/n_zones"</span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No parameters in 'param' for gotm_wet.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting indices for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-03-02 21:14:17]</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span><span style="color: #BBBB00;">!</span> No model output loaded as all model runs failed.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Indices extracted for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-03-02 21:14:18]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting indices for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-03-02 21:48:21]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Indices extracted for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-03-02 21:48:22]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using <span style="color: #0000BB;">2</span> cores for parallel calibration for <span style="color: #0000BB;">"glm_aed"</span>.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-02 21:14:19]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-02 21:48:22]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Parameter summary for generation <span style="color: #0000BB;">1</span>:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mean      2.744     1.0070     1.0050              0.15040</span>
@@ -217,13 +220,13 @@ is used to restart from a previous calibration.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> median                         42.96  1.5030 1.5950</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sd                             25.63  0.6226 0.5908</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"glm_aed"</span>. [2026-03-02 21:14:35]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"glm_aed"</span>. [2026-03-02 21:48:38]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">13.3</span> (sd: <span style="color: #0000BB;">3727.9</span>) Parameters: [ <span style="color: #0000BB;">2.28</span>, <span style="color: #0000BB;">0.985</span>, <span style="color: #0000BB;">0.762</span>, <span style="color: #0000BB;">0.162</span>, <span style="color: #0000BB;">0.208</span>,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">0.113</span>, <span style="color: #0000BB;">0.279</span>, <span style="color: #0000BB;">0.662</span>, <span style="color: #0000BB;">9.4</span>, <span style="color: #0000BB;">21.1</span>, <span style="color: #0000BB;">1.25</span>, and <span style="color: #0000BB;">1.23</span> ]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing output for generation <span style="color: #0000BB;">1</span> to <span style="color: #0000BB;">results.db</span> with sim ID: <span style="color: #0000BB;">"45819_glmaed_C_001"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2026-03-02 21:14:35]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2026-03-02 21:48:38]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.8</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-02 21:14:35]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-02 21:48:38]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Parameter summary for generation <span style="color: #0000BB;">2</span>:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mean     2.8650    0.92930     1.0370             0.170000</span>
@@ -242,15 +245,15 @@ is used to restart from a previous calibration.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> median                         39.53  0.9796 0.7954</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sd                             10.15  0.1765 0.2444</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing output for generation <span style="color: #0000BB;">2</span> to <span style="color: #0000BB;">results.db</span> with sim ID: <span style="color: #0000BB;">"45819_glmaed_C_001"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2026-03-02 21:14:43]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2026-03-02 21:48:44]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"glm_aed"</span>. [2026-03-02 21:14:43]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"glm_aed"</span>. [2026-03-02 21:48:45]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">13.3</span> (sd: <span style="color: #0000BB;">1882.4</span>)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Survival rate: 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting indices for <span style="color: #0000BB;">"gotm_wet"</span> modelled variables [2026-03-02 21:14:43]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Indices extracted for <span style="color: #0000BB;">"gotm_wet"</span> modelled variables [2026-03-02 21:14:45]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting indices for <span style="color: #0000BB;">"gotm_wet"</span> modelled variables [2026-03-02 21:48:45]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Indices extracted for <span style="color: #0000BB;">"gotm_wet"</span> modelled variables [2026-03-02 21:48:46]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using <span style="color: #0000BB;">2</span> cores for parallel calibration for <span style="color: #0000BB;">"gotm_wet"</span>.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-02 21:14:46]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-02 21:48:47]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Parameter summary for generation <span style="color: #0000BB;">1</span>:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        turbulence/turb_param/k_min light_extinction/A/constant_value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mean                     4.954e-06                           0.52640</span>
@@ -265,13 +268,13 @@ is used to restart from a previous calibration.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> median     0.9830     1.0250  1.4900 1.4670</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sd         0.1771     0.1824  0.6328 0.6032</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"gotm_wet"</span>. [2026-03-02 21:15:09]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"gotm_wet"</span>. [2026-03-02 21:49:05]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">9.6</span> (sd: <span style="color: #0000BB;">17934</span>) Parameters: [ <span style="color: #0000BB;">6.29e-06</span>, <span style="color: #0000BB;">0.479</span>, <span style="color: #0000BB;">0.467</span>, <span style="color: #0000BB;">0.179</span>, <span style="color: #0000BB;">1.19</span>,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">1.16</span>, <span style="color: #0000BB;">1.15</span>, and <span style="color: #0000BB;">1.17</span> ]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing output for generation <span style="color: #0000BB;">1</span> to <span style="color: #0000BB;">results.db</span> with sim ID:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">"45819_gotmwet_C_001"</span> [2026-03-02 21:15:09]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">"45819_gotmwet_C_001"</span> [2026-03-02 21:49:05]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.7</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-02 21:15:09]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-02 21:49:05]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Parameter summary for generation <span style="color: #0000BB;">2</span>:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        turbulence/turb_param/k_min light_extinction/A/constant_value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mean                     4.604e-06                            0.4790</span>
@@ -286,9 +289,9 @@ is used to restart from a previous calibration.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> median     1.1000    1.16900  1.3640 1.3650</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sd         0.1017    0.03663  0.2247 0.2984</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing output for generation <span style="color: #0000BB;">2</span> to <span style="color: #0000BB;">results.db</span> with sim ID:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">"45819_gotmwet_C_001"</span> [2026-03-02 21:15:21]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">"45819_gotmwet_C_001"</span> [2026-03-02 21:49:15]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"gotm_wet"</span>. [2026-03-02 21:15:21]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"gotm_wet"</span>. [2026-03-02 21:49:15]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">9.49</span> (sd: <span style="color: #0000BB;">2496.4</span>)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Survival rate: 1</span>
 <span class="r-in"><span></span></span>

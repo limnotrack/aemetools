@@ -142,11 +142,11 @@ is different to the `run_aeme` function in that it does not return an
 run_aeme_param(aeme = aeme, param = aeme_parameters,
                  model = model, path = path)
 #> ℹ Deleted previous output for model GLM-AED at
-#>   C:/Users/runneradmin/AppData/Local/Temp/RtmpC2FtEr/lake/45819_wainamu/glm_aed/output/output.nc
-#> ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:21:33]
-#> → GLM-AED running... [2026-03-02 21:21:33]
-#> ✔ GLM-AED run successful! [2026-03-02 21:21:33]
-#> ✔ Model run complete! [2026-03-02 21:21:33]
+#>   C:/Users/runneradmin/AppData/Local/Temp/Rtmpo90XrO/lake/45819_wainamu/glm_aed/output/output.nc
+#> ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:54:57]
+#> → GLM-AED running... [2026-03-02 21:54:57]
+#> ✔ GLM-AED run successful! [2026-03-02 21:54:57]
+#> ✔ Model run complete! [2026-03-02 21:54:57]
 ```
 
 ## Calibration setup
@@ -243,11 +243,14 @@ calibration are as follows:
 |----------------|----------------:|
 | create_control | R Documentation |
 
-## Create control list for calibration or sensitivity analysis
+## Create control list (superseded)
 
 ### Arguments
 
-[TABLE]
+|          |                                               |
+|----------|-----------------------------------------------|
+| `method` | Character. Either `"calib"` or `"sa"`.        |
+| `...`    | Arguments passed to the appropriate function. |
 
 Here is an example of the control parameters for calibration, with a
 value-to-reach of 0, 40 members in each population, maximum number of
@@ -329,106 +332,106 @@ sim_id <- calib_aeme(aeme = aeme, path = path,
 #> Adding them to model_controls.
 #> ! The following parameters have the same value, min, 
 #> and max and will not be updated during calibration: "sediment/n_zones"
-#> ℹ Extracting indices for "glm_aed" modelled variables [2026-03-02 21:21:35]
-#> ✔ Indices extracted for "glm_aed" modelled variables [2026-03-02 21:21:36]
+#> ℹ Extracting indices for "glm_aed" modelled variables [2026-03-02 21:54:59]
+#> ✔ Indices extracted for "glm_aed" modelled variables [2026-03-02 21:55:00]
 #> ℹ Using 2 cores for parallel calibration for "glm_aed".
-#> → Starting generation 1/10, 40 members. [2026-03-02 21:21:36]
+#> → Starting generation 1/10, 40 members. [2026-03-02 21:55:00]
 #> Parameter summary for generation 1:
 #> ✔ Completed generation 1/10 
-#> for "glm_aed". [2026-03-02 21:22:10]
+#> for "glm_aed". [2026-03-02 21:55:32]
 #> 
 #> Best fit: 1.1 (sd: 0.49614) Parameters: [ 0.851, 0.978, 0.848, 0.177, 0.254,
 #> 0.125, 0.337, 0.509, 13, 15.5, 1.98, and 2.04 ]
 #> Writing output for generation 1 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-03-02 21:22:11]
+#> "45819_glmaed_C_001" [2026-03-02 21:55:32]
 #> ℹ Survival rate: 0.68
 #> 
-#> → Starting generation 2/10, 40 members. [2026-03-02 21:22:11]
+#> → Starting generation 2/10, 40 members. [2026-03-02 21:55:32]
 #> Parameter summary for generation 2:
 #> Writing output for generation 2 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-03-02 21:22:36]
+#> "45819_glmaed_C_001" [2026-03-02 21:55:52]
 #> ✔ Completed generation 2/10 
-#> for "glm_aed". [2026-03-02 21:22:36]
+#> for "glm_aed". [2026-03-02 21:55:52]
 #> 
 #> Best fit: 0.865 (sd: 0.43069)
 #> ℹ Survival rate: 0.98
 #> 
-#> → Starting generation 3/10, 40 members. [2026-03-02 21:22:36]
+#> → Starting generation 3/10, 40 members. [2026-03-02 21:55:53]
 #> Parameter summary for generation 3:
 #> Writing output for generation 3 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-03-02 21:23:02]
+#> "45819_glmaed_C_001" [2026-03-02 21:56:17]
 #> ✔ Completed generation 3/10 
-#> for "glm_aed". [2026-03-02 21:23:02]
+#> for "glm_aed". [2026-03-02 21:56:17]
 #> 
 #> Best fit: 0.808 (sd: 0.24372)
 #> ℹ Survival rate: 0.92
 #> 
-#> → Starting generation 4/10, 40 members. [2026-03-02 21:23:02]
+#> → Starting generation 4/10, 40 members. [2026-03-02 21:56:17]
 #> Parameter summary for generation 4:
 #> Writing output for generation 4 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-03-02 21:23:25]
+#> "45819_glmaed_C_001" [2026-03-02 21:56:41]
 #> ✔ Completed generation 4/10 
-#> for "glm_aed". [2026-03-02 21:23:25]
+#> for "glm_aed". [2026-03-02 21:56:41]
 #> 
 #> Best fit: 0.749 (sd: 0.31638)
 #> ℹ Survival rate: 0.98
 #> 
-#> → Starting generation 5/10, 40 members. [2026-03-02 21:23:25]
+#> → Starting generation 5/10, 40 members. [2026-03-02 21:56:41]
 #> Parameter summary for generation 5:
 #> Writing output for generation 5 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-03-02 21:23:46]
+#> "45819_glmaed_C_001" [2026-03-02 21:57:04]
 #> ✔ Completed generation 5/10 
-#> for "glm_aed". [2026-03-02 21:23:46]
+#> for "glm_aed". [2026-03-02 21:57:04]
 #> 
 #> Best fit: 0.749 (sd: 0.28991)
 #> ℹ Survival rate: 0.92
 #> 
-#> → Starting generation 6/10, 40 members. [2026-03-02 21:23:46]
+#> → Starting generation 6/10, 40 members. [2026-03-02 21:57:04]
 #> Parameter summary for generation 6:
 #> Writing output for generation 6 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-03-02 21:24:11]
+#> "45819_glmaed_C_001" [2026-03-02 21:57:30]
 #> ✔ Completed generation 6/10 
-#> for "glm_aed". [2026-03-02 21:24:11]
+#> for "glm_aed". [2026-03-02 21:57:30]
 #> 
 #> Best fit: 0.727 (sd: 0.23973)
 #> ℹ Survival rate: 0.98
 #> 
-#> → Starting generation 7/10, 40 members. [2026-03-02 21:24:11]
+#> → Starting generation 7/10, 40 members. [2026-03-02 21:57:30]
 #> Parameter summary for generation 7:
 #> Writing output for generation 7 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-03-02 21:24:37]
+#> "45819_glmaed_C_001" [2026-03-02 21:57:51]
 #> ✔ Completed generation 7/10 
-#> for "glm_aed". [2026-03-02 21:24:37]
+#> for "glm_aed". [2026-03-02 21:57:51]
 #> 
 #> Best fit: 0.727 (sd: 0.32264)
 #> ℹ Survival rate: 0.98
 #> 
-#> → Starting generation 8/10, 40 members. [2026-03-02 21:24:37]
+#> → Starting generation 8/10, 40 members. [2026-03-02 21:57:52]
 #> Parameter summary for generation 8:
 #> Writing output for generation 8 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-03-02 21:25:02]
+#> "45819_glmaed_C_001" [2026-03-02 21:58:16]
 #> ✔ Completed generation 8/10 
-#> for "glm_aed". [2026-03-02 21:25:02]
+#> for "glm_aed". [2026-03-02 21:58:16]
 #> 
 #> Best fit: 0.694 (sd: 0.26966)
 #> ℹ Survival rate: 0.92
 #> 
-#> → Starting generation 9/10, 40 members. [2026-03-02 21:25:02]
+#> → Starting generation 9/10, 40 members. [2026-03-02 21:58:16]
 #> Parameter summary for generation 9:
 #> Writing output for generation 9 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-03-02 21:25:26]
+#> "45819_glmaed_C_001" [2026-03-02 21:58:41]
 #> ✔ Completed generation 9/10 
-#> for "glm_aed". [2026-03-02 21:25:26]
+#> for "glm_aed". [2026-03-02 21:58:41]
 #> 
 #> Best fit: 0.687 (sd: 0.34659)
 #> ℹ Survival rate: 0.98
 #> 
-#> → Starting generation 10/10, 40 members. [2026-03-02 21:25:26]
+#> → Starting generation 10/10, 40 members. [2026-03-02 21:58:41]
 #> Parameter summary for generation 10:
 #> Writing output for generation 10 to simulation_data.csv with sim ID:
-#> "45819_glmaed_C_001" [2026-03-02 21:25:47]
+#> "45819_glmaed_C_001" [2026-03-02 21:59:01]
 #> ✔ Completed generation 10/10 
-#> for "glm_aed". [2026-03-02 21:25:47]
+#> for "glm_aed". [2026-03-02 21:59:01]
 #> 
 #> Best fit: 0.68 (sd: 0.26527)
 #> ℹ Survival rate: 0.9
@@ -574,11 +577,11 @@ aeme <- run_aeme_param(aeme = aeme, path = path,
                        param = best_params, model = model,
                        return_aeme = TRUE)
 #> ℹ Deleted previous output for model GLM-AED at
-#>   C:/Users/runneradmin/AppData/Local/Temp/RtmpC2FtEr/lake/45819_wainamu/glm_aed/output/output.nc
-#> ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:25:54]
-#> → GLM-AED running... [2026-03-02 21:25:54]
-#> ✔ GLM-AED run successful! [2026-03-02 21:25:54]
-#> ✔ Model run complete! [2026-03-02 21:25:54]
+#>   C:/Users/runneradmin/AppData/Local/Temp/Rtmpo90XrO/lake/45819_wainamu/glm_aed/output/output.nc
+#> ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:59:07]
+#> → GLM-AED running... [2026-03-02 21:59:07]
+#> ✔ GLM-AED run successful! [2026-03-02 21:59:08]
+#> ✔ Model run complete! [2026-03-02 21:59:08]
 ```
 
 The simulated values can be compared to the observed values using the

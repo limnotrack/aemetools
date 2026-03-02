@@ -515,7 +515,7 @@ sensitivity analysis are as follows:</p>
 <td>create_control</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-<h2>Create control list for calibration or sensitivity analysis</h2>
+<h2>Create control list (superseded)</h2>
 
 <h3>Arguments</h3>
 
@@ -523,94 +523,13 @@ sensitivity analysis are as follows:</p>
 <tr>
 <td><code id="method">method</code></td>
 <td>
-<p>The method to be used. It can be either "calib" for calibration
-or "sa" for sensitivity analysis.</p>
+<p>Character. Either <code>"calib"</code> or <code>"sa"</code>.</p>
 </td>
 </tr>
 <tr>
 <td><code id="...">...</code></td>
 <td>
-<p>Additional arguments passed to <code><a href="../reference/create_control.html">create_control()</a></code>.
-</p>
-<p><strong>Common arguments (both methods):</strong>
-</p>
-
-<ul>
-<li> <p><code>file_type</code> Character. Output type: <code>"csv"</code> or <code>"db"</code>. Default <code>"db"</code>.
-</p>
-</li>
-<li> <p><code>file_name</code> Character. Output file name. Defaults to
-<code>"results.db"</code> (db) or <code>"simulation_metadata.csv"</code> (csv).
-</p>
-</li>
-<li> <p><code>file_dir</code> Character. Output directory. Defaults to <code>"calib_sa"</code>
-in the working directory (created if needed).
-</p>
-</li>
-<li> <p><code>na_value</code> Numeric. Replacement for <code>NA</code> in observations. Default <code>999</code>.
-</p>
-</li>
-<li> <p><code>parallel</code> Logical. Run in parallel? Default <code>TRUE</code>.
-</p>
-</li>
-<li> <p><code>ncore</code> Integer. Number of cores (used if <code>parallel = TRUE</code>).
-Default <code>parallel::detectCores() - 1</code>.
-</p>
-</li>
-<li> <p><code>timeout</code> Numeric. Maximum runtime in seconds. Default <code>Inf</code>.
-</p>
-</li>
-</ul>
-<p><strong>Calibration-only arguments (<code>method = "calib"</code>):</strong>
-</p>
-
-<ul>
-<li> <p><code>VTR</code> Numeric. Target objective value. Default <code>-Inf</code>.
-</p>
-</li>
-<li> <p><code>NP</code> Integer. Population size. Default <code>NA</code> (internally reset).
-</p>
-</li>
-<li> <p><code>itermax</code> Integer. Maximum iterations. Default <code>200</code>.
-</p>
-</li>
-<li> <p><code>reltol</code> Numeric. Relative convergence tolerance. Default <code>0.07</code>.
-</p>
-</li>
-<li> <p><code>cutoff</code> Numeric. Quantile cutoff for parent selection (0–1).
-</p>
-</li>
-<li> <p><code>mutate</code> Numeric. Fraction of population to mutate (0–1).
-</p>
-</li>
-<li> <p><code>c_method</code> Character. Calibration method: <code>"CMAES"</code> or <code>"LHC"</code>.
-Default <code>"CMAES"</code>.
-</p>
-</li>
-</ul>
-<p><strong>Sensitivity-analysis-only arguments (<code>method = "sa"</code>):</strong>
-</p>
-
-<ul>
-<li> <p><code>N</code> Integer. Base sample size.
-</p>
-</li>
-<li> <p><code>vars_sim</code> Named list describing output variables. Each element must contain:
-</p>
-
-<ul>
-<li> <p><code>var</code> Character. Variable name.
-</p>
-</li>
-<li> <p><code>month</code> Integer vector. Months to include.
-</p>
-</li>
-<li> <p><code>depth_range</code> Numeric vector (length 2). Min/max depth.
-</p>
-</li>
-</ul>
-</li>
-</ul>
+<p>Arguments passed to the appropriate function.</p>
 </td>
 </tr>
 </table></main></div>
@@ -725,13 +644,13 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="va">sim_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sa_aeme.html">sa_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>, param <span class="op">=</span> <span class="va">param</span>,</span>
 <span>                  model <span class="op">=</span> <span class="va">model</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, FUN_list <span class="op">=</span> <span class="va">FUN_list</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Extracting variable indices for <span style="color: #0000BB;">"gotm_wet"</span> modelled </span></span>
-<span><span class="co">#&gt; variables <span style="color: #0000BB;">"HYD_temp"</span> and <span style="color: #0000BB;">"PHY_tchla"</span>. [2026-03-02 21:27:46]</span></span>
+<span><span class="co">#&gt; variables <span style="color: #0000BB;">"HYD_temp"</span> and <span style="color: #0000BB;">"PHY_tchla"</span>. [2026-03-02 22:00:34]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Variable indices extracted for <span style="color: #0000BB;">"gotm_wet"</span>. </span></span>
-<span><span class="co">#&gt; [2026-03-02 21:27:52]</span></span>
+<span><span class="co">#&gt; [2026-03-02 22:00:39]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Starting parallel sensitivity analysis for </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">"gotm_wet"</span> using <span style="color: #0000BB;">2</span> cores with </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">144</span> parameter sets. </span></span>
-<span><span class="co">#&gt; [2026-03-02 21:27:53]</span></span>
+<span><span class="co">#&gt; [2026-03-02 22:00:39]</span></span>
 <span><span class="co">#&gt;        turbulence/turb_param/k_min light_extinction/A/constant_value</span></span>
 <span><span class="co">#&gt; mean                     4.851e-06                           0.52760</span></span>
 <span><span class="co">#&gt; median                   5.000e-06                           0.52700</span></span>
@@ -746,9 +665,9 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="co">#&gt; sd         0.1619     0.1606 0.5311</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Parallel sensitivity analysis for </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">"gotm_wet"</span> completed. </span></span>
-<span><span class="co">#&gt; [2026-03-02 21:36:13]</span></span>
+<span><span class="co">#&gt; [2026-03-02 22:08:59]</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">1</span> to <span style="color: #0000BB;">results.db</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"45819_gotmwet_S_001"</span> [2026-03-02 21:36:13]</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"45819_gotmwet_S_001"</span> [2026-03-02 22:08:59]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-sensitivity-analysis-results">Reading sensitivity analysis results<a class="anchor" aria-label="anchor" href="#reading-sensitivity-analysis-results"></a>
