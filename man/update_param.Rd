@@ -38,13 +38,13 @@ Defaults to 0.1.}
 \item{fit_col}{character; name of column containing fit values. Default is
 \code{"fit"}.}
 
-\item{best_pars}{A data frame with the best parameters from \code{\link{`get_param`}}.
-Defaults to NULL. When NULL, \code{\link{`get_param`}} is called to get the
+\item{best_pars}{A data frame with the best parameters from \code{\link{get_param}}.
+Defaults to NULL. When NULL, \code{\link{get_param}} is called to get the
 best parameters.}
 }
 \value{
 data frame with updated parameter values for running the model with
-\code{run_aeme_param}
+\code{\link{run_aeme_param}}
 }
 \description{
 Update parameter values in param based on best_pars

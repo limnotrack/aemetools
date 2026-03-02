@@ -5,8 +5,8 @@
 #' @inheritParams get_param
 #' @param param A data frame with parameters to update. Defaults to NULL. When
 #' NULL, the parameter values are extracted from `calib$parameter_metadata`.
-#' @param best_pars A data frame with the best parameters from \code{\link{`get_param`}}.
-#' Defaults to NULL. When NULL, \code{\link{`get_param`}} is called to get the 
+#' @param best_pars A data frame with the best parameters from \code{\link{get_param}}.
+#' Defaults to NULL. When NULL, \code{\link{get_param}} is called to get the 
 #' best parameters.
 #' @param aeme aeme; object. Defaults to NULL. When NULL, a dataframe of the
 #' updated parameter values is returned. When provided, the updated parameter
@@ -21,7 +21,7 @@
 #' bind_rows
 #'
 #' @return data frame with updated parameter values for running the model with
-#'  `run_aeme_param`
+#'  \code{\link{run_aeme_param}}
 #' @export
 
 update_param <- function(calib, param, na_value, aeme, replace = FALSE, quantile = 0.1,
