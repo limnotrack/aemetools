@@ -82,3 +82,35 @@ get_pareto_front <- function(df, obj_cols) {
   
   df[pareto_idx, ]
 }
+
+#' Create a control object for calibration or sensitivity analysis.
+#' @noRd
+.create_control <- function(method, ...) {
+  
+  args <- list(...)
+  
+  if (method == "calib") {
+    
+    required <- c("VTR", "NP", "itermax", "reltol",
+                  "cutoff", "mutate", "c_method")
+    
+  } else if (method == "sa") {
+    
+    required <- c("N", "vars_sim")
+    
+  } else {
+    stop("Unknown method.")
+  }
+  
+  # Optional: enforce required args present
+  missing <- setdiff(required, names(args))
+  if (length(missing) > 0) {
+    stop("Missing required arguments: ",
+         paste(missing, collapse = ", "))
+  }
+  
+  args$method <- method
+  class(args) <- "calib_sa_control"
+  args
+}
+
