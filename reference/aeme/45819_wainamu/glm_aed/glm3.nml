@@ -1,0 +1,133 @@
+&glm_setup
+   sim_name = 'GLMSimulation'
+   max_layers = 101
+   min_layer_vol = 0.025
+   min_layer_thick = 0.2
+   max_layer_thick = 0.5
+   density_model = 1
+   non_avg = .true.
+/
+&mixing
+   coef_mix_conv = 0.14
+   coef_wind_stir = 0.21
+   coef_mix_shear = 0.14
+   coef_mix_turb = 0.56
+   coef_mix_KH = 0.3
+   coef_mix_hyp = 0.74
+   deep_mixing = .true.
+   coef_mix_shreq = 0
+/
+&morphometry
+   lake_name = 'wainamu'
+   latitude = -36.8898
+   longitude = 174.469
+   base_elev = 10.57
+   crest_elev = 28.64
+   bsn_len = 444.7
+   bsn_wid = 441.3
+   bsn_vals = 44
+   H = 10.57, 10.64, 11.14, 11.64, 12.14, 12.64, 13.14, 13.64, 14.14, 14.64, 15.14, 15.64, 16.14, 16.64, 17.14, 17.64, 18.14, 18.64, 18.84, 19.04, 19.24, 19.44, 19.64, 19.84, 20.04, 20.24, 20.44, 20.64, 20.84, 21.04, 21.24, 21.44, 21.64, 21.84, 22.04, 22.24, 22.44, 22.64, 22.84, 23.04, 23.24, 23.44, 23.64, 28.64
+   A = 0, 2190.85, 11106.96, 19209.55, 27262.7, 33761.69, 39819.33, 43956.62, 49681.38, 55931.92, 62593.5, 68888.1, 74383.5, 80012.69, 86598.38, 93399.72, 99197.02, 105908.82, 108688.66, 111281.94, 113710.35, 116048.83, 118413.57, 120590.99, 122751.7, 124862.24, 126791.91, 128611.25, 130227.19, 131780.16, 133311.34, 134687.9, 136001.16, 137359.76, 138580.39, 139732.98, 141022.38, 142234.22, 143499.52, 144808.35, 146231.62, 148074.68, 152343, 216290.46
+/
+&time
+   timefmt = 2
+   start = '2020-07-30 00:00:00'
+   stop = '2021-06-30 00:00:00'
+   dt = 3600
+   num_days = 200
+/
+&output
+   out_dir = 'output'
+   out_fn = 'output'
+   nsave = 24
+   csv_lake_fname = 'lake'
+   csv_point_nlevs = 1
+   csv_point_fname = 'WQ_'
+   csv_point_at = 2
+   csv_point_nvars = 2
+   csv_point_vars = 'temp','salt'
+/
+&init_profiles
+   lake_depth = 13.07
+   num_depths = 2
+   the_depths = 0, 13.07
+   the_temps = 10, 10
+   the_sals = 0, 0
+/
+&meteorology
+   met_sw = .true.
+   lw_type = 'LW_IN'
+   rain_sw = .false.
+   atm_stab = 0
+   albedo_mode = 1
+   cloud_mode = 2
+   fetch_mode = 0
+   subdaily = .false.
+   meteo_fl = 'bcs/meteo_glm.csv'
+   wind_factor = 1
+   sw_factor = 1
+   lw_factor = 1
+   at_factor = 1
+   rh_factor = 1
+   rain_factor = 1
+   ce = 0.0013
+   ch = 0.0013
+   cd = 0.0013
+/
+&light
+   light_mode = 0
+   n_bands = 4
+   light_extc = 1, 0.5, 2, 4
+   energy_frac = 0.51, 0.45, 0.035, 0.005
+   Benthic_Imin = 10
+   Kw = 0.58
+/
+&bird_model
+   AP = 973
+   Oz = 0.279
+   WatVap = 1.1
+   AOD500 = 0.033
+   AOD380 = 0.038
+   Albedo = 0.2
+/
+&inflow
+   num_inflows = 1
+   names_of_strms = 'FWMT'
+   strm_hf_angle = 80
+   strmbd_slope = 0.5
+   strmbd_drag = 0.016
+   inflow_factor = 1
+   inflow_fl = 'bcs/inflow_FWMT.csv'
+   inflow_varnum = 3
+   inflow_vars = 'flow','temp','salt'
+   coef_inf_entrain = 0
+/
+&outflow
+   num_outlet = 2
+   outlet_type = 2, 2
+   flt_off_sw = .true., .true.
+   outl_elvs = 17.07, 17.07
+   bsn_len_outl = 510.98, 510.98
+   bsn_wid_outl = 507.07, 507.07
+   outflow_fl = 'bcs/outflow_outflow.csv','bcs/outflow_wbal.csv'
+   outflow_factor = 1, 1
+   seepage = .true.
+   seepage_rate = 0
+/
+&sediment
+   sed_heat_Ksoil = 1.2
+   sed_temp_depth = 0.2
+   sed_temp_mean = 12
+   sed_temp_amplitude = 4
+   sed_temp_peak_doy = 30
+   benthic_mode = 2
+   n_zones = 1
+   zone_heights = 18.07
+   sed_reflectivity = 0.1
+   sed_roughness = 0.1
+/
+&snowice
+   snow_albedo_factor = 1
+   snow_rho_max = 300
+   snow_rho_min = 50
+/

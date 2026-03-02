@@ -72,11 +72,11 @@ years <- 2021
 vars <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_isimip_point(lon, lat, years, vars)
-#> INFO [2026-02-23 20:40:31] job submitted
-#> INFO [2026-02-23 20:40:35] job updated
-#> INFO [2026-02-23 20:40:40] job updated
-#> INFO [2026-02-23 20:40:40] downloading
-#> INFO [2026-02-23 20:40:41] extracting
+#> INFO [2026-03-02 21:26:13] job submitted
+#> INFO [2026-03-02 21:26:17] job updated
+#> INFO [2026-03-02 21:26:21] job updated
+#> INFO [2026-03-02 21:26:21] downloading
+#> INFO [2026-03-02 21:26:22] extracting
 summary(met)
 #>       Date              MET_tmpair      MET_pprain      
 #>  Min.   :2021-01-01   Min.   :19.08   Min.   : 0.06125  

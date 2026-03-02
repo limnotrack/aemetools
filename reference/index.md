@@ -71,6 +71,8 @@
 - [`plot_ensemble()`](plot_ensemble.md) : Plot AEME ensemble output
 - [`plot_multiscatter()`](plot_multiscatter.md) : Plot multiscatter of
   the parameters against each other
+- [`plot_pareto_generations()`](plot_pareto_generations.md) : Plot
+  Pareto front evolution across generations
 - [`plot_scatter()`](plot_scatter.md) : Plot the scatter of the output
   of a sensitivity analysis
 - [`plot_sobol()`](plot_sobol.md) : Visualization of first, total,

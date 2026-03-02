@@ -12,7 +12,7 @@ sa_aeme(
   model,
   param,
   FUN_list,
-  path = ".",
+  path,
   model_controls = NULL,
   ctrl,
   param_df = NULL

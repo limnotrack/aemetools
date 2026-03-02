@@ -530,100 +530,82 @@ or "sa" for sensitivity analysis.</p>
 <tr>
 <td><code id="...">...</code></td>
 <td>
-<p>Additional arguments to be passed to the function
-<code>create_control</code>. The arguments are different for calibration and
-sensitivity analysis. There are arguments which are common to both methods:
+<p>Additional arguments passed to <code><a href="../reference/create_control.html">create_control()</a></code>.
+</p>
+<p><strong>Common arguments (both methods):</strong>
 </p>
 
 <ul>
-<li> <p><code>file_type</code> string; file type to write the output to. Options are c("csv",
-"db"). Defaults to "db".
+<li> <p><code>file_type</code> Character. Output type: <code>"csv"</code> or <code>"db"</code>. Default <code>"db"</code>.
 </p>
 </li>
-<li> <p><code>file_name</code> string; file name to write the output to. Defaults to
-"results.db" if <code>file_type</code> is "db" and "simulation_metadata.csv" if
-<code>file_type</code> is "csv".
+<li> <p><code>file_name</code> Character. Output file name. Defaults to
+<code>"results.db"</code> (db) or <code>"simulation_metadata.csv"</code> (csv).
 </p>
 </li>
-<li> <p><code>file_dir</code> string; directory to write the output to. Defaults to the
-directory "calib_sa" in the current working directory. If the directory does
-not exist, it will be created.
+<li> <p><code>file_dir</code> Character. Output directory. Defaults to <code>"calib_sa"</code>
+in the working directory (created if needed).
 </p>
 </li>
-<li> <p><code>na_value</code> value to replace NA values with in observations. Defaults to 999.
+<li> <p><code>na_value</code> Numeric. Replacement for <code>NA</code> in observations. Default <code>999</code>.
 </p>
 </li>
-<li> <p><code>parallel</code> boolean; run calibration in parallel. Default to TRUE
+<li> <p><code>parallel</code> Logical. Run in parallel? Default <code>TRUE</code>.
 </p>
 </li>
-<li> <p><code>ncore</code>: The number of cores to use for the calibration. This is only used
-if <code>parallel = TRUE</code>. Default to <code>parallel::detectCores() - 1</code>.
+<li> <p><code>ncore</code> Integer. Number of cores (used if <code>parallel = TRUE</code>).
+Default <code>parallel::detectCores() - 1</code>.
 </p>
 </li>
-<li> <p><code>timeout</code>: The maximum time in seconds to run the calibration. Default to
-Inf. If the calibration takes longer than the timeout, the calibration will
-stop and return the best parameter set found so far.
+<li> <p><code>timeout</code> Numeric. Maximum runtime in seconds. Default <code>Inf</code>.
 </p>
 </li>
 </ul>
-<p>For calibration, the arguments are:
+<p><strong>Calibration-only arguments (<code>method = "calib"</code>):</strong>
 </p>
 
 <ul>
-<li> <p><code>VTR</code> Value to be reached. The optimization process will stop if
-either the maximum number of iterations itermax is reached or the best
-parameter vector bestmem has found a value fn(bestmem) &lt;= VTR. Default to
--Inf.
+<li> <p><code>VTR</code> Numeric. Target objective value. Default <code>-Inf</code>.
 </p>
 </li>
-<li> <p><code>NP</code> number of population members. Defaults to NA; if the user does not
-change the value of NP from NA it is reset as
-<code>10 * sum(param$model == model)</code>. For many  problems it is best to set NP
-to be at least 10 times the length of the parameter vector.
+<li> <p><code>NP</code> Integer. Population size. Default <code>NA</code> (internally reset).
 </p>
 </li>
-<li> <p><code>itermax</code> the maximum iteration (population generation) allowed.
-Default is 200.
+<li> <p><code>itermax</code> Integer. Maximum iterations. Default <code>200</code>.
 </p>
 </li>
-<li> <p><code>reltol</code> relative convergence tolerance. The algorithm stops if it is
-unable to reduce the value by a factor of <code>reltol * (abs(val) + reltol)</code>.
-Default = 0.07
+<li> <p><code>reltol</code> Numeric. Relative convergence tolerance. Default <code>0.07</code>.
 </p>
 </li>
-<li> <p><code>cutoff</code>: The quantile cutoff used to select the parents for the next
-generation. For example, if <code>cutoff = 0.25</code>, the best 25% of the population
-will be used as parents for the next generation.
+<li> <p><code>cutoff</code> Numeric. Quantile cutoff for parent selection (0–1).
 </p>
 </li>
-<li> <p><code>mutate</code> fraction of population to undergo mutation (0-1).
+<li> <p><code>mutate</code> Numeric. Fraction of population to mutate (0–1).
 </p>
 </li>
-<li> <p><code>c_method</code> character; the method to use for calibration. Options are
-"CMAES" and "LHC". Defaults to "CMAES".
+<li> <p><code>c_method</code> Character. Calibration method: <code>"CMAES"</code> or <code>"LHC"</code>.
+Default <code>"CMAES"</code>.
 </p>
 </li>
 </ul>
-<p>For sensitivity analysis, the arguments are:
+<p><strong>Sensitivity-analysis-only arguments (<code>method = "sa"</code>):</strong>
 </p>
 
 <ul>
-<li> <p><code>N</code>: The initial sample size of the base sample matrix.
+<li> <p><code>N</code> Integer. Base sample size.
 </p>
 </li>
-<li> <p><code>vars_sim</code>: A named list of output variables for sensitivity analysis.
-The name is user defined but each list must contain:
+<li> <p><code>vars_sim</code> Named list describing output variables. Each element must contain:
 </p>
 
 <ul>
-<li> <p><code>var</code>: The variable name to use for the sensitivity analysis.
+<li> <p><code>var</code> Character. Variable name.
 </p>
 </li>
-<li> <p><code>month</code>: A vector of months to use for the sensitivity analysis.
+<li> <p><code>month</code> Integer vector. Months to include.
 </p>
 </li>
-<li> <p><code>depth_range</code>: A vector of length 2 with the minimum and maximum depth
-range to use for the sensitivity analysis.
+<li> <p><code>depth_range</code> Numeric vector (length 2). Min/max depth.
 </p>
 </li>
 </ul>
@@ -743,13 +725,13 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="va">sim_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sa_aeme.html">sa_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>, param <span class="op">=</span> <span class="va">param</span>,</span>
 <span>                  model <span class="op">=</span> <span class="va">model</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, FUN_list <span class="op">=</span> <span class="va">FUN_list</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Extracting variable indices for <span style="color: #0000BB;">"gotm_wet"</span> modelled </span></span>
-<span><span class="co">#&gt; variables <span style="color: #0000BB;">"HYD_temp"</span> and <span style="color: #0000BB;">"PHY_tchla"</span>. [2026-02-23 20:41:48]</span></span>
+<span><span class="co">#&gt; variables <span style="color: #0000BB;">"HYD_temp"</span> and <span style="color: #0000BB;">"PHY_tchla"</span>. [2026-03-02 21:27:46]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Variable indices extracted for <span style="color: #0000BB;">"gotm_wet"</span>. </span></span>
-<span><span class="co">#&gt; [2026-02-23 20:41:53]</span></span>
+<span><span class="co">#&gt; [2026-03-02 21:27:52]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Starting parallel sensitivity analysis for </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">"gotm_wet"</span> using <span style="color: #0000BB;">2</span> cores with </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">144</span> parameter sets. </span></span>
-<span><span class="co">#&gt; [2026-02-23 20:41:53]</span></span>
+<span><span class="co">#&gt; [2026-03-02 21:27:53]</span></span>
 <span><span class="co">#&gt;        turbulence/turb_param/k_min light_extinction/A/constant_value</span></span>
 <span><span class="co">#&gt; mean                     4.851e-06                           0.52760</span></span>
 <span><span class="co">#&gt; median                   5.000e-06                           0.52700</span></span>
@@ -764,9 +746,9 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="co">#&gt; sd         0.1619     0.1606 0.5311</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Parallel sensitivity analysis for </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">"gotm_wet"</span> completed. </span></span>
-<span><span class="co">#&gt; [2026-02-23 20:49:38]</span></span>
+<span><span class="co">#&gt; [2026-03-02 21:36:13]</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">1</span> to <span style="color: #0000BB;">results.db</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"45819_gotmwet_S_001"</span> [2026-02-23 20:49:38]</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"45819_gotmwet_S_001"</span> [2026-03-02 21:36:13]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-sensitivity-analysis-results">Reading sensitivity analysis results<a class="anchor" aria-label="anchor" href="#reading-sensitivity-analysis-results"></a>

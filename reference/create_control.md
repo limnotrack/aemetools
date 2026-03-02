@@ -17,76 +17,58 @@ create_control(method, ...)
 
 - ...:
 
-  Additional arguments to be passed to the function `create_control`.
-  The arguments are different for calibration and sensitivity analysis.
-  There are arguments which are common to both methods:
+  Additional arguments passed to `create_control()`.
 
-  - `file_type` string; file type to write the output to. Options are
-    c("csv", "db"). Defaults to "db".
+  **Common arguments (both methods):**
 
-  - `file_name` string; file name to write the output to. Defaults to
-    "results.db" if `file_type` is "db" and "simulation_metadata.csv" if
-    `file_type` is "csv".
+  - `file_type` Character. Output type: `"csv"` or `"db"`. Default
+    `"db"`.
 
-  - `file_dir` string; directory to write the output to. Defaults to the
-    directory "calib_sa" in the current working directory. If the
-    directory does not exist, it will be created.
+  - `file_name` Character. Output file name. Defaults to `"results.db"`
+    (db) or `"simulation_metadata.csv"` (csv).
 
-  - `na_value` value to replace NA values with in observations. Defaults
-    to 999.
+  - `file_dir` Character. Output directory. Defaults to `"calib_sa"` in
+    the working directory (created if needed).
 
-  - `parallel` boolean; run calibration in parallel. Default to TRUE
+  - `na_value` Numeric. Replacement for `NA` in observations. Default
+    `999`.
 
-  - `ncore`: The number of cores to use for the calibration. This is
-    only used if `parallel = TRUE`. Default to
-    `parallel::detectCores() - 1`.
+  - `parallel` Logical. Run in parallel? Default `TRUE`.
 
-  - `timeout`: The maximum time in seconds to run the calibration.
-    Default to Inf. If the calibration takes longer than the timeout,
-    the calibration will stop and return the best parameter set found so
-    far.
+  - `ncore` Integer. Number of cores (used if `parallel = TRUE`).
+    Default `parallel::detectCores() - 1`.
 
-  For calibration, the arguments are:
+  - `timeout` Numeric. Maximum runtime in seconds. Default `Inf`.
 
-  - `VTR` Value to be reached. The optimization process will stop if
-    either the maximum number of iterations itermax is reached or the
-    best parameter vector bestmem has found a value fn(bestmem) \<= VTR.
-    Default to -Inf.
+  **Calibration-only arguments (`method = "calib"`):**
 
-  - `NP` number of population members. Defaults to NA; if the user does
-    not change the value of NP from NA it is reset as
-    `10 * sum(param$model == model)`. For many problems it is best to
-    set NP to be at least 10 times the length of the parameter vector.
+  - `VTR` Numeric. Target objective value. Default `-Inf`.
 
-  - `itermax` the maximum iteration (population generation) allowed.
-    Default is 200.
+  - `NP` Integer. Population size. Default `NA` (internally reset).
 
-  - `reltol` relative convergence tolerance. The algorithm stops if it
-    is unable to reduce the value by a factor of
-    `reltol * (abs(val) + reltol)`. Default = 0.07
+  - `itermax` Integer. Maximum iterations. Default `200`.
 
-  - `cutoff`: The quantile cutoff used to select the parents for the
-    next generation. For example, if `cutoff = 0.25`, the best 25% of
-    the population will be used as parents for the next generation.
+  - `reltol` Numeric. Relative convergence tolerance. Default `0.07`.
 
-  - `mutate` fraction of population to undergo mutation (0-1).
+  - `cutoff` Numeric. Quantile cutoff for parent selection (0–1).
 
-  - `c_method` character; the method to use for calibration. Options are
-    "CMAES" and "LHC". Defaults to "CMAES".
+  - `mutate` Numeric. Fraction of population to mutate (0–1).
 
-  For sensitivity analysis, the arguments are:
+  - `c_method` Character. Calibration method: `"CMAES"` or `"LHC"`.
+    Default `"CMAES"`.
 
-  - `N`: The initial sample size of the base sample matrix.
+  **Sensitivity-analysis-only arguments (`method = "sa"`):**
 
-  - `vars_sim`: A named list of output variables for sensitivity
-    analysis. The name is user defined but each list must contain:
+  - `N` Integer. Base sample size.
 
-    - `var`: The variable name to use for the sensitivity analysis.
+  - `vars_sim` Named list describing output variables. Each element must
+    contain:
 
-    - `month`: A vector of months to use for the sensitivity analysis.
+    - `var` Character. Variable name.
 
-    - `depth_range`: A vector of length 2 with the minimum and maximum
-      depth range to use for the sensitivity analysis.
+    - `month` Integer vector. Months to include.
+
+    - `depth_range` Numeric vector (length 2). Min/max depth.
 
 ## Value
 
