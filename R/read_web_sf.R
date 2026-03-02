@@ -103,6 +103,7 @@ read_web_sf <- function(url, layer_id, key = NULL, filter_col = NULL,
       version = version,
       request = "GetFeature",
       typeNames = layer_name,
+      outputFormat = "application/json"
     )
   
   if (!is.null(filter_col) && length(filter_val) > 0) {
@@ -123,7 +124,6 @@ read_web_sf <- function(url, layer_id, key = NULL, filter_col = NULL,
   
   sf_obj <- tryCatch({
     sf::read_sf(request_url) |>
-      sf::st_as_sf() |>
       sf::st_zm()
   }, error = function(e) {
     message("Failed to fetch features: ", e$message)
