@@ -3,6 +3,8 @@
 #' @inheritParams calib_aeme
 #' @inheritParams AEME::build_aeme
 #' @inheritParams read_simulation_meta
+#' @param file_type string; file type to write the output to. Options are 
+#' `c("csv", "db")`. Defaults to "db".
 #' @param sim_id A vector of simulation IDs to read. If NULL, all simulations
 #' are read.
 #' @param type A character string indicating the type of simulation. One of
