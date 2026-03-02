@@ -28,6 +28,7 @@ Imports:
     ggplot2,
     httr2,
     jsonlite,
+    lifecycle,
     logger,
     lubridate,
     maptiles,

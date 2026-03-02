@@ -2,79 +2,18 @@
 % Please edit documentation in R/create_control.R
 \name{create_control}
 \alias{create_control}
-\title{Create control list for calibration or sensitivity analysis}
+\title{Create control list (superseded)}
 \usage{
-create_control(method, ...)
+create_control(method = c("calib", "sa"), ...)
 }
 \arguments{
-\item{method}{The method to be used. It can be either "calib" for calibration
-or "sa" for sensitivity analysis.}
+\item{method}{Character. Either \code{"calib"} or \code{"sa"}.}
 
-\item{...}{Additional arguments passed to \code{create_control()}.
-
-\strong{Common arguments (both methods):}
-\itemize{
-\item \code{file_type} Character. Output type: \code{"csv"} or \code{"db"}. Default \code{"db"}.
-\item \code{file_name} Character. Output file name. Defaults to
-\code{"results.db"} (db) or \code{"simulation_metadata.csv"} (csv).
-\item \code{file_dir} Character. Output directory. Defaults to \code{"calib_sa"}
-in the working directory (created if needed).
-\item \code{na_value} Numeric. Replacement for \code{NA} in observations. Default \code{999}.
-\item \code{parallel} Logical. Run in parallel? Default \code{TRUE}.
-\item \code{ncore} Integer. Number of cores (used if \code{parallel = TRUE}).
-Default \code{parallel::detectCores() - 1}.
-\item \code{timeout} Numeric. Maximum runtime in seconds. Default \code{Inf}.
-}
-
-\strong{Calibration-only arguments (\code{method = "calib"}):}
-\itemize{
-\item \code{VTR} Numeric. Target objective value. Default \code{-Inf}.
-\item \code{NP} Integer. Population size. Default \code{NA} (internally reset).
-\item \code{itermax} Integer. Maximum iterations. Default \code{200}.
-\item \code{reltol} Numeric. Relative convergence tolerance. Default \code{0.07}.
-\item \code{cutoff} Numeric. Quantile cutoff for parent selection (0–1).
-\item \code{mutate} Numeric. Fraction of population to mutate (0–1).
-\item \code{c_method} Character. Calibration method: \code{"CMAES"} or \code{"LHC"}.
-Default \code{"CMAES"}.
-}
-
-\strong{Sensitivity-analysis-only arguments (\code{method = "sa"}):}
-\itemize{
-\item \code{N} Integer. Base sample size.
-\item \code{vars_sim} Named list describing output variables. Each element must contain:
-\itemize{
-\item \code{var} Character. Variable name.
-\item \code{month} Integer vector. Months to include.
-\item \code{depth_range} Numeric vector (length 2). Min/max depth.
-}
-}}
-}
-\value{
-list with the control parameters
+\item{...}{Arguments passed to the appropriate function.}
 }
 \description{
-Create control list for calibration or sensitivity analysis
-}
-\examples{
-calib_ctrl <- create_control("calib", VTR = -Inf, NP = 10, itermax = 30,
-                              reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                              parallel = TRUE, file_type = "db",
-                              file_name = "results.db", na_value = 999,
-                              ncore = 3)
-
-sa_ctrl <- create_control(method = "sa", N = 2^2, ncore = 2L, na_value = 999,
-                          parallel = TRUE, file_type = "db",
-                          file_name = "results.db",
-                          vars_sim = list(surf_temp = list(var = "HYD_temp",
-                                                           month = c(10:12, 1:3),
-                                                           depth_range = c(0, 2)
-                                                           ),
-                                          bot_temp = list(var = "HYD_temp",
-                                                          month = c(10:12, 1:3),
-                                                          depth_range = c(10, 13)
-                                                          )
-                                          )
-                        )
-
-
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+\code{create_control()} is superseded. Please use
+\code{\link[=create_calib_control]{create_calib_control()}} or \code{\link[=create_sa_control]{create_sa_control()}}
+instead.
 }
