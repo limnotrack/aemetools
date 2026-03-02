@@ -1,190 +1,197 @@
-starting worker pid=8440 on localhost:11986 at 21:14:18.741
-starting worker pid=2036 on localhost:11986 at 21:14:18.766
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:24]
-→ GLM-AED running... [2026-03-02 21:14:24]
-✔ GLM-AED run successful! [2026-03-02 21:14:25]
-✔ Model run complete! [2026-03-02 21:14:25]
+starting worker pid=5304 on localhost:11751 at 21:48:22.360
+starting worker pid=8068 on localhost:11751 at 21:48:22.368
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:27]
+→ GLM-AED running... [2026-03-02 21:48:28]
+✔ GLM-AED run successful! [2026-03-02 21:48:28]
+✔ Model run complete! [2026-03-02 21:48:28]
 [1] 6498.05
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:25]
-→ GLM-AED running... [2026-03-02 21:14:25]
-✔ GLM-AED run successful! [2026-03-02 21:14:26]
-✔ Model run complete! [2026-03-02 21:14:26]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:29]
+→ GLM-AED running... [2026-03-02 21:48:29]
+✔ GLM-AED run successful! [2026-03-02 21:48:29]
+✔ Model run complete! [2026-03-02 21:48:29]
 [1] 1343.899
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:27]
-→ GLM-AED running... [2026-03-02 21:14:27]
-✔ GLM-AED run successful! [2026-03-02 21:14:27]
-✔ Model run complete! [2026-03-02 21:14:27]
-[1] 7486.762
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:28]
-→ GLM-AED running... [2026-03-02 21:14:28]
-✔ GLM-AED run successful! [2026-03-02 21:14:28]
-✔ Model run complete! [2026-03-02 21:14:28]
-[1] 2266.402
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:29]
-→ GLM-AED running... [2026-03-02 21:14:29]
-✔ GLM-AED run successful! [2026-03-02 21:14:30]
-✔ Model run complete! [2026-03-02 21:14:30]
-[1] 10706.65
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:30]
-→ GLM-AED running... [2026-03-02 21:14:31]
-✔ GLM-AED run successful! [2026-03-02 21:14:31]
-✔ Model run complete! [2026-03-02 21:14:31]
-[1] 999
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:31]
-→ GLM-AED running... [2026-03-02 21:14:31]
-✔ GLM-AED run successful! [2026-03-02 21:14:31]
-✔ Model run complete! [2026-03-02 21:14:31]
-[1] 999
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:32]
-→ GLM-AED running... [2026-03-02 21:14:32]
-✔ GLM-AED run successful! [2026-03-02 21:14:32]
-✔ Model run complete! [2026-03-02 21:14:32]
-[1] 7489.966
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:33]
-→ GLM-AED running... [2026-03-02 21:14:33]
-✔ GLM-AED run successful! [2026-03-02 21:14:33]
-✔ Model run complete! [2026-03-02 21:14:33]
-[1] 13.28334
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:34]
-→ GLM-AED running... [2026-03-02 21:14:34]
-✔ GLM-AED run successful! [2026-03-02 21:14:34]
-✔ Model run complete! [2026-03-02 21:14:34]
-[1] 7375.906
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:36]
-→ GLM-AED running... [2026-03-02 21:14:36]
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:36]
-→ GLM-AED running... [2026-03-02 21:14:36]
-✔ GLM-AED run successful! [2026-03-02 21:14:36]
-✔ Model run complete! [2026-03-02 21:14:36]
-✔ GLM-AED run successful! [2026-03-02 21:14:36]
-✔ Model run complete! [2026-03-02 21:14:36]
-[1] 33.81606
-[1] 305.3494
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:37]
-→ GLM-AED running... [2026-03-02 21:14:37]
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:37]
-→ GLM-AED running... [2026-03-02 21:14:37]
-✔ GLM-AED run successful! [2026-03-02 21:14:38]
-✔ Model run complete! [2026-03-02 21:14:38]
-✔ GLM-AED run successful! [2026-03-02 21:14:38]
-✔ Model run complete! [2026-03-02 21:14:38]
-[1] 805.4364
-[1] 671.4187
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:38]
-→ GLM-AED running... [2026-03-02 21:14:38]
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:38]
-→ GLM-AED running... [2026-03-02 21:14:38]
-! GLM-AED run FAILED! [2026-03-02 21:14:39]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:30]
+→ GLM-AED running... [2026-03-02 21:48:30]
+! GLM-AED run FAILED! [2026-03-02 21:48:30]
      glm built using gcc version 12.2.0
 
      nDays= 200; timestep= 3600.000000 (s)
      Maximum lake depth is 18.070000
      Depth where flow will occur over the crest is 18.070000
 
-     Wall clock start time :  Mon Mar  2 21:14:38 2026
+     Wall clock start time :  Mon Mar  2 21:48:30 2026
 
      Simulation begins...
      Running day  2459061, 0.30% of days complete     Running day  2459062, 0.60% of days complete     Running day  2459063, 0.89% of days complete     Running day  2459064, 1.19% of days complete     Running day  2459065, 1.49% of days complete     Running day  2459066, 1.79% of days complete     Running day  2459067, 2.08% of days complete     Running day  2459068, 2.38% of days complete     Running day  2459069, 2.68% of days complete     Running day  2459070, 2.98% of days complete     Running day  2459071, 3.27% of days complete     Running day  2459072, 3.57% of days complete     Running day  2459073, 3.87% of days complete     Running day  2459074, 4.17% of days complete     Running day  2459075, 4.46% of days complete     Running day  2459076, 4.76% of days complete     Running day  2459077, 5.06% of days complete     Running day  2459078, 5.36% of days complete     Running day  2459079, 5.65% of days complete     Running day  2459080, 5.95% of days complete     Running day  2459081, 6.25% of days complete     Running day  2459082, 6.55% of days complete     Running day  2459083, 6.85% of days complete     Running day  2459084, 7.14% of days complete     Running day  2459085, 7.44% of days complete     Running day  2459086, 7.74% of days complete     Running day  2459087, 8.04% of days complete     Running day  2459088, 8.33% of days complete     Running day  2459089, 8.63% of days complete     Running day  2459090, 8.93% of days complete     Running day  2459091, 9.23% of days complete     Running day  2459092, 9.52% of days complete     Running day  2459093, 9.82% of days complete     Running day  2459094, 10.12% of days complete     Running day  2459095, 10.42% of days complete     Running day  2459096, 10.71% of days complete     Running day  2459097, 11.01% of days complete     Running day  2459098, 11.31% of days complete     Running day  2459099, 11.61% of days complete     Running day  2459100, 11.90% of days complete     Running day  2459101, 12.20% of days complete     Running day  2459102, 12.50% of days complete     Running day  2459103, 12.80% of days complete     Running day  2459104, 13.10% of days complete     Running day  2459105, 13.39% of days complete     Running day  2459106, 13.69% of days complete     Running day  2459107, 13.99% of days complete     Running day  2459108, 14.29% of days complete     Running day  2459109, 14.58% of days complete     Running day  2459110, 14.88% of days complete     Running day  2459111, 15.18% of days complete     Running day  2459112, 15.48% of days complete     Running day  2459113, 15.77% of days complete     Running day  2459114, 16.07% of days complete     Running day  2459115, 16.37% of days complete     Running day  2459116, 16.67% of days complete     Running day  2459117, 16.96% of days complete     Running day  2459118, 17.26% of days complete     Running day  2459119, 17.56% of days complete     Running day  2459120, 17.86% of days complete     Running day  2459121, 18.15% of days complete     Running day  2459122, 18.45% of days complete     Running day  2459123, 18.75% of days complete     Running day  2459124, 19.05% of days complete     Running day  2459125, 19.35% of days complete     Running day  2459126, 19.64% of days complete     Running day  2459127, 19.94% of days complete     Running day  2459128, 20.24% of days complete     Running day  2459129, 20.54% of days complete     Running day  2459130, 20.83% of days complete     Running day  2459131, 21.13% of days complete     Running day  2459132, 21.43% of days complete     Running day  2459133, 21.73% of days complete     Running day  2459134, 22.02% of days complete     Running day  2459135, 22.32% of days complete     Running day  2459136, 22.62% of days complete     Running day  2459137, 22.92% of days complete     Running day  2459138, 23.21% of days complete     Running day  2459139, 23.51% of days complete     Running day  2459140, 23.81% of days complete     Running day  2459141, 24.11% of days complete     Running day  2459142, 24.40% of days complete     Running day  2459143, 24.70% of days complete     Running day  2459144, 25.00% of days complete     Running day  2459145, 25.30% of days complete     Running day  2459146, 25.60% of days complete     Running day  2459147, 25.89% of days complete     Running day  2459148, 26.19% of days complete     Running day  2459149, 26.49% of days complete     Running day  2459150, 26.79% of days complete     Running day  2459151, 27.08% of days complete     Running day  2459152, 27.38% of days complete     Running day  2459153, 27.68% of days complete     Running day  2459154, 27.98% of days complete     Running day  2459155, 28.27% of days complete     Running day  2459156, 28.57% of days complete     Running day  2459157, 28.87% of days complete     Running day  2459158, 29.17% of days complete     Running day  2459159, 29.46% of days complete     Running day  2459160, 29.76% of days complete     Running day  2459161, 30.06% of days complete     Running day  2459162, 30.36% of days complete     Running day  2459163, 30.65% of days complete     Running day  2459164, 30.95% of days complete     Running day  2459165, 31.25% of days complete     Running day  2459166, 31.55% of days complete     Running day  2459167, 31.85% of days complete     Running day  2459168, 32.14% of days complete     Running day  2459169, 32.44% of days complete     Running day  2459170, 32.74% of days complete     Running day  2459171, 33.04% of days complete     Running day  2459172, 33.33% of days complete     Running day  2459173, 33.63% of days complete     Running day  2459174, 33.93% of days complete     Running day  2459175, 34.23% of days complete     Running day  2459176, 34.52% of days complete     Running day  2459177, 34.82% of days complete     Running day  2459178, 35.12% of days complete     Running day  2459179, 35.42% of days complete     Running day  2459180, 35.71% of days complete     Running day  2459181, 36.01% of days complete     Running day  2459182, 36.31% of days complete     Running day  2459183, 36.61% of days complete     Running day  2459184, 36.90% of days complete     Running day  2459185, 37.20% of days complete     Running day  2459186, 37.50% of days complete     Running day  2459187, 37.80% of days complete     Running day  2459188, 38.10% of days complete     Running day  2459189, 38.39% of days complete     Running day  2459190, 38.69% of days complete     Running day  2459191, 38.99% of days complete     Running day  2459192, 39.29% of days complete     Running day  2459193, 39.58% of days complete     Running day  2459194, 39.88% of days complete     Running day  2459195, 40.18% of days complete     Running day  2459196, 40.48% of days complete     Running day  2459197, 40.77% of days complete     Running day  2459198, 41.07% of days complete     Running day  2459199, 41.37% of days complete     Running day  2459200, 41.67% of days complete     Running day  2459201, 41.96% of days complete     Running day  2459202, 42.26% of days complete     Running day  2459203, 42.56% of days complete     Running day  2459204, 42.86% of days complete     Running day  2459205, 43.15% of days complete     Running day  2459206, 43.45% of days complete     Running day  2459207, 43.75% of days complete     Running day  2459208, 44.05% of days complete     Running day  2459209, 44.35% of days complete     Running day  2459210, 44.64% of days complete     Running day  2459211, 44.94% of days complete     Running day  2459212, 45.24% of days complete     Running day  2459213, 45.54% of days complete     Running day  2459214, 45.83% of days complete     Running day  2459215, 46.13% of days complete     Running day  2459216, 46.43% of days complete     Running day  2459217, 46.73% of days complete     Running day  2459218, 47.02% of days complete     Running day  2459219, 47.32% of days complete     Running day  2459220, 47.62% of days complete     Running day  2459221, 47.92% of days complete     Running day  2459222, 48.21% of days complete     Running day  2459223, 48.51% of days complete     Running day  2459224, 48.81% of days complete     Running day  2459225, 49.11% of days complete     Running day  2459226, 49.40% of days complete     Running day  2459227, 49.70% of days complete     Running day  2459228, 50.00% of days complete     Running day  2459229, 50.30% of days complete     Running day  2459230, 50.60% of days complete     Running day  2459231, 50.89% of days complete     Running day  2459232, 51.19% of days complete     Running day  2459233, 51.49% of days complete     Running day  2459234, 51.79% of days complete     Running day  2459235, 52.08% of days complete     Running day  2459236, 52.38% of days complete     Running day  2459237, 52.68% of days complete     Running day  2459238, 52.98% of days complete     Running day  2459239, 53.27% of days complete     Running day  2459240, 53.57% of days complete     Running day  2459241, 53.87% of days complete     Running day  2459242, 54.17% of days complete     Running day  2459243, 54.46% of days complete     Running day  2459244, 54.76% of days complete     Running day  2459245, 55.06% of days complete     Running day  2459246, 55.36% of days complete     Running day  2459247, 55.65% of days complete     Running day  2459248, 55.95% of days complete     Running day  2459249, 56.25% of days complete     Running day  2459250, 56.55% of days complete     Running day  2459251, 56.85% of days complete     Running day  2459252, 57.14% of days complete     Running day  2459253, 57.44% of days complete     Running day  2459254, 57.74% of days complete     Running day  2459255, 58.04% of days complete     Running day  2459256, 58.33% of days complete     Running day  2459257, 58.63% of days complete     Running day  2459258, 58.93% of days complete     Running day  2459259, 59.23% of days complete     Running day  2459260, 59.52% of days complete     Running day  2459261, 59.82% of days complete     Running day  2459262, 60.12% of days complete     Running day  2459263, 60.42% of days complete     Running day  2459264, 60.71% of days complete     Running day  2459265, 61.01% of days complete     Running day  2459266, 61.31% of days complete     Running day  2459267, 61.61% of days complete     Running day  2459268, 61.90% of days complete     Running day  2459269, 62.20% of days complete     Running day  2459270, 62.50% of days complete     Running day  2459271, 62.80% of days complete     Running day  2459272, 63.10% of days complete     Running day  2459273, 63.39% of days complete     Running day  2459274, 63.69% of days complete     Running day  2459275, 63.99% of days complete     Running day  2459276, 64.29% of days complete     Running day  2459277, 64.58% of days complete     Running day  2459278, 64.88% of days complete     Running day  2459279, 65.18% of days complete     Running day  2459280, 65.48% of days complete     Running day  2459281, 65.77% of days complete     Running day  2459282, 66.07% of days complete     Running day  2459283, 66.37% of days complete     Running day  2459284, 66.67% of days complete     Running day  2459285, 66.96% of days complete     Running day  2459286, 67.26% of days complete     Running day  2459287, 67.56% of days complete     Running day  2459288, 67.86% of days complete     Running day  2459289, 68.15% of days complete     Running day  2459290, 68.45% of days complete     Running day  2459291, 68.75% of days complete     Running day  2459292, 69.05% of days complete     Running day  2459293, 69.35% of days complete     Running day  2459294, 69.64% of days complete     Running day  2459295, 69.94% of days complete     Running day  2459296, 70.24% of days complete     Running day  2459297, 70.54% of days complete     Running day  2459298, 70.83% of days complete     Running day  2459299, 71.13% of days complete     Running day  2459300, 71.43% of days complete     Running day  2459301, 71.73% of days complete     Running day  2459302, 72.02% of days complete     Running day  2459303, 72.32% of days complete     Running day  2459304, 72.62% of days complete     Running day  2459305, 72.92% of days complete     Running day  2459306, 73.21% of days complete     Running day  2459307, 73.51% of days complete     Running day  2459308, 73.81% of days complete     Running day  2459309, 74.11% of days complete     Running day  2459310, 74.40% of days complete     Running day  2459311, 74.70% of days complete     Running day  2459312, 75.00% of days complete     Running day  2459313, 75.30% of days complete     Running day  2459314, 75.60% of days complete     Running day  2459315, 75.89% of days complete     Running day  2459316, 76.19% of days complete     Running day  2459317, 76.49% of days complete     Running day  2459318, 76.79% of days complete     Running day  2459319, 77.08% of days complete     Running day  2459320, 77.38% of days complete     Running day  2459321, 77.68% of days complete     Running day  2459322, 77.98% of days complete     Running day  2459323, 78.27% of days complete     Running day  2459324, 78.57% of days complete     Running day  2459325, 78.87% of days complete     Running day  2459326, 79.17% of days complete     Running day  2459327, 79.46% of days complete     Running day  2459328, 79.76% of days complete     Running day  2459329, 80.06% of days complete     Running day  2459330, 80.36% of days complete     Running day  2459331, 80.65% of days complete     Running day  2459332, 80.95% of days complete     Running day  2459333, 81.25% of days complete     Running day  2459334, 81.55% of days complete     Running day  2459335, 81.85% of days complete     Running day  2459336, 82.14% of days complete     Running day  2459337, 82.44% of days complete     Running day  2459338, 82.74% of days complete     Running day  2459339, 83.04% of days complete     Running day  2459340, 83.33% of days complete     Running day  2459341, 83.63% of days complete     Running day  2459342, 83.93% of days complete     Running day  2459343, 84.23% of days complete     Running day  2459344, 84.52% of days complete     Running day  2459345, 84.82% of days complete     Running day  2459346, 85.12% of days complete     Running day  2459347, 85.42% of days complete     Running day  2459348, 85.71% of days complete     Running day  2459349, 86.01% of days complete     Running day  2459350, 86.31% of days complete     Running day  2459351, 86.61% of days complete     Running day  2459352, 86.90% of days complete     Running day  2459353, 87.20% of days complete     Running day  2459354, 87.50% of days complete     Running day  2459355, 87.80% of days complete     Running day  2459356, 88.10% of days complete     Running day  2459357, 88.39% of days complete     Running day  2459358, 88.69% of days complete     Running day  2459359, 88.99% of days complete     Running day  2459360, 89.29% of days complete     Running day  2459361, 89.58% of days complete     Running day  2459362, 89.88% of days complete     Running day  2459363, 90.18% of days complete     Running day  2459364, 90.48% of days complete     Running day  2459365, 90.77% of days complete     Running day  2459366, 91.07% of days complete     Running day  2459367, 91.37% of days complete     Running day  2459368, 91.67% of days complete     Running day  2459369, 91.96% of days complete     Running day  2459370, 92.26% of days complete     Running day  2459371, 92.56% of days complete     Running day  2459372, 92.86% of days complete     Running day  2459373, 93.15% of days complete     Running day  2459374, 93.45% of days complete     Running day  2459375, 93.75% of days complete     Running day  2459376, 94.05% of days complete     Running day  2459377, 94.35% of days complete     Running day  2459378, 94.64% of days complete     Running day  2459379, 94.94% of days complete     Running day  2459380, 95.24% of days complete     Running day  2459381, 95.54% of days complete     Running day  2459382, 95.83% of days complete     Running day  2459383, 96.13% of days complete     Running day  2459384, 96.43% of days complete     Running day  2459385, 96.73% of days complete     Running day  2459386, 97.02% of days complete     Running day  2459387, 97.32% of days complete     Running day  2459388, 97.62% of days complete     Running day  2459389, 97.92% of days complete     Running day  2459390, 98.21% of days complete     Running day  2459391, 98.51% of days complete     Running day  2459392, 98.81% of days complete     Running day  2459393, 99.11% of days complete     Running day  2459394, 99.40% of days complete     Running day  2459395, 99.70% of days complete
-✔ Model run complete! [2026-03-02 21:14:39]
-✔ GLM-AED run successful! [2026-03-02 21:14:39]
-! Warning: Some model runs failed and will not be loaded: glm_aed
-✔ Model run complete! [2026-03-02 21:14:39]
+✔ Model run complete! [2026-03-02 21:48:30]
+[1] 7486.762
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:31]
+→ GLM-AED running... [2026-03-02 21:48:31]
+✔ GLM-AED run successful! [2026-03-02 21:48:31]
+✔ Model run complete! [2026-03-02 21:48:31]
+[1] 2266.402
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:32]
+→ GLM-AED running... [2026-03-02 21:48:32]
+✔ GLM-AED run successful! [2026-03-02 21:48:32]
+✔ Model run complete! [2026-03-02 21:48:32]
+[1] 10706.65
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:33]
+→ GLM-AED running... [2026-03-02 21:48:33]
+✔ GLM-AED run successful! [2026-03-02 21:48:33]
+✔ Model run complete! [2026-03-02 21:48:33]
+[1] 999
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:34]
+→ GLM-AED running... [2026-03-02 21:48:34]
+✔ GLM-AED run successful! [2026-03-02 21:48:34]
+✔ Model run complete! [2026-03-02 21:48:34]
+[1] 999
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:35]
+→ GLM-AED running... [2026-03-02 21:48:35]
+✔ GLM-AED run successful! [2026-03-02 21:48:35]
+✔ Model run complete! [2026-03-02 21:48:35]
+[1] 7489.966
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:36]
+→ GLM-AED running... [2026-03-02 21:48:36]
+✔ GLM-AED run successful! [2026-03-02 21:48:36]
+✔ Model run complete! [2026-03-02 21:48:36]
+[1] 13.28334
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:37]
+→ GLM-AED running... [2026-03-02 21:48:37]
+✔ GLM-AED run successful! [2026-03-02 21:48:37]
+✔ Model run complete! [2026-03-02 21:48:37]
+[1] 7375.906
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:38]
+→ GLM-AED running... [2026-03-02 21:48:39]
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:39]
+→ GLM-AED running... [2026-03-02 21:48:39]
+✔ GLM-AED run successful! [2026-03-02 21:48:39]
+✔ Model run complete! [2026-03-02 21:48:39]
+! GLM-AED run FAILED! [2026-03-02 21:48:39]
+     glm built using gcc version 12.2.0
+
+     nDays= 200; timestep= 3600.000000 (s)
+     Maximum lake depth is 18.070000
+     Depth where flow will occur over the crest is 18.070000
+
+     Wall clock start time :  Mon Mar  2 21:48:39 2026
+
+     Simulation begins...
+     Running day  2459061, 0.30% of days complete     Running day  2459062, 0.60% of days complete     Running day  2459063, 0.89% of days complete     Running day  2459064, 1.19% of days complete     Running day  2459065, 1.49% of days complete     Running day  2459066, 1.79% of days complete     Running day  2459067, 2.08% of days complete     Running day  2459068, 2.38% of days complete     Running day  2459069, 2.68% of days complete     Running day  2459070, 2.98% of days complete     Running day  2459071, 3.27% of days complete     Running day  2459072, 3.57% of days complete     Running day  2459073, 3.87% of days complete     Running day  2459074, 4.17% of days complete     Running day  2459075, 4.46% of days complete     Running day  2459076, 4.76% of days complete     Running day  2459077, 5.06% of days complete     Running day  2459078, 5.36% of days complete     Running day  2459079, 5.65% of days complete     Running day  2459080, 5.95% of days complete     Running day  2459081, 6.25% of days complete     Running day  2459082, 6.55% of days complete     Running day  2459083, 6.85% of days complete     Running day  2459084, 7.14% of days complete     Running day  2459085, 7.44% of days complete     Running day  2459086, 7.74% of days complete     Running day  2459087, 8.04% of days complete     Running day  2459088, 8.33% of days complete     Running day  2459089, 8.63% of days complete     Running day  2459090, 8.93% of days complete     Running day  2459091, 9.23% of days complete     Running day  2459092, 9.52% of days complete     Running day  2459093, 9.82% of days complete     Running day  2459094, 10.12% of days complete     Running day  2459095, 10.42% of days complete     Running day  2459096, 10.71% of days complete     Running day  2459097, 11.01% of days complete     Running day  2459098, 11.31% of days complete     Running day  2459099, 11.61% of days complete     Running day  2459100, 11.90% of days complete     Running day  2459101, 12.20% of days complete     Running day  2459102, 12.50% of days complete     Running day  2459103, 12.80% of days complete     Running day  2459104, 13.10% of days complete     Running day  2459105, 13.39% of days complete     Running day  2459106, 13.69% of days complete     Running day  2459107, 13.99% of days complete     Running day  2459108, 14.29% of days complete     Running day  2459109, 14.58% of days complete     Running day  2459110, 14.88% of days complete     Running day  2459111, 15.18% of days complete     Running day  2459112, 15.48% of days complete     Running day  2459113, 15.77% of days complete     Running day  2459114, 16.07% of days complete     Running day  2459115, 16.37% of days complete     Running day  2459116, 16.67% of days complete     Running day  2459117, 16.96% of days complete     Running day  2459118, 17.26% of days complete     Running day  2459119, 17.56% of days complete     Running day  2459120, 17.86% of days complete     Running day  2459121, 18.15% of days complete     Running day  2459122, 18.45% of days complete     Running day  2459123, 18.75% of days complete     Running day  2459124, 19.05% of days complete     Running day  2459125, 19.35% of days complete     Running day  2459126, 19.64% of days complete     Running day  2459127, 19.94% of days complete     Running day  2459128, 20.24% of days complete     Running day  2459129, 20.54% of days complete     Running day  2459130, 20.83% of days complete     Running day  2459131, 21.13% of days complete     Running day  2459132, 21.43% of days complete     Running day  2459133, 21.73% of days complete     Running day  2459134, 22.02% of days complete     Running day  2459135, 22.32% of days complete     Running day  2459136, 22.62% of days complete     Running day  2459137, 22.92% of days complete     Running day  2459138, 23.21% of days complete     Running day  2459139, 23.51% of days complete     Running day  2459140, 23.81% of days complete     Running day  2459141, 24.11% of days complete     Running day  2459142, 24.40% of days complete     Running day  2459143, 24.70% of days complete     Running day  2459144, 25.00% of days complete     Running day  2459145, 25.30% of days complete     Running day  2459146, 25.60% of days complete     Running day  2459147, 25.89% of days complete     Running day  2459148, 26.19% of days complete     Running day  2459149, 26.49% of days complete     Running day  2459150, 26.79% of days complete     Running day  2459151, 27.08% of days complete     Running day  2459152, 27.38% of days complete     Running day  2459153, 27.68% of days complete     Running day  2459154, 27.98% of days complete     Running day  2459155, 28.27% of days complete     Running day  2459156, 28.57% of days complete     Running day  2459157, 28.87% of days complete     Running day  2459158, 29.17% of days complete     Running day  2459159, 29.46% of days complete     Running day  2459160, 29.76% of days complete     Running day  2459161, 30.06% of days complete     Running day  2459162, 30.36% of days complete     Running day  2459163, 30.65% of days complete     Running day  2459164, 30.95% of days complete     Running day  2459165, 31.25% of days complete     Running day  2459166, 31.55% of days complete     Running day  2459167, 31.85% of days complete     Running day  2459168, 32.14% of days complete     Running day  2459169, 32.44% of days complete     Running day  2459170, 32.74% of days complete     Running day  2459171, 33.04% of days complete     Running day  2459172, 33.33% of days complete     Running day  2459173, 33.63% of days complete     Running day  2459174, 33.93% of days complete     Running day  2459175, 34.23% of days complete     Running day  2459176, 34.52% of days complete     Running day  2459177, 34.82% of days complete     Running day  2459178, 35.12% of days complete     Running day  2459179, 35.42% of days complete     Running day  2459180, 35.71% of days complete     Running day  2459181, 36.01% of days complete     Running day  2459182, 36.31% of days complete     Running day  2459183, 36.61% of days complete     Running day  2459184, 36.90% of days complete     Running day  2459185, 37.20% of days complete     Running day  2459186, 37.50% of days complete     Running day  2459187, 37.80% of days complete     Running day  2459188, 38.10% of days complete     Running day  2459189, 38.39% of days complete     Running day  2459190, 38.69% of days complete     Running day  2459191, 38.99% of days complete     Running day  2459192, 39.29% of days complete     Running day  2459193, 39.58% of days complete     Running day  2459194, 39.88% of days complete     Running day  2459195, 40.18% of days complete     Running day  2459196, 40.48% of days complete     Running day  2459197, 40.77% of days complete     Running day  2459198, 41.07% of days complete     Running day  2459199, 41.37% of days complete     Running day  2459200, 41.67% of days complete     Running day  2459201, 41.96% of days complete     Running day  2459202, 42.26% of days complete     Running day  2459203, 42.56% of days complete     Running day  2459204, 42.86% of days complete     Running day  2459205, 43.15% of days complete     Running day  2459206, 43.45% of days complete     Running day  2459207, 43.75% of days complete     Running day  2459208, 44.05% of days complete     Running day  2459209, 44.35% of days complete     Running day  2459210, 44.64% of days complete     Running day  2459211, 44.94% of days complete     Running day  2459212, 45.24% of days complete     Running day  2459213, 45.54% of days complete     Running day  2459214, 45.83% of days complete     Running day  2459215, 46.13% of days complete     Running day  2459216, 46.43% of days complete     Running day  2459217, 46.73% of days complete     Running day  2459218, 47.02% of days complete     Running day  2459219, 47.32% of days complete     Running day  2459220, 47.62% of days complete     Running day  2459221, 47.92% of days complete     Running day  2459222, 48.21% of days complete     Running day  2459223, 48.51% of days complete     Running day  2459224, 48.81% of days complete     Running day  2459225, 49.11% of days complete     Running day  2459226, 49.40% of days complete     Running day  2459227, 49.70% of days complete     Running day  2459228, 50.00% of days complete     Running day  2459229, 50.30% of days complete     Running day  2459230, 50.60% of days complete     Running day  2459231, 50.89% of days complete     Running day  2459232, 51.19% of days complete     Running day  2459233, 51.49% of days complete     Running day  2459234, 51.79% of days complete     Running day  2459235, 52.08% of days complete     Running day  2459236, 52.38% of days complete     Running day  2459237, 52.68% of days complete     Running day  2459238, 52.98% of days complete     Running day  2459239, 53.27% of days complete     Running day  2459240, 53.57% of days complete     Running day  2459241, 53.87% of days complete     Running day  2459242, 54.17% of days complete     Running day  2459243, 54.46% of days complete     Running day  2459244, 54.76% of days complete     Running day  2459245, 55.06% of days complete     Running day  2459246, 55.36% of days complete     Running day  2459247, 55.65% of days complete     Running day  2459248, 55.95% of days complete     Running day  2459249, 56.25% of days complete     Running day  2459250, 56.55% of days complete     Running day  2459251, 56.85% of days complete     Running day  2459252, 57.14% of days complete     Running day  2459253, 57.44% of days complete     Running day  2459254, 57.74% of days complete     Running day  2459255, 58.04% of days complete     Running day  2459256, 58.33% of days complete     Running day  2459257, 58.63% of days complete     Running day  2459258, 58.93% of days complete     Running day  2459259, 59.23% of days complete     Running day  2459260, 59.52% of days complete     Running day  2459261, 59.82% of days complete     Running day  2459262, 60.12% of days complete     Running day  2459263, 60.42% of days complete     Running day  2459264, 60.71% of days complete     Running day  2459265, 61.01% of days complete     Running day  2459266, 61.31% of days complete     Running day  2459267, 61.61% of days complete     Running day  2459268, 61.90% of days complete     Running day  2459269, 62.20% of days complete     Running day  2459270, 62.50% of days complete     Running day  2459271, 62.80% of days complete     Running day  2459272, 63.10% of days complete     Running day  2459273, 63.39% of days complete     Running day  2459274, 63.69% of days complete     Running day  2459275, 63.99% of days complete     Running day  2459276, 64.29% of days complete     Running day  2459277, 64.58% of days complete     Running day  2459278, 64.88% of days complete     Running day  2459279, 65.18% of days complete     Running day  2459280, 65.48% of days complete     Running day  2459281, 65.77% of days complete     Running day  2459282, 66.07% of days complete     Running day  2459283, 66.37% of days complete     Running day  2459284, 66.67% of days complete     Running day  2459285, 66.96% of days complete     Running day  2459286, 67.26% of days complete     Running day  2459287, 67.56% of days complete     Running day  2459288, 67.86% of days complete     Running day  2459289, 68.15% of days complete     Running day  2459290, 68.45% of days complete     Running day  2459291, 68.75% of days complete     Running day  2459292, 69.05% of days complete     Running day  2459293, 69.35% of days complete     Running day  2459294, 69.64% of days complete     Running day  2459295, 69.94% of days complete     Running day  2459296, 70.24% of days complete     Running day  2459297, 70.54% of days complete     Running day  2459298, 70.83% of days complete     Running day  2459299, 71.13% of days complete     Running day  2459300, 71.43% of days complete     Running day  2459301, 71.73% of days complete     Running day  2459302, 72.02% of days complete     Running day  2459303, 72.32% of days complete     Running day  2459304, 72.62% of days complete     Running day  2459305, 72.92% of days complete     Running day  2459306, 73.21% of days complete     Running day  2459307, 73.51% of days complete     Running day  2459308, 73.81% of days complete     Running day  2459309, 74.11% of days complete     Running day  2459310, 74.40% of days complete     Running day  2459311, 74.70% of days complete     Running day  2459312, 75.00% of days complete     Running day  2459313, 75.30% of days complete     Running day  2459314, 75.60% of days complete     Running day  2459315, 75.89% of days complete     Running day  2459316, 76.19% of days complete     Running day  2459317, 76.49% of days complete     Running day  2459318, 76.79% of days complete     Running day  2459319, 77.08% of days complete     Running day  2459320, 77.38% of days complete     Running day  2459321, 77.68% of days complete     Running day  2459322, 77.98% of days complete     Running day  2459323, 78.27% of days complete     Running day  2459324, 78.57% of days complete     Running day  2459325, 78.87% of days complete     Running day  2459326, 79.17% of days complete     Running day  2459327, 79.46% of days complete     Running day  2459328, 79.76% of days complete     Running day  2459329, 80.06% of days complete     Running day  2459330, 80.36% of days complete     Running day  2459331, 80.65% of days complete     Running day  2459332, 80.95% of days complete     Running day  2459333, 81.25% of days complete     Running day  2459334, 81.55% of days complete     Running day  2459335, 81.85% of days complete     Running day  2459336, 82.14% of days complete     Running day  2459337, 82.44% of days complete     Running day  2459338, 82.74% of days complete     Running day  2459339, 83.04% of days complete     Running day  2459340, 83.33% of days complete     Running day  2459341, 83.63% of days complete     Running day  2459342, 83.93% of days complete     Running day  2459343, 84.23% of days complete     Running day  2459344, 84.52% of days complete     Running day  2459345, 84.82% of days complete     Running day  2459346, 85.12% of days complete     Running day  2459347, 85.42% of days complete     Running day  2459348, 85.71% of days complete     Running day  2459349, 86.01% of days complete     Running day  2459350, 86.31% of days complete     Running day  2459351, 86.61% of days complete     Running day  2459352, 86.90% of days complete     Running day  2459353, 87.20% of days complete     Running day  2459354, 87.50% of days complete     Running day  2459355, 87.80% of days complete     Running day  2459356, 88.10% of days complete     Running day  2459357, 88.39% of days complete     Running day  2459358, 88.69% of days complete     Running day  2459359, 88.99% of days complete     Running day  2459360, 89.29% of days complete     Running day  2459361, 89.58% of days complete     Running day  2459362, 89.88% of days complete     Running day  2459363, 90.18% of days complete     Running day  2459364, 90.48% of days complete     Running day  2459365, 90.77% of days complete     Running day  2459366, 91.07% of days complete     Running day  2459367, 91.37% of days complete     Running day  2459368, 91.67% of days complete     Running day  2459369, 91.96% of days complete     Running day  2459370, 92.26% of days complete     Running day  2459371, 92.56% of days complete     Running day  2459372, 92.86% of days complete     Running day  2459373, 93.15% of days complete     Running day  2459374, 93.45% of days complete     Running day  2459375, 93.75% of days complete     Running day  2459376, 94.05% of days complete     Running day  2459377, 94.35% of days complete     Running day  2459378, 94.64% of days complete     Running day  2459379, 94.94% of days complete     Running day  2459380, 95.24% of days complete     Running day  2459381, 95.54% of days complete     Running day  2459382, 95.83% of days complete     Running day  2459383, 96.13% of days complete     Running day  2459384, 96.43% of days complete     Running day  2459385, 96.73% of days complete     Running day  2459386, 97.02% of days complete     Running day  2459387, 97.32% of days complete     Running day  2459388, 97.62% of days complete     Running day  2459389, 97.92% of days complete     Running day  2459390, 98.21% of days complete     Running day  2459391, 98.51% of days complete     Running day  2459392, 98.81% of days complete     Running day  2459393, 99.11% of days complete     Running day  2459394, 99.40% of days complete     Running day  2459395, 99.70% of days complete
+✔ Model run complete! [2026-03-02 21:48:39]
+[1] 305.3494
+[1] 33.81606
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:40]
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+→ GLM-AED running... [2026-03-02 21:48:40]
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:40]
+→ GLM-AED running... [2026-03-02 21:48:40]
+✔ GLM-AED run successful! [2026-03-02 21:48:40]
+✔ GLM-AED run successful! [2026-03-02 21:48:40]
+✔ Model run complete! [2026-03-02 21:48:40]
+✔ Model run complete! [2026-03-02 21:48:40]
+[1] 805.4364
+[1] 671.4187
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:41]
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:41]
+→ GLM-AED running... [2026-03-02 21:48:41]
+→ GLM-AED running... [2026-03-02 21:48:41]
+✔ GLM-AED run successful! [2026-03-02 21:48:41]
+✔ Model run complete! [2026-03-02 21:48:41]
+✔ GLM-AED run successful! [2026-03-02 21:48:41]
+✔ Model run complete! [2026-03-02 21:48:41]
 [1] 6356.729
 [1] 736.8688
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:39]
-→ GLM-AED running... [2026-03-02 21:14:39]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:42]
+→ GLM-AED running... [2026-03-02 21:48:42]
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:40]
-→ GLM-AED running... [2026-03-02 21:14:40]
-✔ GLM-AED run successful! [2026-03-02 21:14:40]
-✔ Model run complete! [2026-03-02 21:14:40]
-✔ GLM-AED run successful! [2026-03-02 21:14:40]
-✔ Model run complete! [2026-03-02 21:14:40]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:42]
+→ GLM-AED running... [2026-03-02 21:48:42]
+✔ GLM-AED run successful! [2026-03-02 21:48:42]
+✔ Model run complete! [2026-03-02 21:48:42]
+✔ GLM-AED run successful! [2026-03-02 21:48:42]
+✔ Model run complete! [2026-03-02 21:48:42]
 [1] 264.0294
 [1] 676.6481
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:41]
-→ GLM-AED running... [2026-03-02 21:14:41]
-✔ GLM-AED run successful! [2026-03-02 21:14:41]
-✔ Model run complete! [2026-03-02 21:14:41]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:43]
+→ GLM-AED running... [2026-03-02 21:48:43]
+✔ GLM-AED run successful! [2026-03-02 21:48:43]
+✔ Model run complete! [2026-03-02 21:48:43]
 [1] 920.7425
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:42]
-→ GLM-AED running... [2026-03-02 21:14:42]
-✔ GLM-AED run successful! [2026-03-02 21:14:42]
-✔ Model run complete! [2026-03-02 21:14:42]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:44]
+→ GLM-AED running... [2026-03-02 21:48:44]
+✔ GLM-AED run successful! [2026-03-02 21:48:44]
+✔ Model run complete! [2026-03-02 21:48:44]
 [1] 13.28334
-Warning message:
-! No model output loaded as all model runs failed. 
-starting worker pid=5124 on localhost:11986 at 21:14:45.768
-starting worker pid=8952 on localhost:11986 at 21:14:45.815
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:52]
-→ GOTM-WET running... [2026-03-02 21:14:52]
-✔ GOTM-WET run successful! [2026-03-02 21:14:53]
-✔ Model run complete! [2026-03-02 21:14:53]
+starting worker pid=880 on localhost:11751 at 21:48:46.901
+starting worker pid=8648 on localhost:11751 at 21:48:46.901
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:53]
+→ GOTM-WET running... [2026-03-02 21:48:53]
+✔ GOTM-WET run successful! [2026-03-02 21:48:53]
+✔ Model run complete! [2026-03-02 21:48:53]
 [1] 9.60075
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:54]
-→ GOTM-WET running... [2026-03-02 21:14:54]
-✔ GOTM-WET run successful! [2026-03-02 21:14:55]
-✔ Model run complete! [2026-03-02 21:14:55]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:54]
+→ GOTM-WET running... [2026-03-02 21:48:54]
+✔ GOTM-WET run successful! [2026-03-02 21:48:55]
+✔ Model run complete! [2026-03-02 21:48:55]
 [1] 14905.12
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:57]
-→ GOTM-WET running... [2026-03-02 21:14:57]
-✔ GOTM-WET run successful! [2026-03-02 21:14:58]
-✔ Model run complete! [2026-03-02 21:14:58]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:56]
+→ GOTM-WET running... [2026-03-02 21:48:56]
+✔ GOTM-WET run successful! [2026-03-02 21:48:56]
+✔ Model run complete! [2026-03-02 21:48:56]
 [1] 8537.496
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:59]
-→ GOTM-WET running... [2026-03-02 21:14:59]
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:58]
+→ GOTM-WET running... [2026-03-02 21:48:58]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:59]
-→ GOTM-WET running... [2026-03-02 21:14:59]
-! GOTM-WET run FAILED! [2026-03-02 21:14:59]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:58]
+→ GOTM-WET running... [2026-03-02 21:48:58]
+! GOTM-WET run FAILED! [2026-03-02 21:48:58]
  ------------------------------------------------------------------------
- GOTM started on 2026/03/02 at 21:14:59
+ GOTM started on 2026/03/02 at 21:48:58
  ------------------------------------------------------------------------
     init_gotm
  ------------------------------------------------------------------------
@@ -596,10 +603,10 @@ Deleted previous output for model GOTM-WET at
  F: Numeric conversion not representable
 1
 
-✔ GOTM-WET run successful! [2026-03-02 21:14:59]
-✔ Model run complete! [2026-03-02 21:14:59]
-✔ Model run complete! [2026-03-02 21:14:59]
+✔ Model run complete! [2026-03-02 21:48:58]
 ! Warning: Some model runs failed and will not be loaded: gotm_wet
+✔ GOTM-WET run successful! [2026-03-02 21:48:58]
+✔ Model run complete! [2026-03-02 21:48:58]
 ! Error reading model outputs for variable
 HYD_temp: Empty time dimension. Returning
 na_value.
@@ -607,139 +614,139 @@ na_value.
 [1] 999
 [1] 21970.88
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:01]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:59]
+→ GOTM-WET running... [2026-03-02 21:48:59]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-→ GOTM-WET running... [2026-03-02 21:15:01]
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:01]
-→ GOTM-WET running... [2026-03-02 21:15:01]
-✔ GOTM-WET run successful! [2026-03-02 21:15:02]
-✔ Model run complete! [2026-03-02 21:15:02]
-✔ GOTM-WET run successful! [2026-03-02 21:15:02]
-✔ Model run complete! [2026-03-02 21:15:02]
-[1] 49532.5
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:59]
+→ GOTM-WET running... [2026-03-02 21:48:59]
+✔ GOTM-WET run successful! [2026-03-02 21:48:59]
+✔ Model run complete! [2026-03-02 21:48:59]
 [1] 999
+✔ GOTM-WET run successful! [2026-03-02 21:49:00]
+✔ Model run complete! [2026-03-02 21:49:00]
+[1] 49532.5
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:03]
-→ GOTM-WET running... [2026-03-02 21:15:03]
-✔ GOTM-WET run successful! [2026-03-02 21:15:04]
-✔ Model run complete! [2026-03-02 21:15:04]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:01]
+→ GOTM-WET running... [2026-03-02 21:49:01]
+✔ GOTM-WET run successful! [2026-03-02 21:49:01]
+✔ Model run complete! [2026-03-02 21:49:01]
 [1] 130.2649
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:05]
-→ GOTM-WET running... [2026-03-02 21:15:05]
-✔ GOTM-WET run successful! [2026-03-02 21:15:06]
-✔ Model run complete! [2026-03-02 21:15:06]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:03]
+→ GOTM-WET running... [2026-03-02 21:49:03]
+✔ GOTM-WET run successful! [2026-03-02 21:49:03]
+✔ Model run complete! [2026-03-02 21:49:03]
 [1] 366.7999
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:07]
-→ GOTM-WET running... [2026-03-02 21:15:07]
-✔ GOTM-WET run successful! [2026-03-02 21:15:08]
-✔ Model run complete! [2026-03-02 21:15:08]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:04]
+→ GOTM-WET running... [2026-03-02 21:49:04]
+✔ GOTM-WET run successful! [2026-03-02 21:49:05]
+✔ Model run complete! [2026-03-02 21:49:05]
 [1] 999
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:10]
-→ GOTM-WET running... [2026-03-02 21:15:10]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:06]
+→ GOTM-WET running... [2026-03-02 21:49:06]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:10]
-→ GOTM-WET running... [2026-03-02 21:15:10]
-✔ GOTM-WET run successful! [2026-03-02 21:15:11]
-✔ Model run complete! [2026-03-02 21:15:11]
-✔ GOTM-WET run successful! [2026-03-02 21:15:11]
-✔ Model run complete! [2026-03-02 21:15:11]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:06]
+→ GOTM-WET running... [2026-03-02 21:49:06]
+✔ GOTM-WET run successful! [2026-03-02 21:49:07]
+✔ Model run complete! [2026-03-02 21:49:07]
+✔ GOTM-WET run successful! [2026-03-02 21:49:07]
+✔ Model run complete! [2026-03-02 21:49:07]
 [1] 7937.671
 [1] 14.61363
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:12]
-→ GOTM-WET running... [2026-03-02 21:15:12]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:08]
+→ GOTM-WET running... [2026-03-02 21:49:08]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:12]
-→ GOTM-WET running... [2026-03-02 21:15:12]
-✔ GOTM-WET run successful! [2026-03-02 21:15:13]
-✔ Model run complete! [2026-03-02 21:15:13]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:08]
+→ GOTM-WET running... [2026-03-02 21:49:08]
+✔ GOTM-WET run successful! [2026-03-02 21:49:08]
+✔ Model run complete! [2026-03-02 21:49:08]
+✔ GOTM-WET run successful! [2026-03-02 21:49:08]
+✔ Model run complete! [2026-03-02 21:49:08]
 [1] 165.0774
-✔ GOTM-WET run successful! [2026-03-02 21:15:14]
-✔ Model run complete! [2026-03-02 21:15:14]
 [1] 112.7063
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:15]
-→ GOTM-WET running... [2026-03-02 21:15:15]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:09]
+→ GOTM-WET running... [2026-03-02 21:49:09]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:15]
-→ GOTM-WET running... [2026-03-02 21:15:15]
-✔ GOTM-WET run successful! [2026-03-02 21:15:15]
-✔ Model run complete! [2026-03-02 21:15:15]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:10]
+→ GOTM-WET running... [2026-03-02 21:49:10]
+✔ GOTM-WET run successful! [2026-03-02 21:49:10]
+✔ Model run complete! [2026-03-02 21:49:10]
+✔ GOTM-WET run successful! [2026-03-02 21:49:10]
+✔ Model run complete! [2026-03-02 21:49:10]
 [1] 27.81381
-✔ GOTM-WET run successful! [2026-03-02 21:15:16]
-✔ Model run complete! [2026-03-02 21:15:16]
 [1] 9.487406
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:17]
-→ GOTM-WET running... [2026-03-02 21:15:17]
-✔ GOTM-WET run successful! [2026-03-02 21:15:17]
-✔ Model run complete! [2026-03-02 21:15:17]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:11]
+→ GOTM-WET running... [2026-03-02 21:49:11]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:17]
-→ GOTM-WET running... [2026-03-02 21:15:17]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:11]
+→ GOTM-WET running... [2026-03-02 21:49:11]
+✔ GOTM-WET run successful! [2026-03-02 21:49:12]
+✔ Model run complete! [2026-03-02 21:49:12]
+✔ GOTM-WET run successful! [2026-03-02 21:49:12]
+✔ Model run complete! [2026-03-02 21:49:12]
 [1] 11.17464
-✔ GOTM-WET run successful! [2026-03-02 21:15:18]
-✔ Model run complete! [2026-03-02 21:15:18]
 [1] 9.496277
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:19]
-→ GOTM-WET running... [2026-03-02 21:15:19]
-✔ GOTM-WET run successful! [2026-03-02 21:15:19]
-✔ Model run complete! [2026-03-02 21:15:19]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:13]
+→ GOTM-WET running... [2026-03-02 21:49:13]
+✔ GOTM-WET run successful! [2026-03-02 21:49:13]
+✔ Model run complete! [2026-03-02 21:49:13]
 [1] 47.57638
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:15:20]
-→ GOTM-WET running... [2026-03-02 21:15:20]
-✔ GOTM-WET run successful! [2026-03-02 21:15:21]
-✔ Model run complete! [2026-03-02 21:15:21]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:14]
+→ GOTM-WET running... [2026-03-02 21:49:14]
+✔ GOTM-WET run successful! [2026-03-02 21:49:15]
+✔ Model run complete! [2026-03-02 21:49:15]
 [1] 9.60075
 Warning messages:
 1: ! No model output loaded as all model runs failed. 
@@ -747,205 +754,192 @@ Warning messages:
 ℹ In argument: `Date %in% mod_out$Date`.
 Caused by warning:
 ! Unknown or uninitialised column: `Date`. 
-starting worker pid=1220 on localhost:11986 at 21:16:07.353
-starting worker pid=3968 on localhost:11986 at 21:16:07.368
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:13]
-→ GLM-AED running... [2026-03-02 21:16:13]
-✔ GLM-AED run successful! [2026-03-02 21:16:13]
-✔ Model run complete! [2026-03-02 21:16:13]
+starting worker pid=6008 on localhost:11751 at 21:50:01.969
+starting worker pid=3576 on localhost:11751 at 21:50:01.988
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:07]
+→ GLM-AED running... [2026-03-02 21:50:07]
+✔ GLM-AED run successful! [2026-03-02 21:50:07]
+✔ Model run complete! [2026-03-02 21:50:07]
 [1] 999
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:14]
-→ GLM-AED running... [2026-03-02 21:16:14]
-✔ GLM-AED run successful! [2026-03-02 21:16:14]
-✔ Model run complete! [2026-03-02 21:16:14]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:08]
+→ GLM-AED running... [2026-03-02 21:50:08]
+✔ GLM-AED run successful! [2026-03-02 21:50:08]
+✔ Model run complete! [2026-03-02 21:50:08]
 [1] 780.4717
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:15]
-→ GLM-AED running... [2026-03-02 21:16:15]
-! GLM-AED run FAILED! [2026-03-02 21:16:15]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:09]
+→ GLM-AED running... [2026-03-02 21:50:09]
+! GLM-AED run FAILED! [2026-03-02 21:50:09]
      glm built using gcc version 12.2.0
 
      nDays= 200; timestep= 3600.000000 (s)
      Maximum lake depth is 18.070000
      Depth where flow will occur over the crest is 18.070000
 
-     Wall clock start time :  Mon Mar  2 21:16:15 2026
+     Wall clock start time :  Mon Mar  2 21:50:09 2026
 
      Simulation begins...
      Running day  2459061, 0.30% of days complete     Running day  2459062, 0.60% of days complete     Running day  2459063, 0.89% of days complete     Running day  2459064, 1.19% of days complete     Running day  2459065, 1.49% of days complete     Running day  2459066, 1.79% of days complete     Running day  2459067, 2.08% of days complete     Running day  2459068, 2.38% of days complete     Running day  2459069, 2.68% of days complete     Running day  2459070, 2.98% of days complete     Running day  2459071, 3.27% of days complete     Running day  2459072, 3.57% of days complete     Running day  2459073, 3.87% of days complete     Running day  2459074, 4.17% of days complete     Running day  2459075, 4.46% of days complete     Running day  2459076, 4.76% of days complete     Running day  2459077, 5.06% of days complete     Running day  2459078, 5.36% of days complete     Running day  2459079, 5.65% of days complete     Running day  2459080, 5.95% of days complete     Running day  2459081, 6.25% of days complete     Running day  2459082, 6.55% of days complete     Running day  2459083, 6.85% of days complete     Running day  2459084, 7.14% of days complete     Running day  2459085, 7.44% of days complete     Running day  2459086, 7.74% of days complete     Running day  2459087, 8.04% of days complete     Running day  2459088, 8.33% of days complete     Running day  2459089, 8.63% of days complete     Running day  2459090, 8.93% of days complete     Running day  2459091, 9.23% of days complete     Running day  2459092, 9.52% of days complete     Running day  2459093, 9.82% of days complete     Running day  2459094, 10.12% of days complete     Running day  2459095, 10.42% of days complete     Running day  2459096, 10.71% of days complete     Running day  2459097, 11.01% of days complete     Running day  2459098, 11.31% of days complete     Running day  2459099, 11.61% of days complete     Running day  2459100, 11.90% of days complete     Running day  2459101, 12.20% of days complete     Running day  2459102, 12.50% of days complete     Running day  2459103, 12.80% of days complete     Running day  2459104, 13.10% of days complete     Running day  2459105, 13.39% of days complete     Running day  2459106, 13.69% of days complete     Running day  2459107, 13.99% of days complete     Running day  2459108, 14.29% of days complete     Running day  2459109, 14.58% of days complete     Running day  2459110, 14.88% of days complete     Running day  2459111, 15.18% of days complete     Running day  2459112, 15.48% of days complete     Running day  2459113, 15.77% of days complete     Running day  2459114, 16.07% of days complete     Running day  2459115, 16.37% of days complete     Running day  2459116, 16.67% of days complete     Running day  2459117, 16.96% of days complete     Running day  2459118, 17.26% of days complete     Running day  2459119, 17.56% of days complete     Running day  2459120, 17.86% of days complete     Running day  2459121, 18.15% of days complete     Running day  2459122, 18.45% of days complete     Running day  2459123, 18.75% of days complete     Running day  2459124, 19.05% of days complete     Running day  2459125, 19.35% of days complete     Running day  2459126, 19.64% of days complete     Running day  2459127, 19.94% of days complete     Running day  2459128, 20.24% of days complete     Running day  2459129, 20.54% of days complete     Running day  2459130, 20.83% of days complete     Running day  2459131, 21.13% of days complete     Running day  2459132, 21.43% of days complete     Running day  2459133, 21.73% of days complete     Running day  2459134, 22.02% of days complete     Running day  2459135, 22.32% of days complete     Running day  2459136, 22.62% of days complete     Running day  2459137, 22.92% of days complete     Running day  2459138, 23.21% of days complete     Running day  2459139, 23.51% of days complete     Running day  2459140, 23.81% of days complete     Running day  2459141, 24.11% of days complete     Running day  2459142, 24.40% of days complete     Running day  2459143, 24.70% of days complete     Running day  2459144, 25.00% of days complete     Running day  2459145, 25.30% of days complete     Running day  2459146, 25.60% of days complete     Running day  2459147, 25.89% of days complete     Running day  2459148, 26.19% of days complete     Running day  2459149, 26.49% of days complete     Running day  2459150, 26.79% of days complete     Running day  2459151, 27.08% of days complete     Running day  2459152, 27.38% of days complete     Running day  2459153, 27.68% of days complete     Running day  2459154, 27.98% of days complete     Running day  2459155, 28.27% of days complete     Running day  2459156, 28.57% of days complete     Running day  2459157, 28.87% of days complete     Running day  2459158, 29.17% of days complete     Running day  2459159, 29.46% of days complete     Running day  2459160, 29.76% of days complete     Running day  2459161, 30.06% of days complete     Running day  2459162, 30.36% of days complete     Running day  2459163, 30.65% of days complete     Running day  2459164, 30.95% of days complete     Running day  2459165, 31.25% of days complete     Running day  2459166, 31.55% of days complete     Running day  2459167, 31.85% of days complete     Running day  2459168, 32.14% of days complete     Running day  2459169, 32.44% of days complete     Running day  2459170, 32.74% of days complete     Running day  2459171, 33.04% of days complete     Running day  2459172, 33.33% of days complete     Running day  2459173, 33.63% of days complete     Running day  2459174, 33.93% of days complete     Running day  2459175, 34.23% of days complete     Running day  2459176, 34.52% of days complete     Running day  2459177, 34.82% of days complete     Running day  2459178, 35.12% of days complete     Running day  2459179, 35.42% of days complete     Running day  2459180, 35.71% of days complete     Running day  2459181, 36.01% of days complete     Running day  2459182, 36.31% of days complete     Running day  2459183, 36.61% of days complete     Running day  2459184, 36.90% of days complete     Running day  2459185, 37.20% of days complete     Running day  2459186, 37.50% of days complete     Running day  2459187, 37.80% of days complete     Running day  2459188, 38.10% of days complete     Running day  2459189, 38.39% of days complete     Running day  2459190, 38.69% of days complete     Running day  2459191, 38.99% of days complete     Running day  2459192, 39.29% of days complete     Running day  2459193, 39.58% of days complete     Running day  2459194, 39.88% of days complete     Running day  2459195, 40.18% of days complete     Running day  2459196, 40.48% of days complete     Running day  2459197, 40.77% of days complete     Running day  2459198, 41.07% of days complete     Running day  2459199, 41.37% of days complete     Running day  2459200, 41.67% of days complete     Running day  2459201, 41.96% of days complete     Running day  2459202, 42.26% of days complete     Running day  2459203, 42.56% of days complete     Running day  2459204, 42.86% of days complete     Running day  2459205, 43.15% of days complete     Running day  2459206, 43.45% of days complete     Running day  2459207, 43.75% of days complete     Running day  2459208, 44.05% of days complete     Running day  2459209, 44.35% of days complete     Running day  2459210, 44.64% of days complete     Running day  2459211, 44.94% of days complete     Running day  2459212, 45.24% of days complete     Running day  2459213, 45.54% of days complete     Running day  2459214, 45.83% of days complete     Running day  2459215, 46.13% of days complete     Running day  2459216, 46.43% of days complete     Running day  2459217, 46.73% of days complete     Running day  2459218, 47.02% of days complete     Running day  2459219, 47.32% of days complete     Running day  2459220, 47.62% of days complete     Running day  2459221, 47.92% of days complete     Running day  2459222, 48.21% of days complete     Running day  2459223, 48.51% of days complete     Running day  2459224, 48.81% of days complete     Running day  2459225, 49.11% of days complete     Running day  2459226, 49.40% of days complete     Running day  2459227, 49.70% of days complete     Running day  2459228, 50.00% of days complete     Running day  2459229, 50.30% of days complete     Running day  2459230, 50.60% of days complete     Running day  2459231, 50.89% of days complete     Running day  2459232, 51.19% of days complete     Running day  2459233, 51.49% of days complete     Running day  2459234, 51.79% of days complete     Running day  2459235, 52.08% of days complete     Running day  2459236, 52.38% of days complete     Running day  2459237, 52.68% of days complete     Running day  2459238, 52.98% of days complete     Running day  2459239, 53.27% of days complete     Running day  2459240, 53.57% of days complete     Running day  2459241, 53.87% of days complete     Running day  2459242, 54.17% of days complete     Running day  2459243, 54.46% of days complete     Running day  2459244, 54.76% of days complete     Running day  2459245, 55.06% of days complete     Running day  2459246, 55.36% of days complete     Running day  2459247, 55.65% of days complete     Running day  2459248, 55.95% of days complete     Running day  2459249, 56.25% of days complete     Running day  2459250, 56.55% of days complete     Running day  2459251, 56.85% of days complete     Running day  2459252, 57.14% of days complete     Running day  2459253, 57.44% of days complete     Running day  2459254, 57.74% of days complete     Running day  2459255, 58.04% of days complete     Running day  2459256, 58.33% of days complete     Running day  2459257, 58.63% of days complete     Running day  2459258, 58.93% of days complete     Running day  2459259, 59.23% of days complete     Running day  2459260, 59.52% of days complete     Running day  2459261, 59.82% of days complete     Running day  2459262, 60.12% of days complete     Running day  2459263, 60.42% of days complete     Running day  2459264, 60.71% of days complete     Running day  2459265, 61.01% of days complete     Running day  2459266, 61.31% of days complete     Running day  2459267, 61.61% of days complete     Running day  2459268, 61.90% of days complete     Running day  2459269, 62.20% of days complete     Running day  2459270, 62.50% of days complete     Running day  2459271, 62.80% of days complete     Running day  2459272, 63.10% of days complete     Running day  2459273, 63.39% of days complete     Running day  2459274, 63.69% of days complete     Running day  2459275, 63.99% of days complete     Running day  2459276, 64.29% of days complete     Running day  2459277, 64.58% of days complete     Running day  2459278, 64.88% of days complete     Running day  2459279, 65.18% of days complete     Running day  2459280, 65.48% of days complete     Running day  2459281, 65.77% of days complete     Running day  2459282, 66.07% of days complete     Running day  2459283, 66.37% of days complete     Running day  2459284, 66.67% of days complete     Running day  2459285, 66.96% of days complete     Running day  2459286, 67.26% of days complete     Running day  2459287, 67.56% of days complete     Running day  2459288, 67.86% of days complete     Running day  2459289, 68.15% of days complete     Running day  2459290, 68.45% of days complete     Running day  2459291, 68.75% of days complete     Running day  2459292, 69.05% of days complete     Running day  2459293, 69.35% of days complete     Running day  2459294, 69.64% of days complete     Running day  2459295, 69.94% of days complete     Running day  2459296, 70.24% of days complete     Running day  2459297, 70.54% of days complete     Running day  2459298, 70.83% of days complete     Running day  2459299, 71.13% of days complete     Running day  2459300, 71.43% of days complete     Running day  2459301, 71.73% of days complete     Running day  2459302, 72.02% of days complete     Running day  2459303, 72.32% of days complete     Running day  2459304, 72.62% of days complete     Running day  2459305, 72.92% of days complete     Running day  2459306, 73.21% of days complete     Running day  2459307, 73.51% of days complete     Running day  2459308, 73.81% of days complete     Running day  2459309, 74.11% of days complete     Running day  2459310, 74.40% of days complete     Running day  2459311, 74.70% of days complete     Running day  2459312, 75.00% of days complete     Running day  2459313, 75.30% of days complete     Running day  2459314, 75.60% of days complete     Running day  2459315, 75.89% of days complete     Running day  2459316, 76.19% of days complete     Running day  2459317, 76.49% of days complete     Running day  2459318, 76.79% of days complete     Running day  2459319, 77.08% of days complete     Running day  2459320, 77.38% of days complete     Running day  2459321, 77.68% of days complete     Running day  2459322, 77.98% of days complete     Running day  2459323, 78.27% of days complete     Running day  2459324, 78.57% of days complete     Running day  2459325, 78.87% of days complete     Running day  2459326, 79.17% of days complete     Running day  2459327, 79.46% of days complete     Running day  2459328, 79.76% of days complete     Running day  2459329, 80.06% of days complete     Running day  2459330, 80.36% of days complete     Running day  2459331, 80.65% of days complete     Running day  2459332, 80.95% of days complete     Running day  2459333, 81.25% of days complete     Running day  2459334, 81.55% of days complete     Running day  2459335, 81.85% of days complete     Running day  2459336, 82.14% of days complete     Running day  2459337, 82.44% of days complete     Running day  2459338, 82.74% of days complete     Running day  2459339, 83.04% of days complete     Running day  2459340, 83.33% of days complete     Running day  2459341, 83.63% of days complete     Running day  2459342, 83.93% of days complete     Running day  2459343, 84.23% of days complete     Running day  2459344, 84.52% of days complete     Running day  2459345, 84.82% of days complete     Running day  2459346, 85.12% of days complete     Running day  2459347, 85.42% of days complete     Running day  2459348, 85.71% of days complete     Running day  2459349, 86.01% of days complete     Running day  2459350, 86.31% of days complete     Running day  2459351, 86.61% of days complete     Running day  2459352, 86.90% of days complete     Running day  2459353, 87.20% of days complete     Running day  2459354, 87.50% of days complete     Running day  2459355, 87.80% of days complete     Running day  2459356, 88.10% of days complete     Running day  2459357, 88.39% of days complete     Running day  2459358, 88.69% of days complete     Running day  2459359, 88.99% of days complete     Running day  2459360, 89.29% of days complete     Running day  2459361, 89.58% of days complete     Running day  2459362, 89.88% of days complete     Running day  2459363, 90.18% of days complete     Running day  2459364, 90.48% of days complete     Running day  2459365, 90.77% of days complete     Running day  2459366, 91.07% of days complete     Running day  2459367, 91.37% of days complete     Running day  2459368, 91.67% of days complete     Running day  2459369, 91.96% of days complete     Running day  2459370, 92.26% of days complete     Running day  2459371, 92.56% of days complete     Running day  2459372, 92.86% of days complete     Running day  2459373, 93.15% of days complete     Running day  2459374, 93.45% of days complete     Running day  2459375, 93.75% of days complete     Running day  2459376, 94.05% of days complete     Running day  2459377, 94.35% of days complete     Running day  2459378, 94.64% of days complete     Running day  2459379, 94.94% of days complete     Running day  2459380, 95.24% of days complete     Running day  2459381, 95.54% of days complete     Running day  2459382, 95.83% of days complete     Running day  2459383, 96.13% of days complete     Running day  2459384, 96.43% of days complete     Running day  2459385, 96.73% of days complete     Running day  2459386, 97.02% of days complete     Running day  2459387, 97.32% of days complete     Running day  2459388, 97.62% of days complete     Running day  2459389, 97.92% of days complete     Running day  2459390, 98.21% of days complete     Running day  2459391, 98.51% of days complete     Running day  2459392, 98.81% of days complete     Running day  2459393, 99.11% of days complete     Running day  2459394, 99.40% of days complete     Running day  2459395, 99.70% of days complete
-✔ Model run complete! [2026-03-02 21:16:15]
+✔ Model run complete! [2026-03-02 21:50:09]
 ! Warning: Some model runs failed and will not be loaded: glm_aed
 [1] 999
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:16]
-→ GLM-AED running... [2026-03-02 21:16:16]
-✔ GLM-AED run successful! [2026-03-02 21:16:16]
-✔ Model run complete! [2026-03-02 21:16:16]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:10]
+→ GLM-AED running... [2026-03-02 21:50:10]
+✔ GLM-AED run successful! [2026-03-02 21:50:10]
+✔ Model run complete! [2026-03-02 21:50:10]
 [1] 1784.335
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:17]
-→ GLM-AED running... [2026-03-02 21:16:17]
-✔ GLM-AED run successful! [2026-03-02 21:16:18]
-✔ Model run complete! [2026-03-02 21:16:18]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:11]
+→ GLM-AED running... [2026-03-02 21:50:11]
+✔ GLM-AED run successful! [2026-03-02 21:50:11]
+✔ Model run complete! [2026-03-02 21:50:11]
 [1] 7029.173
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:19]
-→ GLM-AED running... [2026-03-02 21:16:19]
-✔ GLM-AED run successful! [2026-03-02 21:16:20]
-✔ Model run complete! [2026-03-02 21:16:20]
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:13]
+→ GLM-AED running... [2026-03-02 21:50:13]
+✔ GLM-AED run successful! [2026-03-02 21:50:14]
+✔ Model run complete! [2026-03-02 21:50:14]
 [1] 1647.427
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:20]
-→ GLM-AED running... [2026-03-02 21:16:20]
-✔ GLM-AED run successful! [2026-03-02 21:16:21]
-✔ Model run complete! [2026-03-02 21:16:21]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:14]
+→ GLM-AED running... [2026-03-02 21:50:14]
+✔ GLM-AED run successful! [2026-03-02 21:50:15]
+✔ Model run complete! [2026-03-02 21:50:15]
 [1] 7494.792
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:22]
-→ GLM-AED running... [2026-03-02 21:16:22]
-✔ GLM-AED run successful! [2026-03-02 21:16:22]
-✔ Model run complete! [2026-03-02 21:16:22]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:15]
+→ GLM-AED running... [2026-03-02 21:50:15]
+✔ GLM-AED run successful! [2026-03-02 21:50:16]
+✔ Model run complete! [2026-03-02 21:50:16]
 [1] 7020.064
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:23]
-→ GLM-AED running... [2026-03-02 21:16:23]
-✔ GLM-AED run successful! [2026-03-02 21:16:23]
-✔ Model run complete! [2026-03-02 21:16:23]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:16]
+→ GLM-AED running... [2026-03-02 21:50:16]
+✔ GLM-AED run successful! [2026-03-02 21:50:16]
+✔ Model run complete! [2026-03-02 21:50:16]
 [1] 12854.18
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:24]
-→ GLM-AED running... [2026-03-02 21:16:24]
-! GLM-AED run FAILED! [2026-03-02 21:16:25]
-     glm built using gcc version 12.2.0
-
-     nDays= 200; timestep= 3600.000000 (s)
-     Maximum lake depth is 18.070000
-     Depth where flow will occur over the crest is 18.070000
-
-     Wall clock start time :  Mon Mar  2 21:16:24 2026
-
-     Simulation begins...
-     Running day  2459061, 0.30% of days complete     Running day  2459062, 0.60% of days complete     Running day  2459063, 0.89% of days complete     Running day  2459064, 1.19% of days complete     Running day  2459065, 1.49% of days complete     Running day  2459066, 1.79% of days complete     Running day  2459067, 2.08% of days complete     Running day  2459068, 2.38% of days complete     Running day  2459069, 2.68% of days complete     Running day  2459070, 2.98% of days complete     Running day  2459071, 3.27% of days complete     Running day  2459072, 3.57% of days complete     Running day  2459073, 3.87% of days complete     Running day  2459074, 4.17% of days complete     Running day  2459075, 4.46% of days complete     Running day  2459076, 4.76% of days complete     Running day  2459077, 5.06% of days complete     Running day  2459078, 5.36% of days complete     Running day  2459079, 5.65% of days complete     Running day  2459080, 5.95% of days complete     Running day  2459081, 6.25% of days complete     Running day  2459082, 6.55% of days complete     Running day  2459083, 6.85% of days complete     Running day  2459084, 7.14% of days complete     Running day  2459085, 7.44% of days complete     Running day  2459086, 7.74% of days complete     Running day  2459087, 8.04% of days complete     Running day  2459088, 8.33% of days complete     Running day  2459089, 8.63% of days complete     Running day  2459090, 8.93% of days complete     Running day  2459091, 9.23% of days complete     Running day  2459092, 9.52% of days complete     Running day  2459093, 9.82% of days complete     Running day  2459094, 10.12% of days complete     Running day  2459095, 10.42% of days complete     Running day  2459096, 10.71% of days complete     Running day  2459097, 11.01% of days complete     Running day  2459098, 11.31% of days complete     Running day  2459099, 11.61% of days complete     Running day  2459100, 11.90% of days complete     Running day  2459101, 12.20% of days complete     Running day  2459102, 12.50% of days complete     Running day  2459103, 12.80% of days complete     Running day  2459104, 13.10% of days complete     Running day  2459105, 13.39% of days complete     Running day  2459106, 13.69% of days complete     Running day  2459107, 13.99% of days complete     Running day  2459108, 14.29% of days complete     Running day  2459109, 14.58% of days complete     Running day  2459110, 14.88% of days complete     Running day  2459111, 15.18% of days complete     Running day  2459112, 15.48% of days complete     Running day  2459113, 15.77% of days complete     Running day  2459114, 16.07% of days complete     Running day  2459115, 16.37% of days complete     Running day  2459116, 16.67% of days complete     Running day  2459117, 16.96% of days complete     Running day  2459118, 17.26% of days complete     Running day  2459119, 17.56% of days complete     Running day  2459120, 17.86% of days complete     Running day  2459121, 18.15% of days complete     Running day  2459122, 18.45% of days complete     Running day  2459123, 18.75% of days complete     Running day  2459124, 19.05% of days complete     Running day  2459125, 19.35% of days complete     Running day  2459126, 19.64% of days complete     Running day  2459127, 19.94% of days complete     Running day  2459128, 20.24% of days complete     Running day  2459129, 20.54% of days complete     Running day  2459130, 20.83% of days complete     Running day  2459131, 21.13% of days complete     Running day  2459132, 21.43% of days complete     Running day  2459133, 21.73% of days complete     Running day  2459134, 22.02% of days complete     Running day  2459135, 22.32% of days complete     Running day  2459136, 22.62% of days complete     Running day  2459137, 22.92% of days complete     Running day  2459138, 23.21% of days complete     Running day  2459139, 23.51% of days complete     Running day  2459140, 23.81% of days complete     Running day  2459141, 24.11% of days complete     Running day  2459142, 24.40% of days complete     Running day  2459143, 24.70% of days complete     Running day  2459144, 25.00% of days complete     Running day  2459145, 25.30% of days complete     Running day  2459146, 25.60% of days complete     Running day  2459147, 25.89% of days complete     Running day  2459148, 26.19% of days complete     Running day  2459149, 26.49% of days complete     Running day  2459150, 26.79% of days complete     Running day  2459151, 27.08% of days complete     Running day  2459152, 27.38% of days complete     Running day  2459153, 27.68% of days complete     Running day  2459154, 27.98% of days complete     Running day  2459155, 28.27% of days complete     Running day  2459156, 28.57% of days complete     Running day  2459157, 28.87% of days complete     Running day  2459158, 29.17% of days complete     Running day  2459159, 29.46% of days complete     Running day  2459160, 29.76% of days complete     Running day  2459161, 30.06% of days complete     Running day  2459162, 30.36% of days complete     Running day  2459163, 30.65% of days complete     Running day  2459164, 30.95% of days complete     Running day  2459165, 31.25% of days complete     Running day  2459166, 31.55% of days complete     Running day  2459167, 31.85% of days complete     Running day  2459168, 32.14% of days complete     Running day  2459169, 32.44% of days complete     Running day  2459170, 32.74% of days complete     Running day  2459171, 33.04% of days complete     Running day  2459172, 33.33% of days complete     Running day  2459173, 33.63% of days complete     Running day  2459174, 33.93% of days complete     Running day  2459175, 34.23% of days complete     Running day  2459176, 34.52% of days complete     Running day  2459177, 34.82% of days complete     Running day  2459178, 35.12% of days complete     Running day  2459179, 35.42% of days complete     Running day  2459180, 35.71% of days complete     Running day  2459181, 36.01% of days complete     Running day  2459182, 36.31% of days complete     Running day  2459183, 36.61% of days complete     Running day  2459184, 36.90% of days complete     Running day  2459185, 37.20% of days complete     Running day  2459186, 37.50% of days complete     Running day  2459187, 37.80% of days complete     Running day  2459188, 38.10% of days complete     Running day  2459189, 38.39% of days complete     Running day  2459190, 38.69% of days complete     Running day  2459191, 38.99% of days complete     Running day  2459192, 39.29% of days complete     Running day  2459193, 39.58% of days complete     Running day  2459194, 39.88% of days complete     Running day  2459195, 40.18% of days complete     Running day  2459196, 40.48% of days complete     Running day  2459197, 40.77% of days complete     Running day  2459198, 41.07% of days complete     Running day  2459199, 41.37% of days complete     Running day  2459200, 41.67% of days complete     Running day  2459201, 41.96% of days complete     Running day  2459202, 42.26% of days complete     Running day  2459203, 42.56% of days complete     Running day  2459204, 42.86% of days complete     Running day  2459205, 43.15% of days complete     Running day  2459206, 43.45% of days complete     Running day  2459207, 43.75% of days complete     Running day  2459208, 44.05% of days complete     Running day  2459209, 44.35% of days complete     Running day  2459210, 44.64% of days complete     Running day  2459211, 44.94% of days complete     Running day  2459212, 45.24% of days complete     Running day  2459213, 45.54% of days complete     Running day  2459214, 45.83% of days complete     Running day  2459215, 46.13% of days complete     Running day  2459216, 46.43% of days complete     Running day  2459217, 46.73% of days complete     Running day  2459218, 47.02% of days complete     Running day  2459219, 47.32% of days complete     Running day  2459220, 47.62% of days complete     Running day  2459221, 47.92% of days complete     Running day  2459222, 48.21% of days complete     Running day  2459223, 48.51% of days complete     Running day  2459224, 48.81% of days complete     Running day  2459225, 49.11% of days complete     Running day  2459226, 49.40% of days complete     Running day  2459227, 49.70% of days complete     Running day  2459228, 50.00% of days complete     Running day  2459229, 50.30% of days complete     Running day  2459230, 50.60% of days complete     Running day  2459231, 50.89% of days complete     Running day  2459232, 51.19% of days complete     Running day  2459233, 51.49% of days complete     Running day  2459234, 51.79% of days complete     Running day  2459235, 52.08% of days complete     Running day  2459236, 52.38% of days complete     Running day  2459237, 52.68% of days complete     Running day  2459238, 52.98% of days complete     Running day  2459239, 53.27% of days complete     Running day  2459240, 53.57% of days complete     Running day  2459241, 53.87% of days complete     Running day  2459242, 54.17% of days complete     Running day  2459243, 54.46% of days complete     Running day  2459244, 54.76% of days complete     Running day  2459245, 55.06% of days complete     Running day  2459246, 55.36% of days complete     Running day  2459247, 55.65% of days complete     Running day  2459248, 55.95% of days complete     Running day  2459249, 56.25% of days complete     Running day  2459250, 56.55% of days complete     Running day  2459251, 56.85% of days complete     Running day  2459252, 57.14% of days complete     Running day  2459253, 57.44% of days complete     Running day  2459254, 57.74% of days complete     Running day  2459255, 58.04% of days complete     Running day  2459256, 58.33% of days complete     Running day  2459257, 58.63% of days complete     Running day  2459258, 58.93% of days complete     Running day  2459259, 59.23% of days complete     Running day  2459260, 59.52% of days complete     Running day  2459261, 59.82% of days complete     Running day  2459262, 60.12% of days complete     Running day  2459263, 60.42% of days complete     Running day  2459264, 60.71% of days complete     Running day  2459265, 61.01% of days complete     Running day  2459266, 61.31% of days complete     Running day  2459267, 61.61% of days complete     Running day  2459268, 61.90% of days complete     Running day  2459269, 62.20% of days complete     Running day  2459270, 62.50% of days complete     Running day  2459271, 62.80% of days complete     Running day  2459272, 63.10% of days complete     Running day  2459273, 63.39% of days complete     Running day  2459274, 63.69% of days complete     Running day  2459275, 63.99% of days complete     Running day  2459276, 64.29% of days complete     Running day  2459277, 64.58% of days complete     Running day  2459278, 64.88% of days complete     Running day  2459279, 65.18% of days complete     Running day  2459280, 65.48% of days complete     Running day  2459281, 65.77% of days complete     Running day  2459282, 66.07% of days complete     Running day  2459283, 66.37% of days complete     Running day  2459284, 66.67% of days complete     Running day  2459285, 66.96% of days complete     Running day  2459286, 67.26% of days complete     Running day  2459287, 67.56% of days complete     Running day  2459288, 67.86% of days complete     Running day  2459289, 68.15% of days complete     Running day  2459290, 68.45% of days complete     Running day  2459291, 68.75% of days complete     Running day  2459292, 69.05% of days complete     Running day  2459293, 69.35% of days complete     Running day  2459294, 69.64% of days complete     Running day  2459295, 69.94% of days complete     Running day  2459296, 70.24% of days complete     Running day  2459297, 70.54% of days complete     Running day  2459298, 70.83% of days complete     Running day  2459299, 71.13% of days complete     Running day  2459300, 71.43% of days complete     Running day  2459301, 71.73% of days complete     Running day  2459302, 72.02% of days complete     Running day  2459303, 72.32% of days complete     Running day  2459304, 72.62% of days complete     Running day  2459305, 72.92% of days complete     Running day  2459306, 73.21% of days complete     Running day  2459307, 73.51% of days complete     Running day  2459308, 73.81% of days complete     Running day  2459309, 74.11% of days complete     Running day  2459310, 74.40% of days complete     Running day  2459311, 74.70% of days complete     Running day  2459312, 75.00% of days complete     Running day  2459313, 75.30% of days complete     Running day  2459314, 75.60% of days complete     Running day  2459315, 75.89% of days complete     Running day  2459316, 76.19% of days complete     Running day  2459317, 76.49% of days complete     Running day  2459318, 76.79% of days complete     Running day  2459319, 77.08% of days complete     Running day  2459320, 77.38% of days complete     Running day  2459321, 77.68% of days complete     Running day  2459322, 77.98% of days complete     Running day  2459323, 78.27% of days complete     Running day  2459324, 78.57% of days complete     Running day  2459325, 78.87% of days complete     Running day  2459326, 79.17% of days complete     Running day  2459327, 79.46% of days complete     Running day  2459328, 79.76% of days complete     Running day  2459329, 80.06% of days complete     Running day  2459330, 80.36% of days complete     Running day  2459331, 80.65% of days complete     Running day  2459332, 80.95% of days complete     Running day  2459333, 81.25% of days complete     Running day  2459334, 81.55% of days complete     Running day  2459335, 81.85% of days complete     Running day  2459336, 82.14% of days complete     Running day  2459337, 82.44% of days complete     Running day  2459338, 82.74% of days complete     Running day  2459339, 83.04% of days complete     Running day  2459340, 83.33% of days complete     Running day  2459341, 83.63% of days complete     Running day  2459342, 83.93% of days complete     Running day  2459343, 84.23% of days complete     Running day  2459344, 84.52% of days complete     Running day  2459345, 84.82% of days complete     Running day  2459346, 85.12% of days complete     Running day  2459347, 85.42% of days complete     Running day  2459348, 85.71% of days complete     Running day  2459349, 86.01% of days complete     Running day  2459350, 86.31% of days complete     Running day  2459351, 86.61% of days complete     Running day  2459352, 86.90% of days complete     Running day  2459353, 87.20% of days complete     Running day  2459354, 87.50% of days complete     Running day  2459355, 87.80% of days complete     Running day  2459356, 88.10% of days complete     Running day  2459357, 88.39% of days complete     Running day  2459358, 88.69% of days complete     Running day  2459359, 88.99% of days complete     Running day  2459360, 89.29% of days complete     Running day  2459361, 89.58% of days complete     Running day  2459362, 89.88% of days complete     Running day  2459363, 90.18% of days complete     Running day  2459364, 90.48% of days complete     Running day  2459365, 90.77% of days complete     Running day  2459366, 91.07% of days complete     Running day  2459367, 91.37% of days complete     Running day  2459368, 91.67% of days complete     Running day  2459369, 91.96% of days complete     Running day  2459370, 92.26% of days complete     Running day  2459371, 92.56% of days complete     Running day  2459372, 92.86% of days complete     Running day  2459373, 93.15% of days complete     Running day  2459374, 93.45% of days complete     Running day  2459375, 93.75% of days complete     Running day  2459376, 94.05% of days complete     Running day  2459377, 94.35% of days complete     Running day  2459378, 94.64% of days complete     Running day  2459379, 94.94% of days complete     Running day  2459380, 95.24% of days complete     Running day  2459381, 95.54% of days complete     Running day  2459382, 95.83% of days complete     Running day  2459383, 96.13% of days complete     Running day  2459384, 96.43% of days complete     Running day  2459385, 96.73% of days complete     Running day  2459386, 97.02% of days complete     Running day  2459387, 97.32% of days complete     Running day  2459388, 97.62% of days complete     Running day  2459389, 97.92% of days complete     Running day  2459390, 98.21% of days complete     Running day  2459391, 98.51% of days complete     Running day  2459392, 98.81% of days complete     Running day  2459393, 99.11% of days complete     Running day  2459394, 99.40% of days complete     Running day  2459395, 99.70% of days complete
-✔ Model run complete! [2026-03-02 21:16:25]
-! Warning: Some model runs failed and will not be loaded: glm_aed
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:17]
+→ GLM-AED running... [2026-03-02 21:50:17]
+✔ GLM-AED run successful! [2026-03-02 21:50:17]
+✔ Model run complete! [2026-03-02 21:50:17]
 [1] 6881.127
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:25]
-→ GLM-AED running... [2026-03-02 21:16:25]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:18]
+→ GLM-AED running... [2026-03-02 21:50:19]
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:25]
-→ GLM-AED running... [2026-03-02 21:16:25]
-✔ GLM-AED run successful! [2026-03-02 21:16:26]
-✔ Model run complete! [2026-03-02 21:16:26]
-✔ GLM-AED run successful! [2026-03-02 21:16:26]
-✔ Model run complete! [2026-03-02 21:16:26]
-[1] 7300.349
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:19]
+→ GLM-AED running... [2026-03-02 21:50:19]
+✔ GLM-AED run successful! [2026-03-02 21:50:19]
+✔ Model run complete! [2026-03-02 21:50:19]
+✔ GLM-AED run successful! [2026-03-02 21:50:19]
+✔ Model run complete! [2026-03-02 21:50:19]
 [1] 738.9071
+[1] 7300.349
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:27]
-→ GLM-AED running... [2026-03-02 21:16:27]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:20]
+→ GLM-AED running... [2026-03-02 21:50:20]
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:27]
-→ GLM-AED running... [2026-03-02 21:16:27]
-✔ GLM-AED run successful! [2026-03-02 21:16:27]
-✔ Model run complete! [2026-03-02 21:16:27]
-✔ GLM-AED run successful! [2026-03-02 21:16:27]
-✔ Model run complete! [2026-03-02 21:16:27]
-[1] 1565.345
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:28]
-→ GLM-AED running... [2026-03-02 21:16:28]
-[1] 537.2334
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:28]
-→ GLM-AED running... [2026-03-02 21:16:28]
-✔ GLM-AED run successful! [2026-03-02 21:16:29]
-✔ Model run complete! [2026-03-02 21:16:29]
-✔ GLM-AED run successful! [2026-03-02 21:16:29]
-✔ Model run complete! [2026-03-02 21:16:29]
-[1] 1642.459
-[1] 1954.191
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:29]
-→ GLM-AED running... [2026-03-02 21:16:29]
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:29]
-→ GLM-AED running... [2026-03-02 21:16:29]
-! GLM-AED run FAILED! [2026-03-02 21:16:30]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:20]
+→ GLM-AED running... [2026-03-02 21:50:20]
+✔ GLM-AED run successful! [2026-03-02 21:50:20]
+✔ Model run complete! [2026-03-02 21:50:20]
+! GLM-AED run FAILED! [2026-03-02 21:50:20]
      glm built using gcc version 12.2.0
 
      nDays= 200; timestep= 3600.000000 (s)
      Maximum lake depth is 18.070000
      Depth where flow will occur over the crest is 18.070000
 
-     Wall clock start time :  Mon Mar  2 21:16:30 2026
+     Wall clock start time :  Mon Mar  2 21:50:20 2026
 
      Simulation begins...
      Running day  2459061, 0.30% of days complete     Running day  2459062, 0.60% of days complete     Running day  2459063, 0.89% of days complete     Running day  2459064, 1.19% of days complete     Running day  2459065, 1.49% of days complete     Running day  2459066, 1.79% of days complete     Running day  2459067, 2.08% of days complete     Running day  2459068, 2.38% of days complete     Running day  2459069, 2.68% of days complete     Running day  2459070, 2.98% of days complete     Running day  2459071, 3.27% of days complete     Running day  2459072, 3.57% of days complete     Running day  2459073, 3.87% of days complete     Running day  2459074, 4.17% of days complete     Running day  2459075, 4.46% of days complete     Running day  2459076, 4.76% of days complete     Running day  2459077, 5.06% of days complete     Running day  2459078, 5.36% of days complete     Running day  2459079, 5.65% of days complete     Running day  2459080, 5.95% of days complete     Running day  2459081, 6.25% of days complete     Running day  2459082, 6.55% of days complete     Running day  2459083, 6.85% of days complete     Running day  2459084, 7.14% of days complete     Running day  2459085, 7.44% of days complete     Running day  2459086, 7.74% of days complete     Running day  2459087, 8.04% of days complete     Running day  2459088, 8.33% of days complete     Running day  2459089, 8.63% of days complete     Running day  2459090, 8.93% of days complete     Running day  2459091, 9.23% of days complete     Running day  2459092, 9.52% of days complete     Running day  2459093, 9.82% of days complete     Running day  2459094, 10.12% of days complete     Running day  2459095, 10.42% of days complete     Running day  2459096, 10.71% of days complete     Running day  2459097, 11.01% of days complete     Running day  2459098, 11.31% of days complete     Running day  2459099, 11.61% of days complete     Running day  2459100, 11.90% of days complete     Running day  2459101, 12.20% of days complete     Running day  2459102, 12.50% of days complete     Running day  2459103, 12.80% of days complete     Running day  2459104, 13.10% of days complete     Running day  2459105, 13.39% of days complete     Running day  2459106, 13.69% of days complete     Running day  2459107, 13.99% of days complete     Running day  2459108, 14.29% of days complete     Running day  2459109, 14.58% of days complete     Running day  2459110, 14.88% of days complete     Running day  2459111, 15.18% of days complete     Running day  2459112, 15.48% of days complete     Running day  2459113, 15.77% of days complete     Running day  2459114, 16.07% of days complete     Running day  2459115, 16.37% of days complete     Running day  2459116, 16.67% of days complete     Running day  2459117, 16.96% of days complete     Running day  2459118, 17.26% of days complete     Running day  2459119, 17.56% of days complete     Running day  2459120, 17.86% of days complete     Running day  2459121, 18.15% of days complete     Running day  2459122, 18.45% of days complete     Running day  2459123, 18.75% of days complete     Running day  2459124, 19.05% of days complete     Running day  2459125, 19.35% of days complete     Running day  2459126, 19.64% of days complete     Running day  2459127, 19.94% of days complete     Running day  2459128, 20.24% of days complete     Running day  2459129, 20.54% of days complete     Running day  2459130, 20.83% of days complete     Running day  2459131, 21.13% of days complete     Running day  2459132, 21.43% of days complete     Running day  2459133, 21.73% of days complete     Running day  2459134, 22.02% of days complete     Running day  2459135, 22.32% of days complete     Running day  2459136, 22.62% of days complete     Running day  2459137, 22.92% of days complete     Running day  2459138, 23.21% of days complete     Running day  2459139, 23.51% of days complete     Running day  2459140, 23.81% of days complete     Running day  2459141, 24.11% of days complete     Running day  2459142, 24.40% of days complete     Running day  2459143, 24.70% of days complete     Running day  2459144, 25.00% of days complete     Running day  2459145, 25.30% of days complete     Running day  2459146, 25.60% of days complete     Running day  2459147, 25.89% of days complete     Running day  2459148, 26.19% of days complete     Running day  2459149, 26.49% of days complete     Running day  2459150, 26.79% of days complete     Running day  2459151, 27.08% of days complete     Running day  2459152, 27.38% of days complete     Running day  2459153, 27.68% of days complete     Running day  2459154, 27.98% of days complete     Running day  2459155, 28.27% of days complete     Running day  2459156, 28.57% of days complete     Running day  2459157, 28.87% of days complete     Running day  2459158, 29.17% of days complete     Running day  2459159, 29.46% of days complete     Running day  2459160, 29.76% of days complete     Running day  2459161, 30.06% of days complete     Running day  2459162, 30.36% of days complete     Running day  2459163, 30.65% of days complete     Running day  2459164, 30.95% of days complete     Running day  2459165, 31.25% of days complete     Running day  2459166, 31.55% of days complete     Running day  2459167, 31.85% of days complete     Running day  2459168, 32.14% of days complete     Running day  2459169, 32.44% of days complete     Running day  2459170, 32.74% of days complete     Running day  2459171, 33.04% of days complete     Running day  2459172, 33.33% of days complete     Running day  2459173, 33.63% of days complete     Running day  2459174, 33.93% of days complete     Running day  2459175, 34.23% of days complete     Running day  2459176, 34.52% of days complete     Running day  2459177, 34.82% of days complete     Running day  2459178, 35.12% of days complete     Running day  2459179, 35.42% of days complete     Running day  2459180, 35.71% of days complete     Running day  2459181, 36.01% of days complete     Running day  2459182, 36.31% of days complete     Running day  2459183, 36.61% of days complete     Running day  2459184, 36.90% of days complete     Running day  2459185, 37.20% of days complete     Running day  2459186, 37.50% of days complete     Running day  2459187, 37.80% of days complete     Running day  2459188, 38.10% of days complete     Running day  2459189, 38.39% of days complete     Running day  2459190, 38.69% of days complete     Running day  2459191, 38.99% of days complete     Running day  2459192, 39.29% of days complete     Running day  2459193, 39.58% of days complete     Running day  2459194, 39.88% of days complete     Running day  2459195, 40.18% of days complete     Running day  2459196, 40.48% of days complete     Running day  2459197, 40.77% of days complete     Running day  2459198, 41.07% of days complete     Running day  2459199, 41.37% of days complete     Running day  2459200, 41.67% of days complete     Running day  2459201, 41.96% of days complete     Running day  2459202, 42.26% of days complete     Running day  2459203, 42.56% of days complete     Running day  2459204, 42.86% of days complete     Running day  2459205, 43.15% of days complete     Running day  2459206, 43.45% of days complete     Running day  2459207, 43.75% of days complete     Running day  2459208, 44.05% of days complete     Running day  2459209, 44.35% of days complete     Running day  2459210, 44.64% of days complete     Running day  2459211, 44.94% of days complete     Running day  2459212, 45.24% of days complete     Running day  2459213, 45.54% of days complete     Running day  2459214, 45.83% of days complete     Running day  2459215, 46.13% of days complete     Running day  2459216, 46.43% of days complete     Running day  2459217, 46.73% of days complete     Running day  2459218, 47.02% of days complete     Running day  2459219, 47.32% of days complete     Running day  2459220, 47.62% of days complete     Running day  2459221, 47.92% of days complete     Running day  2459222, 48.21% of days complete     Running day  2459223, 48.51% of days complete     Running day  2459224, 48.81% of days complete     Running day  2459225, 49.11% of days complete     Running day  2459226, 49.40% of days complete     Running day  2459227, 49.70% of days complete     Running day  2459228, 50.00% of days complete     Running day  2459229, 50.30% of days complete     Running day  2459230, 50.60% of days complete     Running day  2459231, 50.89% of days complete     Running day  2459232, 51.19% of days complete     Running day  2459233, 51.49% of days complete     Running day  2459234, 51.79% of days complete     Running day  2459235, 52.08% of days complete     Running day  2459236, 52.38% of days complete     Running day  2459237, 52.68% of days complete     Running day  2459238, 52.98% of days complete     Running day  2459239, 53.27% of days complete     Running day  2459240, 53.57% of days complete     Running day  2459241, 53.87% of days complete     Running day  2459242, 54.17% of days complete     Running day  2459243, 54.46% of days complete     Running day  2459244, 54.76% of days complete     Running day  2459245, 55.06% of days complete     Running day  2459246, 55.36% of days complete     Running day  2459247, 55.65% of days complete     Running day  2459248, 55.95% of days complete     Running day  2459249, 56.25% of days complete     Running day  2459250, 56.55% of days complete     Running day  2459251, 56.85% of days complete     Running day  2459252, 57.14% of days complete     Running day  2459253, 57.44% of days complete     Running day  2459254, 57.74% of days complete     Running day  2459255, 58.04% of days complete     Running day  2459256, 58.33% of days complete     Running day  2459257, 58.63% of days complete     Running day  2459258, 58.93% of days complete     Running day  2459259, 59.23% of days complete     Running day  2459260, 59.52% of days complete     Running day  2459261, 59.82% of days complete     Running day  2459262, 60.12% of days complete     Running day  2459263, 60.42% of days complete     Running day  2459264, 60.71% of days complete     Running day  2459265, 61.01% of days complete     Running day  2459266, 61.31% of days complete     Running day  2459267, 61.61% of days complete     Running day  2459268, 61.90% of days complete     Running day  2459269, 62.20% of days complete     Running day  2459270, 62.50% of days complete     Running day  2459271, 62.80% of days complete     Running day  2459272, 63.10% of days complete     Running day  2459273, 63.39% of days complete     Running day  2459274, 63.69% of days complete     Running day  2459275, 63.99% of days complete     Running day  2459276, 64.29% of days complete     Running day  2459277, 64.58% of days complete     Running day  2459278, 64.88% of days complete     Running day  2459279, 65.18% of days complete     Running day  2459280, 65.48% of days complete     Running day  2459281, 65.77% of days complete     Running day  2459282, 66.07% of days complete     Running day  2459283, 66.37% of days complete     Running day  2459284, 66.67% of days complete     Running day  2459285, 66.96% of days complete     Running day  2459286, 67.26% of days complete     Running day  2459287, 67.56% of days complete     Running day  2459288, 67.86% of days complete     Running day  2459289, 68.15% of days complete     Running day  2459290, 68.45% of days complete     Running day  2459291, 68.75% of days complete     Running day  2459292, 69.05% of days complete     Running day  2459293, 69.35% of days complete     Running day  2459294, 69.64% of days complete     Running day  2459295, 69.94% of days complete     Running day  2459296, 70.24% of days complete     Running day  2459297, 70.54% of days complete     Running day  2459298, 70.83% of days complete     Running day  2459299, 71.13% of days complete     Running day  2459300, 71.43% of days complete     Running day  2459301, 71.73% of days complete     Running day  2459302, 72.02% of days complete     Running day  2459303, 72.32% of days complete     Running day  2459304, 72.62% of days complete     Running day  2459305, 72.92% of days complete     Running day  2459306, 73.21% of days complete     Running day  2459307, 73.51% of days complete     Running day  2459308, 73.81% of days complete     Running day  2459309, 74.11% of days complete     Running day  2459310, 74.40% of days complete     Running day  2459311, 74.70% of days complete     Running day  2459312, 75.00% of days complete     Running day  2459313, 75.30% of days complete     Running day  2459314, 75.60% of days complete     Running day  2459315, 75.89% of days complete     Running day  2459316, 76.19% of days complete     Running day  2459317, 76.49% of days complete     Running day  2459318, 76.79% of days complete     Running day  2459319, 77.08% of days complete     Running day  2459320, 77.38% of days complete     Running day  2459321, 77.68% of days complete     Running day  2459322, 77.98% of days complete     Running day  2459323, 78.27% of days complete     Running day  2459324, 78.57% of days complete     Running day  2459325, 78.87% of days complete     Running day  2459326, 79.17% of days complete     Running day  2459327, 79.46% of days complete     Running day  2459328, 79.76% of days complete     Running day  2459329, 80.06% of days complete     Running day  2459330, 80.36% of days complete     Running day  2459331, 80.65% of days complete     Running day  2459332, 80.95% of days complete     Running day  2459333, 81.25% of days complete     Running day  2459334, 81.55% of days complete     Running day  2459335, 81.85% of days complete     Running day  2459336, 82.14% of days complete     Running day  2459337, 82.44% of days complete     Running day  2459338, 82.74% of days complete     Running day  2459339, 83.04% of days complete     Running day  2459340, 83.33% of days complete     Running day  2459341, 83.63% of days complete     Running day  2459342, 83.93% of days complete     Running day  2459343, 84.23% of days complete     Running day  2459344, 84.52% of days complete     Running day  2459345, 84.82% of days complete     Running day  2459346, 85.12% of days complete     Running day  2459347, 85.42% of days complete     Running day  2459348, 85.71% of days complete     Running day  2459349, 86.01% of days complete     Running day  2459350, 86.31% of days complete     Running day  2459351, 86.61% of days complete     Running day  2459352, 86.90% of days complete     Running day  2459353, 87.20% of days complete     Running day  2459354, 87.50% of days complete     Running day  2459355, 87.80% of days complete     Running day  2459356, 88.10% of days complete     Running day  2459357, 88.39% of days complete     Running day  2459358, 88.69% of days complete     Running day  2459359, 88.99% of days complete     Running day  2459360, 89.29% of days complete     Running day  2459361, 89.58% of days complete     Running day  2459362, 89.88% of days complete     Running day  2459363, 90.18% of days complete     Running day  2459364, 90.48% of days complete     Running day  2459365, 90.77% of days complete     Running day  2459366, 91.07% of days complete     Running day  2459367, 91.37% of days complete     Running day  2459368, 91.67% of days complete     Running day  2459369, 91.96% of days complete     Running day  2459370, 92.26% of days complete     Running day  2459371, 92.56% of days complete     Running day  2459372, 92.86% of days complete     Running day  2459373, 93.15% of days complete     Running day  2459374, 93.45% of days complete     Running day  2459375, 93.75% of days complete     Running day  2459376, 94.05% of days complete     Running day  2459377, 94.35% of days complete     Running day  2459378, 94.64% of days complete     Running day  2459379, 94.94% of days complete     Running day  2459380, 95.24% of days complete     Running day  2459381, 95.54% of days complete     Running day  2459382, 95.83% of days complete     Running day  2459383, 96.13% of days complete     Running day  2459384, 96.43% of days complete     Running day  2459385, 96.73% of days complete     Running day  2459386, 97.02% of days complete     Running day  2459387, 97.32% of days complete     Running day  2459388, 97.62% of days complete     Running day  2459389, 97.92% of days complete     Running day  2459390, 98.21% of days complete     Running day  2459391, 98.51% of days complete     Running day  2459392, 98.81% of days complete     Running day  2459393, 99.11% of days complete     Running day  2459394, 99.40% of days complete     Running day  2459395, 99.70% of days complete
-✔ Model run complete! [2026-03-02 21:16:30]
-✔ GLM-AED run successful! [2026-03-02 21:16:30]
-✔ Model run complete! [2026-03-02 21:16:30]
-[1] 924.6735
-[1] 916.4345
+✔ Model run complete! [2026-03-02 21:50:20]
+[1] 537.2334
+[1] 1565.345
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:31]
-→ GLM-AED running... [2026-03-02 21:16:31]
-✔ GLM-AED run successful! [2026-03-02 21:16:31]
-✔ Model run complete! [2026-03-02 21:16:31]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:21]
+→ GLM-AED running... [2026-03-02 21:50:21]
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:21]
+→ GLM-AED running... [2026-03-02 21:50:21]
+✔ GLM-AED run successful! [2026-03-02 21:50:21]
+✔ Model run complete! [2026-03-02 21:50:21]
+✔ GLM-AED run successful! [2026-03-02 21:50:21]
+✔ Model run complete! [2026-03-02 21:50:21]
+[1] 1954.191
+[1] 1642.459
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:22]
+→ GLM-AED running... [2026-03-02 21:50:22]
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:22]
+→ GLM-AED running... [2026-03-02 21:50:22]
+✔ GLM-AED run successful! [2026-03-02 21:50:22]
+✔ Model run complete! [2026-03-02 21:50:22]
+✔ GLM-AED run successful! [2026-03-02 21:50:22]
+✔ Model run complete! [2026-03-02 21:50:22]
+[1] 916.4345
+[1] 924.6735
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:23]
+→ GLM-AED running... [2026-03-02 21:50:23]
+✔ GLM-AED run successful! [2026-03-02 21:50:23]
+✔ Model run complete! [2026-03-02 21:50:23]
 [1] 616.2395
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:32]
-→ GLM-AED running... [2026-03-02 21:16:32]
-✔ GLM-AED run successful! [2026-03-02 21:16:32]
-✔ Model run complete! [2026-03-02 21:16:32]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:24]
+→ GLM-AED running... [2026-03-02 21:50:24]
+✔ GLM-AED run successful! [2026-03-02 21:50:24]
+✔ Model run complete! [2026-03-02 21:50:24]
 [1] 780.4717
 Warning message:
 ! No model output loaded as all model runs failed. 
-Warning message:
-! No model output loaded as all model runs failed. 
-starting worker pid=8344 on localhost:11986 at 21:16:35.314
-starting worker pid=2636 on localhost:11986 at 21:16:35.332
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:42]
-→ GOTM-WET running... [2026-03-02 21:16:42]
-✔ GOTM-WET run successful! [2026-03-02 21:16:42]
-✔ Model run complete! [2026-03-02 21:16:42]
+starting worker pid=7496 on localhost:11751 at 21:50:26.797
+starting worker pid=9024 on localhost:11751 at 21:50:26.797
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:32]
+→ GOTM-WET running... [2026-03-02 21:50:32]
+✔ GOTM-WET run successful! [2026-03-02 21:50:33]
+✔ Model run complete! [2026-03-02 21:50:33]
 [1] 24.63539
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:44]
-→ GOTM-WET running... [2026-03-02 21:16:44]
-✔ GOTM-WET run successful! [2026-03-02 21:16:45]
-✔ Model run complete! [2026-03-02 21:16:45]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:34]
+→ GOTM-WET running... [2026-03-02 21:50:34]
+✔ GOTM-WET run successful! [2026-03-02 21:50:34]
+✔ Model run complete! [2026-03-02 21:50:34]
 [1] 18938.8
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:46]
-→ GOTM-WET running... [2026-03-02 21:16:46]
-! GOTM-WET run FAILED! [2026-03-02 21:16:46]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:35]
+→ GOTM-WET running... [2026-03-02 21:50:35]
+! GOTM-WET run FAILED! [2026-03-02 21:50:36]
  ------------------------------------------------------------------------
- GOTM started on 2026/03/02 at 21:16:46
+ GOTM started on 2026/03/02 at 21:50:36
  ------------------------------------------------------------------------
     init_gotm
  ------------------------------------------------------------------------
@@ -1357,7 +1351,7 @@ Deleted previous output for model GOTM-WET at
  F: Numeric conversion not representable
 1
 
-✔ Model run complete! [2026-03-02 21:16:46]
+✔ Model run complete! [2026-03-02 21:50:36]
 ! Warning: Some model runs failed and will not be loaded: gotm_wet
 ! Error reading model outputs for variable
 HYD_temp: Empty time dimension. Returning
@@ -1365,153 +1359,153 @@ na_value.
 ! No observational data present.
 [1] 999
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:47]
-→ GOTM-WET running... [2026-03-02 21:16:48]
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:48]
-→ GOTM-WET running... [2026-03-02 21:16:48]
-✔ GOTM-WET run successful! [2026-03-02 21:16:48]
-✔ Model run complete! [2026-03-02 21:16:48]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:37]
+→ GOTM-WET running... [2026-03-02 21:50:37]
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:37]
+→ GOTM-WET running... [2026-03-02 21:50:37]
+✔ GOTM-WET run successful! [2026-03-02 21:50:37]
+✔ Model run complete! [2026-03-02 21:50:37]
+✔ GOTM-WET run successful! [2026-03-02 21:50:38]
+✔ Model run complete! [2026-03-02 21:50:38]
 [1] 39610.27
-✔ GOTM-WET run successful! [2026-03-02 21:16:49]
-✔ Model run complete! [2026-03-02 21:16:49]
 [1] 999
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:50]
-→ GOTM-WET running... [2026-03-02 21:16:50]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:39]
+→ GOTM-WET running... [2026-03-02 21:50:39]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:50]
-→ GOTM-WET running... [2026-03-02 21:16:50]
-✔ GOTM-WET run successful! [2026-03-02 21:16:50]
-✔ Model run complete! [2026-03-02 21:16:50]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:39]
+→ GOTM-WET running... [2026-03-02 21:50:39]
+✔ GOTM-WET run successful! [2026-03-02 21:50:40]
+✔ Model run complete! [2026-03-02 21:50:40]
+✔ GOTM-WET run successful! [2026-03-02 21:50:40]
+✔ Model run complete! [2026-03-02 21:50:40]
 [1] 999
-✔ GOTM-WET run successful! [2026-03-02 21:16:51]
-✔ Model run complete! [2026-03-02 21:16:51]
 [1] 999
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:52]
-→ GOTM-WET running... [2026-03-02 21:16:52]
-✔ GOTM-WET run successful! [2026-03-02 21:16:52]
-✔ Model run complete! [2026-03-02 21:16:52]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:41]
+→ GOTM-WET running... [2026-03-02 21:50:41]
+✔ GOTM-WET run successful! [2026-03-02 21:50:41]
+✔ Model run complete! [2026-03-02 21:50:41]
 [1] 1407.52
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:54]
-→ GOTM-WET running... [2026-03-02 21:16:54]
-✔ GOTM-WET run successful! [2026-03-02 21:16:54]
-✔ Model run complete! [2026-03-02 21:16:54]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:43]
+→ GOTM-WET running... [2026-03-02 21:50:43]
+✔ GOTM-WET run successful! [2026-03-02 21:50:43]
+✔ Model run complete! [2026-03-02 21:50:43]
 [1] 27362.35
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:55]
-→ GOTM-WET running... [2026-03-02 21:16:55]
-✔ GOTM-WET run successful! [2026-03-02 21:16:56]
-✔ Model run complete! [2026-03-02 21:16:56]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:44]
+→ GOTM-WET running... [2026-03-02 21:50:44]
+✔ GOTM-WET run successful! [2026-03-02 21:50:45]
+✔ Model run complete! [2026-03-02 21:50:45]
 [1] 23.84065
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:57]
-→ GOTM-WET running... [2026-03-02 21:16:57]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:58]
-→ GOTM-WET running... [2026-03-02 21:16:58]
-✔ GOTM-WET run successful! [2026-03-02 21:16:58]
-✔ Model run complete! [2026-03-02 21:16:58]
-✔ GOTM-WET run successful! [2026-03-02 21:16:58]
-✔ Model run complete! [2026-03-02 21:16:58]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:47]
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:47]
+→ GOTM-WET running... [2026-03-02 21:50:47]
+→ GOTM-WET running... [2026-03-02 21:50:47]
+✔ GOTM-WET run successful! [2026-03-02 21:50:47]
+✔ Model run complete! [2026-03-02 21:50:47]
+✔ GOTM-WET run successful! [2026-03-02 21:50:47]
+✔ Model run complete! [2026-03-02 21:50:47]
 [1] 23.51724
 [1] 999
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:00]
-→ GOTM-WET running... [2026-03-02 21:17:00]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:49]
+→ GOTM-WET running... [2026-03-02 21:50:49]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:00]
-→ GOTM-WET running... [2026-03-02 21:17:00]
-✔ GOTM-WET run successful! [2026-03-02 21:17:00]
-✔ GOTM-WET run successful! [2026-03-02 21:17:00]
-✔ Model run complete! [2026-03-02 21:17:00]
-✔ Model run complete! [2026-03-02 21:17:00]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:49]
+→ GOTM-WET running... [2026-03-02 21:50:49]
+✔ GOTM-WET run successful! [2026-03-02 21:50:50]
+✔ Model run complete! [2026-03-02 21:50:50]
+✔ GOTM-WET run successful! [2026-03-02 21:50:50]
+✔ Model run complete! [2026-03-02 21:50:50]
 [1] 22.44965
 [1] 29.09311
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:02]
-→ GOTM-WET running... [2026-03-02 21:17:02]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:51]
+→ GOTM-WET running... [2026-03-02 21:50:51]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:02]
-→ GOTM-WET running... [2026-03-02 21:17:02]
-✔ GOTM-WET run successful! [2026-03-02 21:17:02]
-✔ Model run complete! [2026-03-02 21:17:02]
-✔ GOTM-WET run successful! [2026-03-02 21:17:02]
-✔ Model run complete! [2026-03-02 21:17:02]
-[1] 17.65633
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:51]
+→ GOTM-WET running... [2026-03-02 21:50:51]
+✔ GOTM-WET run successful! [2026-03-02 21:50:51]
+✔ Model run complete! [2026-03-02 21:50:52]
+✔ GOTM-WET run successful! [2026-03-02 21:50:52]
+✔ Model run complete! [2026-03-02 21:50:52]
 [1] 20.982
+[1] 17.65633
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:04]
-→ GOTM-WET running... [2026-03-02 21:17:04]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:53]
+→ GOTM-WET running... [2026-03-02 21:50:53]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:04]
-→ GOTM-WET running... [2026-03-02 21:17:04]
-✔ GOTM-WET run successful! [2026-03-02 21:17:04]
-✔ Model run complete! [2026-03-02 21:17:04]
-✔ GOTM-WET run successful! [2026-03-02 21:17:05]
-✔ Model run complete! [2026-03-02 21:17:05]
-[1] 19.09633
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:53]
+→ GOTM-WET running... [2026-03-02 21:50:53]
+✔ GOTM-WET run successful! [2026-03-02 21:50:54]
+✔ Model run complete! [2026-03-02 21:50:54]
+✔ GOTM-WET run successful! [2026-03-02 21:50:54]
+✔ Model run complete! [2026-03-02 21:50:54]
 [1] 999
+[1] 19.09633
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:06]
-→ GOTM-WET running... [2026-03-02 21:17:06]
-✔ GOTM-WET run successful! [2026-03-02 21:17:06]
-✔ Model run complete! [2026-03-02 21:17:06]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:55]
+→ GOTM-WET running... [2026-03-02 21:50:55]
+✔ GOTM-WET run successful! [2026-03-02 21:50:56]
+✔ Model run complete! [2026-03-02 21:50:56]
 [1] 19.31296
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:07]
-→ GOTM-WET running... [2026-03-02 21:17:07]
-✔ GOTM-WET run successful! [2026-03-02 21:17:08]
-✔ Model run complete! [2026-03-02 21:17:08]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:50:57]
+→ GOTM-WET running... [2026-03-02 21:50:57]
+✔ GOTM-WET run successful! [2026-03-02 21:50:58]
+✔ Model run complete! [2026-03-02 21:50:58]
 [1] 23.84065
 Warning messages:
 1: ! No model output loaded as all model runs failed. 
@@ -1519,123 +1513,119 @@ Warning messages:
 ℹ In argument: `Date %in% mod_out$Date`.
 Caused by warning:
 ! Unknown or uninitialised column: `Date`. 
-starting worker pid=3984 on localhost:11986 at 21:17:40.750
-starting worker pid=852 on localhost:11986 at 21:17:40.774
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:46]
-→ GLM-AED running... [2026-03-02 21:17:46]
-✔ GLM-AED run successful! [2026-03-02 21:17:46]
-✔ Model run complete! [2026-03-02 21:17:46]
+starting worker pid=2128 on localhost:11751 at 21:51:34.416
+starting worker pid=7380 on localhost:11751 at 21:51:34.450
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:39]
+→ GLM-AED running... [2026-03-02 21:51:39]
+✔ GLM-AED run successful! [2026-03-02 21:51:40]
+✔ Model run complete! [2026-03-02 21:51:40]
 [1] 999
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:47]
-→ GLM-AED running... [2026-03-02 21:17:47]
-✔ GLM-AED run successful! [2026-03-02 21:17:48]
-✔ Model run complete! [2026-03-02 21:17:48]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:40]
+→ GLM-AED running... [2026-03-02 21:51:40]
+✔ GLM-AED run successful! [2026-03-02 21:51:41]
+✔ Model run complete! [2026-03-02 21:51:41]
 [1] 999
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:48]
-→ GLM-AED running... [2026-03-02 21:17:48]
-✔ GLM-AED run successful! [2026-03-02 21:17:49]
-✔ Model run complete! [2026-03-02 21:17:49]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:41]
+→ GLM-AED running... [2026-03-02 21:51:41]
+✔ GLM-AED run successful! [2026-03-02 21:51:42]
+✔ Model run complete! [2026-03-02 21:51:42]
 [1] 7495.779
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:49]
-→ GLM-AED running... [2026-03-02 21:17:49]
-✔ GLM-AED run successful! [2026-03-02 21:17:50]
-✔ Model run complete! [2026-03-02 21:17:50]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:42]
+→ GLM-AED running... [2026-03-02 21:51:42]
+✔ GLM-AED run successful! [2026-03-02 21:51:42]
+✔ Model run complete! [2026-03-02 21:51:42]
 [1] 6980.494
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:51]
-→ GLM-AED running... [2026-03-02 21:17:51]
-✔ GLM-AED run successful! [2026-03-02 21:17:51]
-✔ Model run complete! [2026-03-02 21:17:51]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:43]
+→ GLM-AED running... [2026-03-02 21:51:43]
+✔ GLM-AED run successful! [2026-03-02 21:51:43]
+✔ Model run complete! [2026-03-02 21:51:43]
 [1] 4391.358
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:53]
-→ GLM-AED running... [2026-03-02 21:17:53]
-✔ GLM-AED run successful! [2026-03-02 21:17:53]
-✔ Model run complete! [2026-03-02 21:17:53]
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:45]
+→ GLM-AED running... [2026-03-02 21:51:45]
+✔ GLM-AED run successful! [2026-03-02 21:51:45]
+✔ Model run complete! [2026-03-02 21:51:45]
 [1] 999
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:53]
-→ GLM-AED running... [2026-03-02 21:17:53]
-✔ GLM-AED run successful! [2026-03-02 21:17:54]
-✔ Model run complete! [2026-03-02 21:17:54]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:45]
+→ GLM-AED running... [2026-03-02 21:51:45]
+✔ GLM-AED run successful! [2026-03-02 21:51:46]
+✔ Model run complete! [2026-03-02 21:51:46]
 [1] 7493.959
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:54]
-→ GLM-AED running... [2026-03-02 21:17:54]
-✔ GLM-AED run successful! [2026-03-02 21:17:55]
-✔ Model run complete! [2026-03-02 21:17:55]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:46]
+→ GLM-AED running... [2026-03-02 21:51:46]
+✔ GLM-AED run successful! [2026-03-02 21:51:47]
+✔ Model run complete! [2026-03-02 21:51:47]
 [1] 2242.299
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:55]
-→ GLM-AED running... [2026-03-02 21:17:55]
-✔ GLM-AED run successful! [2026-03-02 21:17:56]
-✔ Model run complete! [2026-03-02 21:17:56]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:47]
+→ GLM-AED running... [2026-03-02 21:51:47]
+✔ GLM-AED run successful! [2026-03-02 21:51:47]
+✔ Model run complete! [2026-03-02 21:51:47]
 [1] 1679.333
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:56]
-→ GLM-AED running... [2026-03-02 21:17:56]
-✔ GLM-AED run successful! [2026-03-02 21:17:56]
-✔ Model run complete! [2026-03-02 21:17:56]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:48]
+→ GLM-AED running... [2026-03-02 21:51:48]
+✔ GLM-AED run successful! [2026-03-02 21:51:48]
+✔ Model run complete! [2026-03-02 21:51:48]
 [1] 999
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:58]
-→ GLM-AED running... [2026-03-02 21:17:58]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:49]
+→ GLM-AED running... [2026-03-02 21:51:49]
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:58]
-→ GLM-AED running... [2026-03-02 21:17:58]
-✔ GLM-AED run successful! [2026-03-02 21:17:58]
-✔ Model run complete! [2026-03-02 21:17:58]
-✔ GLM-AED run successful! [2026-03-02 21:17:58]
-✔ Model run complete! [2026-03-02 21:17:58]
-[1] 829.917
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:49]
+→ GLM-AED running... [2026-03-02 21:51:49]
+✔ GLM-AED run successful! [2026-03-02 21:51:50]
+✔ GLM-AED run successful! [2026-03-02 21:51:50]
+✔ Model run complete! [2026-03-02 21:51:50]
+✔ Model run complete! [2026-03-02 21:51:50]
 [1] 7.607058
+[1] 829.917
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:59]
-→ GLM-AED running... [2026-03-02 21:17:59]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:17:59]
-→ GLM-AED running... [2026-03-02 21:17:59]
-✔ GLM-AED run successful! [2026-03-02 21:17:59]
-✔ Model run complete! [2026-03-02 21:17:59]
-✔ GLM-AED run successful! [2026-03-02 21:18:00]
-✔ Model run complete! [2026-03-02 21:18:00]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:50]
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:50]
+→ GLM-AED running... [2026-03-02 21:51:50]
+→ GLM-AED running... [2026-03-02 21:51:50]
+✔ GLM-AED run successful! [2026-03-02 21:51:51]
+✔ Model run complete! [2026-03-02 21:51:51]
+✔ GLM-AED run successful! [2026-03-02 21:51:51]
+✔ Model run complete! [2026-03-02 21:51:51]
 [1] 202.3598
 [1] 4274.202
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:00]
-→ GLM-AED running... [2026-03-02 21:18:00]
-! GLM-AED run FAILED! [2026-03-02 21:18:00]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:51]
+→ GLM-AED running... [2026-03-02 21:51:51]
+! GLM-AED run FAILED! [2026-03-02 21:51:51]
      glm built using gcc version 12.2.0
 
      nDays= 200; timestep= 3600.000000 (s)
      Maximum lake depth is 18.070000
      Depth where flow will occur over the crest is 18.070000
 
-     Wall clock start time :  Mon Mar  2 21:18:00 2026
+     Wall clock start time :  Mon Mar  2 21:51:51 2026
 
      Simulation begins...
      Running day  2459061, 0.30% of days complete     Running day  2459062, 0.60% of days complete     Running day  2459063, 0.89% of days complete     Running day  2459064, 1.19% of days complete     Running day  2459065, 1.49% of days complete     Running day  2459066, 1.79% of days complete     Running day  2459067, 2.08% of days complete     Running day  2459068, 2.38% of days complete     Running day  2459069, 2.68% of days complete     Running day  2459070, 2.98% of days complete     Running day  2459071, 3.27% of days complete     Running day  2459072, 3.57% of days complete     Running day  2459073, 3.87% of days complete     Running day  2459074, 4.17% of days complete     Running day  2459075, 4.46% of days complete     Running day  2459076, 4.76% of days complete     Running day  2459077, 5.06% of days complete     Running day  2459078, 5.36% of days complete     Running day  2459079, 5.65% of days complete     Running day  2459080, 5.95% of days complete     Running day  2459081, 6.25% of days complete     Running day  2459082, 6.55% of days complete     Running day  2459083, 6.85% of days complete     Running day  2459084, 7.14% of days complete     Running day  2459085, 7.44% of days complete     Running day  2459086, 7.74% of days complete     Running day  2459087, 8.04% of days complete     Running day  2459088, 8.33% of days complete     Running day  2459089, 8.63% of days complete     Running day  2459090, 8.93% of days complete     Running day  2459091, 9.23% of days complete     Running day  2459092, 9.52% of days complete     Running day  2459093, 9.82% of days complete     Running day  2459094, 10.12% of days complete     Running day  2459095, 10.42% of days complete     Running day  2459096, 10.71% of days complete     Running day  2459097, 11.01% of days complete     Running day  2459098, 11.31% of days complete     Running day  2459099, 11.61% of days complete     Running day  2459100, 11.90% of days complete     Running day  2459101, 12.20% of days complete     Running day  2459102, 12.50% of days complete     Running day  2459103, 12.80% of days complete     Running day  2459104, 13.10% of days complete     Running day  2459105, 13.39% of days complete     Running day  2459106, 13.69% of days complete     Running day  2459107, 13.99% of days complete     Running day  2459108, 14.29% of days complete     Running day  2459109, 14.58% of days complete     Running day  2459110, 14.88% of days complete     Running day  2459111, 15.18% of days complete     Running day  2459112, 15.48% of days complete     Running day  2459113, 15.77% of days complete     Running day  2459114, 16.07% of days complete     Running day  2459115, 16.37% of days complete     Running day  2459116, 16.67% of days complete     Running day  2459117, 16.96% of days complete     Running day  2459118, 17.26% of days complete     Running day  2459119, 17.56% of days complete     Running day  2459120, 17.86% of days complete     Running day  2459121, 18.15% of days complete     Running day  2459122, 18.45% of days complete     Running day  2459123, 18.75% of days complete     Running day  2459124, 19.05% of days complete     Running day  2459125, 19.35% of days complete     Running day  2459126, 19.64% of days complete     Running day  2459127, 19.94% of days complete     Running day  2459128, 20.24% of days complete     Running day  2459129, 20.54% of days complete     Running day  2459130, 20.83% of days complete     Running day  2459131, 21.13% of days complete     Running day  2459132, 21.43% of days complete     Running day  2459133, 21.73% of days complete     Running day  2459134, 22.02% of days complete     Running day  2459135, 22.32% of days complete     Running day  2459136, 22.62% of days complete     Running day  2459137, 22.92% of days complete     Running day  2459138, 23.21% of days complete     Running day  2459139, 23.51% of days complete     Running day  2459140, 23.81% of days complete     Running day  2459141, 24.11% of days complete
-✔ Model run complete! [2026-03-02 21:18:00]
+✔ Model run complete! [2026-03-02 21:51:51]
 ! Warning: Some model runs failed and will not be loaded: glm_aed
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:00]
-→ GLM-AED running... [2026-03-02 21:18:00]
 ! date_index exceeds available GLM output dates. 
 Returning empty output.
 ! Error reading model outputs for variable
@@ -1643,209 +1633,213 @@ HYD_temp: date_index exceeds available GLM output dates. Returning
 na_value.
 [1] 999
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:01]
-→ GLM-AED running... [2026-03-02 21:18:01]
-✔ GLM-AED run successful! [2026-03-02 21:18:01]
-✔ Model run complete! [2026-03-02 21:18:01]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:51]
+→ GLM-AED running... [2026-03-02 21:51:51]
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:52]
+→ GLM-AED running... [2026-03-02 21:51:52]
+✔ GLM-AED run successful! [2026-03-02 21:51:52]
+✔ Model run complete! [2026-03-02 21:51:52]
+✔ GLM-AED run successful! [2026-03-02 21:51:52]
+✔ Model run complete! [2026-03-02 21:51:52]
 [1] 3919.162
-✔ GLM-AED run successful! [2026-03-02 21:18:01]
-✔ Model run complete! [2026-03-02 21:18:01]
-ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:02]
-→ GLM-AED running... [2026-03-02 21:18:02]
 [1] 5896.888
-✔ GLM-AED run successful! [2026-03-02 21:18:02]
-✔ Model run complete! [2026-03-02 21:18:02]
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:02]
-→ GLM-AED running... [2026-03-02 21:18:02]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:53]
+→ GLM-AED running... [2026-03-02 21:51:53]
+ℹ Deleted previous output for model GLM-AED at
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:53]
+→ GLM-AED running... [2026-03-02 21:51:53]
+✔ GLM-AED run successful! [2026-03-02 21:51:53]
+✔ Model run complete! [2026-03-02 21:51:53]
+✔ GLM-AED run successful! [2026-03-02 21:51:53]
+✔ Model run complete! [2026-03-02 21:51:53]
 [1] 278.3016
-✔ GLM-AED run successful! [2026-03-02 21:18:03]
-✔ Model run complete! [2026-03-02 21:18:03]
 [1] 852.9633
 ℹ Deleted previous output for model GLM-AED at
-  'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/glm_aed/output/output.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:03]
-→ GLM-AED running... [2026-03-02 21:18:03]
-✔ GLM-AED run successful! [2026-03-02 21:18:04]
-✔ Model run complete! [2026-03-02 21:18:04]
+  'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/glm_aed/output/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:51:54]
+→ GLM-AED running... [2026-03-02 21:51:54]
+✔ GLM-AED run successful! [2026-03-02 21:51:54]
+✔ Model run complete! [2026-03-02 21:51:54]
 [1] 999
 Warning message:
 ! No model output loaded as all model runs failed. 
-starting worker pid=6152 on localhost:11986 at 21:18:06.726
-starting worker pid=2480 on localhost:11986 at 21:18:06.750
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:13]
-→ GOTM-WET running... [2026-03-02 21:18:13]
-✔ GOTM-WET run successful! [2026-03-02 21:18:14]
-✔ Model run complete! [2026-03-02 21:18:14]
+starting worker pid=3904 on localhost:11751 at 21:51:56.771
+starting worker pid=3308 on localhost:11751 at 21:51:56.771
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:04]
+→ GOTM-WET running... [2026-03-02 21:52:04]
+✔ GOTM-WET run successful! [2026-03-02 21:52:05]
+✔ Model run complete! [2026-03-02 21:52:05]
 [1] 8315.284
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:16]
-→ GOTM-WET running... [2026-03-02 21:18:16]
-✔ GOTM-WET run successful! [2026-03-02 21:18:16]
-✔ Model run complete! [2026-03-02 21:18:16]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:07]
+→ GOTM-WET running... [2026-03-02 21:52:07]
+✔ GOTM-WET run successful! [2026-03-02 21:52:07]
+✔ Model run complete! [2026-03-02 21:52:07]
 [1] 8475.605
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:18]
-→ GOTM-WET running... [2026-03-02 21:18:18]
-✔ GOTM-WET run successful! [2026-03-02 21:18:18]
-✔ Model run complete! [2026-03-02 21:18:18]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:09]
+→ GOTM-WET running... [2026-03-02 21:52:09]
+✔ GOTM-WET run successful! [2026-03-02 21:52:10]
+✔ Model run complete! [2026-03-02 21:52:10]
 [1] 7180.49
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:20]
-→ GOTM-WET running... [2026-03-02 21:18:20]
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:11]
+→ GOTM-WET running... [2026-03-02 21:52:11]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:20]
-→ GOTM-WET running... [2026-03-02 21:18:20]
-✔ GOTM-WET run successful! [2026-03-02 21:18:20]
-✔ Model run complete! [2026-03-02 21:18:20]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:11]
+→ GOTM-WET running... [2026-03-02 21:52:11]
+✔ GOTM-WET run successful! [2026-03-02 21:52:11]
+✔ Model run complete! [2026-03-02 21:52:11]
+✔ GOTM-WET run successful! [2026-03-02 21:52:12]
+✔ Model run complete! [2026-03-02 21:52:12]
 [1] 999
-✔ GOTM-WET run successful! [2026-03-02 21:18:21]
-✔ Model run complete! [2026-03-02 21:18:21]
 [1] 2819.195
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:22]
-→ GOTM-WET running... [2026-03-02 21:18:22]
-✔ GOTM-WET run successful! [2026-03-02 21:18:22]
-✔ Model run complete! [2026-03-02 21:18:22]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:13]
+→ GOTM-WET running... [2026-03-02 21:52:13]
+✔ GOTM-WET run successful! [2026-03-02 21:52:13]
+✔ Model run complete! [2026-03-02 21:52:13]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:22]
-→ GOTM-WET running... [2026-03-02 21:18:22]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:13]
+→ GOTM-WET running... [2026-03-02 21:52:13]
 [1] 5.150315
-✔ GOTM-WET run successful! [2026-03-02 21:18:23]
-✔ Model run complete! [2026-03-02 21:18:23]
+✔ GOTM-WET run successful! [2026-03-02 21:52:14]
+✔ Model run complete! [2026-03-02 21:52:14]
 [1] 1788.333
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:24]
-→ GOTM-WET running... [2026-03-02 21:18:24]
-✔ GOTM-WET run successful! [2026-03-02 21:18:24]
-✔ Model run complete! [2026-03-02 21:18:24]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:15]
+→ GOTM-WET running... [2026-03-02 21:52:15]
+✔ GOTM-WET run successful! [2026-03-02 21:52:15]
+✔ Model run complete! [2026-03-02 21:52:15]
 [1] 11424.16
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:26]
-→ GOTM-WET running... [2026-03-02 21:18:26]
-✔ GOTM-WET run successful! [2026-03-02 21:18:26]
-✔ Model run complete! [2026-03-02 21:18:26]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:16]
+→ GOTM-WET running... [2026-03-02 21:52:16]
+✔ GOTM-WET run successful! [2026-03-02 21:52:18]
+✔ Model run complete! [2026-03-02 21:52:18]
 [1] 22441.24
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:28]
-→ GOTM-WET running... [2026-03-02 21:18:28]
-✔ GOTM-WET run successful! [2026-03-02 21:18:28]
-✔ Model run complete! [2026-03-02 21:18:28]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:19]
+→ GOTM-WET running... [2026-03-02 21:52:19]
+✔ GOTM-WET run successful! [2026-03-02 21:52:20]
+✔ Model run complete! [2026-03-02 21:52:20]
 [1] 20.58199
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:30]
-→ GOTM-WET running... [2026-03-02 21:18:30]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:22]
+→ GOTM-WET running... [2026-03-02 21:52:22]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:30]
-→ GOTM-WET running... [2026-03-02 21:18:30]
-✔ GOTM-WET run successful! [2026-03-02 21:18:31]
-✔ Model run complete! [2026-03-02 21:18:31]
-✔ GOTM-WET run successful! [2026-03-02 21:18:31]
-✔ Model run complete! [2026-03-02 21:18:31]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:22]
+→ GOTM-WET running... [2026-03-02 21:52:22]
+✔ GOTM-WET run successful! [2026-03-02 21:52:22]
+✔ Model run complete! [2026-03-02 21:52:22]
+✔ GOTM-WET run successful! [2026-03-02 21:52:22]
+✔ Model run complete! [2026-03-02 21:52:22]
 [1] 4.521683
 [1] 3241.81
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:32]
-→ GOTM-WET running... [2026-03-02 21:18:32]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:24]
+→ GOTM-WET running... [2026-03-02 21:52:24]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:32]
-→ GOTM-WET running... [2026-03-02 21:18:32]
-✔ GOTM-WET run successful! [2026-03-02 21:18:33]
-✔ Model run complete! [2026-03-02 21:18:33]
-✔ GOTM-WET run successful! [2026-03-02 21:18:33]
-✔ Model run complete! [2026-03-02 21:18:33]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:24]
+→ GOTM-WET running... [2026-03-02 21:52:24]
+✔ GOTM-WET run successful! [2026-03-02 21:52:24]
+✔ Model run complete! [2026-03-02 21:52:24]
+✔ GOTM-WET run successful! [2026-03-02 21:52:24]
+✔ Model run complete! [2026-03-02 21:52:24]
 [1] 88.83716
 [1] 566.2507
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:34]
-→ GOTM-WET running... [2026-03-02 21:18:34]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:25]
+→ GOTM-WET running... [2026-03-02 21:52:25]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:35]
-→ GOTM-WET running... [2026-03-02 21:18:35]
-✔ GOTM-WET run successful! [2026-03-02 21:18:35]
-✔ Model run complete! [2026-03-02 21:18:35]
-✔ GOTM-WET run successful! [2026-03-02 21:18:35]
-✔ Model run complete! [2026-03-02 21:18:35]
-[1] 927.1849
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:25]
+→ GOTM-WET running... [2026-03-02 21:52:25]
+✔ GOTM-WET run successful! [2026-03-02 21:52:26]
+✔ Model run complete! [2026-03-02 21:52:26]
+✔ GOTM-WET run successful! [2026-03-02 21:52:26]
+✔ Model run complete! [2026-03-02 21:52:26]
 [1] 999
+[1] 927.1849
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:36]
-→ GOTM-WET running... [2026-03-02 21:18:36]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:27]
+→ GOTM-WET running... [2026-03-02 21:52:27]
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_2/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:36]
-→ GOTM-WET running... [2026-03-02 21:18:36]
-✔ GOTM-WET run successful! [2026-03-02 21:18:37]
-✔ Model run complete! [2026-03-02 21:18:37]
-✔ GOTM-WET run successful! [2026-03-02 21:18:37]
-✔ Model run complete! [2026-03-02 21:18:37]
-[1] 660.6855
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:27]
+→ GOTM-WET running... [2026-03-02 21:52:27]
+✔ GOTM-WET run successful! [2026-03-02 21:52:28]
+✔ Model run complete! [2026-03-02 21:52:28]
+✔ GOTM-WET run successful! [2026-03-02 21:52:28]
+✔ Model run complete! [2026-03-02 21:52:28]
 [1] 9.018033
+[1] 660.6855
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:38]
-→ GOTM-WET running... [2026-03-02 21:18:38]
-✔ GOTM-WET run successful! [2026-03-02 21:18:39]
-✔ Model run complete! [2026-03-02 21:18:39]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:29]
+→ GOTM-WET running... [2026-03-02 21:52:29]
+✔ GOTM-WET run successful! [2026-03-02 21:52:30]
+✔ Model run complete! [2026-03-02 21:52:30]
 [1] 44.71808
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output.nc'
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output.nc'
 Deleted previous output for model GOTM-WET at
-'C:/Users/runneradmin/AppData/Local/Temp/RtmpAhdw76/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
-ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:18:40]
-→ GOTM-WET running... [2026-03-02 21:18:40]
-✔ GOTM-WET run successful! [2026-03-02 21:18:41]
-✔ Model run complete! [2026-03-02 21:18:41]
+'C:/Users/runneradmin/AppData/Local/Temp/RtmpmQgYfc/n_1/45819_wainamu/gotm_wet/output/output_daily.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:52:31]
+→ GOTM-WET running... [2026-03-02 21:52:31]
+✔ GOTM-WET run successful! [2026-03-02 21:52:31]
+✔ Model run complete! [2026-03-02 21:52:31]
 [1] 5.150315

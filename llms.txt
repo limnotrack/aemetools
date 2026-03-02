@@ -113,11 +113,15 @@ See the vignette
 - [`check_api_status()`](check_api_status.md) : Check API status
 - [`convert_era5_ncdf()`](convert_era5_ncdf.md) : Convert ERA5 netCDF
   files to AEME or LER
-- [`create_control()`](create_control.md) : Create control list for
-  calibration or sensitivity analysis
+- [`create_calib_control()`](create_calib_control.md) : Create control
+  list for calibration
+- [`create_control()`](create_control.md) **\[deprecated\]** : Create
+  control list (superseded)
 - [`create_linz_key()`](create_linz_key.md) : Create LINZ API key
 - [`create_param_var_matrix()`](create_param_var_matrix.md) : Create a
   parameter-variable matrix for each model
+- [`create_sa_control()`](create_sa_control.md) : Create control list
+  for sensitivity analysis
 - [`decode_param()`](decode_param.md) : Decode a full parameter name to
   extract the base name.
 - [`decode_param_full()`](decode_param_full.md) : Decode a full

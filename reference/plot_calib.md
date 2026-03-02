@@ -70,12 +70,12 @@ aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path,
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
-#> ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:16:03]
-#> → GLM-AED running... [2026-03-02 21:16:03]
-#> ✔ GLM-AED run successful! [2026-03-02 21:16:03]
-#> → GOTM-WET running... [2026-03-02 21:16:03]
-#> ✔ GOTM-WET run successful! [2026-03-02 21:16:04]
-#> ✔ Model run complete! [2026-03-02 21:16:04]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:49:58]
+#> → GLM-AED running... [2026-03-02 21:49:58]
+#> ✔ GLM-AED run successful! [2026-03-02 21:49:58]
+#> → GOTM-WET running... [2026-03-02 21:49:58]
+#> ✔ GOTM-WET run successful! [2026-03-02 21:49:59]
+#> ✔ Model run complete! [2026-03-02 21:49:59]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 
@@ -106,11 +106,10 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #> ! The following parameters have the same value, min, 
 #> and max and will not be updated during calibration: "sediment/n_zones"
 #> Warning: No parameters in 'param' for gotm_wet.
-#> ℹ Extracting indices for "glm_aed" modelled variables [2026-03-02 21:16:06]
-#> Warning: ! No model output loaded as all model runs failed.
-#> ✔ Indices extracted for "glm_aed" modelled variables [2026-03-02 21:16:07]
+#> ℹ Extracting indices for "glm_aed" modelled variables [2026-03-02 21:50:00]
+#> ✔ Indices extracted for "glm_aed" modelled variables [2026-03-02 21:50:01]
 #> ℹ Using 2 cores for parallel calibration for "glm_aed".
-#> → Starting generation 1/2, 10 members. [2026-03-02 21:16:07]
+#> → Starting generation 1/2, 10 members. [2026-03-02 21:50:02]
 #> Parameter summary for generation 1:
 #>        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv
 #> mean      2.833     1.0060     1.0100              0.14920
@@ -129,13 +128,13 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #> median                         48.29  1.4990 1.5130
 #> sd                             28.53  0.5972 0.6208
 #> ✔ Completed generation 1/2 
-#> for "glm_aed". [2026-03-02 21:16:25]
+#> for "glm_aed". [2026-03-02 21:50:18]
 #> Best fit: 780 (sd: 4057.9) Parameters: [ 2.88, 0.896, 0.834, 0.152, 0.251,
 #> 0.162, 0.688, 0.503, 16.4, 66.1, 2.04, and 1.92 ]
 #> Writing output for generation 1 to results.db with sim ID: "45819_glmaed_C_002"
-#> [2026-03-02 21:16:25]
+#> [2026-03-02 21:50:18]
 #> ℹ Survival rate: 0.8
-#> → Starting generation 2/2, 10 members. [2026-03-02 21:16:25]
+#> → Starting generation 2/2, 10 members. [2026-03-02 21:50:18]
 #> Parameter summary for generation 2:
 #>        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv
 #> mean     2.2840     0.8614     0.8569              0.15840
@@ -154,15 +153,15 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #> median                         62.84  1.6370 1.8200
 #> sd                             19.94  0.5414 0.5632
 #> Writing output for generation 2 to results.db with sim ID: "45819_glmaed_C_002"
-#> [2026-03-02 21:16:33]
+#> [2026-03-02 21:50:24]
 #> ✔ Completed generation 2/2 
-#> for "glm_aed". [2026-03-02 21:16:33]
+#> for "glm_aed". [2026-03-02 21:50:25]
 #> Best fit: 537 (sd: 2026.5)
 #> ℹ Survival rate: 1
-#> ℹ Extracting indices for "gotm_wet" modelled variables [2026-03-02 21:16:33]
-#> ✔ Indices extracted for "gotm_wet" modelled variables [2026-03-02 21:16:35]
+#> ℹ Extracting indices for "gotm_wet" modelled variables [2026-03-02 21:50:25]
+#> ✔ Indices extracted for "gotm_wet" modelled variables [2026-03-02 21:50:26]
 #> ℹ Using 2 cores for parallel calibration for "gotm_wet".
-#> → Starting generation 1/2, 10 members. [2026-03-02 21:16:35]
+#> → Starting generation 1/2, 10 members. [2026-03-02 21:50:27]
 #> Parameter summary for generation 1:
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
 #> mean                     4.998e-06                           0.52290
@@ -177,13 +176,13 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #> median     1.0070     0.9902  1.4680 1.4840
 #> sd         0.1802     0.1802  0.6081 0.6355
 #> ✔ Completed generation 1/2 
-#> for "gotm_wet". [2026-03-02 21:16:56]
+#> for "gotm_wet". [2026-03-02 21:50:45]
 #> Best fit: 23.8 (sd: 16770) Parameters: [ 7.7e-06, 0.458, 0.596, 2.31, 1.11,
 #> 1.11, 1.71, and 1.71 ]
 #> Writing output for generation 1 to results.db with sim ID:
-#> "45819_gotmwet_C_002" [2026-03-02 21:16:56]
+#> "45819_gotmwet_C_002" [2026-03-02 21:50:45]
 #> ℹ Survival rate: 0.6
-#> → Starting generation 2/2, 10 members. [2026-03-02 21:16:56]
+#> → Starting generation 2/2, 10 members. [2026-03-02 21:50:46]
 #> Parameter summary for generation 2:
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
 #> mean                     8.162e-06                           0.53340
@@ -198,9 +197,9 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #> median    1.18300     1.0020  1.6710 1.6810
 #> sd        0.07776     0.1358  0.1801 0.2578
 #> Writing output for generation 2 to results.db with sim ID:
-#> "45819_gotmwet_C_002" [2026-03-02 21:17:08]
+#> "45819_gotmwet_C_002" [2026-03-02 21:50:59]
 #> ✔ Completed generation 2/2 
-#> for "gotm_wet". [2026-03-02 21:17:09]
+#> for "gotm_wet". [2026-03-02 21:50:59]
 #> Best fit: 17.7 (sd: 3.6206)
 #> ℹ Survival rate: 0.8
                      

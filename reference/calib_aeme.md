@@ -110,12 +110,12 @@ aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path,
 #> ℹ Copied in GOTM configuration files
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
-#> ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:14:14]
-#> → GLM-AED running... [2026-03-02 21:14:14]
-#> ✔ GLM-AED run successful! [2026-03-02 21:14:15]
-#> → GOTM-WET running... [2026-03-02 21:14:15]
-#> ✔ GOTM-WET run successful! [2026-03-02 21:14:15]
-#> ✔ Model run complete! [2026-03-02 21:14:15]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-03-02 21:48:18]
+#> → GLM-AED running... [2026-03-02 21:48:18]
+#> ✔ GLM-AED run successful! [2026-03-02 21:48:18]
+#> → GOTM-WET running... [2026-03-02 21:48:18]
+#> ✔ GOTM-WET run successful! [2026-03-02 21:48:19]
+#> ✔ Model run complete! [2026-03-02 21:48:19]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 
@@ -133,6 +133,10 @@ FUN_list <- list(HYD_temp = nse, LKE_lvlwtr = nse)
 ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
                        parallel = TRUE, file_type = "db",
                        file_name = "results.db")
+#> Warning: `create_control()` was deprecated in aemetools 0.2.0.
+#> ℹ Please use `create_calibration_control()` instead.
+#> ℹ Use `create_calibration_control()` when method = 'calib'. Use
+#>   `create_sa_control()` when method = 'sa'.
 
 vars_sim <- c("HYD_temp", "LKE_lvlwtr")
 weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
@@ -146,11 +150,10 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #> ! The following parameters have the same value, min, 
 #> and max and will not be updated during calibration: "sediment/n_zones"
 #> Warning: No parameters in 'param' for gotm_wet.
-#> ℹ Extracting indices for "glm_aed" modelled variables [2026-03-02 21:14:17]
-#> Warning: ! No model output loaded as all model runs failed.
-#> ✔ Indices extracted for "glm_aed" modelled variables [2026-03-02 21:14:18]
+#> ℹ Extracting indices for "glm_aed" modelled variables [2026-03-02 21:48:21]
+#> ✔ Indices extracted for "glm_aed" modelled variables [2026-03-02 21:48:22]
 #> ℹ Using 2 cores for parallel calibration for "glm_aed".
-#> → Starting generation 1/2, 10 members. [2026-03-02 21:14:19]
+#> → Starting generation 1/2, 10 members. [2026-03-02 21:48:22]
 #> Parameter summary for generation 1:
 #>        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv
 #> mean      2.744     1.0070     1.0050              0.15040
@@ -169,13 +172,13 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #> median                         42.96  1.5030 1.5950
 #> sd                             25.63  0.6226 0.5908
 #> ✔ Completed generation 1/2 
-#> for "glm_aed". [2026-03-02 21:14:35]
+#> for "glm_aed". [2026-03-02 21:48:38]
 #> Best fit: 13.3 (sd: 3727.9) Parameters: [ 2.28, 0.985, 0.762, 0.162, 0.208,
 #> 0.113, 0.279, 0.662, 9.4, 21.1, 1.25, and 1.23 ]
 #> Writing output for generation 1 to results.db with sim ID: "45819_glmaed_C_001"
-#> [2026-03-02 21:14:35]
+#> [2026-03-02 21:48:38]
 #> ℹ Survival rate: 0.8
-#> → Starting generation 2/2, 10 members. [2026-03-02 21:14:35]
+#> → Starting generation 2/2, 10 members. [2026-03-02 21:48:38]
 #> Parameter summary for generation 2:
 #>        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv
 #> mean     2.8650    0.92930     1.0370             0.170000
@@ -194,15 +197,15 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #> median                         39.53  0.9796 0.7954
 #> sd                             10.15  0.1765 0.2444
 #> Writing output for generation 2 to results.db with sim ID: "45819_glmaed_C_001"
-#> [2026-03-02 21:14:43]
+#> [2026-03-02 21:48:44]
 #> ✔ Completed generation 2/2 
-#> for "glm_aed". [2026-03-02 21:14:43]
+#> for "glm_aed". [2026-03-02 21:48:45]
 #> Best fit: 13.3 (sd: 1882.4)
 #> ℹ Survival rate: 1
-#> ℹ Extracting indices for "gotm_wet" modelled variables [2026-03-02 21:14:43]
-#> ✔ Indices extracted for "gotm_wet" modelled variables [2026-03-02 21:14:45]
+#> ℹ Extracting indices for "gotm_wet" modelled variables [2026-03-02 21:48:45]
+#> ✔ Indices extracted for "gotm_wet" modelled variables [2026-03-02 21:48:46]
 #> ℹ Using 2 cores for parallel calibration for "gotm_wet".
-#> → Starting generation 1/2, 10 members. [2026-03-02 21:14:46]
+#> → Starting generation 1/2, 10 members. [2026-03-02 21:48:47]
 #> Parameter summary for generation 1:
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
 #> mean                     4.954e-06                           0.52640
@@ -217,13 +220,13 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #> median     0.9830     1.0250  1.4900 1.4670
 #> sd         0.1771     0.1824  0.6328 0.6032
 #> ✔ Completed generation 1/2 
-#> for "gotm_wet". [2026-03-02 21:15:09]
+#> for "gotm_wet". [2026-03-02 21:49:05]
 #> Best fit: 9.6 (sd: 17934) Parameters: [ 6.29e-06, 0.479, 0.467, 0.179, 1.19,
 #> 1.16, 1.15, and 1.17 ]
 #> Writing output for generation 1 to results.db with sim ID:
-#> "45819_gotmwet_C_001" [2026-03-02 21:15:09]
+#> "45819_gotmwet_C_001" [2026-03-02 21:49:05]
 #> ℹ Survival rate: 0.7
-#> → Starting generation 2/2, 10 members. [2026-03-02 21:15:09]
+#> → Starting generation 2/2, 10 members. [2026-03-02 21:49:05]
 #> Parameter summary for generation 2:
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
 #> mean                     4.604e-06                            0.4790
@@ -238,9 +241,9 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #> median     1.1000    1.16900  1.3640 1.3650
 #> sd         0.1017    0.03663  0.2247 0.2984
 #> Writing output for generation 2 to results.db with sim ID:
-#> "45819_gotmwet_C_001" [2026-03-02 21:15:21]
+#> "45819_gotmwet_C_001" [2026-03-02 21:49:15]
 #> ✔ Completed generation 2/2 
-#> for "gotm_wet". [2026-03-02 21:15:21]
+#> for "gotm_wet". [2026-03-02 21:49:15]
 #> Best fit: 9.49 (sd: 2496.4)
 #> ℹ Survival rate: 1
 ```

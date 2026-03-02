@@ -168,11 +168,14 @@ for the sensitivity analysis are as follows:
 |----------------|----------------:|
 | create_control | R Documentation |
 
-## Create control list for calibration or sensitivity analysis
+## Create control list (superseded)
 
 ### Arguments
 
-[TABLE]
+|          |                                               |
+|----------|-----------------------------------------------|
+| `method` | Character. Either `"calib"` or `"sa"`.        |
+| `...`    | Arguments passed to the appropriate function. |
 
 Here is an example for examining surface temperature (surf_temp) in the
 months December to February, bottom temperature (bot_temp), (10 - 13 m)
@@ -236,13 +239,13 @@ The `sa_aeme` function writes the results to the file specified. The
 sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
                   model = model, ctrl = ctrl, FUN_list = FUN_list)
 #> ℹ Extracting variable indices for "gotm_wet" modelled 
-#> variables "HYD_temp" and "PHY_tchla". [2026-03-02 21:27:46]
+#> variables "HYD_temp" and "PHY_tchla". [2026-03-02 22:00:34]
 #> ✔ Variable indices extracted for "gotm_wet". 
-#> [2026-03-02 21:27:52]
+#> [2026-03-02 22:00:39]
 #> ℹ Starting parallel sensitivity analysis for 
 #> "gotm_wet" using 2 cores with 
 #> 144 parameter sets. 
-#> [2026-03-02 21:27:53]
+#> [2026-03-02 22:00:39]
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
 #> mean                     4.851e-06                           0.52760
 #> median                   5.000e-06                           0.52700
@@ -257,9 +260,9 @@ sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
 #> sd         0.1619     0.1606 0.5311
 #> ✔ Parallel sensitivity analysis for 
 #> "gotm_wet" completed. 
-#> [2026-03-02 21:36:13]
+#> [2026-03-02 22:08:59]
 #> Writing output for generation 1 to results.db with sim ID:
-#> "45819_gotmwet_S_001" [2026-03-02 21:36:13]
+#> "45819_gotmwet_S_001" [2026-03-02 22:08:59]
 ```
 
 ## Reading sensitivity analysis results
