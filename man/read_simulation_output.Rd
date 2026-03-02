@@ -34,6 +34,9 @@ argument is ignored.}
 \item{file_dir}{The directory of the output file. If \code{ctrl} is provided, this
 argument is ignored.}
 
+\item{file_type}{string; file type to write the output to. Options are
+\code{c("csv", "db")}. Defaults to "db".}
+
 \item{sim_id}{A vector of simulation IDs to read. If NULL, all simulations
 are read.}
 
