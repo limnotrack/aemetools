@@ -223,16 +223,11 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
   inp <- AEME::input(aeme)
   model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
-  
-  aeme <- AEME::run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                         path = path)
+                           ext_elev = 5) |> 
+    AEME::run_aeme()
   
   lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
