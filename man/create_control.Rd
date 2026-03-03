@@ -13,6 +13,7 @@ create_control(method = c("calib", "sa"), ...)
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 \code{create_control()} is superseded. Please use
 \code{\link[=create_calib_control]{create_calib_control()}} or \code{\link[=create_sa_control]{create_sa_control()}}
 instead.
