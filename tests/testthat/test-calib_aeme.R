@@ -1045,8 +1045,11 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   
   ctrl <- create_calib_control(VTR = -Inf, NP = 10, itermax = 20,
                                reltol = 0.07, cutoff = 0.25, mutate = 0.1,
-                               parallel = F, file_type = "csv",
+                               parallel = TRUE, file_type = "csv",
                                na_value = 1e20, ncore = 2L)
+  
+  testthat::expect_true(is.list(ctrl))
+  testthat::expect_true(!is.null(ctrl$file_name))
   
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -1479,8 +1482,8 @@ test_that("can update bgc parameters for GLM-AED", {
   model <- c("glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = TRUE)
-  aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model, verbose = T)
+                           ext_elev = 5, use_bgc = TRUE) |>
+    AEME::run_aeme()
   
   # Get parameters for calibration
   data("aeme_parameters", package = "AEME")
