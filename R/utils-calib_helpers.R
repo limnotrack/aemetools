@@ -99,14 +99,21 @@ get_pareto_front <- function(df, obj_cols) {
     required <- c("N", "vars_sim")
     
   } else {
-    stop("Unknown method.")
+    cli::cli_abort("Unknown method: {.val {method}} Can only be 'calib' or 
+                   'sa'.")
   }
   
   # Optional: enforce required args present
   missing <- setdiff(required, names(args))
   if (length(missing) > 0) {
-    stop("Missing required arguments: ",
-         paste(missing, collapse = ", "))
+    cli::cli_abort("Missing required arguments: {.arg {missing}}")
+  }
+  if (is.null(args$file_name)) {
+    if (args$file_type == "db") {
+      args$file_name <- "results.db"
+    } else if (args$file_type == "csv") {
+      args$file_name <- "simulation_metadata.csv"
+    }
   }
   
   args$method <- method
