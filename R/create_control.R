@@ -2,6 +2,7 @@
 #'
 #' @description
 #' `r lifecycle::badge("deprecated")`
+#' 
 #' `create_control()` is superseded. Please use
 #' [create_calib_control()] or [create_sa_control()]
 #' instead.
