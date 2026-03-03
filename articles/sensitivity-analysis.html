@@ -111,9 +111,9 @@ setup. For this example, we will use the <code>glm_aed</code> model. The
 <span><span class="va">outf_factor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dy_cd"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"glm_aed"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"gotm_wet"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gotm_wet"</span><span class="op">)</span></span>
 <span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://limnotrack.com/AEME/reference/build_aeme.html" class="external-link">build_aeme</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, aeme <span class="op">=</span> <span class="va">aeme</span>,</span>
-<span>                       model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
-<span>                       inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>                       use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>                   model <span class="op">=</span> <span class="va">model</span>, model_controls <span class="op">=</span> <span class="va">model_controls</span>,</span>
+<span>                   inf_factor <span class="op">=</span> <span class="va">inf_factor</span>, ext_elev <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                   use_bgc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="description-of-sensitivity-analysis-method">Description of Sensitivity Analysis method<a class="anchor" aria-label="anchor" href="#description-of-sensitivity-analysis-method"></a>
@@ -509,27 +509,78 @@ analysis. The control parameters are generated using
 <code>sa_aeme</code> function. The control parameters for the
 sensitivity analysis are as follows:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">?</span><span class="va">create_control</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="op">?</span><span class="va">create_sa_control</span></span></code></pre></div>
 <div class="r-help-page">
 <div class="container"><main><table style="width: 100%;" class="table"><tr>
-<td>create_control</td>
+<td>create_sa_control</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-<h2>Create control list (superseded)</h2>
+<h2>Create control list for sensitivity analysis</h2>
 
 <h3>Arguments</h3>
 
 <table role="presentation" class="table">
 <tr>
-<td><code id="method">method</code></td>
+<td><code id="file_type">file_type</code></td>
 <td>
-<p>Character. Either <code>"calib"</code> or <code>"sa"</code>.</p>
+<p>Character. Output type: <code>"csv"</code> or <code>"db"</code>.
+Default <code>"db"</code>.</p>
+</td>
+</tr>
+<tr>
+<td><code id="file_name">file_name</code></td>
+<td>
+<p>Character. Output file name. Defaults to
+<code>"results.db"</code> (db) or <code>"simulation_metadata.csv"</code> (csv).</p>
+</td>
+</tr>
+<tr>
+<td><code id="file_dir">file_dir</code></td>
+<td>
+<p>Character. Output directory. Default <code>"calib_sa"</code>.</p>
+</td>
+</tr>
+<tr>
+<td><code id="na_value">na_value</code></td>
+<td>
+<p>Numeric. Replacement for <code>NA</code>. Default <code>999</code>.</p>
+</td>
+</tr>
+<tr>
+<td><code id="parallel">parallel</code></td>
+<td>
+<p>Logical. Run in parallel? Default <code>TRUE</code>.</p>
+</td>
+</tr>
+<tr>
+<td><code id="ncore">ncore</code></td>
+<td>
+<p>Integer. Number of cores if <code>parallel = TRUE</code>.
+Default <code>parallel::detectCores() - 1</code>.</p>
+</td>
+</tr>
+<tr>
+<td><code id="timeout">timeout</code></td>
+<td>
+<p>Numeric. Max runtime in seconds. Default <code>Inf</code>.</p>
+</td>
+</tr>
+<tr>
+<td><code id="N">N</code></td>
+<td>
+<p>Integer. Base sample size.</p>
+</td>
+</tr>
+<tr>
+<td><code id="vars_sim">vars_sim</code></td>
+<td>
+<p>Named list describing output variables.</p>
 </td>
 </tr>
 <tr>
 <td><code id="...">...</code></td>
 <td>
-<p>Arguments passed to the appropriate function.</p>
+<p>Must be empty. Additional arguments are not allowed.</p>
 </td>
 </tr>
 </table></main></div>
@@ -539,22 +590,22 @@ the months December to February, bottom temperature (bot_temp), (10 - 13
 m) and also total chlorophyll-a (PHY_tchla) at the surface (0 - 2 m)
 during the summer period.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_control.html">create_control</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"sa"</span>, N <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="fl">4</span>, ncore <span class="op">=</span> <span class="fl">2</span>, na_value <span class="op">=</span> <span class="fl">999</span>,</span>
-<span>                       parallel <span class="op">=</span> <span class="cn">TRUE</span>, file_name <span class="op">=</span> <span class="st">"results.db"</span>,</span>
-<span>                       vars_sim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>                         surf_temp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"HYD_temp"</span>,</span>
-<span>                                          month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>,</span>
-<span>                                          depth_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span> </span>
-<span>                         <span class="op">)</span>,</span>
-<span>                         bot_temp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"HYD_temp"</span>,</span>
-<span>                                         month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>,</span>
-<span>                                         depth_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">13</span><span class="op">)</span></span>
-<span>                         <span class="op">)</span>,</span>
-<span>                         surf_chla <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"PHY_tchla"</span>,</span>
-<span>                                          month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>,</span>
-<span>                                          depth_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span>                         <span class="op">)</span></span>
-<span>                       <span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_sa_control.html">create_sa_control</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="fl">4</span>, ncore <span class="op">=</span> <span class="fl">2</span>, na_value <span class="op">=</span> <span class="fl">999</span>,</span>
+<span>                          parallel <span class="op">=</span> <span class="cn">TRUE</span>, file_name <span class="op">=</span> <span class="st">"results.db"</span>,</span>
+<span>                          vars_sim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>                            surf_temp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"HYD_temp"</span>,</span>
+<span>                                             month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>,</span>
+<span>                                             depth_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span> </span>
+<span>                            <span class="op">)</span>,</span>
+<span>                            bot_temp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"HYD_temp"</span>,</span>
+<span>                                            month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>,</span>
+<span>                                            depth_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">13</span><span class="op">)</span></span>
+<span>                            <span class="op">)</span>,</span>
+<span>                            surf_chla <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"PHY_tchla"</span>,</span>
+<span>                                             month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>,</span>
+<span>                                             depth_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span>                            <span class="op">)</span></span>
+<span>                          <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -644,13 +695,13 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="va">sim_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sa_aeme.html">sa_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, path <span class="op">=</span> <span class="va">path</span>, param <span class="op">=</span> <span class="va">param</span>,</span>
 <span>                  model <span class="op">=</span> <span class="va">model</span>, ctrl <span class="op">=</span> <span class="va">ctrl</span>, FUN_list <span class="op">=</span> <span class="va">FUN_list</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Extracting variable indices for <span style="color: #0000BB;">"gotm_wet"</span> modelled </span></span>
-<span><span class="co">#&gt; variables <span style="color: #0000BB;">"HYD_temp"</span> and <span style="color: #0000BB;">"PHY_tchla"</span>. [2026-03-02 22:00:34]</span></span>
+<span><span class="co">#&gt; variables <span style="color: #0000BB;">"HYD_temp"</span> and <span style="color: #0000BB;">"PHY_tchla"</span>. [2026-03-03 00:52:13]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Variable indices extracted for <span style="color: #0000BB;">"gotm_wet"</span>. </span></span>
-<span><span class="co">#&gt; [2026-03-02 22:00:39]</span></span>
+<span><span class="co">#&gt; [2026-03-03 00:52:17]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Starting parallel sensitivity analysis for </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">"gotm_wet"</span> using <span style="color: #0000BB;">2</span> cores with </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">144</span> parameter sets. </span></span>
-<span><span class="co">#&gt; [2026-03-02 22:00:39]</span></span>
+<span><span class="co">#&gt; [2026-03-03 00:52:17]</span></span>
 <span><span class="co">#&gt;        turbulence/turb_param/k_min light_extinction/A/constant_value</span></span>
 <span><span class="co">#&gt; mean                     4.851e-06                           0.52760</span></span>
 <span><span class="co">#&gt; median                   5.000e-06                           0.52700</span></span>
@@ -665,9 +716,9 @@ specified. The <code>sa_aeme</code> function returns the
 <span><span class="co">#&gt; sd         0.1619     0.1606 0.5311</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Parallel sensitivity analysis for </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">"gotm_wet"</span> completed. </span></span>
-<span><span class="co">#&gt; [2026-03-02 22:08:59]</span></span>
+<span><span class="co">#&gt; [2026-03-03 01:00:03]</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">1</span> to <span style="color: #0000BB;">results.db</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"45819_gotmwet_S_001"</span> [2026-03-02 22:08:59]</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"45819_gotmwet_S_001"</span> [2026-03-03 01:00:03]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-sensitivity-analysis-results">Reading sensitivity analysis results<a class="anchor" aria-label="anchor" href="#reading-sensitivity-analysis-results"></a>
