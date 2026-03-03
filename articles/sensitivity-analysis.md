@@ -40,9 +40,9 @@ inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("gotm_wet")
 aeme <- build_aeme(path = path, aeme = aeme,
-                       model = model, model_controls = model_controls,
-                       inf_factor = inf_factor, ext_elev = 5,
-                       use_bgc = TRUE)
+                   model = model, model_controls = model_controls,
+                   inf_factor = inf_factor, ext_elev = 5,
+                   use_bgc = TRUE)
 ```
 
 ## Description of Sensitivity Analysis method
@@ -161,21 +161,29 @@ and are then passed to the `sa_aeme` function. The control parameters
 for the sensitivity analysis are as follows:
 
 ``` r
-?create_control
+?create_sa_control
 ```
 
-|                |                 |
-|----------------|----------------:|
-| create_control | R Documentation |
+|                   |                 |
+|-------------------|----------------:|
+| create_sa_control | R Documentation |
 
-## Create control list (superseded)
+## Create control list for sensitivity analysis
 
 ### Arguments
 
-|          |                                               |
-|----------|-----------------------------------------------|
-| `method` | Character. Either `"calib"` or `"sa"`.        |
-| `...`    | Arguments passed to the appropriate function. |
+|             |                                                                                                    |
+|-------------|----------------------------------------------------------------------------------------------------|
+| `file_type` | Character. Output type: `"csv"` or `"db"`. Default `"db"`.                                         |
+| `file_name` | Character. Output file name. Defaults to `"results.db"` (db) or `"simulation_metadata.csv"` (csv). |
+| `file_dir`  | Character. Output directory. Default `"calib_sa"`.                                                 |
+| `na_value`  | Numeric. Replacement for `NA`. Default `999`.                                                      |
+| `parallel`  | Logical. Run in parallel? Default `TRUE`.                                                          |
+| `ncore`     | Integer. Number of cores if `parallel = TRUE`. Default `parallel::detectCores() - 1`.              |
+| `timeout`   | Numeric. Max runtime in seconds. Default `Inf`.                                                    |
+| `N`         | Integer. Base sample size.                                                                         |
+| `vars_sim`  | Named list describing output variables.                                                            |
+| `...`       | Must be empty. Additional arguments are not allowed.                                               |
 
 Here is an example for examining surface temperature (surf_temp) in the
 months December to February, bottom temperature (bot_temp), (10 - 13 m)
@@ -183,22 +191,22 @@ and also total chlorophyll-a (PHY_tchla) at the surface (0 - 2 m) during
 the summer period.
 
 ``` r
-ctrl <- create_control(method = "sa", N = 2^4, ncore = 2, na_value = 999,
-                       parallel = TRUE, file_name = "results.db",
-                       vars_sim = list(
-                         surf_temp = list(var = "HYD_temp",
-                                          month = c(12, 1:2),
-                                          depth_range = c(0, 2) 
-                         ),
-                         bot_temp = list(var = "HYD_temp",
-                                         month = c(12, 1:2),
-                                         depth_range = c(10, 13)
-                         ),
-                         surf_chla = list(var = "PHY_tchla",
-                                          month = c(12, 1:2),
-                                          depth_range = c(0, 2)
-                         )
-                       )
+ctrl <- create_sa_control(N = 2^4, ncore = 2, na_value = 999,
+                          parallel = TRUE, file_name = "results.db",
+                          vars_sim = list(
+                            surf_temp = list(var = "HYD_temp",
+                                             month = c(12, 1:2),
+                                             depth_range = c(0, 2) 
+                            ),
+                            bot_temp = list(var = "HYD_temp",
+                                            month = c(12, 1:2),
+                                            depth_range = c(10, 13)
+                            ),
+                            surf_chla = list(var = "PHY_tchla",
+                                             month = c(12, 1:2),
+                                             depth_range = c(0, 2)
+                            )
+                          )
 )
 ```
 
@@ -239,13 +247,13 @@ The `sa_aeme` function writes the results to the file specified. The
 sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
                   model = model, ctrl = ctrl, FUN_list = FUN_list)
 #> ℹ Extracting variable indices for "gotm_wet" modelled 
-#> variables "HYD_temp" and "PHY_tchla". [2026-03-02 22:00:34]
+#> variables "HYD_temp" and "PHY_tchla". [2026-03-03 00:52:13]
 #> ✔ Variable indices extracted for "gotm_wet". 
-#> [2026-03-02 22:00:39]
+#> [2026-03-03 00:52:17]
 #> ℹ Starting parallel sensitivity analysis for 
 #> "gotm_wet" using 2 cores with 
 #> 144 parameter sets. 
-#> [2026-03-02 22:00:39]
+#> [2026-03-03 00:52:17]
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
 #> mean                     4.851e-06                           0.52760
 #> median                   5.000e-06                           0.52700
@@ -260,9 +268,9 @@ sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
 #> sd         0.1619     0.1606 0.5311
 #> ✔ Parallel sensitivity analysis for 
 #> "gotm_wet" completed. 
-#> [2026-03-02 22:08:59]
+#> [2026-03-03 01:00:03]
 #> Writing output for generation 1 to results.db with sim ID:
-#> "45819_gotmwet_S_001" [2026-03-02 22:08:59]
+#> "45819_gotmwet_S_001" [2026-03-03 01:00:03]
 ```
 
 ## Reading sensitivity analysis results
