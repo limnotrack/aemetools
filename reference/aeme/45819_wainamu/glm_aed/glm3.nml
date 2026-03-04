@@ -115,16 +115,16 @@
    seepage_rate = 0
 /
 &sediment
-   sed_heat_Ksoil = 1.2
-   sed_temp_depth = 0.2
-   sed_temp_mean = 12
-   sed_temp_amplitude = 4
-   sed_temp_peak_doy = 30
+   sed_heat_Ksoil = 1.2, 1.2
+   sed_temp_depth = 0.2, 0.2
+   sed_temp_mean = 10, 10
+   sed_temp_amplitude = 4, 4
+   sed_temp_peak_doy = 10, 10
    benthic_mode = 2
-   n_zones = 1
-   zone_heights = 18.07
-   sed_reflectivity = 0.1
-   sed_roughness = 0.1
+   n_zones = 2
+   zone_heights = 3.07, 18.07
+   sed_reflectivity = 0.1, 0.1
+   sed_roughness = 0.1, 0.1
 /
 &snowice
    snow_albedo_factor = 1
