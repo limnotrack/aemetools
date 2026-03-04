@@ -82,7 +82,7 @@ plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
     dplyr::distinct(parameter_name, name, group, label)
   summ <- get_param(calib, na_value = na_value, fit_col = fit_col, 
                     best = TRUE) |> 
-    dplyr::mutate(parameter_name = encode_param(group, name, index)) |> 
+    dplyr::mutate(parameter_name = encode_param(group = group, name = name, index = index)) |> 
     dplyr::left_join(all_pars_label, by = c("parameter_name"))
   if (min(all_pars$fit2, na.rm = TRUE) <= 0 & log_y) {
     adj <- ceiling(abs(min(all_pars$fit2, na.rm = TRUE))) + 0.1
