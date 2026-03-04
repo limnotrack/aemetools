@@ -1,6 +1,8 @@
 # Create control list (superseded)
 
-**\[deprecated\]** `create_control()` is superseded. Please use
+**\[deprecated\]**
+
+`create_control()` is superseded. Please use
 [`create_calib_control()`](create_calib_control.md) or
 [`create_sa_control()`](create_sa_control.md) instead.
 
