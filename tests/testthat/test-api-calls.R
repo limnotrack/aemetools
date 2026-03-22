@@ -31,6 +31,14 @@ test_that("can get lake shape from API", {
   testthat::expect_true(nrow(lakes) == 2)
 })
 
+test_that("can get lake depth contours from API", {
+  lake <- get_depth_contours(id = 1)
+  testthat::expect_true(all(lake$depth <= 0))
+  testthat::expect_true(inherits(lake, "sf"))
+})
+
+
+
 test_that("can get lake catchment from API", {
   catch <- get_catchment_data(id = 3)
   testthat::expect_true(inherits(catch, "list"))
