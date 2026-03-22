@@ -16,13 +16,15 @@
 #' @importFrom httr2 request req_url_path_append req_url_query req_headers
 #' @importFrom httr2 req_perform resp_status resp_body_string
 #' @importFrom rlang `!!!`
+#' @importFrom cli cli_abort
  
 api_request <- function(api_url, endpoint, query = list(), api_key = NULL, 
                         headers = list()) {
   if (is.null(api_key)) {
     api_key <- Sys.getenv("LERNZMP_KEY")
     if (api_key == "") {
-      stop("API key is not set. Please provide it or set the 'LERNZMP_API' environment variable.")
+      cli::cli_abort("API key is not set. Please provide it or set the 
+                     'LERNZMP_API' environment variable.")
     }
   }
   
@@ -37,8 +39,8 @@ api_request <- function(api_url, endpoint, query = list(), api_key = NULL,
     return(res) # leave parsing up to the caller
   } else if (!is.null(res)) {
     msg <- httr2::resp_body_string(res)
-    stop(sprintf("API request failed [%s]: %s", httr2::resp_status(res), msg))
+    cli::cli_abort(sprintf("API request failed [%s]: %s", httr2::resp_status(res), msg))
   } else {
-    stop("API request failed: request error or NULL response")
+    cli::cli_abort("API request failed: request error or NULL response")
   }
 }
