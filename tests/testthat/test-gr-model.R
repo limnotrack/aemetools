@@ -22,8 +22,6 @@ test_that("can create GR model inputs", {
                                 plot = TRUE)
 
   testthat::expect_true(is(hydro_model, "HydroModel"))
-  testthat::expect_true(isVirtualClass("HydroModel") ||
-                          isClass("HydroModel"))
   testthat::expect_true(is.data.frame(hydro_model@data))
   testthat::expect_true(hydro_model@catchment_area > 0)
   testthat::expect_true(hydro_model@start >= 1 &&
