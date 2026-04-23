@@ -17,30 +17,38 @@ make_GR_inputs(
 )
 }
 \arguments{
-\item{id}{numeric; Reach ID}
+\item{id}{numeric; Reach ID (\code{nzsegment}).}
 
 \item{reaches}{sf; object with reaches as linestrings.}
 
 \item{lake}{sf; polygon of lake shore.}
 
-\item{catchments}{sf; polygon of catchmentss.}
+\item{catchments}{sf; polygon of catchments (including sub-catchments).}
 
-\item{obs_flow}{dataframe; containing Date and flow in m3/s.}
+\item{obs_flow}{data.frame; containing \code{Date} and flow in m³/s.
+If \code{NULL}, no observed discharge is merged.}
 
-\item{met}{dataframe; containing Date, air temperature and precipitation}
+\item{met}{data.frame; containing \code{Date}, air temperature
+(\code{MET_tmpair}) and precipitation (\code{MET_pprain}).}
 
-\item{lat}{numeric; latitude. If NULL, uses the latitude from the centre
-of the lake.}
+\item{lat}{numeric; latitude (degrees). If \code{NULL}, uses the centroid
+latitude of the lake polygon.}
 
-\item{FUN_MOD}{function from the \code{airGR} package to be used. Defaults to
-\code{airGR::RunModel_GR6J}}
+\item{FUN_MOD}{function; \code{airGR} model function to use. Defaults to
+\code{\link[airGR]{RunModel_GR6J}}.}
 
 \item{plot}{logical; plot the reaches, lake and catchment? Defaults to
-FALSE.}
+\code{FALSE}.}
 }
 \value{
-list of inputs for \code{run_GR()}.
+A \code{\linkS4class{HydroModel}} object.
 }
 \description{
-Make inputs for the GR models
+Builds a \code{\linkS4class{HydroModel}} object containing all inputs required to run or
+calibrate a hydrological model from the \code{airGR} package.
+
+The function recursively assembles the upstream catchment network from the
+supplied \code{nzsegment} ID, calculates the total catchment area (excluding the
+lake polygon), and constructs the \code{airGR} \code{InputsModel} object along with
+potential evapotranspiration estimates using the Oudin method.
 }

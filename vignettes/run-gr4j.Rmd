@@ -30,41 +30,49 @@ reaches <- readRDS(file.path(data_dir, "reaches.rds"))
 catchments <- readRDS(file.path(data_dir, "catchments.rds"))
 met <- readRDS(file.path(data_dir, "met.rds"))
 obs_flow <- readRDS(file.path(data_dir, "obs_flow.rds"))
-FUN_MOD <- airGR::RunModel_GR4J
 id <- 4087861 # nzsegment
 
-inputs <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
-                         catchments = catchments, obs_flow = obs_flow, met = met,
-                         lat = lat, FUN_MOD = FUN_MOD,
-                         plot = TRUE)
-
-
+hydro_model <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
+                               catchments = catchments, obs_flow = obs_flow,
+                               met = met, lat = lat,
+                               FUN_MOD = airGR::RunModel_GR4J,
+                               plot = TRUE)
+hydro_model
 ```
 
-Within the `airGR` package, there are calibration algorithms which allows you to calibrate the hydrological model if discharge data for the reach is available. The calibrated parameters can be passed to the `run_GR` function to run the selected model.
+`make_GR_inputs()` returns a `HydroModel` S4 object. Its key slots are:
+
+| Slot | Description |
+|------|-------------|
+| `@inputs_model` | `airGR` `InputsModel` object |
+| `@data` | Combined meteorological and observed flow data |
+| `@start` | Row index where the observation period begins |
+| `@fun_mod` | `airGR` model function |
+| `@fun_mod_name` | Display name of the model function |
+| `@catchment_area` | Total catchment area in m² |
+| `@dem` | Optional DEM raster (default `NULL`) |
+| `@land_cover` | Optional land cover data (default `NULL`) |
+| `@soil` | Optional soil data (default `NULL`) |
+
+Within the `airGR` package, there are calibration algorithms which allow you to calibrate the hydrological model if discharge data for the reach is available. The calibrated parameters can be passed to `run_GR()` to run the selected model.
 
 ```{r run-gr4j, warning=FALSE,fig.height=6,fig.width=8}
-#' airGR uses indices to run the model, so first we split our observed data in 
-#' half (0.5) for calibration and validation periods based on when the 
-#' observation data starts (which is provided in `inputs$data$start`).
-idx_spl <- floor(nrow(inputs$data[inputs$start:nrow(inputs$data), ])
-                 * 0.5)
-#' Use a model warmup period as everything before when the observations start.
-warmup <- 1:(inputs$start - 1)
+# Split the observation period in half for calibration/validation.
+# airGR uses row indices; rows 1:(start-1) serve as the warm-up period
+# (computed automatically when warmup = NULL).
+n_obs   <- nrow(hydro_model@data) - hydro_model@start + 1L
+cal_idx <- hydro_model@start:(hydro_model@start + floor(n_obs * 0.5) - 1L)
 
-# Set the indices for the calibration period
-cal_idx <- inputs$start:(idx_spl + inputs$start)
-
-# Run the calibration and assign the output
-calib <- calib_GR(inputs = inputs, warmup = warmup, run_index = cal_idx)
+# Calibrate the model over the calibration period
+calib <- calib_GR(hydro_model, run_index = cal_idx)
 
 # Extract the calibrated parameters
 param <- calib$ParamFinalR
 
-# Run the model
-output <- run_GR(inputs = inputs, param = param,
-                 warmup = warmup, run_index = cal_idx)
+# Run the model with calibrated parameters
+output <- run_GR(hydro_model, param = param, run_index = cal_idx)
 
-# Plot the output
-plot(output, Qobs = inputs$data$Qmm[cal_idx])
+# Plot the output against observed discharge
+plot(output, Qobs = hydro_model@data$Qmm[cal_idx])
 ```
+
