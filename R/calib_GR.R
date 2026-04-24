@@ -1,9 +1,9 @@
 #' Calibrate GR model
 #'
 #' Calibrate a GR hydrological model from the `airGR` package using a
-#' [HydroModel] object.
+#' [HydroModel] object that has been populated by [make_GR_inputs()].
 #'
-#' @param hydro_model [HydroModel]; object created by [make_GR_inputs()].
+#' @param hydro_model [HydroModel]; object returned by [make_GR_inputs()].
 #' @param warmup integer vector; row indices of `hydro_model@data` to use as
 #'   the warm-up period. Defaults to `1:(hydro_model@start - 1)`.
 #' @param run_index integer vector; row indices of `hydro_model@data` to use
@@ -24,6 +24,10 @@ calib_GR <- function(hydro_model, warmup = NULL, run_index = NULL,
                      FUN_CALIB = airGR::Calibration_Michel,
                      IniStates = NULL,
                      IniResLevels = NULL) {
+
+  if (is.null(hydro_model@inputs_model)) {
+    stop("'hydro_model' has no airGR inputs. Run make_GR_inputs() first.")
+  }
 
   if (is.null(warmup)) {
     warmup <- seq_len(hydro_model@start - 1L)

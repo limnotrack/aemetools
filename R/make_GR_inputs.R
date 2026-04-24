@@ -1,52 +1,41 @@
-#' Make inputs for the GR models
+#' Compute airGR inputs from a spatial HydroModel
 #'
-#' Builds a [HydroModel] object containing all inputs required to run or
-#' calibrate a hydrological model from the `airGR` package.
+#' Takes an existing [HydroModel] (created by [make_hydro_model()]) and
+#' populates its airGR model-input slots (`inputs_model`, `data`, `start`,
+#' `fun_mod`, `fun_mod_name`) using the supplied meteorological and observed
+#' discharge data.
 #'
-#' The function recursively assembles the upstream catchment network from the
-#' supplied `nzsegment` ID, calculates the total catchment area (excluding the
-#' lake polygon), and constructs the `airGR` `InputsModel` object along with
-#' potential evapotranspiration estimates using the Oudin method.
+#' Potential evapotranspiration is estimated using the Oudin method via
+#' [airGR::PE_Oudin()].
 #'
-#' @param id numeric; Reach ID (`nzsegment`).
-#' @param reaches sf; object with reaches as linestrings.
-#' @param lake sf; polygon of lake shore.
-#' @param catchments sf; polygon of catchments (including sub-catchments).
-#' @param obs_flow data.frame; containing `Date` and flow in m³/s.
-#'   If `NULL`, no observed discharge is merged.
+#' @param hydro_model [HydroModel]; a spatial model object created by
+#'   [make_hydro_model()].
 #' @param met data.frame; containing `Date`, air temperature
 #'   (`MET_tmpair`) and precipitation (`MET_pprain`).
-#' @param lat numeric; latitude (degrees). If `NULL`, uses the centroid
-#'   latitude of the lake polygon.
+#' @param obs_flow data.frame; containing `Date` and flow in m³/s.
+#'   If `NULL`, no observed discharge is merged.
+#' @param lat numeric; latitude in decimal degrees. If `NULL`, the centroid
+#'   latitude of `hydro_model@lake` (in WGS 84) is used.
 #' @param FUN_MOD function; `airGR` model function to use. Defaults to
 #'   [airGR::RunModel_GR6J].
-#' @param plot logical; plot the reaches, lake and catchment? Defaults to
-#'   `FALSE`.
 #'
 #' @import airGR
 #' @importFrom methods new
-#' @importFrom sf st_crs st_difference st_union st_area st_transform
-#'   st_centroid st_coordinates
-#' @importFrom dplyr filter mutate select rename
-#' @importFrom units drop_units
+#' @importFrom sf st_transform st_centroid st_coordinates
+#' @importFrom dplyr left_join mutate pull
 #'
-#' @return A [HydroModel] object.
+#' @return The input [HydroModel] with its airGR slots (`inputs_model`,
+#'   `data`, `start`, `fun_mod`, `fun_mod_name`) populated and ready for
+#'   [calib_GR()] or [run_GR()].
 #' @export
 
-make_GR_inputs <- function(id, reaches, lake, catchments, obs_flow = NULL,
-                           met, lat = NULL, FUN_MOD = airGR::RunModel_GR6J,
-                           plot = FALSE) {
+make_GR_inputs <- function(hydro_model, met, obs_flow = NULL, lat = NULL,
+                           FUN_MOD = airGR::RunModel_GR6J) {
 
   fun_mod_name <- deparse(substitute(FUN_MOD))
 
-  if (!(sf::st_crs(reaches) == sf::st_crs(lake) &
-        sf::st_crs(reaches) == sf::st_crs(catchments))) {
-    stop(strwrap("Coordinate reference systems are different between reaches,
-                 lake and catchment. Ensure they are all on the same CRS."))
-  }
-
   if (is.null(lat)) {
-    lat <- lake |>
+    lat <- hydro_model@lake |>
       sf::st_transform(4326) |>
       sf::st_centroid() |>
       sf::st_coordinates() |>
@@ -54,30 +43,7 @@ make_GR_inputs <- function(id, reaches, lake, catchments, obs_flow = NULL,
       dplyr::pull(Y)
   }
 
-  hyd_id <- reaches$HydroID[reaches$nzsegment == id]
-  upstr <- get_upstream_rec(HydroID = hyd_id, reaches = reaches)
-  # Remove reach if it goes through the lake
-  upstr <- sf::st_difference(upstr, lake)
-
-  sub_catch <- catchments |>
-    dplyr::filter(nzsegment %in% upstr$nzsegment)
-
-  tot_catchm <- sf::st_union(sub_catch)
-  tot_catchm <- sf::st_difference(tot_catchm, lake)
-
-  tot_rivers <- sf::st_union(upstr)
-
-  if (plot) {
-    p <- ggplot2::ggplot() +
-      ggplot2::geom_sf(data = lake, fill = "cyan") +
-      ggplot2::geom_sf(data = tot_catchm, fill = "#EDB48E") +
-      ggplot2::geom_sf(data = tot_rivers, colour = "blue") +
-      ggplot2::theme_bw()
-    print(p)
-  }
-
-  # Calculate catchment area for conversion from m3/s to mm/day
-  catch_area <- units::drop_units(sf::st_area(tot_catchm)) # m^2
+  catch_area <- hydro_model@catchment_area
 
   obs_flow <- obs_flow |>
     dplyr::mutate(Qmm = 1000 * (obs_flow[, 2] * 86400 / catch_area),
@@ -120,13 +86,24 @@ make_GR_inputs <- function(id, reaches, lake, catchments, obs_flow = NULL,
     PotEvap = all$MET_poteva
   )
 
+  # Return a new HydroModel with the GR slots populated; spatial slots
+  # are copied unchanged from the input object.
   methods::new(
     "HydroModel",
+    channels       = hydro_model@channels,
+    lake           = hydro_model@lake,
+    catchments     = hydro_model@catchments,
+    dem            = hydro_model@dem,
+    land_cover     = hydro_model@land_cover,
+    soil           = hydro_model@soil,
+    outlet         = hydro_model@outlet,
+    crs            = hydro_model@crs,
+    catchment_area = catch_area,
     inputs_model   = InputsModel,
     data           = all,
     start          = as.numeric(start),
     fun_mod        = FUN_MOD,
-    fun_mod_name   = fun_mod_name,
-    catchment_area = catch_area
+    fun_mod_name   = fun_mod_name
   )
 }
+

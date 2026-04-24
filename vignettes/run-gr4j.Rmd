@@ -18,29 +18,57 @@ knitr::opts_chunk$set(
 library(aemetools)
 ```
 
-### Hydrological modelling - Run GR4J model
+### Hydrological modelling — Run GR4J model
 
-Here is simple example set up for one of the lake inflows into Lake Rotorua. First, the input for the model are generated using the stream ID (nzsegment), and spatial features (sf objects) of the reaches, lake and catchment (including sub-catchments), observed discharge (if available) meteorological data (air temperature and precipitation). It recursively creates an upstream network using the nzsegment, then combines the subcatchments of all the upstream reaches (`sf::st_union()`) to calculate the area of the catchment.
+The workflow follows two steps:
 
-```{r make-gr4j-inputs, results='asis', fig.keep='all', warning=FALSE}
-lat <- -38.079
-data_dir <- system.file("extdata/hydro/", package = "aemetools")
-lake <- readRDS(file.path(data_dir, "lake.rds"))
-reaches <- readRDS(file.path(data_dir, "reaches.rds"))
+1. **Build the spatial `HydroModel`** using `make_hydro_model()` — this
+   assembles the upstream river-channel network, computes the catchment area,
+   and stores optional spatial layers (DEM, land cover, soil).
+2. **Add airGR inputs** using `make_GR_inputs()` — this attaches the
+   meteorological and observed discharge data and constructs the
+   `airGR::InputsModel` object.
+
+#### Step 1 — Create the spatial model
+
+```{r make-hydro-model, results='asis', fig.keep='all', warning=FALSE}
+data_dir   <- system.file("extdata/hydro/", package = "aemetools")
+lake       <- readRDS(file.path(data_dir, "lake.rds"))
+reaches    <- readRDS(file.path(data_dir, "reaches.rds"))
 catchments <- readRDS(file.path(data_dir, "catchments.rds"))
-met <- readRDS(file.path(data_dir, "met.rds"))
-obs_flow <- readRDS(file.path(data_dir, "obs_flow.rds"))
-id <- 4087861 # nzsegment
+id         <- 4087861  # nzsegment
 
-hydro_model <- make_GR_inputs(id = id, reaches = reaches, lake = lake,
-                               catchments = catchments, obs_flow = obs_flow,
-                               met = met, lat = lat,
-                               FUN_MOD = airGR::RunModel_GR4J,
-                               plot = TRUE)
-hydro_model
+hm <- make_hydro_model(id = id, reaches = reaches, lake = lake,
+                       catchments = catchments, plot = TRUE)
+hm
 ```
 
-`make_GR_inputs()` returns a `HydroModel` S4 object. Its key slots are:
+The `HydroModel` S4 object stores the following spatial slots:
+
+| Slot | Description |
+|------|-------------|
+| `@channels` | Upstream river channels (sf, clipped to exclude lake) |
+| `@lake` | Target lake polygon (sf) |
+| `@catchments` | Combined upstream catchment polygon with lake removed (sf) |
+| `@dem` | Optional DEM raster (default `NULL`) |
+| `@land_cover` | Optional land cover data (default `NULL`) |
+| `@soil` | Optional soil data (default `NULL`) |
+| `@outlet` | Optional outlet points (default `NULL`) |
+| `@crs` | Coordinate reference system |
+| `@catchment_area` | Catchment area in m² |
+
+#### Step 2 — Attach airGR inputs
+
+```{r make-gr4j-inputs, warning=FALSE}
+met      <- readRDS(file.path(data_dir, "met.rds"))
+obs_flow <- readRDS(file.path(data_dir, "obs_flow.rds"))
+
+hm <- make_GR_inputs(hm, met = met, obs_flow = obs_flow,
+                     FUN_MOD = airGR::RunModel_GR4J)
+hm
+```
+
+After this step the object also carries the airGR slots:
 
 | Slot | Description |
 |------|-------------|
@@ -49,30 +77,30 @@ hydro_model
 | `@start` | Row index where the observation period begins |
 | `@fun_mod` | `airGR` model function |
 | `@fun_mod_name` | Display name of the model function |
-| `@catchment_area` | Total catchment area in m² |
-| `@dem` | Optional DEM raster (default `NULL`) |
-| `@land_cover` | Optional land cover data (default `NULL`) |
-| `@soil` | Optional soil data (default `NULL`) |
 
-Within the `airGR` package, there are calibration algorithms which allow you to calibrate the hydrological model if discharge data for the reach is available. The calibrated parameters can be passed to `run_GR()` to run the selected model.
+#### Calibrate and run
 
-```{r run-gr4j, warning=FALSE,fig.height=6,fig.width=8}
+Within the `airGR` package, there are calibration algorithms which allow you to
+calibrate the hydrological model if discharge data for the reach is available.
+The calibrated parameters can be passed to `run_GR()` to run the selected model.
+
+```{r run-gr4j, warning=FALSE, fig.height=6, fig.width=8}
 # Split the observation period in half for calibration/validation.
 # airGR uses row indices; rows 1:(start-1) serve as the warm-up period
 # (computed automatically when warmup = NULL).
-n_obs   <- nrow(hydro_model@data) - hydro_model@start + 1L
-cal_idx <- hydro_model@start:(hydro_model@start + floor(n_obs * 0.5) - 1L)
+n_obs   <- nrow(hm@data) - hm@start + 1L
+cal_idx <- hm@start:(hm@start + floor(n_obs * 0.5) - 1L)
 
 # Calibrate the model over the calibration period
-calib <- calib_GR(hydro_model, run_index = cal_idx)
+calib <- calib_GR(hm, run_index = cal_idx)
 
 # Extract the calibrated parameters
 param <- calib$ParamFinalR
 
 # Run the model with calibrated parameters
-output <- run_GR(hydro_model, param = param, run_index = cal_idx)
+output <- run_GR(hm, param = param, run_index = cal_idx)
 
 # Plot the output against observed discharge
-plot(output, Qobs = hydro_model@data$Qmm[cal_idx])
+plot(output, Qobs = hm@data$Qmm[cal_idx])
 ```
 
