@@ -2,53 +2,43 @@
 % Please edit documentation in R/make_GR_inputs.R
 \name{make_GR_inputs}
 \alias{make_GR_inputs}
-\title{Make inputs for the GR models}
+\title{Compute airGR inputs from a spatial HydroModel}
 \usage{
 make_GR_inputs(
-  id,
-  reaches,
-  lake,
-  catchments,
-  obs_flow = NULL,
+  hydro_model,
   met,
+  obs_flow = NULL,
   lat = NULL,
-  FUN_MOD = airGR::RunModel_GR6J,
-  plot = FALSE
+  FUN_MOD = airGR::RunModel_GR6J
 )
 }
 \arguments{
-\item{id}{numeric; Reach ID (\code{nzsegment}).}
-
-\item{reaches}{sf; object with reaches as linestrings.}
-
-\item{lake}{sf; polygon of lake shore.}
-
-\item{catchments}{sf; polygon of catchments (including sub-catchments).}
-
-\item{obs_flow}{data.frame; containing \code{Date} and flow in m³/s.
-If \code{NULL}, no observed discharge is merged.}
+\item{hydro_model}{\code{\linkS4class{HydroModel}}; a spatial model object created by
+\code{\link{make_hydro_model}()}.}
 
 \item{met}{data.frame; containing \code{Date}, air temperature
 (\code{MET_tmpair}) and precipitation (\code{MET_pprain}).}
 
-\item{lat}{numeric; latitude (degrees). If \code{NULL}, uses the centroid
-latitude of the lake polygon.}
+\item{obs_flow}{data.frame; containing \code{Date} and flow in m³/s.
+If \code{NULL}, no observed discharge is merged.}
+
+\item{lat}{numeric; latitude in decimal degrees. If \code{NULL}, the centroid
+latitude of \code{hydro_model@lake} (in WGS 84) is used.}
 
 \item{FUN_MOD}{function; \code{airGR} model function to use. Defaults to
 \code{\link[airGR]{RunModel_GR6J}}.}
-
-\item{plot}{logical; plot the reaches, lake and catchment? Defaults to
-\code{FALSE}.}
 }
 \value{
-A \code{\linkS4class{HydroModel}} object.
+The input \code{\linkS4class{HydroModel}} with its airGR slots (\code{inputs_model},
+\code{data}, \code{start}, \code{fun_mod}, \code{fun_mod_name}) populated and ready for
+\code{\link{calib_GR}()} or \code{\link{run_GR}()}.
 }
 \description{
-Builds a \code{\linkS4class{HydroModel}} object containing all inputs required to run or
-calibrate a hydrological model from the \code{airGR} package.
+Takes an existing \code{\linkS4class{HydroModel}} (created by \code{\link{make_hydro_model}()}) and
+populates its airGR model-input slots (\code{inputs_model}, \code{data}, \code{start},
+\code{fun_mod}, \code{fun_mod_name}) using the supplied meteorological and observed
+discharge data.
 
-The function recursively assembles the upstream catchment network from the
-supplied \code{nzsegment} ID, calculates the total catchment area (excluding the
-lake polygon), and constructs the \code{airGR} \code{InputsModel} object along with
-potential evapotranspiration estimates using the Oudin method.
+Potential evapotranspiration is estimated using the Oudin method via
+\code{\link[airGR]{PE_Oudin}()}.
 }

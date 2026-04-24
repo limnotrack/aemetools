@@ -5,27 +5,22 @@
 \alias{HydroModel-class}
 \title{HydroModel S4 class}
 \description{
-An S4 class representing a hydrological model configuration for use with
-the \code{airGR} package. It bundles the model inputs, observed data, and
-optional spatial data (DEM, land cover, soil) into a single object.
+An S4 class whose primary focus is spatial data for a catchment — river
+channels, the target lake polygon, subcatchments, and optional DEM / land
+cover / soil layers.  Computed airGR model inputs (produced by
+\code{\link{make_GR_inputs}()}) are stored in the same object as optional slots that
+start as \code{NULL} and are populated in a second step.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{inputs_model}}{airGR \code{InputsModel} object created by
-\code{\link[airGR]{CreateInputsModel}()}.}
+\item{\code{channels}}{ANY; \code{sf} object of upstream river channels clipped to
+exclude the lake polygon.}
 
-\item{\code{data}}{data.frame; combined meteorological and observed flow data.}
+\item{\code{lake}}{ANY; \code{sf} polygon of the target lake.}
 
-\item{\code{start}}{numeric; row index in \code{data} where the observation period
-begins (rows before this are used as the warm-up period).}
-
-\item{\code{fun_mod}}{function; airGR model function (e.g.
-\code{\link[airGR]{RunModel_GR4J}}).}
-
-\item{\code{fun_mod_name}}{character; display name of the model function.}
-
-\item{\code{catchment_area}}{numeric; total catchment area in m².}
+\item{\code{catchments}}{ANY; \code{sf} polygon of the combined upstream catchment with
+the lake hole-punched out.}
 
 \item{\code{dem}}{ANY; optional DEM raster (e.g. a \code{terra::SpatRaster}).
 Defaults to \code{NULL}.}
@@ -33,23 +28,51 @@ Defaults to \code{NULL}.}
 \item{\code{land_cover}}{ANY; optional land cover data. Defaults to \code{NULL}.}
 
 \item{\code{soil}}{ANY; optional soil data. Defaults to \code{NULL}.}
+
+\item{\code{outlet}}{ANY; optional outlet point(s) as an \code{sf} object.
+Defaults to \code{NULL}.}
+
+\item{\code{crs}}{ANY; coordinate reference system of the spatial data (typically
+from \code{sf::st_crs()}). Populated by \code{\link{make_hydro_model}()}.}
+
+\item{\code{catchment_area}}{numeric; total catchment area in m² (excluding lake).
+Populated by \code{\link{make_hydro_model}()}. Defaults to \code{NA_real_}.}
+
+\item{\code{inputs_model}}{ANY; airGR \code{InputsModel} object created by
+\code{\link[airGR]{CreateInputsModel}()}. Populated by \code{\link{make_GR_inputs}()}.
+Defaults to \code{NULL}.}
+
+\item{\code{data}}{ANY; \code{data.frame} of combined meteorological and observed flow
+data. Populated by \code{\link{make_GR_inputs}()}. Defaults to \code{NULL}.}
+
+\item{\code{start}}{numeric; row index in \code{data} where the observation period
+begins (rows before this index are the warm-up period). Populated by
+\code{\link{make_GR_inputs}()}. Defaults to \code{NA_real_}.}
+
+\item{\code{fun_mod}}{ANY; airGR model function (e.g. \code{\link[airGR]{RunModel_GR4J}}).
+Populated by \code{\link{make_GR_inputs}()}. Defaults to \code{NULL}.}
+
+\item{\code{fun_mod_name}}{character; display name of the model function.
+Populated by \code{\link{make_GR_inputs}()}. Defaults to \code{""}.}
 }
 }
 
 \examples{
 \dontrun{
-data_dir <- system.file("extdata/hydro/", package = "aemetools")
-lake      <- readRDS(file.path(data_dir, "lake.rds"))
-reaches   <- readRDS(file.path(data_dir, "reaches.rds"))
+data_dir   <- system.file("extdata/hydro/", package = "aemetools")
+lake       <- readRDS(file.path(data_dir, "lake.rds"))
+reaches    <- readRDS(file.path(data_dir, "reaches.rds"))
 catchments <- readRDS(file.path(data_dir, "catchments.rds"))
-met       <- readRDS(file.path(data_dir, "met.rds"))
-obs_flow  <- readRDS(file.path(data_dir, "obs_flow.rds"))
+met        <- readRDS(file.path(data_dir, "met.rds"))
+obs_flow   <- readRDS(file.path(data_dir, "obs_flow.rds"))
 
-hydro_model <- make_GR_inputs(
-  id = 4087861, reaches = reaches, lake = lake,
-  catchments = catchments, obs_flow = obs_flow, met = met,
-  lat = -38.079, FUN_MOD = airGR::RunModel_GR4J
-)
-hydro_model
+# Step 1: build spatial model
+hm <- make_hydro_model(id = 4087861, reaches = reaches, lake = lake,
+                       catchments = catchments)
+
+# Step 2: attach airGR inputs
+hm <- make_GR_inputs(hm, met = met, obs_flow = obs_flow,
+                     FUN_MOD = airGR::RunModel_GR4J)
+hm
 }
 }
