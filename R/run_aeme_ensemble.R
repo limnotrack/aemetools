@@ -14,7 +14,7 @@
 #' @param na_value numeric; value to use for NA values. Default is 999.
 #'
 #' @importFrom parallel parLapply clusterExport stopCluster detectCores
-#' makeCluster
+#' @importFrom parallel makeCluster
 #'
 #' @inherit AEME::run_aeme return
 #' @export
