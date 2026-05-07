@@ -24,7 +24,7 @@ api_request <- function(api_url, endpoint, query = list(), api_key = NULL,
     api_key <- Sys.getenv("LERNZMP_KEY")
     if (api_key == "") {
       cli::cli_abort("API key is not set. Please provide it or set the 
-                     'LERNZMP_API' environment variable.")
+                     'LERNZMP_KEY' environment variable.")
     }
   }
   
