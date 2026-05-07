@@ -10,7 +10,7 @@
 #' NULL, all generations are included.
 #' 
 #' @importFrom ggplot2 ggplot geom_point geom_path scale_y_log10 scale_x_log10
-#' scale_colour_viridis_d labs theme_bw
+#' @importFrom ggplot2 scale_colour_viridis_d labs theme_bw
 #' @importFrom tidyr pivot_wider drop_na
 #' @returns A ggplot object showing the evolution of the Pareto front across
 #' generations. Each point represents a run in a generation, with points on the

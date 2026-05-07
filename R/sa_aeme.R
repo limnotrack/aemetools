@@ -15,7 +15,7 @@
 #'
 #' @importFrom AEME lake
 #' @importFrom parallel stopCluster clusterExport parLapply detectCores
-#' makeCluster
+#' @importFrom parallel makeCluster
 #' @importFrom utils write.csv write.table
 #' @importFrom stats runif
 #' @importFrom FME Latinhyper

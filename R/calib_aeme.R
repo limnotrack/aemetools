@@ -30,7 +30,7 @@
 #' is used to restart from a previous calibration.
 #'
 #' @importFrom parallel stopCluster clusterExport parLapply makeCluster
-#' detectCores
+#' @importFrom parallel detectCores
 #' @importFrom utils write.csv write.table
 #' @importFrom stats runif
 #' @importFrom FME Latinhyper

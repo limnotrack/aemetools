@@ -4,10 +4,11 @@
 #' @inheritParams calib_aeme
 #'
 #' @importFrom shiny shinyApp fluidPage sidebarLayout sidebarPanel mainPanel
-#'  plotOutput actionButton radioButtons h1 h3 tableOutput renderUI observeEvent
-#'  reactiveValues renderPlot renderTable sliderInput req validate
-#'  need withProgress incProgress tabPanel tabsetPanel uiOutput checkboxInput
-#'  checkboxGroupInput selectInput
+#' @importFrom shiny plotOutput actionButton radioButtons h1 h3 tableOutput 
+#' @importFrom shiny renderUI observeEvent reactiveValues renderPlot renderTable
+#' @importFrom shiny sliderInput req validate need withProgress incProgress 
+#' @importFrom shiny tabPanel tabsetPanel uiOutput checkboxInput 
+#' @importFrom shiny checkboxGroupInput selectInput
 #' @importFrom AEME configuration lake
 #' @importFrom dplyr filter mutate n
 #'

@@ -6,8 +6,8 @@
 #' @export
 #'
 #' @importFrom ggplot2 ggplot aes geom_point facet_wrap labs theme_bw
-#' scale_colour_gradientn theme scale_x_continuous scale_y_continuous
-#' labs
+#' @importFrom ggplot2 scale_colour_gradientn theme scale_x_continuous 
+#' @importFrom ggplot2 scale_y_continuous labs
 #' @importFrom dplyr filter
 #' @importFrom tidyr pivot_wider
 #' @importFrom utils combn
