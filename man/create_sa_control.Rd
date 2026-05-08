@@ -26,7 +26,9 @@ Default \code{"db"}.}
 
 \item{file_dir}{Character. Output directory. Default \code{"calib_sa"}.}
 
-\item{na_value}{Numeric. Replacement for \code{NA}. Default \code{999}.}
+\item{na_value}{Numeric. Penalty value substituted for \code{NA} fit values
+during optimisation to discourage parameter sets that produce invalid
+model output. Default \code{999}.}
 
 \item{parallel}{Logical. Run in parallel? Default \code{TRUE}.}
 
