@@ -5,7 +5,9 @@
 #' @param file_name Character. Output file name. Defaults to
 #'   `"results.db"` (db) or `"simulation_metadata.csv"` (csv).
 #' @param file_dir Character. Output directory. Default `"calib_sa"`.
-#' @param na_value Numeric. Replacement for `NA`. Default `999`.
+#' @param na_value Numeric. Penalty value substituted for \code{NA} fit values
+#'   during optimisation to discourage parameter sets that produce invalid 
+#'   model output. Default \code{999}.
 #' @param parallel Logical. Run in parallel? Default `TRUE`.
 #' @param ncore Integer. Number of cores if `parallel = TRUE`.
 #'   Default `parallel::detectCores() - 1`.
