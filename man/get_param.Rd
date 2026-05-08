@@ -10,8 +10,10 @@ get_param(calib, na_value, fit_col = "fit", best = FALSE, quantile = 0.1)
 \item{calib}{A list with the calibration results loaded using
 \code{\link{read_calib}}.}
 
-\item{na_value}{A numeric value which corresponds to the NA value used in
-the calibration.}
+\item{na_value}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Numeric. Penalty value
+substituted for \code{NA} fit values, this is no longer needed as NA values
+are now written to simulation_data in output of calib_aeme() and sa_aeme().
+The argument will be removed in a future version.}
 
 \item{fit_col}{character; name of column containing fit values. Default is
 \code{"fit"}.}
@@ -26,5 +28,10 @@ Defaults to 0.1.}
 A data frame with the parameter values.
 }
 \description{
-Get parameter values from calibration results
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\code{get_param()} is deprecated. Please use either \link{get_all_params()} or
+\link{get_best_params()} instead, depending on whether you want to retrieve
+all parameter values or just the best parameter values based on a specified
+fit column and quantile threshold.
 }
