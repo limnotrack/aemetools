@@ -3,7 +3,7 @@
 #' @description
 #' `r lifecycle::badge("deprecated")`
 #' 
-#' `get_param()` is deprecated. Please use either \link{get_all_params()} or
+#' `get_param()` is deprecated. Please use either \link{get_sim_params()} or
 #' \link{get_best_params()} instead, depending on whether you want to retrieve 
 #' all parameter values or just the best parameter values based on a specified 
 #' fit column and quantile threshold.
@@ -31,7 +31,7 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE,
                       quantile = 0.1) {
   
   lifecycle::deprecate_soft("0.2.0", "get_param()", 
-                            details = "Use either `get_all_params()` or
+                            details = "Use either `get_sim_params()` or
                             `get_best_params()` instead.)`")
 
   if (missing(na_value)) {
@@ -41,11 +41,11 @@ get_param <- function(calib, na_value, fit_col = "fit", best = FALSE,
   
   if (best) {
     param_df <- get_best_params(calib = calib, na_value = na_value,
-                                fit_col = fit_col, 
-                                quantile_threshold = quantile)
+                                fit_col = fit_col)
   } else {
-    param_df <- get_all_params(calib = calib, na_value = na_value, 
-                               fit_col = fit_col)
+    param_df <- get_sim_params(calib = calib, na_value = na_value, 
+                               fit_col = fit_col, 
+                               quantile_threshold = quantile)
   }
   return(param_df)
 }
