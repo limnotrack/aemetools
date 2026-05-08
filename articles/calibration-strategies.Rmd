@@ -187,8 +187,7 @@ Extract the calibrated parameters and run the model again.
 #| results: hide
 
 # Extract the calibrated parameters
-best_pars <- get_param(calib = calib_res, model = model, 
-                       na_value = ctrl$na_value, best = TRUE)
+best_pars <- get_best_params(calib = calib_res)
 
 param <- update_param(param = param, best_pars = best_pars)
 
