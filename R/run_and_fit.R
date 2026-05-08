@@ -98,7 +98,9 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                        timeout = timeout)
   # if nc is not ncdf4 object, return return_list
   if (!is.list(nc) & !inherits(nc, "ncdf4")) {
-    cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
+    cli::cli_alert_warning(
+      "Error opening netCDF file. Returning {.val {na_value}}."
+    )
     return(return_list)
   }
   
@@ -107,16 +109,22 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   })
   
   if (!is.list(nc)) {
-    cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
+    cli::cli_alert_warning(
+      "Error opening netCDF file. Returning {.val {na_value}}."
+    )
     return(return_list)
   }
   if (nc$error) {
-    cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
+    cli::cli_alert_warning(
+      "Error opening netCDF file. Returning {.val {na_value}}."
+    )
     return(return_list)
   }
   # If error in running model, return na_value
   if (is.null(nc)) {
-    cli::cli_alert_warning("Error opening netCDF file. Returning na_value.")
+    cli::cli_alert_warning(
+      "Error opening netCDF file. Returning {.val {na_value}}."
+    )
     return(return_list)
   }
   
@@ -153,7 +161,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     if (return_indices) {
       var_indices <- NULL
     }
-
+    
     # Get variable date & depth indices ----
     if (is.null(var_indices)) {
       if (method == "calib") {
