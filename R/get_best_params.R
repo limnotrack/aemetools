@@ -1,12 +1,8 @@
 #' Get best parameter values from calibration results
 #'
 #' @inheritParams plot_calib
-#' @inheritParams update_param
+#' @inheritParams get_param
 #' @inheritParams lifecycle::deprecate_warn
-#' @param quantile_threshold Numeric. A value between 0 and 1 specifying the 
-#' quantile threshold for selecting the best parameter values based on their fit
-#'  values. For example, a value of 0.1 will select parameter values with fit 
-#'  values in the lowest 10% of the distribution.
 #'
 #' @importFrom dplyr case_when filter group_by mutate summarise left_join select
 #' @importFrom dplyr rename arrange
@@ -14,17 +10,10 @@
 #'
 #' @return A data frame with the parameter values.
 #' @export
-get_best_params <- function(calib, na_value, fit_col = "fit", 
-                            quantile_threshold = 0.1) {
-  
-  if (!is.numeric(quantile_threshold) || length(quantile_threshold) != 1 || 
-      quantile_threshold < 0 || quantile_threshold > 1) {
-    cli::cli_abort("{.arg quantile_threshold} must be a single number between 0
-                   and 1.")
-  }
+get_best_params <- function(calib, fit_col = "fit", na_value = NULL) {
   
   na_value <- resolve_na_value(na_value = na_value, calib = calib)  
-  all_pars <- get_all_params(calib = calib, na_value = na_value, 
+  all_pars <- get_sim_params(calib = calib, na_value = na_value, 
                              fit_col = fit_col)
   param <- calib$parameter_metadata |> 
     dplyr::mutate(
@@ -32,17 +21,8 @@ get_best_params <- function(calib, na_value, fit_col = "fit",
     ) |> 
     dplyr::select(sim_id, model, file, name, group, index, parameter_name)
   
-  devqtile <- all_pars |> 
-    dplyr::filter(fit_value != na_value) |> 
-    dplyr::group_by(sim_id) |> 
-    dplyr::summarise(
-      q10 = quantile(fit_value, probs = quantile_threshold, na.rm = TRUE),
-      .groups = "drop"
-    )
-  
   pars_df <- all_pars |>
-    dplyr::left_join(qtile, by = "sim_id") |>
-    dplyr::filter(fit_value != na_value, fit_value <= q10) |>
+    dplyr::filter(fit_value != na_value, !is.na(fit_value)) |>
     dplyr::group_by(sim_id, fit_type, parameter_name) |>
     dplyr::summarise(
       label = label[which.min(fit_value)],
