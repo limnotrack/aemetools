@@ -6,7 +6,8 @@
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #' @importFrom duckdb duckdb
-#' @importFrom dplyr bind_rows filter pull slice_tail
+#' @importFrom dplyr bind_rows filter pull slice_tail select mutate rename
+#' @importFrom dplyr arrange left_join na_if
 #' @importFrom tidyr pivot_longer
 #' @importFrom cli cli_inform
 #'
@@ -148,7 +149,8 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
                         names_to = "fit_type", values_to = "fit_value") |>
     as.data.frame() |>
     dplyr::rename(parameter_name = pname, parameter_value = pvalue) |>
-    dplyr::mutate(sim_id = sim_id) |>
+    dplyr::mutate(sim_id = sim_id,
+                  fit_value = dplyr::na_if(fit_value, ctrl$na_value)) |>
     dplyr::select(sim_id, gen, run, parameter_name, parameter_value, fit_type, 
                   fit_value)
   
