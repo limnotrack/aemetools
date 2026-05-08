@@ -6,19 +6,17 @@
 \usage{
 plot_calib(
   calib,
-  na_value,
   fit_col = "fit",
   nrow = 2,
   base_size = 8,
   return_pars = FALSE,
-  log_y = TRUE
+  log_y = TRUE,
+  na_value = deprecated()
 )
 }
 \arguments{
-\item{calib}{dataframe; output from \code{\link{read_calib}}}
-
-\item{na_value}{A numeric value which corresponds to the NA value used in
-the calibration.}
+\item{calib}{A list with the calibration results loaded using
+\code{\link{read_calib}}.}
 
 \item{fit_col}{character; name of column containing fit values. Default is
 \code{"fit"}.}
@@ -30,6 +28,11 @@ the calibration.}
 \item{return_pars}{logical; return parameter values}
 
 \item{log_y}{logical; use log scale on y-axis. Default is \code{TRUE}.}
+
+\item{na_value}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Numeric. Penalty value
+substituted for \code{NA} fit values, this is no longer needed as NA values
+are now written to simulation_data in output of calib_aeme() and sa_aeme().
+The argument will be removed in a future version.}
 }
 \value{
 list of plots

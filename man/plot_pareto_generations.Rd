@@ -7,7 +7,8 @@
 plot_pareto_generations(calib, generations = NULL)
 }
 \arguments{
-\item{calib}{dataframe; output from \code{\link{read_calib}}}
+\item{calib}{A list with the calibration results loaded using
+\code{\link{read_calib}}.}
 
 \item{generations}{Optional vector of generations to include in the plot. If
 NULL, all generations are included.}

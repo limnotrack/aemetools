@@ -30,7 +30,7 @@ A data frame with the parameter values.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
-\code{get_param()} is deprecated. Please use either \link{get_all_params()} or
+\code{get_param()} is deprecated. Please use either \link{get_sim_params()} or
 \link{get_best_params()} instead, depending on whether you want to retrieve
 all parameter values or just the best parameter values based on a specified
 fit column and quantile threshold.

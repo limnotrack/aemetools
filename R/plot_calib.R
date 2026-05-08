@@ -1,8 +1,6 @@
 #' Plot calibration results
 #'
-#' @param calib dataframe; output from \code{\link{read_calib}}
-#' @param na_value A numeric value which corresponds to the NA value used in
-#' the calibration.
+#' @inheritParams get_param 
 #' @param fit_col character; name of column containing fit values. Default is
 #'  \code{"fit"}.
 #' @param nrow integer; number of rows in plot
@@ -18,6 +16,8 @@
 #' @importFrom ggplot2 geom_text annotate
 #' @importFrom forcats fct_reorder
 #' @importFrom patchwork wrap_plots
+#' @importFrom dplyr filter group_by summarise left_join select rename arrange
+#' @importFrom lifecycle deprecated deprecate_warn is_present
 #'
 #' @examples
 #' aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
@@ -67,22 +67,24 @@
 #' @return list of plots
 #' @export
 
-plot_calib <- function(calib, na_value, fit_col = "fit", nrow = 2,
-                       base_size = 8, return_pars = FALSE, log_y = TRUE) {
+plot_calib <- function(calib, fit_col = "fit", nrow = 2, base_size = 8, 
+                       return_pars = FALSE, log_y = TRUE,
+                       na_value = deprecated()) {
+  
+  if (lifecycle::is_present(na_value)) {
+    lifecycle::deprecate_warn("0.2.0", "plot_calib(na_value)", 
+                             details = "NA values are now resolved automatically.")
+  }
   
   nsims <- nrow(calib$simulation_metadata)
   sim_ids <- calib$simulation_metadata$sim_id
-  if (missing(na_value)) {
-    na_value <- calib$calibration_metadata$na_value[1]
-  }
-  
-  all_pars <- get_param(calib, na_value = na_value, fit_col = fit_col,
-                        best = FALSE) 
+
+  all_pars <- get_sim_params(calib = calib, fit_col = fit_col)
   all_pars_label <- all_pars |> 
     dplyr::distinct(parameter_name, name, group, label)
-  summ <- get_param(calib, na_value = na_value, fit_col = fit_col, 
-                    best = TRUE) |> 
-    dplyr::mutate(parameter_name = encode_param(group = group, name = name, index = index)) |> 
+  summ <- get_best_params(calib = calib, fit_col = fit_col) |> 
+    dplyr::mutate(parameter_name = encode_param(group = group, name = name, 
+                                                index = index)) |> 
     dplyr::left_join(all_pars_label, by = c("parameter_name"))
   if (min(all_pars$fit2, na.rm = TRUE) <= 0 & log_y) {
     adj <- ceiling(abs(min(all_pars$fit2, na.rm = TRUE))) + 0.1

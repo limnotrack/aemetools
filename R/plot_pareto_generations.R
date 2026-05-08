@@ -41,7 +41,8 @@ plot_pareto_generations <- function(
     dplyr::filter(
       fit_type %in% objectives,
       # fit_type != exclude_fit_type,
-      fit_value != calib$calibration_metadata$na_value
+      fit_value != calib$calibration_metadata$na_value,
+      !is.na(fit_value)
     ) |>
   dplyr::mutate(gen = factor(gen))
   
