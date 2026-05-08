@@ -419,21 +419,14 @@ test_that("can return NA if timeout is too low", {
 test_that("can calibrate lake level for AEME-GOTM in parallel", {
   tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
   path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE) |> 
+                           ext_elev = 5, use_bgc = FALSE) |> 
     AEME::run_aeme()
-  # AEME::plot(aeme, model = model, path = path, plot = "calib",
-  #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
                                                  tolower(lke$name)),
@@ -471,6 +464,8 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
   testthat::expect_true(is.data.frame(calib_meta))
   
   param2 <- get_param(calib = calib, best = TRUE)
+  best_param <- get_best_params(calib)
+  testthat::expect_true(all.equal(param2, best_param))
   param2 <- update_param(calib = calib)
   mod_param <- param |> 
     dplyr::filter(model == "gotm_wet")
