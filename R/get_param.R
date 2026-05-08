@@ -1,14 +1,28 @@
 #' Get parameter values from calibration results
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' `get_param()` is deprecated. Please use either \link{get_all_params()} or
+#' \link{get_best_params()} instead, depending on whether you want to retrieve 
+#' all parameter values or just the best parameter values based on a specified 
+#' fit column and quantile threshold.
+#' 
 #' @param calib A list with the calibration results loaded using
 #' \code{\link{read_calib}}.
 #' @param best A logical value indicating whether to return the best parameter
 #' values or all parameter values.
+#' @param na_value `r lifecycle::badge("deprecated")` Numeric. Penalty value 
+#' substituted for \code{NA} fit values, this is no longer needed as NA values 
+#' are now written to simulation_data in output of calib_aeme() and sa_aeme(). 
+#' The argument will be removed in a future version.
 #' @inheritParams plot_calib
 #' @inheritParams update_param
 #'
 #' @importFrom dplyr case_when filter group_by mutate summarise
 #' @importFrom stringr str_split_i
+#' @importFrom tidyr pivot_wider
+#' @importFrom lifecycle deprecate_soft
 #'
 #' @return A data frame with the parameter values.
 #' @export
@@ -16,133 +30,24 @@
 get_param <- function(calib, na_value, fit_col = "fit", best = FALSE, 
                       quantile = 0.1) {
   
-  # lapply(calib, \(x) {
-  if (!all(fit_col %in% calib$simulation_data$fit_type)) {
-    stop("fit_col not in calib")
-  }
-  # })
+  lifecycle::deprecate_soft("0.2.0", "get_param()", 
+                            details = "Use either `get_all_params()` or
+                            `get_best_params()` instead.)`")
+
   if (missing(na_value)) {
     na_value <- calib$calibration_metadata$na_value[1]
   }
   
-  sim_ids <- calib$simulation_metadata$sim_id
   
-  all_pars <- lapply(sim_ids, \(x) {
-    # calib$fit <- calib[[fit_col]]
-    model <- calib$simulation_metadata |>
-      dplyr::filter(sim_id == x) |>
-      dplyr::pull(model)
-    
-    df_idx <- calib$simulation_data |>
-      dplyr::filter(sim_id == x) |>
-      dplyr::filter(fit_type == calib$simulation_data$fit_type[1]) |>
-      tidyr::pivot_wider(id_cols = c("gen", "run"), names_from = parameter_name,
-                         values_from = parameter_value) |>
-      dplyr::arrange(gen, run) |>
-      dplyr::mutate(index = dplyr::row_number()) |>
-      # dplyr::mutate(index = gen * run) |>
-      as.data.frame() |>
-      dplyr::select(gen, run, index)
-    
-    calib$simulation_data |>
-      dplyr::filter(sim_id == x) |>
-      dplyr::left_join(df_idx, by = c("gen", "run")) |>
-      dplyr::filter(
-        fit_type %in% fit_col
-      ) |>
-      dplyr::mutate(
-        model = model,
-        fit2 = dplyr::case_when(
-          fit_value == na_value ~ NA,
-          .default = fit_value
-        )) |>
-      dplyr::mutate(
-        gen = factor(gen),
-        name = decode_param(parameter_name),
-        label = abbrev_pars(parameter_name, model),
-        group = stringr::str_split_i(parameter_name, "/", 1),
-        par = stringr::str_split_i(label, "%", 2)
-      ) |>
-      dplyr::mutate(group = dplyr::case_when(
-        group == "NA" ~ NA,
-        .default = group
-      ))
-  }) |>
-    dplyr::bind_rows() |>
-    dplyr::select(sim_id, model, gen, run, index, dplyr::everything())
-  
-  
-  
-  if (!best) return(all_pars)
-  
-  param <- calib$parameter_metadata |> 
-    dplyr::mutate(parameter_name = encode_param(group = group, name = name, 
-                                                index = index)) |> 
-    dplyr::select(sim_id, model, file, name, group, index, parameter_name)
-  
-  
-  # uniq_pars <- unique(all_pars$name)
-  # # Remove "outflow", "inflow" and ones that contain "MET"
-  # uniq_pars <- uniq_pars[!uniq_pars %in% c("outflow", "inflow")]
-  # uniq_pars <- uniq_pars[!grepl("MET", uniq_pars)]
-  # if (length(uniq_pars) > 0) {
-  #   aeme_pars <- AEME::get_aeme_parameters(name = uniq_pars) |> 
-  #     dplyr::select(sim_id, model, file, name)
-  # }
-  
-  qtile <- all_pars |> 
-    dplyr::filter(fit_value != na_value) |> 
-    dplyr::group_by(sim_id) |> 
-    dplyr::summarise(q10 = quantile(fit_value, probs = quantile, na.rm = TRUE),
-                     .groups = "drop")
-  
-  pars_df <- all_pars |>
-    dplyr::left_join(qtile, by = "sim_id") |>
-    dplyr::filter(fit_value != na_value, fit_value <= q10) |>
-    dplyr::group_by(sim_id, parameter_name) |>
-    dplyr::summarise(label = label[which.min(fit_value)],
-                     gen = gen[which.min(fit_value)],
-                     min = min(parameter_value), 
-                     max = max(parameter_value),
-                     parameter_value = parameter_value[which.min(fit_value)],
-                     par = par[which.min(fit_value)],
-                     fit_value = min(fit_value),
-                     .groups = "drop") |> 
-    dplyr::select(sim_id, parameter_name, parameter_value, min, max, fit_value,
-                  gen) |> 
-    dplyr::rename(value = parameter_value)
-  
-  param_names <- AEME::param_colnames(incl_opt = FALSE)
-  param_df <- param |> 
-    dplyr::left_join(pars_df, by = c("sim_id", "parameter_name")) |> 
-    dplyr::arrange(sim_id, model, file, name, group, index) |> 
-    dplyr::select(dplyr::all_of(c("sim_id", param_names, "fit_value", "gen"))) 
+  if (best) {
+    param_df <- get_best_params(calib = calib, na_value = na_value,
+                                fit_col = fit_col, 
+                                quantile_threshold = quantile)
+  } else {
+    param_df <- get_all_params(calib = calib, na_value = na_value, 
+                               fit_col = fit_col)
+  }
   return(param_df)
-  
-  
-  # if (length(uniq_pars) > 0) {
-  #   pars_df <- pars_df |> 
-  #     dplyr::left_join(aeme_pars, by = c("model", "name"))
-  # }
-  # if (!"file" %in% colnames(pars_df)) {
-  #   pars_df <- pars_df |> 
-  #     dplyr::mutate(file = NA_character_)
-  # }
-  # 
-  pars_df <- pars_df |> 
-    dplyr::mutate(
-      value = parameter_value,
-      min = value, max = value,
-      file = dplyr::case_when(
-        grepl("MET", name) ~ "met",
-        grepl("outflow", name) ~ "wdr",
-        grepl("inflow", name) ~ "inf",
-        .default = .data$file
-      )
-    ) |> 
-    dplyr::select(dplyr::all_of(c("sim_id", param_names, "fit_value", "gen",
-                                  "fit_type"))) 
-  return(pars_df)
 }
 
 

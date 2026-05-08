@@ -121,3 +121,16 @@ get_pareto_front <- function(df, obj_cols) {
   args
 }
 
+#' Resolve the NA value to use for calibration results.
+#' This function checks if the user has provided an `na_value` argument. If not
+#' it retrieves the default `na_value` from the calibration metadata. This 
+#' ensures that the same `na_value` is consistently used across all functions 
+#' that require it, even if the user does not explicitly provide it.
+#' @param na_value The NA value provided by the user (can be NULL).
+#' @param calib The calibration object containing metadata with the default NA value.
+#' @return The resolved NA value to use for calibration results.
+#' @noRd
+#' @importFrom rlang `%||%`
+resolve_na_value <- function(na_value, calib) {
+  na_value %||% calib$calibration_metadata$na_value[1]
+}
