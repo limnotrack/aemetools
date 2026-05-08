@@ -57,8 +57,8 @@ aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 model_controls <- AEME::get_model_controls()
 model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model, 
-                   model_controls = model_controls, inf_factor = inf_factor, 
-                   ext_elev = 5, use_bgc = FALSE) |> 
+                   model_controls = model_controls, ext_elev = 5,
+                   use_bgc = FALSE) |> 
   run_aeme()
 
 ```
@@ -349,8 +349,7 @@ function takes the following arguments:
     the entire calibration dataset. Defaults to `FALSE`.
 
 ```{r extract-best-parameters}
-best_params <- get_param(calib, na_value = ctrl$na_value, fit_col = "fit", 
-                         best = TRUE)
+best_params <- get_best_params(calib)
 best_params
 
 ```
