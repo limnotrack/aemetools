@@ -40,15 +40,12 @@ update_param <- function(calib, param, na_value, aeme, replace = FALSE, quantile
   }
 
   if (missing(best_pars)) {
-    best_pars <- get_param(calib = calib, na_value = na_value,
-                           fit_col = fit_col, best = TRUE,
-                           quantile = quantile) |> 
+    best_pars <- get_best_params(calib = calib, fit_col = fit_col) |> 
       dplyr::mutate(
         name_full = encode_param(group, name, index)
       )
   }
-  pars <- get_param(calib = calib, na_value = na_value,
-                    fit_col = fit_col, best = FALSE)
+  pars <- get_sim_params(calib = calib, fit_col = fit_col)
   
   # Calculate min/max for each sim_id and parameter for the top quantile of the
   # fit_value

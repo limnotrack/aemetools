@@ -16,13 +16,16 @@ update_param(
 )
 }
 \arguments{
-\item{calib}{dataframe; output from \code{\link{read_calib}}}
+\item{calib}{A list with the calibration results loaded using
+\code{\link{read_calib}}.}
 
 \item{param}{A data frame with parameters to update. Defaults to NULL. When
 NULL, the parameter values are extracted from \code{calib$parameter_metadata}.}
 
-\item{na_value}{A numeric value which corresponds to the NA value used in
-the calibration.}
+\item{na_value}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Numeric. Penalty value
+substituted for \code{NA} fit values, this is no longer needed as NA values
+are now written to simulation_data in output of calib_aeme() and sa_aeme().
+The argument will be removed in a future version.}
 
 \item{aeme}{aeme; object. Defaults to NULL. When NULL, a dataframe of the
 updated parameter values is returned. When provided, the updated parameter

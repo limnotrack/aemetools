@@ -30,10 +30,8 @@ plot_calib_summary <- function(calib, fit_col, nrow = 2, base_size = 8,
       unique()
   }
   
-  all_pars <- get_param(calib = calib, na_value = na_value, fit_col = fit_col,
-                        best = FALSE)
-  summ <- get_param(calib, na_value = na_value, fit_col = fit_col, 
-                    best = TRUE) |> 
+  all_pars <- get_sim_params(calib = calib, fit_col = fit_col)
+  summ <- get_best_params(calib = calib, fit_col = fit_col) |> 
     dplyr::mutate(
       enc_name = encode_param(group, name, index),
       label = abbrev_pars(enc_name, model)
@@ -102,5 +100,4 @@ plot_calib_summary <- function(calib, fit_col, nrow = 2, base_size = 8,
   psum <- patchwork::wrap_plots(plist, nrow = nsims,
                                 guides = "collect")
   return(psum)
-  
 }
