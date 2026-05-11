@@ -15,7 +15,8 @@ plot_pareto_generations(calib, generations = NULL)
 
 - calib:
 
-  dataframe; output from [`read_calib`](read_simulation_output.md)
+  A list with the calibration results loaded using
+  [`read_calib`](read_simulation_output.md).
 
 - generations:
 

@@ -8,12 +8,12 @@ Update parameter values in param based on best_pars
 update_param(
   calib,
   param,
-  na_value,
   aeme,
   replace = FALSE,
-  quantile = 0.1,
   fit_col = "fit",
-  best_pars
+  best_pars,
+  quantile = 0.1,
+  na_value = NULL
 )
 ```
 
@@ -21,17 +21,13 @@ update_param(
 
 - calib:
 
-  dataframe; output from [`read_calib`](read_simulation_output.md)
+  A list with the calibration results loaded using
+  [`read_calib`](read_simulation_output.md).
 
 - param:
 
   A data frame with parameters to update. Defaults to NULL. When NULL,
   the parameter values are extracted from `calib$parameter_metadata`.
-
-- na_value:
-
-  A numeric value which corresponds to the NA value used in the
-  calibration.
 
 - aeme:
 
@@ -45,11 +41,6 @@ update_param(
   with the updated values. Defaults to FALSE. Only used when aeme is
   provided.
 
-- quantile:
-
-  The quantile to use for the top quantile of the fit_value. Defaults to
-  0.1.
-
 - fit_col:
 
   character; name of column containing fit values. Default is `"fit"`.
@@ -59,6 +50,19 @@ update_param(
   A data frame with the best parameters from
   [`get_param`](get_param.md). Defaults to NULL. When NULL,
   [`get_param`](get_param.md) is called to get the best parameters.
+
+- quantile:
+
+  **\[deprecated\]** The quantile to use for the top quantile of the
+  fit_value. Defaults to 0.1. This is no longer needed and will be
+  removed in a future version.
+
+- na_value:
+
+  **\[deprecated\]** Numeric. Penalty value substituted for `NA` fit
+  values, this is no longer needed as NA values are now written to
+  simulation_data in output of calib_aeme() and sa_aeme(). The argument
+  will be removed in a future version.
 
 ## Value
 

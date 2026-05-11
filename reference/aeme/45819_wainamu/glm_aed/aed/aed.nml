@@ -143,7 +143,7 @@
 /
 &aed_phytoplankton
    num_phytos = 3
-   the_phytos = 1, 2, 3
+   the_phytos = 2, 3, 7
    settling = 1, 1, 1
    p_excretion_target_variable = 'OGM_dop'
    n_excretion_target_variable = 'OGM_don'

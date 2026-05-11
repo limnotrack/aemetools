@@ -1,6 +1,7 @@
 # Access geospatial data
 
 ``` r
+
 library(aemetools)
 library(sf) # Used for spatial data
 library(terra) # Used for raster data
@@ -28,6 +29,7 @@ file](https://datafinder.stats.govt.nz/layer/111182-regional-council-2023-genera
 from Stats NZ.
 
 ``` r
+
 # Read the shapefile data from Stats NZ
 url <- "https://datafinder.stats.govt.nz/" # Base URL
 layer_id <- 111182 # Layer ID for the regional shapefile
@@ -76,12 +78,14 @@ line and can make plotting difficult. We will remove these from the
 shapefile.
 
 ``` r
+
 # Remove the Chatham Islands from the shapefile
 nz_shapefile <- nz_shapefile |> 
   dplyr::filter(REGC2023_V1_00_NAME != "Area Outside Region")
 ```
 
 ``` r
+
 # View the shapefile data
 tm_shape(nz_shapefile, name = "Regional Council boundaries") +
   tm_borders(col = "blue") +
@@ -101,6 +105,7 @@ We will define the location of Lake Rotoroa and create a spatial
 dataframe of a point in the lake using the `sf` package.
 
 ``` r
+
 # Define the location of the lake
 lat <- -37.79881
 lon <- 175.2742
@@ -129,6 +134,7 @@ We can visualise the location of the lake using the
 [`tmap`](https://r-tmap.github.io/tmap/) package.
 
 ``` r
+
 # View the location of the lake in a map
 map <- tm_shape(pnt, name = "Lake") +
   tm_symbols(fill = "blue")
@@ -147,6 +153,7 @@ for New Zealand which are available on the LINZ Data Service. We can use
 this to find the elevation of Lake Rotoroa.
 
 ``` r
+
 nz_dem_metadata
 ```
 
@@ -156,6 +163,7 @@ We can view the coverage of the DEM layers to see which layers intersect
 with our lake.
 
 ``` r
+
 # View the coverage of the DEM layers
 tm_shape(nz_dem_metadata, name = "DEM coverage") +
   tm_polygons(fill = "red", col = "black", fill_alpha = 0.1, id = "title") +
@@ -170,6 +178,7 @@ the
 function.
 
 ``` r
+
 # Subset the DEM database for the elevation of the lake  
 pnt_nz <- pnt |>
   sf::st_transform(crs = 2193)
@@ -196,6 +205,7 @@ visual inspection of the layers to see which one is the most suitable
 for our lake.
 
 ``` r
+
 # View the layers
 dem_84 <- dem_layers |> 
   sf::st_transform(crs = 4326) 
@@ -217,6 +227,7 @@ latitude and longitude of the point, and the layer id of the raster
 layer. We will compare the elevation values from the different layers.
 
 ``` r
+
 # Compare the lake elevation values from the different layers
 val1 <- get_raster_layer_value(lat = lat, lon = lon, 
                                layer = dem_layers$layer_id[1])
@@ -245,6 +256,7 @@ Zealand which are available on the LINZ Data Service. We can use this to
 source an aerial image of the lake.
 
 ``` r
+
 # Query the aerial imagery metadata for the elevation of the lake  
 # Subset the aerial imagery layers that intersect with the lake
 aerial_layers <- nz_aerial_imagery_metadata[sf::st_intersects(pnt_nz, nz_aerial_imagery_metadata, 
@@ -276,6 +288,7 @@ aerial_layers
 ```
 
 ``` r
+
 aerial_layers
 ```
 
@@ -286,6 +299,7 @@ We can view the coverage of the aerial imagery layers to see which
 layers intersect with our lake.
 
 ``` r
+
 # View the coverage of the aerial imagery layers
 tm_shape(aerial_layers, name = "Aerial imagery coverage") +
   tm_polygons(fill = "yellow", col = "black", fill_alpha = 0.1, id = "title") +
@@ -305,6 +319,7 @@ resolution, we may not need that resolution for our analysis. We can
 compare the
 
 ``` r
+
 aerial1 <- get_raster_tile(x = pnt, layer_id = aerial_layers$layer_id[1],
                            zoom = 16) 
 aerial2 <- get_raster_tile(x = pnt, layer_id = aerial_layers$layer_id[4],
@@ -322,6 +337,7 @@ We can compare the resolution of the two aerial images to see which one
 is more suitable for our lake.
 
 ``` r
+
 # Compare the resolution of the aerial imagery but first transform to NZTM
 res1 <- aerial1 |> 
   terra::project("+proj=nzmg") |> 
@@ -345,6 +361,7 @@ Basemap](https://basemaps.linz.govt.nz/) to see the coverage of the
 lake. You will need to sign up for a free API key to use this service.
 
 ``` r
+
 # Get the LINZ basemap
 linz_basemap <- get_linz_basemap_tile(x = pnt, zoom = 16)
 

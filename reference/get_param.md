@@ -1,6 +1,11 @@
 # Get parameter values from calibration results
 
-Get parameter values from calibration results
+**\[deprecated\]**
+
+`get_param()` is deprecated. Please use either get_sim_params() or
+get_best_params() instead, depending on whether you want to retrieve all
+parameter values or just the best parameter values based on a specified
+fit column and quantile threshold.
 
 ## Usage
 
@@ -17,8 +22,10 @@ get_param(calib, na_value, fit_col = "fit", best = FALSE, quantile = 0.1)
 
 - na_value:
 
-  A numeric value which corresponds to the NA value used in the
-  calibration.
+  **\[deprecated\]** Numeric. Penalty value substituted for `NA` fit
+  values, this is no longer needed as NA values are now written to
+  simulation_data in output of calib_aeme() and sa_aeme(). The argument
+  will be removed in a future version.
 
 - fit_col:
 
@@ -31,8 +38,9 @@ get_param(calib, na_value, fit_col = "fit", best = FALSE, quantile = 0.1)
 
 - quantile:
 
-  The quantile to use for the top quantile of the fit_value. Defaults to
-  0.1.
+  **\[deprecated\]** The quantile to use for the top quantile of the
+  fit_value. Defaults to 0.1. This is no longer needed and will be
+  removed in a future version.
 
 ## Value
 

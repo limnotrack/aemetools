@@ -36,7 +36,9 @@ create_sa_control(
 
 - na_value:
 
-  Numeric. Replacement for `NA`. Default `999`.
+  Numeric. Penalty value substituted for `NA` fit values during
+  optimisation to discourage parameter sets that produce invalid model
+  output. Default `999`.
 
 - parallel:
 
