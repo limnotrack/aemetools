@@ -121,7 +121,7 @@ using the `osmdata` and `tmap` packages.
 
 For more details on using `osmdata`, you can visit the [osmdata website](https://docs.ropensci.org/osmdata/).
 
-```{r download-toba}
+```{r download-toba-osmdata, eval=FALSE}
 library(osmdata)
 osm_data <- opq(bbox = "Sumatra, Indonesia") |> 
   add_osm_feature(key = "name:en", value = "Lake Toba", value_exact = FALSE) |> 
@@ -133,6 +133,18 @@ toba <- osm_data$osm_multipolygons |>
 toba
 
 ```
+
+Sometimes the `osmdata` package can be a bit tricky to use and may get rate
+limit errors from the OpenStreetMap API. An alternative is to use the Nominatim 
+API to download the shapefile for Lake Toba. This can be done using the
+`st_read()` function.
+
+```{r download-toba-nominatim, eval=TRUE, include=FALSE}
+url <- "https://nominatim.openstreetmap.org/search?q=Lake+Toba&format=geojson&polygon_geojson=1"
+
+toba <- st_read(url)
+```
+
 Plot the location of Lake Toba.
 
 ```{r plot-toba}
