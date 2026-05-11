@@ -72,20 +72,54 @@ path <- "aeme"
 aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path,
                          model_controls = model_controls, ext_elev = 5) |>
   AEME::run_aeme()
-#> ℹ Using observed water level
-#> ℹ No missing values in observed water level. Using observed water level
+#> ℹ All columns already match AEME standard variable names, skipping name
+#>   guessing.
+#> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_tmpdew: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_radswd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_radlwd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_humrel: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_cldcvr: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prsttn: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prmslp: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_prvapr: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wndspd: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wnduvu: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
+#> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
+#> ℹ All columns already match AEME standard inflow variable names, skipping name
+#>   guessing.
+#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CHM_oxy`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_don`: values appear to be in the expected units, no conversion applied.
+#> ℹ `NIT_pon`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
+#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CAR_doc`: values appear to be in the expected units, no conversion applied.
+#> ℹ `CAR_poc`: values appear to be in the expected units, no conversion applied.
+#> ℹ `SIL_rsi`: values appear to be in the expected units, no conversion applied.
+#> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
+#>   value.
+#> ℹ Check raw data or unit conversion for this variable.
+#> ℹ Using observed water level.
+#> ! Missing values in observed water level.
 #> ℹ Correcting water balance using estimated outflows (method = 2).
 #> ℹ Calculating lake level using lake depth and a sinisoidal function.
 #> ℹ Building GLM-AED for lake wainamu
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
-#> ℹ Running models... (Have you tried parallelizing?) [2026-03-04 03:04:03]
-#> → GLM-AED running... [2026-03-04 03:04:03]
-#> ✔ GLM-AED run successful! [2026-03-04 03:04:03]
-#> → GOTM-WET running... [2026-03-04 03:04:03]
-#> ✔ GOTM-WET run successful! [2026-03-04 03:04:04]
-#> ✔ Model run complete! [2026-03-04 03:04:04]
+#> ℹ Running models... (Have you tried parallelizing?) [2026-05-11 21:58:15]
+#> → GLM-AED running... [2026-05-11 21:58:15]
+#> ✔ GLM-AED run successful! [2026-05-11 21:58:16]
+#> → GOTM-WET running... [2026-05-11 21:58:16]
+#> ✔ GOTM-WET run successful! [2026-05-11 21:58:16]
+#> ✔ Model run complete! [2026-05-11 21:58:16]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 
@@ -113,93 +147,93 @@ sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
                      vars_sim = vars_sim, weights = weights)
 #> ℹ Variables not found: `LKE_lvlwtr`.
 #> Adding them to model_controls.
-#> ℹ Extracting indices for "glm_aed" modelled variables [2026-03-04 03:04:05]
-#> ✔ Indices extracted for "glm_aed" modelled variables [2026-03-04 03:04:06]
+#> ℹ Extracting indices for "glm_aed" modelled variables [2026-05-11 21:58:18]
+#> ✔ Indices extracted for "glm_aed" modelled variables [2026-05-11 21:58:19]
 #> ℹ Using 2 cores for parallel calibration for "glm_aed".
-#> → Starting generation 1/2, 10 members. [2026-03-04 03:04:07]
+#> → Starting generation 1/2, 10 members. [2026-05-11 21:58:20]
 #> Parameter summary for generation 1:
 #>        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv
-#> mean      2.861     0.9918     1.0000              0.15010
-#> median    2.764     0.9815     0.9993              0.15030
-#> sd        1.612     0.1869     0.1926              0.02925
+#> mean      2.771     1.0040     0.9956              0.14960
+#> median    2.563     0.9955     0.9888              0.14690
+#> sd        1.655     0.1795     0.1833              0.03246
 #>        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb
-#> mean                 0.24920               0.14830               0.4551
-#> median               0.24780               0.15090               0.4594
-#> sd                   0.02897               0.03033               0.1553
+#> mean                 0.25030               0.14970               0.4417
+#> median               0.24840               0.15350               0.4362
+#> sd                   0.02996               0.03067               0.1525
 #>        mixing/coef_mix_hyp outflow inflow
-#> mean                0.5934  1.4660 1.5450
-#> median              0.5891  1.4040 1.5750
-#> sd                  0.1240  0.6184 0.6141
+#> mean                0.6005  1.4710 1.4690
+#> median              0.5977  1.5100 1.5050
+#> sd                  0.1182  0.5938 0.6087
 #> ✔ Completed generation 1/2 
-#> for "glm_aed". [2026-03-04 03:04:21]
-#> Best fit: 263 (sd: 4032.3) Parameters: [ 3.05, 1.07, 1.27, 0.106, 0.253, 0.196,
-#> 0.217, 0.646, 1.3, and 1.25 ]
+#> for "glm_aed". [2026-05-11 21:58:37]
+#> Best fit: 27.1 (sd: 3306.8) Parameters: [ 3.66, 1.08, 0.711, 0.101, 0.242,
+#> 0.113, 0.561, 0.459, 0.584, and 0.583 ]
 #> Writing output for generation 1 to results.db with sim ID: "45819_glmaed_C_003"
-#> [2026-03-04 03:04:21]
-#> ℹ Survival rate: 0.7
-#> → Starting generation 2/2, 10 members. [2026-03-04 03:04:22]
+#> [2026-05-11 21:58:37]
+#> ℹ Survival rate: 0.8
+#> → Starting generation 2/2, 10 members. [2026-05-11 21:58:37]
 #> Parameter summary for generation 2:
 #>        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv
-#> mean      1.787     0.9291     1.1160              0.15580
-#> median    1.554     0.9214     1.1440              0.15350
-#> sd        1.422     0.1569     0.1525              0.03803
+#> mean     3.3510     1.0310     0.9118              0.11560
+#> median   3.6040     1.0720     0.8383              0.10810
+#> sd       0.7859     0.0841     0.2244              0.01729
 #>        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb
-#> mean                0.260400              0.186300               0.4510
-#> median              0.258500              0.186800               0.4445
-#> sd                  0.009843              0.008991               0.1460
+#> mean                  0.2321               0.13690               0.4558
+#> median                0.2396               0.11760               0.5304
+#> sd                    0.0154               0.03464               0.1640
 #>        mixing/coef_mix_hyp outflow inflow
-#> mean               0.65600  1.4890 1.6860
-#> median             0.68410  1.5320 1.7260
-#> sd                 0.09622  0.3176 0.5123
+#> mean                0.5487  0.8769 0.9280
+#> median              0.4797  0.6845 0.6614
+#> sd                  0.1382  0.3899 0.4792
 #> Writing output for generation 2 to results.db with sim ID: "45819_glmaed_C_003"
-#> [2026-03-04 03:04:30]
+#> [2026-05-11 21:58:46]
 #> ✔ Completed generation 2/2 
-#> for "glm_aed". [2026-03-04 03:04:30]
-#> Best fit: 18.6 (sd: 2756.6)
+#> for "glm_aed". [2026-05-11 21:58:47]
+#> Best fit: 6.21 (sd: 861.03)
 #> ℹ Survival rate: 1
-#> ℹ Extracting indices for "gotm_wet" modelled variables [2026-03-04 03:04:30]
-#> ✔ Indices extracted for "gotm_wet" modelled variables [2026-03-04 03:04:31]
+#> ℹ Extracting indices for "gotm_wet" modelled variables [2026-05-11 21:58:47]
+#> ✔ Indices extracted for "gotm_wet" modelled variables [2026-05-11 21:58:48]
 #> ℹ Using 2 cores for parallel calibration for "gotm_wet".
-#> → Starting generation 1/2, 10 members. [2026-03-04 03:04:32]
+#> → Starting generation 1/2, 10 members. [2026-05-11 21:58:49]
 #> Parameter summary for generation 1:
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
-#> mean                     4.940e-06                           0.52720
-#> median                   4.905e-06                           0.52790
-#> sd                       3.167e-06                           0.08187
+#> mean                     4.939e-06                           0.52250
+#> median                   4.785e-06                           0.52220
+#> sd                       3.091e-06                           0.08191
 #>        light_extinction/g1/constant_value light_extinction/g2/constant_value
-#> mean                              0.59090                             1.3460
-#> median                            0.60150                             1.4500
-#> sd                                0.08696                             0.8097
+#> mean                              0.59090                             1.3690
+#> median                            0.59820                             1.4530
+#> sd                                0.08894                             0.8391
 #>        MET_wndspd MET_radswd outflow inflow
-#> mean       1.0030     0.9975  1.4950 1.5140
-#> median     0.9910     0.9961  1.4720 1.4320
-#> sd         0.1803     0.1845  0.6073 0.6017
+#> mean       0.9938     1.0010  1.4950 1.5010
+#> median     0.9737     0.9877  1.5180 1.4610
+#> sd         0.1830     0.1722  0.6088 0.5899
 #> ✔ Completed generation 1/2 
-#> for "gotm_wet". [2026-03-04 03:04:50]
-#> Best fit: 108 (sd: 9490.8) Parameters: [ 1.52e-06, 0.448, 0.483, 0.854, 0.829,
-#> 0.97, 2.21, and 2.28 ]
+#> for "gotm_wet". [2026-05-11 21:59:11]
+#> Best fit: 918 (sd: 20566) Parameters: [ 4.04e-06, 0.613, 0.543, 0.588, 0.83,
+#> 0.866, 2.21, and 2.08 ]
 #> Writing output for generation 1 to results.db with sim ID:
-#> "45819_gotmwet_C_003" [2026-03-04 03:04:50]
-#> ℹ Survival rate: 0.8
-#> → Starting generation 2/2, 10 members. [2026-03-04 03:04:50]
+#> "45819_gotmwet_C_003" [2026-05-11 21:59:11]
+#> ℹ Survival rate: 0.7
+#> → Starting generation 2/2, 10 members. [2026-05-11 21:59:11]
 #> Parameter summary for generation 2:
 #>        turbulence/turb_param/k_min light_extinction/A/constant_value
-#> mean                     1.881e-06                           0.48090
-#> median                   1.743e-06                           0.47080
-#> sd                       4.958e-07                           0.06674
+#> mean                     5.378e-06                           0.54500
+#> median                   5.879e-06                           0.51500
+#> sd                       2.225e-06                           0.07573
 #>        light_extinction/g1/constant_value light_extinction/g2/constant_value
-#> mean                              0.50360                             1.1670
-#> median                            0.49510                             1.0440
-#> sd                                0.04614                             0.7084
+#> mean                              0.58260                             0.4119
+#> median                            0.60160                             0.2657
+#> sd                                0.04975                             0.3112
 #>        MET_wndspd MET_radswd outflow inflow
-#> mean      0.83980     0.9083  1.8010 1.8990
-#> median    0.84240     0.9112  1.8290 2.0430
-#> sd        0.05328     0.1094  0.6452 0.6382
+#> mean       0.9382     1.0340  1.7830 1.9600
+#> median     0.9609     1.1460  1.5950 1.8500
+#> sd         0.1717     0.2115  0.4603 0.3688
 #> Writing output for generation 2 to results.db with sim ID:
-#> "45819_gotmwet_C_003" [2026-03-04 03:05:00]
+#> "45819_gotmwet_C_003" [2026-05-11 21:59:22]
 #> ✔ Completed generation 2/2 
-#> for "gotm_wet". [2026-03-04 03:05:00]
-#> Best fit: 61.6 (sd: 1935.1)
+#> for "gotm_wet". [2026-05-11 21:59:22]
+#> Best fit: 54.6 (sd: 6766.2)
 #> ℹ Survival rate: 1
                      
 # Read calibration output                      

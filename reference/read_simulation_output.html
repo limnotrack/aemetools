@@ -110,26 +110,60 @@ are read.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">aeme_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/aeme.rds"</span>, package <span class="op">=</span> <span class="st">"AEME"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">aeme_file</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/AEME/reference/get_model_controls.html" class="external-link">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model_controls</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/reference/get_model_controls.html" class="external-link">get_model_controls</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glm_aed"</span>, <span class="st">"gotm_wet"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"aeme"</span></span></span>
-<span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/AEME/reference/build_aeme.html" class="external-link">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>,</span></span>
+<span class="r-in"><span><span class="va">aeme</span> <span class="op">&lt;-</span> <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/reference/build_aeme.html" class="external-link">build_aeme</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span>,</span></span>
 <span class="r-in"><span>                         model_controls <span class="op">=</span> <span class="va">model_controls</span>, ext_elev <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/AEME/reference/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using observed water level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> No missing values in observed water level. Using observed water level</span>
+<span class="r-in"><span>  <span class="fu">AEME</span><span class="fu">::</span><span class="fu"><a href="https://limnotrack.com/reference/run_aeme.html" class="external-link">run_aeme</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> All columns already match AEME standard variable names, skipping name</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   guessing.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_tmpair: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_tmpdew: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_radswd: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_radlwd: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_humrel: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_cldcvr: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_prsttn: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_prmslp: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_prvapr: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_wndspd: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_wnduvu: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_wnduvv: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_pprain: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> MET_ppsnow: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> All columns already match AEME standard inflow variable names, skipping name</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   guessing.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `HYD_temp`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `CHM_oxy`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `NIT_amm`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `NIT_nit`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `NIT_don`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `NIT_pon`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `PHS_frp`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `PHS_dop`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `PHS_pop`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `PHS_pip`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `CAR_doc`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `CAR_poc`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `SIL_rsi`: values appear to be in the expected units, no conversion applied.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span><span style="color: #BBBB00;">!</span> `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   value.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Check raw data or unit conversion for this variable.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using observed water level.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Missing values in observed water level.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Correcting water balance using estimated outflows (method = 2).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Calculating lake level using lake depth and a sinisoidal function.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GLM-AED for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building GOTM-WET model for lake wainamu</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GOTM YAML validation completed - no issues detected.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM nml validation completed - no issues detected.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-03-04 03:04:03]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-03-04 03:04:03]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-03-04 03:04:03]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → GOTM-WET running... [2026-03-04 03:04:03]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-03-04 03:04:04]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-03-04 03:04:04]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-05-11 21:58:15]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → GLM-AED running... [2026-05-11 21:58:15]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-05-11 21:58:16]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → GOTM-WET running... [2026-05-11 21:58:16]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GOTM-WET run successful! [2026-05-11 21:58:16]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Model run complete! [2026-05-11 21:58:16]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> The following variables are not available in model gotm_wet: RAD_extc</span>
 <span class="r-in"><span></span></span>
@@ -157,93 +191,93 @@ are read.</p></dd>
 <span class="r-in"><span>                     vars_sim <span class="op">=</span> <span class="va">vars_sim</span>, weights <span class="op">=</span> <span class="va">weights</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Variables not found: `LKE_lvlwtr`.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Adding them to model_controls.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting indices for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-03-04 03:04:05]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Indices extracted for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-03-04 03:04:06]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting indices for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-05-11 21:58:18]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Indices extracted for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-05-11 21:58:19]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using <span style="color: #0000BB;">2</span> cores for parallel calibration for <span style="color: #0000BB;">"glm_aed"</span>.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-04 03:04:07]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-05-11 21:58:20]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Parameter summary for generation <span style="color: #0000BB;">1</span>:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean      2.861     0.9918     1.0000              0.15010</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median    2.764     0.9815     0.9993              0.15030</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd        1.612     0.1869     0.1926              0.02925</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean      2.771     1.0040     0.9956              0.14960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median    2.563     0.9955     0.9888              0.14690</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd        1.655     0.1795     0.1833              0.03246</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean                 0.24920               0.14830               0.4551</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median               0.24780               0.15090               0.4594</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd                   0.02897               0.03033               0.1553</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean                 0.25030               0.14970               0.4417</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median               0.24840               0.15350               0.4362</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd                   0.02996               0.03067               0.1525</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        mixing/coef_mix_hyp outflow inflow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean                0.5934  1.4660 1.5450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median              0.5891  1.4040 1.5750</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd                  0.1240  0.6184 0.6141</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean                0.6005  1.4710 1.4690</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median              0.5977  1.5100 1.5050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd                  0.1182  0.5938 0.6087</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"glm_aed"</span>. [2026-03-04 03:04:21]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">263</span> (sd: <span style="color: #0000BB;">4032.3</span>) Parameters: [ <span style="color: #0000BB;">3.05</span>, <span style="color: #0000BB;">1.07</span>, <span style="color: #0000BB;">1.27</span>, <span style="color: #0000BB;">0.106</span>, <span style="color: #0000BB;">0.253</span>, <span style="color: #0000BB;">0.196</span>,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">0.217</span>, <span style="color: #0000BB;">0.646</span>, <span style="color: #0000BB;">1.3</span>, and <span style="color: #0000BB;">1.25</span> ]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-11 21:58:37]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">27.1</span> (sd: <span style="color: #0000BB;">3306.8</span>) Parameters: [ <span style="color: #0000BB;">3.66</span>, <span style="color: #0000BB;">1.08</span>, <span style="color: #0000BB;">0.711</span>, <span style="color: #0000BB;">0.101</span>, <span style="color: #0000BB;">0.242</span>,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">0.113</span>, <span style="color: #0000BB;">0.561</span>, <span style="color: #0000BB;">0.459</span>, <span style="color: #0000BB;">0.584</span>, and <span style="color: #0000BB;">0.583</span> ]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing output for generation <span style="color: #0000BB;">1</span> to <span style="color: #0000BB;">results.db</span> with sim ID: <span style="color: #0000BB;">"45819_glmaed_C_003"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2026-03-04 03:04:21]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.7</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-04 03:04:22]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2026-05-11 21:58:37]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.8</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-05-11 21:58:37]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Parameter summary for generation <span style="color: #0000BB;">2</span>:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        light/Kw MET_wndspd MET_radswd mixing/coef_mix_conv</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean      1.787     0.9291     1.1160              0.15580</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median    1.554     0.9214     1.1440              0.15350</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd        1.422     0.1569     0.1525              0.03803</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean     3.3510     1.0310     0.9118              0.11560</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median   3.6040     1.0720     0.8383              0.10810</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd       0.7859     0.0841     0.2244              0.01729</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        mixing/coef_wind_stir mixing/coef_mix_shear mixing/coef_mix_turb</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean                0.260400              0.186300               0.4510</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median              0.258500              0.186800               0.4445</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd                  0.009843              0.008991               0.1460</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean                  0.2321               0.13690               0.4558</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median                0.2396               0.11760               0.5304</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd                    0.0154               0.03464               0.1640</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        mixing/coef_mix_hyp outflow inflow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean               0.65600  1.4890 1.6860</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median             0.68410  1.5320 1.7260</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd                 0.09622  0.3176 0.5123</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean                0.5487  0.8769 0.9280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median              0.4797  0.6845 0.6614</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd                  0.1382  0.3899 0.4792</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing output for generation <span style="color: #0000BB;">2</span> to <span style="color: #0000BB;">results.db</span> with sim ID: <span style="color: #0000BB;">"45819_glmaed_C_003"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2026-03-04 03:04:30]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2026-05-11 21:58:46]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"glm_aed"</span>. [2026-03-04 03:04:30]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">18.6</span> (sd: <span style="color: #0000BB;">2756.6</span>)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-11 21:58:47]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">6.21</span> (sd: <span style="color: #0000BB;">861.03</span>)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Survival rate: 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting indices for <span style="color: #0000BB;">"gotm_wet"</span> modelled variables [2026-03-04 03:04:30]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Indices extracted for <span style="color: #0000BB;">"gotm_wet"</span> modelled variables [2026-03-04 03:04:31]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting indices for <span style="color: #0000BB;">"gotm_wet"</span> modelled variables [2026-05-11 21:58:47]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Indices extracted for <span style="color: #0000BB;">"gotm_wet"</span> modelled variables [2026-05-11 21:58:48]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Using <span style="color: #0000BB;">2</span> cores for parallel calibration for <span style="color: #0000BB;">"gotm_wet"</span>.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-04 03:04:32]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-05-11 21:58:49]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Parameter summary for generation <span style="color: #0000BB;">1</span>:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        turbulence/turb_param/k_min light_extinction/A/constant_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean                     4.940e-06                           0.52720</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median                   4.905e-06                           0.52790</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd                       3.167e-06                           0.08187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean                     4.939e-06                           0.52250</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median                   4.785e-06                           0.52220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd                       3.091e-06                           0.08191</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        light_extinction/g1/constant_value light_extinction/g2/constant_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean                              0.59090                             1.3460</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median                            0.60150                             1.4500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd                                0.08696                             0.8097</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean                              0.59090                             1.3690</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median                            0.59820                             1.4530</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd                                0.08894                             0.8391</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        MET_wndspd MET_radswd outflow inflow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean       1.0030     0.9975  1.4950 1.5140</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median     0.9910     0.9961  1.4720 1.4320</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd         0.1803     0.1845  0.6073 0.6017</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean       0.9938     1.0010  1.4950 1.5010</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median     0.9737     0.9877  1.5180 1.4610</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd         0.1830     0.1722  0.6088 0.5899</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">2</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"gotm_wet"</span>. [2026-03-04 03:04:50]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">108</span> (sd: <span style="color: #0000BB;">9490.8</span>) Parameters: [ <span style="color: #0000BB;">1.52e-06</span>, <span style="color: #0000BB;">0.448</span>, <span style="color: #0000BB;">0.483</span>, <span style="color: #0000BB;">0.854</span>, <span style="color: #0000BB;">0.829</span>,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">0.97</span>, <span style="color: #0000BB;">2.21</span>, and <span style="color: #0000BB;">2.28</span> ]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"gotm_wet"</span>. [2026-05-11 21:59:11]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">918</span> (sd: <span style="color: #0000BB;">20566</span>) Parameters: [ <span style="color: #0000BB;">4.04e-06</span>, <span style="color: #0000BB;">0.613</span>, <span style="color: #0000BB;">0.543</span>, <span style="color: #0000BB;">0.588</span>, <span style="color: #0000BB;">0.83</span>,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">0.866</span>, <span style="color: #0000BB;">2.21</span>, and <span style="color: #0000BB;">2.08</span> ]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing output for generation <span style="color: #0000BB;">1</span> to <span style="color: #0000BB;">results.db</span> with sim ID:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">"45819_gotmwet_C_003"</span> [2026-03-04 03:04:50]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.8</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-03-04 03:04:50]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">"45819_gotmwet_C_003"</span> [2026-05-11 21:59:11]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.7</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Starting generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">10</span> members. [2026-05-11 21:59:11]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Parameter summary for generation <span style="color: #0000BB;">2</span>:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        turbulence/turb_param/k_min light_extinction/A/constant_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean                     1.881e-06                           0.48090</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median                   1.743e-06                           0.47080</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd                       4.958e-07                           0.06674</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean                     5.378e-06                           0.54500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median                   5.879e-06                           0.51500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd                       2.225e-06                           0.07573</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        light_extinction/g1/constant_value light_extinction/g2/constant_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean                              0.50360                             1.1670</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median                            0.49510                             1.0440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd                                0.04614                             0.7084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean                              0.58260                             0.4119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median                            0.60160                             0.2657</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd                                0.04975                             0.3112</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        MET_wndspd MET_radswd outflow inflow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean      0.83980     0.9083  1.8010 1.8990</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> median    0.84240     0.9112  1.8290 2.0430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sd        0.05328     0.1094  0.6452 0.6382</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mean       0.9382     1.0340  1.7830 1.9600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> median     0.9609     1.1460  1.5950 1.8500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sd         0.1717     0.2115  0.4603 0.3688</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing output for generation <span style="color: #0000BB;">2</span> to <span style="color: #0000BB;">results.db</span> with sim ID:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">"45819_gotmwet_C_003"</span> [2026-03-04 03:05:00]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">"45819_gotmwet_C_003"</span> [2026-05-11 21:59:22]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">2</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"gotm_wet"</span>. [2026-03-04 03:05:00]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">61.6</span> (sd: <span style="color: #0000BB;">1935.1</span>)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> for <span style="color: #0000BB;">"gotm_wet"</span>. [2026-05-11 21:59:22]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Best fit: <span style="color: #0000BB;">54.6</span> (sd: <span style="color: #0000BB;">6766.2</span>)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Survival rate: 1</span>
 <span class="r-in"><span>                     </span></span>
 <span class="r-in"><span><span class="co"># Read calibration output                      </span></span></span>

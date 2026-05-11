@@ -36,10 +36,14 @@
   group and index.
 - [`era5_ref_table`](era5_ref_table.md) : ERA5 reference table
 - [`get_aeme()`](get_aeme.md) : Get Aeme object from LimnoTrack API
+- [`get_best_params()`](get_best_params.md) : Get best parameter values
+  from calibration results
 - [`get_catchment_data()`](get_catchment_data.md) : Get Catchment Data
 - [`get_dem_raster()`](get_dem_raster.md) : Get DEM raster from LINZ
 - [`get_dem_value()`](get_dem_value.md) : Get DEM value for a given
   latitude and longitude
+- [`get_depth_contours()`](get_depth_contours.md) : Get Depth Contour
+  Data
 - [`get_era5_isimip_point()`](get_era5_isimip_point.md) : Get ERA5 data
   from ISIMIP3a for a point location
 - [`get_era5_land_point_nz()`](get_era5_land_point_nz.md) : Get ERA5
@@ -49,8 +53,8 @@
   spatial object
 - [`get_linz_basemap_tile()`](get_linz_basemap_tile.md) : Get LINZ
   basemap tile
-- [`get_param()`](get_param.md) : Get parameter values from calibration
-  results
+- [`get_param()`](get_param.md) **\[deprecated\]** : Get parameter
+  values from calibration results
 - [`get_pareto_front()`](get_pareto_front.md) : Get the Pareto front
   from a data frame based on specified objective columns.
 - [`get_raster_layer_value()`](get_raster_layer_value.md) : Get raster
@@ -59,6 +63,8 @@
   LINZ
 - [`get_simulation_time()`](get_simulation_time.md) : Get simulation
   time for each model
+- [`get_sim_params()`](get_sim_params.md) : Get parameter values from
+  calibration results
 - [`get_upstream_rec()`](get_upstream_rec.md) : Get all upstream reaches
 - [`get_wlevel()`](get_wlevel.md) : Get modelled water level
 - [`make_GR_inputs()`](make_GR_inputs.md) : Make inputs for the GR

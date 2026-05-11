@@ -32,11 +32,13 @@ You can install the development version of aemetools from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("limnotrack/aemetools")
 ```
 
 ``` r
+
 library(aemetools)
 ```
 
@@ -53,6 +55,7 @@ below. There is a `parallel` switch which allows you to use multiple
 cores on your computer to speed up the download.
 
 ``` r
+
 
 lon <- 176.2717
 lat <- -38.079
@@ -71,6 +74,7 @@ summary(met)
 ```
 
 ``` r
+
 
 library(ggplot2)
 library(tidyr)

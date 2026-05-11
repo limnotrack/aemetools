@@ -1,6 +1,7 @@
 # Run Hydrological models
 
 ``` r
+
 library(aemetools)
 ```
 
@@ -17,6 +18,7 @@ combines the subcatchments of all the upstream reaches
 to calculate the area of the catchment.
 
 ``` r
+
 lat <- -38.079
 data_dir <- system.file("extdata/hydro/", package = "aemetools")
 lake <- readRDS(file.path(data_dir, "lake.rds"))
@@ -41,6 +43,7 @@ reach is available. The calibrated parameters can be passed to the
 `run_GR` function to run the selected model.
 
 ``` r
+
 #' airGR uses indices to run the model, so first we split our observed data in 
 #' half (0.5) for calibration and validation periods based on when the 
 #' observation data starts (which is provided in `inputs$data$start`).

@@ -1,6 +1,7 @@
 # Using the Limnotrack API
 
 ``` r
+
 library(AEME)
 library(aemetools)
 library(tmap)
@@ -18,6 +19,7 @@ First, it is always good to check the status of the API to ensure it is
 operational.
 
 ``` r
+
 check_api_status()
 #> API is available
 #> Database connection is healthy
@@ -32,6 +34,7 @@ can be accessed using the
 to provide the lake ID (e.g. FENZ ID or Lernzmp ID).
 
 ``` r
+
 lake <- get_lake_shape(id = 15022)
 print(lake)
 #> Simple feature collection with 1 feature and 14 fields
@@ -48,6 +51,7 @@ print(lake)
 ```
 
 ``` r
+
 tm_shape(lake) +
   tm_borders(col = "blue", lwd = 2) +
   tm_basemap("Esri.WorldImagery")
@@ -62,6 +66,7 @@ downloaded data is a list which includes the catchment, reaches, lakes,
 subcatchments, and LCDB data.
 
 ``` r
+
 catchment <- get_catchment_data(id = 15022)
 names(catchment)
 #> [1] "catchment"     "reaches"       "lakes"         "subcatchments"
@@ -69,6 +74,7 @@ names(catchment)
 ```
 
 ``` r
+
 tm_shape(catchment$catchment, name = "Catchment") +
   tm_borders(col = "red", lwd = 2) +
   tm_shape(catchment$reaches, name = "Reaches") +
@@ -90,6 +96,7 @@ access the Aeme object using the
 the lake ID (e.g. FENZ ID or Lernzmp ID).
 
 ``` r
+
 aeme <- get_aeme(id = 15022)
 aeme
 #>             AEME 
@@ -137,10 +144,11 @@ aeme
 ```
 
 You can plot the lake hypsograph from the Aeme object using the
-[`plot_hyps()`](https://limnotrack.com/AEME/reference/plot_hyps.html)
+[`plot_hyps()`](https://limnotrack.com/reference/plot_hyps.html)
 function.
 
 ``` r
+
 plot_hyps(aeme, y = "depth")
 ```
 
@@ -150,6 +158,7 @@ You can also plot the meteorological data from the Aeme object using the
 `plot_met()` function.
 
 ``` r
+
 plot_met_tile(aeme, var_inp = "MET_tmpair")
 ```
 

@@ -11,6 +11,7 @@
 <url><loc>/index.html</loc></url>
 <url><loc>/LICENSE.html</loc></url>
 <url><loc>/reference/add_linz_key.html</loc></url>
+<url><loc>/reference/aemetools-package.html</loc></url>
 <url><loc>/reference/api_request.html</loc></url>
 <url><loc>/reference/calib_aeme.html</loc></url>
 <url><loc>/reference/calib_GR.html</loc></url>
@@ -30,9 +31,11 @@
 <url><loc>/reference/encode_param.html</loc></url>
 <url><loc>/reference/era5_ref_table.html</loc></url>
 <url><loc>/reference/get_aeme.html</loc></url>
+<url><loc>/reference/get_best_params.html</loc></url>
 <url><loc>/reference/get_catchment_data.html</loc></url>
 <url><loc>/reference/get_dem_raster.html</loc></url>
 <url><loc>/reference/get_dem_value.html</loc></url>
+<url><loc>/reference/get_depth_contours.html</loc></url>
 <url><loc>/reference/get_era5_isimip_point.html</loc></url>
 <url><loc>/reference/get_era5_land_point_nz.html</loc></url>
 <url><loc>/reference/get_lake_shape.html</loc></url>
@@ -43,6 +46,7 @@
 <url><loc>/reference/get_raster_layer_value.html</loc></url>
 <url><loc>/reference/get_raster_tile.html</loc></url>
 <url><loc>/reference/get_simulation_time.html</loc></url>
+<url><loc>/reference/get_sim_params.html</loc></url>
 <url><loc>/reference/get_upstream_rec.html</loc></url>
 <url><loc>/reference/get_wlevel.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
