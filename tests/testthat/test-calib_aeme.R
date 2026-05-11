@@ -1,18 +1,12 @@
 test_that("can run AEME-GLM with parameters", {
-  tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  path <- tempdir()
+  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
+                           ext_elev = 5, use_bgc = FALSE)
   
   data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
@@ -208,19 +202,15 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
 })
 
 test_that("can calibrate with backwards compatibility", {
-  tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  path <- tempdir()
+  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- AEME::get_model_controls()
   model <- c("glm_aed")
   # model <- c("gotm_wet", "glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
+                           ext_elev = 5, use_bgc = FALSE)
   
   data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
@@ -333,7 +323,8 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
   sim_times <- get_simulation_time(aeme = aeme, model = model, path = path,
                                    param = param, FUN_list = FUN_list,
                                    vars_sim = vars_sim, weights = weights)
-  testthat::expect_true(all(sim_times < 3))
+  testthat::expect_lt(sim_times[1], 3)
+  testthat::expect_lt(sim_times[2], 3)
   
   # out <- run_and_fit(aeme = aeme, param = param,
   #                    model = model, path = path, FUN_list = FUN_list,
@@ -555,22 +546,16 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
 })
 
 test_that("can calibrate lake level only for AEME-GLM in parallel", {
-  tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  path <- tempdir()
+  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
-  aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, path = path)
+                           ext_elev = 5, use_bgc = FALSE) |> 
+    AEME::run_aeme(aeme = aeme, model = model,
+                   verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
@@ -611,7 +596,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
                        vars_sim = vars_sim, weights = weights)
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
   testthat::expect_true(is.list(calib))
-  testthat::expect_true(all(calib$simulation_data$fit_value == ctrl$na_value))
+  testthat::expect_true(all(is.na(calib$simulation_data$fit_value)))
   
   # Calibrate AEME model
   ctrl$timeout <- 2
@@ -1041,7 +1026,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
   ctrl <- create_calib_control(VTR = -Inf, NP = 10, itermax = 20,
                                reltol = 0.07, cutoff = 0.25, mutate = 0.1,
                                parallel = TRUE, file_type = "csv",
-                               na_value = 1e20, ncore = 2L)
+                               na_value = 999, ncore = 2L)
   
   testthat::expect_true(is.list(ctrl))
   testthat::expect_true(!is.null(ctrl$file_name))
@@ -1121,7 +1106,7 @@ test_that("can calibrate lake level with no data for target time period", {
   ctrl <- create_calib_control(VTR = -Inf, NP = 10, itermax = 20,
                                reltol = 0.07, cutoff = 0.25, mutate = 0.1,
                                parallel = TRUE, file_type = "csv",
-                               na_value = 1e20, ncore = 2L)
+                               na_value = 999, ncore = 2L)
   
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -1277,22 +1262,16 @@ test_that("can calibrate temperature with LHC for AEME-GOTM in parallel with csv
 })
 
 test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
-  tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  path <- tempdir()
+  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- AEME::get_model_controls()
   vars_sim <- c("HYD_thmcln", "HYD_strat", "HYD_schstb")
   model_controls <- AEME::set_vars_sim(model_controls, vars_sim = vars_sim)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
+                           ext_elev = 5, use_bgc = FALSE)
   
   # Get parameters for calibration
   data("aeme_parameters", package = "AEME")
@@ -1324,8 +1303,8 @@ test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
   FUN_list <- list(HYD_thmcln = fit, HYD_strat = fit, HYD_schstb = fit)
   
   ctrl <- create_calib_control(NP = 10, itermax = 20, ncore = 2L,
-                               parallel = TRUE, file_type = "db", na_value = 1e20,
-                               file_name = "results.db")
+                               parallel = TRUE, file_type = "db",
+                               na_value = 999, file_name = "results.db")
   
   # aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model, verbose = T)
   
@@ -1362,56 +1341,9 @@ test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
                            use_bgc = FALSE)
   
   aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model)
-  aeme_temp <- AEME::get_var(aeme = aeme, model = "glm_aed", var = "HYD_temp", use_obs = TRUE)
+  aeme_temp <- AEME::get_var(aeme = aeme, model = "glm_aed", var = "HYD_temp",
+                             use_obs = TRUE)
   mod_fit <- AEME::assess_model(aeme = aeme, model = model, var_sim = vars_sim)
-  
-  # glm_temp <- run_and_fit(aeme = aeme, param = upd_param, model = "glm_aed",
-  #                         vars_sim = "HYD_temp", path = path, FUN_list = FUN_list,
-  #                         na_value = ctrl$na_value,
-  #                         return_df = TRUE) |> 
-  #   dplyr::select(Date, depth_mid, model, obs) |> 
-  #   dplyr::arrange(Date, depth_mid)
-  # 
-  # glm_sub <- glm_temp |> 
-  #   dplyr::select(-obs)
-  # 
-  # comp <- aeme_temp |> 
-  #   dplyr::select(Date, depth_mid, sim) |> 
-  #   dplyr::left_join(glm_sub, by = c("Date", "depth_mid")) |> 
-  #   dplyr::mutate(diff = sim - model)
-  # 
-  # library(ggplot2)
-  # ggplot() +
-  #   geom_point(data = comp, aes(x = diff, y = model, color = factor(depth_mid))) +
-  #   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-  #   labs(x = "AEME-GLM Simulated", y = "Run and Fit Simulated",
-  #        title = "Comparison of AEME-GLM HYD_temp Simulations") +
-  #   theme_minimal()
-  # 
-  # aeme_temp$obs == glm_temp$obs
-  # aeme_temp$sim == glm_temp$model
-  # diff <- (aeme_temp$sim - glm_temp$model)
-  # # testthat::expect_true(all(best_pars$fit_value %in% mod_fit$mae))
-  # 
-  # glm_res <- run_and_fit(aeme = aeme, param = upd_param, model = "glm_aed",
-  #                        vars_sim = vars_sim, path = path, FUN_list = FUN_list,
-  #                        weights = weights, na_value = ctrl$na_value,
-  #                        return_df = TRUE)
-  # 
-  # glm <- load_output(aeme = aeme, model = "glm_aed", path = path)
-  # glm_temp <- AEME::get_var(aeme = glm, model = "glm_aed", var = "HYD_temp")
-  # testthat::expect_true(all(glm_temp$sim == glm_res$model))
-  # AEME::assess_model(aeme = glm, model = "glm_aed", var_sim = vars_sim)
-  # 
-  # glm_mae <- mean(abs(glm_res$obs - glm_res$model))
-  # 
-  # gotm_res <- run_and_fit(aeme = aeme, param = upd_param, model = "gotm_wet",
-  #                         vars_sim = vars_sim, path = path, FUN_list = FUN_list,
-  #                         weights = weights, na_value = ctrl$na_value,
-  #                         return_df = TRUE)
-  # gotm_mae <- mean(abs(gotm_res$obs - gotm_res$model))
-  
-  
   
 })
 
@@ -1442,7 +1374,7 @@ test_that("can calibrate HYD_strat for AEME-GLM & GOTM in parallel", {
   FUN_list <- list(HYD_strat = fit)
   
   ctrl <- create_calib_control(NP = 10, itermax = 20, ncore = 2L,
-                               parallel = F, file_type = "db", na_value = 1e20,
+                               parallel = F, file_type = "db", na_value = 999,
                                file_name = "results.db")
   
   vars_sim <- c("HYD_strat")
@@ -1520,7 +1452,7 @@ test_that("can update bgc parameters for GLM-AED", {
   FUN_list <- list(PHY_tchla = fit)
   
   ctrl <- create_calib_control(NP = 10, itermax = 20, ncore = 2L,
-                               parallel = F, file_type = "db", na_value = 1e20,
+                               parallel = F, file_type = "db", na_value = 999,
                                file_name = "results.db", c_method = "LHC", 
                                timeout = 5)
   
@@ -1562,8 +1494,7 @@ test_that("can update bgc parameters for GLM-AED", {
   aeme <- AEME::add_param(aeme = aeme, param = upd_param2)
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = TRUE)
+                           ext_elev = 5, use_bgc = TRUE)
   aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model)
   
   aeme <- AEME::remove_param(aeme)
@@ -1697,7 +1628,7 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
   
   ctrl <- create_calib_control(NP = 10, itermax = 10 * 3,
                                ncore = 2L, parallel = TRUE, file_type = "db", 
-                               na_value = 1e20, cutoff = 0.15, 
+                               na_value = 999, cutoff = 0.15, 
                                file_name = "results.db")
   
   weights <- set_weights(vars_sim = vars_sim)
