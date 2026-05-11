@@ -41,7 +41,7 @@ test_that("can run_and_fit sensitivity analysis for AEME-GLM", {
   db_file <- "results.db"
   ctrl <- create_sa_control(N = 2^2,
                             file_type = "db", file_name = db_file,
-                            na_value = 1e20, ncore = 2L,
+                            na_value = 999, ncore = 2L,
                             vars_sim = list(
                               surf_temp = list(var = "HYD_temp",
                                                month = c(12, 1:2),
@@ -178,7 +178,7 @@ test_that("can execute sensitivity analysis with old fun", {
   db_file <- "results.db"
   ctrl <- create_control(method = "sa", N = 2^2,
                          file_type = "db", file_name = db_file,
-                         na_value = 1e20, ncore = 2L,
+                         na_value = 999, ncore = 2L,
                          vars_sim = list(
                            surf_temp = list(var = "HYD_temp",
                                             month = c(12, 1:2),
@@ -251,7 +251,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
   db_file <- "results.db"
   ctrl <- create_sa_control(N = 2^2,
                             file_type = "db", file_name = db_file,
-                            na_value = 1e20, ncore = 2L,
+                            na_value = 999, ncore = 2L,
                             vars_sim = list(
                               surf_temp = list(var = "HYD_temp",
                                                month = c(12, 1:2),
@@ -451,23 +451,15 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
 
 test_that("can execute sensitivity analysis for derived variables", {
   
-  tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  path <- tempdir()
+  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- AEME::get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = TRUE)
-  
-  aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, path = path)
+                           ext_elev = 5, use_bgc = TRUE) |> 
+    AEME::run_aeme(model = model, verbose = FALSE)
   
   lke <- AEME::lake(aeme)
   file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
