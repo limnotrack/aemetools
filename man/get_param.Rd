@@ -21,8 +21,9 @@ The argument will be removed in a future version.}
 \item{best}{A logical value indicating whether to return the best parameter
 values or all parameter values.}
 
-\item{quantile}{The quantile to use for the top quantile of the fit_value.
-Defaults to 0.1.}
+\item{quantile}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} The quantile to use for
+the top quantile of the fit_value. Defaults to 0.1. This is no longer needed
+and will be removed in a future version.}
 }
 \value{
 A data frame with the parameter values.
