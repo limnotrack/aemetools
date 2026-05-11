@@ -19,9 +19,9 @@ create_control <- function(method = c("calib", "sa"), ...) {
   lifecycle::deprecate_warn(
     when = "0.2.0",
     what = "create_control()",
-    with = "create_calibration_control()",
+    with = "create_calib_control()",
     details = paste(
-      "Use `create_calibration_control()` when method = 'calib'.",
+      "Use `create_calib_control()` when method = 'calib'.",
       "Use `create_sa_control()` when method = 'sa'."
     )
   )
