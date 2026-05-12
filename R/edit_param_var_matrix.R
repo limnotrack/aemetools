@@ -11,7 +11,8 @@
 #' @export
 #' 
 #' @importFrom miniUI miniPage gadgetTitleBar miniContentPanel
-#' @importFrom shiny radioButtons observeEvent stopApp req
+#' @importFrom shiny radioButtons observeEvent stopApp req isolate
+#' @importFrom shiny selectInput uiOutput renderUI updateSelectInput
 #' @importFrom rhandsontable rHandsontableOutput renderRHandsontable hot_to_r
 #' @importFrom dplyr mutate pull
 #'
@@ -81,7 +82,7 @@ edit_param_var_matrix <- function(param_var_matrix) {
         session,
         "file_filter",
         choices = c("All", files),
-        selected = isolate(input$file_filter) |> 
+        selected = shiny::isolate(input$file_filter) |> 
           {\(x) if (!is.null(x) && x %in% c("All", files)) x else "All"}()
       )
       

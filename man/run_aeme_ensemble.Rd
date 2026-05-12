@@ -8,7 +8,7 @@ run_aeme_ensemble(
   aeme,
   model,
   n = 10,
-  dist = "norm",
+  dist = c("norm", "unif"),
   path = ".",
   parallel = FALSE,
   ncore = NULL,

@@ -15,23 +15,30 @@
 #'
 #' @importFrom parallel parLapply clusterExport stopCluster detectCores
 #' @importFrom parallel makeCluster
+#' @importFrom dplyr filter mutate select distinct
+#' @importFrom methods is
+#' @importFrom rlang arg_match
+#' @importFrom AEME check_aeme check_model get_aeme_path get_lake_dir 
+#' @importFrom AEME configuration output parameters
 #'
 #' @inherit AEME::run_aeme return
 #' @export
 #'
 
-run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
+run_aeme_ensemble <- function(aeme, model, n = 10, dist = c("norm", "unif"),
+                              path = ".",
                               parallel = FALSE, ncore = NULL, param = NULL,
                               na_value = 999) {
 
   # Check inputs
-  if (!is(aeme, "Aeme")) stop("aeme must be an Aeme object")
-  # if (!is.character(sim_id)) stop("sim_id must be a character")
-  # if (!is.data.frame(param)) stop("param must be a data frame")
-
-  # if (is.null(calib)) {
-  #   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
-  # }
+  aeme <- AEME::check_aeme(aeme)
+  model <- AEME::check_model(model)
+  if (missing(path)) {
+    path <- AEME::get_aeme_path(aeme)
+  } else {
+    path <- AEME::check_path(path)
+  }
+  dist <- rlang::arg_match(dist)
 
   if (is.null(param)) {
     param <- AEME::parameters(aeme)
@@ -61,38 +68,6 @@ run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
     }) |>
       as.data.frame()
     names(new_params) <- paste0(model_pars$group, "/", model_pars$name)
-
-    # # Identify the fixed and variable columns
-    # fixed_cols <- c("gen", "run", "fit_value")
-    #
-    # # Select parameters below the cutoff
-    # sid <- sim_id[m]
-    # sel_pars <- calib$simulation_data |>
-    #   dplyr::filter(sim_id == sid & fit_type == fit_col) |>
-    #   tidyr::pivot_wider(id_cols = dplyr::all_of(fixed_cols),
-    #                      names_from = parameter_name,
-    #                      values_from = parameter_value)
-    # variable_cols <- setdiff(names(sel_pars), fixed_cols)
-    #
-    # # Filter out duplicates based on the variable columns
-    # filtered_sel_pars <- sel_pars |>
-    #   dplyr::distinct(dplyr::across(dplyr::all_of(variable_cols)),
-    #                   .keep_all = TRUE)
-    #
-    # print(filtered_sel_pars)
-    #
-    # cutoff_value <- quantile(filtered_sel_pars$fit_value, ctrl$cutoff)
-    # # filt_pars <- filtered_sel_pars |>
-    # #   dplyr::filter(fit_value <= cutoff_value) |>
-    # #   dplyr::rename(fit = fit_value)
-    # # ctrl <- list(na_value = 999,)
-    # param_df <- filtered_sel_pars |>
-    #   dplyr::select(-gen, - run) |>
-    #   dplyr::rename(fit = fit_value)
-    #
-    # new_params <- next_gen_params(param_df = param_df, param = model_pars,
-    #                               ctrl = ctrl, add_mutation = FALSE,
-    #                               keep_best_pars = TRUE)
 
     if (is.null(ncore)) {
       ncore <- (parallel::detectCores() - 1)

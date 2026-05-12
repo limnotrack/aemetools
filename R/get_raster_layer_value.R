@@ -116,8 +116,9 @@ add_linz_key <- function(key) {
 #' the environment variables using the \code{add_linz_key()} function.
 #'
 #' @export
+#' @importFrom utils browseURL
 
 create_linz_key <- function() {
-  browseURL("https://id.koordinates.com/signup/?next=%2Fo%2Fauthorize%2F%3Fclient_id%3Dt1RwFgXlDfvmPvqGaAoqj1GnULvYOGTOh81AuiS5%26response_type%3Dcode%26state%3DeyJjc3JmdG9rZW4iOiJ5eHRFRUZSYTNVYjBtdXk3OURHUXBtNjltRlMwN2NXVms1Vmk1WXF1YVZ5Qnp2bFY2V0RxZE5qZ3RzemhVTUlKIiwibmV4dCI6Ii8iLCJ3YXJlaG91c2VfaWQiOjIwMDEsImhhc2hlZF9zZXNzaW9uX2tleSI6ImNlOGI1ODJhM2UzNmExY2JhNDc0YmNlNzg5M2VkMzZkYzc0NWZhZjZhNWExYWYzYzBjODUxNDUwZjNhN2IwY2QifQ%253A1rDA4H%253AM77POBdI8sFwySjZI-tgXmmnTcmGWxMtxM3pqyTyoDY%26redirect_uri%3Dhttps%253A%252F%252Fdata.linz.govt.nz%252Flogin%252Foauth%252Fcallback%252F&_no_redirect=1")
+  utils::browseURL("https://id.koordinates.com/signup/?next=%2Fo%2Fauthorize%2F%3Fclient_id%3Dt1RwFgXlDfvmPvqGaAoqj1GnULvYOGTOh81AuiS5%26response_type%3Dcode%26state%3DeyJjc3JmdG9rZW4iOiJ5eHRFRUZSYTNVYjBtdXk3OURHUXBtNjltRlMwN2NXVms1Vmk1WXF1YVZ5Qnp2bFY2V0RxZE5qZ3RzemhVTUlKIiwibmV4dCI6Ii8iLCJ3YXJlaG91c2VfaWQiOjIwMDEsImhhc2hlZF9zZXNzaW9uX2tleSI6ImNlOGI1ODJhM2UzNmExY2JhNDc0YmNlNzg5M2VkMzZkYzc0NWZhZjZhNWExYWYzYzBjODUxNDUwZjNhN2IwY2QifQ%253A1rDA4H%253AM77POBdI8sFwySjZI-tgXmmnTcmGWxMtxM3pqyTyoDY%26redirect_uri%3Dhttps%253A%252F%252Fdata.linz.govt.nz%252Flogin%252Foauth%252Fcallback%252F&_no_redirect=1")
 }
 
