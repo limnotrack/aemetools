@@ -13,7 +13,8 @@
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If NULL, uses mean absolute error (MAE).
 #'
-#' @importFrom AEME lake
+#' @importFrom AEME lake get_aeme_path list_models check_aeme check_model 
+#' @importFrom AEME configuration get_lake_dir
 #' @importFrom parallel stopCluster clusterExport parLapply detectCores
 #' @importFrom parallel makeCluster
 #' @importFrom utils write.csv write.table
@@ -81,11 +82,16 @@
 sa_aeme <- function(aeme, model, param, FUN_list, path,
                     model_controls = NULL, ctrl, param_df = NULL) {
 
+  aeme <- AEME::check_aeme(aeme)
   if (missing(model)) {
-    model <- AEME::list_models(aeme = aeme)
+    model <- AEME::list_models(aeme)
+  } else {
+    model <- AEME::check_model(model)
   }
   if (missing(path)) {
     path <- AEME::get_aeme_path(aeme = aeme)
+  } else {
+    path <- AEME::check_path(path = path)
   }
   if (missing(ctrl) || is.null(ctrl)) {
     stop("ctrl must be supplied")
