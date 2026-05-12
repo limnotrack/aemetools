@@ -35,6 +35,8 @@
 #' @importFrom stats runif
 #' @importFrom FME Latinhyper
 #' @importFrom dplyr mutate bind_rows
+#' @importFrom AEME check_aeme check_model check_path get_lake_dir observations
+#' @importFrom AEME set_vars_sim get_aeme_path configuration
 #'
 #' @return string of simulation id to be used to read the simulation output.
 #' 
@@ -77,11 +79,16 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
                        weights, model_controls = NULL, ctrl = NULL,
                        param_var_matrix = NULL, param_df = NULL) {
   
+  aeme <- AEME::check_aeme(aeme)
   if (missing(model)) {
-    model <- AEME::list_models(aeme = aeme)
+    model <- AEME::list_models(aeme)
+  } else {
+    model <- AEME::check_model(model)
   }
   if (missing(path)) {
     path <- AEME::get_aeme_path(aeme = aeme)
+  } else {
+    path <- AEME::check_path(path = path)
   }
 
   if (missing(FUN_list)) {
