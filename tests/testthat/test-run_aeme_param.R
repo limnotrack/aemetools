@@ -210,13 +210,9 @@ test_that("running DYRESM works with params", {
 })
 
 test_that("running GLM-AED works with bgc_params", {
-  tmpdir <- tempdir()
   aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  # unlink(tmpdir, recursive = TRUE)
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  path <- tempdir()
+  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   model_controls <- AEME::get_model_controls(use_bgc = TRUE)
   model_controls <- model_controls |>
     dplyr::mutate(simulate = dplyr::case_when(
