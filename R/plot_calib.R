@@ -14,7 +14,6 @@
 #' @importFrom ggplot2 scale_colour_viridis_d
 #' @importFrom ggplot2 coord_cartesian
 #' @importFrom ggplot2 geom_text annotate
-#' @importFrom forcats fct_reorder
 #' @importFrom patchwork wrap_plots
 #' @importFrom dplyr filter group_by summarise left_join select rename arrange
 #' @importFrom lifecycle deprecated deprecate_warn is_present

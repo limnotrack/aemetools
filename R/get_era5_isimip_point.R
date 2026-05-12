@@ -16,7 +16,6 @@
 #' @importFrom jsonlite toJSON
 #' @importFrom terra rast values
 #' @importFrom dplyr bind_rows full_join
-#' @importFrom zip unzip
 #' @importFrom logger log_info log_error
 #' @importFrom utils download.file
 #'
@@ -103,7 +102,7 @@ get_era5_isimip_point <- function(lon, lat, years,
       out_path <- sub("\\.zip$", "", zip_path)
       dir.create(out_path, showWarnings = FALSE, recursive = TRUE)
       log_info("extracting", zip_path = zip_path, out_path = out_path)
-      zip::unzip(zip_path, exdir = out_path)
+      utils::unzip(zip_path, exdir = out_path)
       
     } else {
       log_error("job did not finish successfully", status = job$status)

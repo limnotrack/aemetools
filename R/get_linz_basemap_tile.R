@@ -5,6 +5,8 @@
 #'
 #' @inheritParams maptiles::get_tiles
 #' @inheritParams get_raster_tile
+#' 
+#' @importFrom maptiles create_provider get_tiles
 #'
 #' @return A SpatRaster is returned.
 #' @export

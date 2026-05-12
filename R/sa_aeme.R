@@ -22,6 +22,7 @@
 #' @importFrom FME Latinhyper
 #' @importFrom dplyr bind_rows
 #' @importFrom sensobol sobol_matrices
+#' @importFrom stringr str_split
 #'
 #' @return string of simulation id to be used to read the simulation output.
 #'
