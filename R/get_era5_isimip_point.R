@@ -18,6 +18,7 @@
 #' @importFrom dplyr bind_rows full_join
 #' @importFrom zip unzip
 #' @importFrom logger log_info log_error
+#' @importFrom utils download.file
 #'
 #' @returns A data frame with the requested variables
 #' @export
@@ -96,7 +97,7 @@ get_era5_isimip_point <- function(lon, lat, years,
       zip_path <- file.path(download_path, job$file_name)
       dir.create(dirname(zip_path), showWarnings = FALSE, recursive = TRUE)
       log_info("downloading", file_url = job$file_url)
-      download.file(job$file_url, zip_path, mode = "wb")
+      utils::download.file(job$file_url, zip_path, mode = "wb")
       
       # Extract zip file
       out_path <- sub("\\.zip$", "", zip_path)
@@ -123,7 +124,6 @@ get_era5_isimip_point <- function(lon, lat, years,
       # read.csv(f, header = FALSE)
     }) |>
       dplyr::bind_rows()
-    head(df)
     names(df) <- c("Date", v)
     return(df)
   })
@@ -181,6 +181,7 @@ check_vars <- function(vars) {
 #'
 #' @param vars A character vector of variable names
 #' @return A vector of variable names suitable for ISIMIP3a or AEME
+#' @importFrom stats setNames
 #' @noRd
 switch_vars <- function(vars) {
 
@@ -191,8 +192,8 @@ switch_vars <- function(vars) {
              "MET_prsttn", "MET_radlwd", "MET_humrel")
   )
   # Create a named vector for mapping
-  era5_to_aeme <- setNames(mapping_df$aeme, mapping_df$era5)
-  aeme_to_era5 <- setNames(mapping_df$era5, mapping_df$aeme)
+  era5_to_aeme <- stats::setNames(mapping_df$aeme, mapping_df$era5)
+  aeme_to_era5 <- stats::setNames(mapping_df$era5, mapping_df$aeme)
 
   aeme_chk <- grepl("^MET_", vars)
   if (any(aeme_chk)) {
