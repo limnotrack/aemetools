@@ -38,7 +38,6 @@
 #' @importFrom AEME lake input observations get_var_indices read_model_outputs
 #' @importFrom AEME get_deriv_inputs add_deriv_output is_model_error
 #' @importFrom cli cli_alert_warning cli_alert_info cli_div
-#' @importFrom reshape2 melt
 #' @importFrom stats approx
 #' @importFrom utils data
 #' @importFrom graphics points

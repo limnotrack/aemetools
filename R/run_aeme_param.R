@@ -9,8 +9,6 @@
 #' @importFrom AEME run_aeme lake input observations outflows
 #' @importFrom AEME read_nml write_nml set_nml
 #' @importFrom AEME write_yaml
-#' @importFrom yaml read_yaml
-#' @importFrom ncdf4 nc_open nc_close
 #'
 #' @return `na_value` if model run is unsuccessful
 #' @export

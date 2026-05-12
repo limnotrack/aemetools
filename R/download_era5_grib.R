@@ -26,7 +26,6 @@
 #' @param era5_dataset string; of which ERA5 dataset to use. Can be 'reanalysis-era5-single-levels' or 'reanalysis-era5-land'
 #' @param path filepath to store downloaded file
 #'
-#' @importFrom plyr round_any
 #' @importFrom ecmwfr wf_check_request wf_request_batch
 #'
 #' @examples
@@ -83,16 +82,16 @@ download_era5_grib <- function(shape = NULL,
   if (!is.null(shape)) {
     bbox <- shape |>
       sf::st_bbox()
-    area <- c(plyr::round_any(bbox["ymax"], accuracy = 0.1, f = ceiling),
-              plyr::round_any(bbox["xmin"], accuracy = 0.1, f = floor),
-              plyr::round_any(bbox["ymin"], accuracy = 0.1, f = floor),
-              plyr::round_any(bbox["xmax"], accuracy = 0.1, f = ceiling)
+    area <- c(round_any(bbox["ymax"], accuracy = 0.1, f = ceiling),
+              round_any(bbox["xmin"], accuracy = 0.1, f = floor),
+              round_any(bbox["ymin"], accuracy = 0.1, f = floor),
+              round_any(bbox["xmax"], accuracy = 0.1, f = ceiling)
               )
   } else {
-    area <- c(plyr::round_any(lat + buffer, accuracy = 0.1, f = ceiling),
-              plyr::round_any(lon - buffer, accuracy = 0.1, f = floor),
-              plyr::round_any(lat - buffer, accuracy = 0.1, f = floor),
-              plyr::round_any(lon + buffer, accuracy = 0.1, f = ceiling)
+    area <- c(round_any(lat + buffer, accuracy = 0.1, f = ceiling),
+              round_any(lon - buffer, accuracy = 0.1, f = floor),
+              round_any(lat - buffer, accuracy = 0.1, f = floor),
+              round_any(lon + buffer, accuracy = 0.1, f = ceiling)
               )
   }
 

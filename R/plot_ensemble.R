@@ -23,21 +23,20 @@ plot_ensemble <- function(aeme, model, var_sim = "HYD_temp", depth = NULL,
                           remove_spin_up = TRUE, add_obs = TRUE,
                           var_lims = NULL) {
 
-  # Set timezone temporarily to UTC
-  withr::local_locale(c("LC_TIME" = "C"))
-  withr::local_timezone("UTC")
-
-  # Check if aeme is a aeme class
-  if (!inherits(aeme, "Aeme")) stop("aeme must be an Aeme class")
-
-  # Check if model is a character vector
-  if (!is.character(model)) stop("model must be a character vector")
-
-  # Check if model length is 0
-  if (length(model) == 0) stop("model must be a character vector of length >0")
+  # Check inputs
+  aeme <- AEME::check_aeme(aeme)
+  model <- AEME::check_model(model)
+  if (missing(path)) {
+    path <- AEME::get_aeme_path(aeme)
+  } else {
+    path <- AEME::check_path(path)
+  }
 
   # Check if var_sim is a character vector
-  if (!is.character(var_sim)) stop("var_sim must be a character vector")
+  if (!is.character(var_sim)) {
+    cli::cli_abort("{.arg var_sim} must be a character vector")
+  }
+  var_sim <- AEME::check_aeme_vars(var_sim)
 
   # Load data from aeme
   obs <- AEME::observations(aeme)
