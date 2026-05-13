@@ -1,72 +1,75 @@
 Package: aemetools
 Title: Tools to expand the Aquatic Ecosystem Model Ensemble Package
 Version: 0.2.0
-Authors@R: 
-    c(person("Tadhg", "Moore", role = c("aut","cre"),
-    email = "tadhg@limnotrack.com", comment = c(ORCID = "0000-0002-3834-8868")),
-    person("Chris", "McBride", role = "aut",
-    email = "chris@limnotrack.com"))
-Description: Calibrate the AEME model ensemble, download ERA5-Land data for any 
-    point in New Zealand, and run simple hydrological models to generate inflow 
-    inputs for the AEME model ensemble.
+Authors@R: c(
+    person("Tadhg", "Moore", , "tadhg@limnotrack.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-3834-8868")),
+    person("Chris", "McBride", , "chris@limnotrack.com", role = "aut")
+  )
+Description: Calibrate the AEME model ensemble, download ERA5-Land data
+    for any point in New Zealand, and run simple hydrological models to
+    generate inflow inputs for the AEME model ensemble.
 License: GPL (>= 2)
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
+URL: https://limnotrack.com/aemetools/
+BugReports: https://github.com/limnotrack/aemetools/issues
+Depends: 
+    R (>= 4.2.0)
 Imports: 
+    airGR,
     AEME (>= 0.2.0),
     cli,
     DBI,
     dbplyr,
     dplyr,
     duckdb,
+    ecmwfr,
     FME,
     geojsonsf,
     ggplot2,
+    glue,
     httr2,
     jsonlite,
     lifecycle,
+    logger,
     lubridate,
+    maptiles,
     MASS,
     methods,
+    miniUI,
     ncdf4,
     parallel,
     patchwork,
+    rhandsontable,
     rLakeAnalyzer,
     rlang,
     scales,
     sensobol,
     sf,
-    stats,
+    shiny,
     stars,
+    stats,
     stringr,
     terra,
     tidyr,
     units,
     utils,
+    withr,
     xml2
 Suggests: 
-    airGR,
-    ecmwfr,
     DT,
     knitr,
-    logger,
-    maptiles,
-    miniUI,
     osmdata,
     printr,
-    rhandsontable,
     rmarkdown,
-    shiny,
     testthat (>= 3.0.0),
     tmap
-Config/testthat/edition: 3
+VignetteBuilder: 
+    knitr
 Remotes: 
     github::limnotrack/AEME@dev
-URL: https://limnotrack.com/aemetools/
-BugReports: https://github.com/limnotrack/aemetools/issues
-VignetteBuilder: knitr
-Depends: 
-    R (>= 4.2.0)
-LazyData: true
 Config/roxygen2/version: 8.0.0
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 8.0.0
