@@ -155,7 +155,7 @@ plot_calib <- function(calib, fit_col = "fit", nrow = 2, base_size = 8,
   pconverge <- patchwork::wrap_plots(plist, nrow = nsims,
                                      guides = "collect")
   
-  all_pars$gen <- forcats::fct_rev(all_pars$gen)
+  all_pars$gen <- factor(all_pars$gen, levels = rev(levels(all_pars$gen)))
   
   # Histogram ----
   plist <- lapply(sim_ids, \(s) {
