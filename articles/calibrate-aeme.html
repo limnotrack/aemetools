@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Calibrate AEME">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aemetools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -489,11 +489,11 @@ model output is generated within the lake folder.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/run_aeme_param.html">run_aeme_param</a></span><span class="op">(</span>aeme <span class="op">=</span> <span class="va">aeme</span>, param <span class="op">=</span> <span class="va">aeme_parameters</span>,</span>
 <span>                 model <span class="op">=</span> <span class="va">model</span>, path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Deleted previous output for model GLM-AED at</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">C:/Users/runneradmin/AppData/Local/Temp/RtmpYHDxrv/lake/LID45819_wainamu/glm_aed/output/output.nc</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-05-12 03:37:37]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-05-12 03:37:37]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-05-12 03:37:38]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-05-12 03:37:38]</span></span></code></pre></div>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">C:/Users/runneradmin/AppData/Local/Temp/Rtmp4szjWc/lake/LID45819_wainamu/glm_aed/output/output.nc</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-06-12 04:33:07]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2026-06-12 04:33:07]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-06-12 04:33:07]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-06-12 04:33:07]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="calibration-setup">Calibration setup<a class="anchor" aria-label="anchor" href="#calibration-setup"></a>
@@ -776,14 +776,14 @@ function takes the following arguments:</p>
 <tr>
 <td><code id="aeme">aeme</code></td>
 <td>
-<p>aeme; object.</p>
+<p>Aeme object.</p>
 </td>
 </tr>
 <tr>
 <td><code id="model">model</code></td>
 <td>
-<p>vector; of models to be used. Can be 'dy_cd', 'glm_aed',
-'gotm_wet'.</p>
+<p>character vector; models to use. One or more of <code>"dy_cd"</code>,
+<code>"glm_aed"</code>, <code>"gotm_wet"</code>. Defaults to all models if not found in <code>aeme</code>.</p>
 </td>
 </tr>
 <tr>
@@ -796,8 +796,8 @@ columns c("model", "file", "name", "value", "min", "max", "log")</p>
 <tr>
 <td><code id="path">path</code></td>
 <td>
-<p>filepath; where input files are located relative to the current 
-working directory.</p>
+<p>character; directory where input files are located. Defaults to
+the path stored in <code>aeme</code>, or the current working directory if not set.</p>
 </td>
 </tr>
 <tr>
@@ -825,8 +825,8 @@ provided, defaults to 1 for each variable.</p>
 <tr>
 <td><code id="model_controls">model_controls</code></td>
 <td>
-<p>dataframe; of configuration loaded from
-"model_controls.csv".</p>
+<p>data.frame; model configuration, typically loaded via
+<code><a href="https://limnotrack.com/reference/get_model_controls.html" class="external-link">get_model_controls()</a></code>.</p>
 </td>
 </tr>
 <tr>
@@ -869,109 +869,109 @@ values.</p>
 <span>                     vars_sim <span class="op">=</span> <span class="va">vars_sim</span>, weights <span class="op">=</span> <span class="va">weights</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Variables not found: `LKE_lvlwtr`.</span></span>
 <span><span class="co">#&gt; Adding them to model_controls.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Extracting indices for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-05-12 03:37:40]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Indices extracted for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-05-12 03:37:41]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Extracting indices for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-06-12 04:33:09]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Indices extracted for <span style="color: #0000BB;">"glm_aed"</span> modelled variables [2026-06-12 04:33:10]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Using <span style="color: #0000BB;">2</span> cores for parallel calibration for <span style="color: #0000BB;">"glm_aed"</span>.</span></span>
-<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-05-12 03:37:41]</span></span>
+<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-06-12 04:33:10]</span></span>
 <span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">1</span>:</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">1</span>/<span style="color: #0000BB;">10</span> </span></span>
-<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-12 03:38:20]</span></span>
+<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-06-12 04:33:50]</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.988</span> (sd: <span style="color: #0000BB;">0.5967</span>) Parameters: [ <span style="color: #0000BB;">1.84</span>, <span style="color: #0000BB;">1.03</span>, <span style="color: #0000BB;">0.992</span>, <span style="color: #0000BB;">0.11</span>, <span style="color: #0000BB;">0.221</span>,</span></span>
+<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.989</span> (sd: <span style="color: #0000BB;">0.59423</span>) Parameters: [ <span style="color: #0000BB;">1.84</span>, <span style="color: #0000BB;">1.03</span>, <span style="color: #0000BB;">0.992</span>, <span style="color: #0000BB;">0.11</span>, <span style="color: #0000BB;">0.221</span>,</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">0.136</span>, <span style="color: #0000BB;">0.244</span>, <span style="color: #0000BB;">0.429</span>, <span style="color: #0000BB;">1.84</span>, and <span style="color: #0000BB;">1.89</span> ]</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">1</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-05-12 03:38:20]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-06-12 04:33:50]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.7</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-05-12 03:38:20]</span></span>
+<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-06-12 04:33:50]</span></span>
 <span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">2</span>:</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">2</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-05-12 03:38:51]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-06-12 04:34:21]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">2</span>/<span style="color: #0000BB;">10</span> </span></span>
-<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-12 03:38:51]</span></span>
+<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-06-12 04:34:21]</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.916</span> (sd: <span style="color: #0000BB;">0.32078</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.92</span></span>
+<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.897</span> (sd: <span style="color: #0000BB;">0.34415</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.95</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">3</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-05-12 03:38:51]</span></span>
+<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">3</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-06-12 04:34:22]</span></span>
 <span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">3</span>:</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">3</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-05-12 03:39:25]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-06-12 04:34:52]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">3</span>/<span style="color: #0000BB;">10</span> </span></span>
-<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-12 03:39:25]</span></span>
+<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-06-12 04:34:52]</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.792</span> (sd: <span style="color: #0000BB;">0.41727</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.95</span></span>
+<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.871</span> (sd: <span style="color: #0000BB;">0.2409</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.98</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">4</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-05-12 03:39:25]</span></span>
+<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">4</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-06-12 04:34:52]</span></span>
 <span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">4</span>:</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">4</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-05-12 03:39:57]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-06-12 04:35:22]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">4</span>/<span style="color: #0000BB;">10</span> </span></span>
-<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-12 03:39:57]</span></span>
+<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-06-12 04:35:22]</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.774</span> (sd: <span style="color: #0000BB;">0.35784</span>)</span></span>
+<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.84</span> (sd: <span style="color: #0000BB;">0.26356</span>)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.98</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">5</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-05-12 03:39:57]</span></span>
+<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">5</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-06-12 04:35:22]</span></span>
 <span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">5</span>:</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">5</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-05-12 03:40:32]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-06-12 04:35:52]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">5</span>/<span style="color: #0000BB;">10</span> </span></span>
-<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-12 03:40:32]</span></span>
+<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-06-12 04:35:52]</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.764</span> (sd: <span style="color: #0000BB;">0.21017</span>)</span></span>
+<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.812</span> (sd: <span style="color: #0000BB;">0.22807</span>)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.92</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">6</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-05-12 03:40:32]</span></span>
+<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">6</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-06-12 04:35:52]</span></span>
 <span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">6</span>:</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">6</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-05-12 03:41:07]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-06-12 04:36:23]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">6</span>/<span style="color: #0000BB;">10</span> </span></span>
-<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-12 03:41:07]</span></span>
+<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-06-12 04:36:23]</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.755</span> (sd: <span style="color: #0000BB;">0.2488</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">7</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-05-12 03:41:07]</span></span>
-<span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">7</span>:</span></span>
-<span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">7</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-05-12 03:41:37]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">7</span>/<span style="color: #0000BB;">10</span> </span></span>
-<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-12 03:41:37]</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.748</span> (sd: <span style="color: #0000BB;">0.27728</span>)</span></span>
+<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.795</span> (sd: <span style="color: #0000BB;">0.24316</span>)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.95</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">8</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-05-12 03:41:37]</span></span>
+<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">7</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-06-12 04:36:23]</span></span>
+<span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">7</span>:</span></span>
+<span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">7</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-06-12 04:36:52]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">7</span>/<span style="color: #0000BB;">10</span> </span></span>
+<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-06-12 04:36:52]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.795</span> (sd: <span style="color: #0000BB;">0.30059</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.95</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">8</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-06-12 04:36:52]</span></span>
 <span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">8</span>:</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">8</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-05-12 03:42:05]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-06-12 04:37:22]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">8</span>/<span style="color: #0000BB;">10</span> </span></span>
-<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-12 03:42:06]</span></span>
+<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-06-12 04:37:22]</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.745</span> (sd: <span style="color: #0000BB;">0.33014</span>)</span></span>
+<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.788</span> (sd: <span style="color: #0000BB;">0.29031</span>)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">9</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-05-12 03:42:06]</span></span>
+<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">9</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-06-12 04:37:22]</span></span>
 <span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">9</span>:</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">9</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-05-12 03:42:40]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-06-12 04:37:53]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">9</span>/<span style="color: #0000BB;">10</span> </span></span>
-<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-12 03:42:40]</span></span>
+<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-06-12 04:37:53]</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.743</span> (sd: <span style="color: #0000BB;">0.35531</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.98</span></span>
+<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.788</span> (sd: <span style="color: #0000BB;">0.34279</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.95</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">10</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-05-12 03:42:40]</span></span>
+<span><span class="co">#&gt; → Starting generation <span style="color: #0000BB;">10</span>/<span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">40</span> members. [2026-06-12 04:37:53]</span></span>
 <span><span class="co">#&gt; Parameter summary for generation <span style="color: #0000BB;">10</span>:</span></span>
 <span><span class="co">#&gt; Writing output for generation <span style="color: #0000BB;">10</span> to <span style="color: #0000BB;">simulation_data.csv</span> with sim ID:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-05-12 03:43:12]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">"LID45819_glmaed_C_001"</span> [2026-06-12 04:38:23]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Completed generation <span style="color: #0000BB;">10</span>/<span style="color: #0000BB;">10</span> </span></span>
-<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-05-12 03:43:12]</span></span>
+<span><span class="co">#&gt; for <span style="color: #0000BB;">"glm_aed"</span>. [2026-06-12 04:38:23]</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.739</span> (sd: <span style="color: #0000BB;">0.25801</span>)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.92</span></span></code></pre></div>
+<span><span class="co">#&gt; Best fit: <span style="color: #0000BB;">0.785</span> (sd: <span style="color: #0000BB;">0.28657</span>)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Survival rate: 0.95</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualise-calibration-results">Visualise calibration results<a class="anchor" aria-label="anchor" href="#visualise-calibration-results"></a>
@@ -1163,12 +1163,12 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">glm3.nml</td>
 <td align="left">light/Kw</td>
-<td align="right">1.392890</td>
-<td align="right">0.100000</td>
+<td align="right">1.151440</td>
+<td align="right">0.195501</td>
 <td align="right">5.518170</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="right">0.739124</td>
+<td align="right">0.784949</td>
 <td align="left">10</td>
 <td align="left">fit</td>
 </tr>
@@ -1177,12 +1177,12 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">glm3.nml</td>
 <td align="left">mixing/coef_mix_conv</td>
-<td align="right">0.166762</td>
-<td align="right">0.100000</td>
+<td align="right">0.175882</td>
+<td align="right">0.101253</td>
 <td align="right">0.200000</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="right">0.739124</td>
+<td align="right">0.784949</td>
 <td align="left">10</td>
 <td align="left">fit</td>
 </tr>
@@ -1191,12 +1191,12 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">glm3.nml</td>
 <td align="left">mixing/coef_mix_hyp</td>
-<td align="right">0.586704</td>
+<td align="right">0.464860</td>
 <td align="right">0.400000</td>
 <td align="right">0.800000</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="right">0.739124</td>
+<td align="right">0.784949</td>
 <td align="left">10</td>
 <td align="left">fit</td>
 </tr>
@@ -1205,12 +1205,12 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">glm3.nml</td>
 <td align="left">mixing/coef_mix_shear</td>
-<td align="right">0.147040</td>
+<td align="right">0.192014</td>
 <td align="right">0.100000</td>
 <td align="right">0.200000</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="right">0.739124</td>
+<td align="right">0.784949</td>
 <td align="left">10</td>
 <td align="left">fit</td>
 </tr>
@@ -1219,12 +1219,12 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">glm3.nml</td>
 <td align="left">mixing/coef_mix_turb</td>
-<td align="right">0.297318</td>
+<td align="right">0.448983</td>
 <td align="right">0.200000</td>
-<td align="right">0.695554</td>
+<td align="right">0.700000</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="right">0.739124</td>
+<td align="right">0.784949</td>
 <td align="left">10</td>
 <td align="left">fit</td>
 </tr>
@@ -1233,12 +1233,12 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">glm3.nml</td>
 <td align="left">mixing/coef_wind_stir</td>
-<td align="right">0.257569</td>
-<td align="right">0.200000</td>
-<td align="right">0.299260</td>
+<td align="right">0.251370</td>
+<td align="right">0.200550</td>
+<td align="right">0.299172</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="right">0.739124</td>
+<td align="right">0.784949</td>
 <td align="left">10</td>
 <td align="left">fit</td>
 </tr>
@@ -1247,12 +1247,12 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">inf</td>
 <td align="left">inflow</td>
-<td align="right">1.206360</td>
-<td align="right">0.500000</td>
+<td align="right">1.703140</td>
+<td align="right">0.516413</td>
 <td align="right">2.500000</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="right">0.739124</td>
+<td align="right">0.784949</td>
 <td align="left">10</td>
 <td align="left">fit</td>
 </tr>
@@ -1261,12 +1261,12 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">met</td>
 <td align="left">MET_radswd</td>
-<td align="right">1.113850</td>
+<td align="right">1.082150</td>
 <td align="right">0.718137</td>
 <td align="right">1.300000</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="right">0.739124</td>
+<td align="right">0.784949</td>
 <td align="left">10</td>
 <td align="left">fit</td>
 </tr>
@@ -1275,12 +1275,12 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">met</td>
 <td align="left">MET_wndspd</td>
-<td align="right">1.082570</td>
+<td align="right">1.061490</td>
 <td align="right">0.705951</td>
 <td align="right">1.300000</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="right">0.739124</td>
+<td align="right">0.784949</td>
 <td align="left">10</td>
 <td align="left">fit</td>
 </tr>
@@ -1289,12 +1289,12 @@ parameter values or the entire calibration dataset. Defaults to
 <td align="left">glm_aed</td>
 <td align="left">wdr</td>
 <td align="left">outflow</td>
-<td align="right">1.172770</td>
+<td align="right">1.610520</td>
 <td align="right">0.500000</td>
 <td align="right">2.500000</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="right">0.739124</td>
+<td align="right">0.784949</td>
 <td align="left">10</td>
 <td align="left">fit</td>
 </tr>
@@ -1308,11 +1308,11 @@ the simulated values to the observed values. This can be done using the
 <span>                       param <span class="op">=</span> <span class="va">best_params</span>, model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>                       return_aeme <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Deleted previous output for model GLM-AED at</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">C:/Users/runneradmin/AppData/Local/Temp/RtmpYHDxrv/lake/LID45819_wainamu/glm_aed/output/output.nc</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-05-12 03:43:19]</span></span>
-<span><span class="co">#&gt; → GLM-AED running... [2026-05-12 03:43:19]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-05-12 03:43:19]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-05-12 03:43:19]</span></span></code></pre></div>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">C:/Users/runneradmin/AppData/Local/Temp/Rtmp4szjWc/lake/LID45819_wainamu/glm_aed/output/output.nc</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running models... (Have you tried parallelizing?) [2026-06-12 04:38:29]</span></span>
+<span><span class="co">#&gt; → GLM-AED running... [2026-06-12 04:38:29]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GLM-AED run successful! [2026-06-12 04:38:29]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Model run complete! [2026-06-12 04:38:29]</span></span></code></pre></div>
 <p>The simulated values can be compared to the observed values using the
 <code>assess_model</code> function. This function takes the following
 arguments:</p>
@@ -1399,7 +1399,7 @@ variable. These include:
 <col width="4%">
 <col width="4%">
 <col width="4%">
-<col width="5%">
+<col width="6%">
 <col width="4%">
 <col width="4%">
 <col width="4%">
@@ -1434,16 +1434,16 @@ variable. These include:
 <tr class="odd">
 <td align="left">GLM-AED</td>
 <td align="left">HYD_temp</td>
-<td align="right">0.028</td>
-<td align="right">0.715</td>
-<td align="right">1.013</td>
-<td align="right">0.040</td>
-<td align="right">0.894</td>
-<td align="right">0.052</td>
-<td align="right">0.947</td>
-<td align="right">0.944</td>
-<td align="right">0.896</td>
-<td align="right">0.811</td>
+<td align="right">0.029</td>
+<td align="right">0.711</td>
+<td align="right">1.009</td>
+<td align="right">0.039</td>
+<td align="right">0.895</td>
+<td align="right">0.051</td>
+<td align="right">0.948</td>
+<td align="right">0.942</td>
+<td align="right">0.898</td>
+<td align="right">0.813</td>
 <td align="right">125</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -1453,16 +1453,16 @@ variable. These include:
 <tr class="even">
 <td align="left">GLM-AED</td>
 <td align="left">LKE_lvlwtr</td>
-<td align="right">0.186</td>
-<td align="right">0.201</td>
-<td align="right">0.249</td>
-<td align="right">0.009</td>
-<td align="right">-17.081</td>
-<td align="right">0.697</td>
-<td align="right">0.049</td>
-<td align="right">-0.146</td>
-<td align="right">0.002</td>
+<td align="right">0.702</td>
+<td align="right">0.702</td>
+<td align="right">0.730</td>
+<td align="right">0.030</td>
+<td align="right">-153.865</td>
+<td align="right">0.860</td>
+<td align="right">0.350</td>
 <td align="right">0.000</td>
+<td align="right">0.123</td>
+<td align="right">0.001</td>
 <td align="right">8</td>
 <td align="right">0</td>
 <td align="right">0</td>

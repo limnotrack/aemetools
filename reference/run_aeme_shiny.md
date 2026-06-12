@@ -12,7 +12,7 @@ run_aeme_shiny(aeme, param, path = ".", model_controls = NULL)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - param:
 
@@ -21,12 +21,13 @@ run_aeme_shiny(aeme, param, path = ".", model_controls = NULL)
 
 - path:
 
-  filepath; where input files are located relative to the current
-  working directory.
+  character; directory where input files are located. Defaults to the
+  path stored in `aeme`, or the current working directory if not set.
 
 - model_controls:
 
-  dataframe; of configuration loaded from "model_controls.csv".
+  data.frame; model configuration, typically loaded via
+  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.html).
 
 ## Value
 

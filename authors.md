@@ -13,13 +13,13 @@ Source:
 [`DESCRIPTION`](https://github.com/limnotrack/aemetools/blob/dev/DESCRIPTION)
 
 Moore T, McBride C (2026). *aemetools: Tools to expand the Aquatic
-Ecosystem Model Ensemble Package*. R package version 0.2.0,
+Ecosystem Model Ensemble Package*. R package version 0.3.0,
 <https://limnotrack.com/aemetools/>.
 
     @Manual{,
       title = {aemetools: Tools to expand the Aquatic Ecosystem Model Ensemble Package},
       author = {Tadhg Moore and Chris McBride},
       year = {2026},
-      note = {R package version 0.2.0},
+      note = {R package version 0.3.0},
       url = {https://limnotrack.com/aemetools/},
     }

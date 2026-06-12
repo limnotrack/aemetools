@@ -22,7 +22,7 @@ plot_ensemble(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 

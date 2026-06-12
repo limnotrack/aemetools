@@ -12,17 +12,18 @@ get_simulation_time(aeme, model, path, param, FUN_list, vars_sim, weights)
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - model:
 
-  vector; of models to be used. Can be \`dy_cd\`, \`glm_aed\`,
-  \`gotm_wet\`.
+  character vector; models to use. One or more of `"dy_cd"`,
+  `"glm_aed"`, `"gotm_wet"`. Defaults to all models if not found in
+  `aeme`.
 
 - path:
 
-  filepath; where input files are located relative to the current
-  working directory.
+  character; directory where input files are located. Defaults to the
+  path stored in `aeme`, or the current working directory if not set.
 
 - param:
 
@@ -63,59 +64,42 @@ model <- c("glm_aed", "gotm_wet")
 aeme <- AEME::build_aeme(path = path, aeme = aeme,
 model = model, model_controls = model_controls,
 ext_elev = 5, use_bgc = FALSE)
-#> ℹ All columns already match AEME standard variable names, skipping name
-#>   guessing.
-#> ℹ MET_tmpair: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_tmpdew: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_radswd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_radlwd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_humrel: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_cldcvr: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prsttn: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prmslp: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_prvapr: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wndspd: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wnduvu: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_wnduvv: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_pprain: values appear to be in the expected units, no conversion applied.
-#> ℹ MET_ppsnow: values appear to be in the expected units, no conversion applied.
-#> ℹ All columns already match AEME standard inflow variable names, skipping name
-#>   guessing.
-#> ℹ `HYD_temp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `CHM_oxy`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_amm`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_nit`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_don`: values appear to be in the expected units, no conversion applied.
-#> ℹ `NIT_pon`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_frp`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_dop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pop`: values appear to be in the expected units, no conversion applied.
-#> ℹ `PHS_pip`: values appear to be in the expected units, no conversion applied.
-#> ℹ `CAR_doc`: values appear to be in the expected units, no conversion applied.
-#> ℹ `CAR_poc`: values appear to be in the expected units, no conversion applied.
-#> ℹ `SIL_rsi`: values appear to be in the expected units, no conversion applied.
 #> Warning: ! `SIL_rsi`: SIL_rsi is constant across all rows — this may be a placeholder
 #>   value.
 #> ℹ Check raw data or unit conversion for this variable.
-#> ℹ Using observed water level.
-#> ! Missing values in observed water level.
+#> 
+#> ── Calculating water balance ──
+#> 
+#> Resolving water level
+#>   ℹ Using observed water level
+#> ! Missing values in observed water level
+#> ℹ Estimating surface water temperature
+#> ✔ Estimating surface water temperature [7ms]
+#> 
+#> Estimating lake water levels for glm_aed
+#>   ℹ Optimizing parameters for water balance
+#>   ✔ Optimization Complete: C = 0.3343, h_inv = 23.4915, Final RMSE = 0.1431
+#> Estimating lake water levels for gotm_wet
+#>   ℹ Optimizing parameters for water balance
+#>   ✔ Optimization Complete: C = 0.334, h_inv = 23.4829, Final RMSE = 0.1472
 #> ℹ Correcting water balance using estimated outflows (method = 2).
-#> ℹ Calculating lake level using lake depth and a sinisoidal function.
-#> ℹ Building GLM-AED for lake wainamu
+#> 
+#> ── Building GLM-AED for lake wainamu ──
+#> 
 #> ℹ Copied in GLM nml file
 #> ℹ Copied in AED nml file and supporting files
+#> ℹ Copied in GLM plots nml file
 #> ℹ Building GOTM-WET model for lake wainamu
 #> ℹ Copied in GOTM configuration files
 #> ✔ GOTM YAML validation completed - no issues detected.
 #> ✔ GLM nml validation completed - no issues detected.
 aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-#> ℹ Running models... (Have you tried parallelizing?) [2026-05-12 03:32:22]
-#> → GLM-AED running... [2026-05-12 03:32:22]
-#> ✔ GLM-AED run successful! [2026-05-12 03:32:22]
-#> → GOTM-WET running... [2026-05-12 03:32:22]
-#> ✔ GOTM-WET run successful! [2026-05-12 03:32:23]
-#> ✔ Model run complete! [2026-05-12 03:32:23]
-#> ! The following variables are not available in model gotm_wet: RAD_extc
+#> ℹ Running models... (Have you tried parallelizing?) [2026-06-12 04:27:48]
+#> → GLM-AED running... [2026-06-12 04:27:48]
+#> ✔ GLM-AED run successful! [2026-06-12 04:27:49]
+#> → GOTM-WET running... [2026-06-12 04:27:49]
+#> ✔ GOTM-WET run successful! [2026-06-12 04:27:49]
+#> ✔ Model run complete! [2026-06-12 04:27:49]
 #> ! The following variables are not available in model gotm_wet: RAD_extc
 data("aeme_parameters", package = "AEME")
 param <- aeme_parameters
