@@ -173,6 +173,16 @@ See the vignette
   calibration results
 - [`get_upstream_rec()`](get_upstream_rec.md) : Get all upstream reaches
 - [`get_wlevel()`](get_wlevel.md) : Get modelled water level
+- [`lt_cache_reset()`](lt_cache_reset.md) : Reset the cached PostgREST
+  schema
+- [`lt_fetch()`](lt_fetch.md) : Query LimnoTrack database with flexible
+  parameters
+- [`lt_filter()`](lt_filter.md) : Helper to construct filter parameters
+  for lt_fetch
+- [`lt_schema()`](lt_schema.md) : Inspect the schema for a table in the
+  Limnotrack database
+- [`lt_tables()`](lt_tables.md) : List available tables in the
+  Limnotrack database
 - [`make_GR_inputs()`](make_GR_inputs.md) : Make inputs for the GR
   models
 - [`nz_aerial_imagery_metadata`](nz_aerial_imagery_metadata.md) : sf

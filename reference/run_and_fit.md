@@ -30,7 +30,7 @@ run_and_fit(
 
 - aeme:
 
-  aeme; object.
+  Aeme object.
 
 - param:
 
@@ -49,12 +49,13 @@ run_and_fit(
 
 - path:
 
-  filepath; where input files are located relative to the current
-  working directory.
+  character; directory where input files are located. Defaults to the
+  path stored in `aeme`, or the current working directory if not set.
 
 - model_controls:
 
-  dataframe; of configuration loaded from "model_controls.csv".
+  data.frame; model configuration, typically loaded via
+  [`get_model_controls()`](https://limnotrack.com/reference/get_model_controls.html).
 
 - FUN_list:
 

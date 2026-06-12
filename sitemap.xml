@@ -50,6 +50,11 @@
 <url><loc>/reference/get_upstream_rec.html</loc></url>
 <url><loc>/reference/get_wlevel.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/lt_cache_reset.html</loc></url>
+<url><loc>/reference/lt_fetch.html</loc></url>
+<url><loc>/reference/lt_filter.html</loc></url>
+<url><loc>/reference/lt_schema.html</loc></url>
+<url><loc>/reference/lt_tables.html</loc></url>
 <url><loc>/reference/make_GR_inputs.html</loc></url>
 <url><loc>/reference/nz_aerial_imagery_metadata.html</loc></url>
 <url><loc>/reference/nz_dem_metadata.html</loc></url>
