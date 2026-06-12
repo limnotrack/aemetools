@@ -22,15 +22,14 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
     config <- AEME::configuration(aeme = aeme)
     model_controls <- config$model_controls
   }
-  data("key_naming", package = "AEME", envir = environment())
-  out_vars <- key_naming$name
+  out_vars <- key_naming$var_aeme
   names(out_vars) <- key_naming$name_full
   out_vars <- out_vars[-1]
   out_vars <- grep("HYD|LKE|PHY|CHM|PHS|NIT", out_vars, value = TRUE)
   out_vars_aeme <- model_controls |>
     dplyr::filter(simulate) |>
     dplyr::select(var_aeme) |>
-    dplyr::left_join(key_naming, by = c("var_aeme" = "name"))
+    dplyr::left_join(key_naming, by = "var_aeme")
   out_vars <- out_vars_aeme$var_aeme
   names(out_vars) <- out_vars_aeme$name_text
 
