@@ -35,7 +35,8 @@
 #' @importFrom dplyr case_when filter left_join mutate select bind_rows
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @importFrom lubridate as_date
-#' @importFrom AEME lake input observations get_var_indices read_model_outputs
+#' @importFrom AEME lake input observations get_var_indices
+#' @importFrom AEME read_model_outputs
 #' @importFrom AEME get_deriv_inputs add_deriv_output is_model_error
 #' @importFrom cli cli_alert_warning cli_alert_info cli_div
 #' @importFrom stats approx
@@ -85,9 +86,10 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     }
   }
   
+  key_naming <- AEME::key_naming
+  
   
   # Load data from AEME package ----
-  data("key_naming", package = "AEME", envir = environment())
   inp <- AEME::input(aeme)
   hyps <- inp$hypsograph
   
@@ -190,7 +192,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
         vars_out <- lapply(vars_sim, \(v) {
           
           deriv_chk <- key_naming |> 
-            dplyr::filter(name == v) |>
+            dplyr::filter(var_aeme == v) |>
             dplyr::pull(derived)
           if (deriv_chk) {
             extract_var <- AEME::get_deriv_inputs(v)
@@ -245,7 +247,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
           
           
           conv_fact <- ifelse(model == "glm_aed",
-                              key_naming[key_naming$name == v, "conversion_aed"],
+                              key_naming[key_naming$var_aeme == v, "conversion_aed"],
                               1)
           
           if (!is.matrix(out)) {
@@ -337,7 +339,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
           
           
           conv_fact <- ifelse(model == "glm_aed",
-                              key_naming[key_naming$name == v, "conversion_aed"],
+                              key_naming[key_naming$var_aeme == v, "conversion_aed"],
                               1)
           
           if (!is.matrix(out)) {
