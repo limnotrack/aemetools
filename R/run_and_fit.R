@@ -299,7 +299,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
           }
           
           deriv_chk <- key_naming |> 
-            dplyr::filter(name == v) |>
+            dplyr::filter(var_aeme == v) |>
             dplyr::pull(derived)
           if (deriv_chk) {
             extract_var <- AEME::get_deriv_inputs(v)
