@@ -75,9 +75,9 @@ years <- 2021
 vars <- c("MET_tmpair", "MET_pprain")
 
 met <- get_era5_isimip_point(lon, lat, years, vars)
-#> INFO [2026-06-12 04:38:46] job submitted
-#> INFO [2026-06-12 04:38:46] downloading
-#> INFO [2026-06-12 04:38:47] extracting
+#> INFO [2026-06-15 21:18:47] job submitted
+#> INFO [2026-06-15 21:18:47] downloading
+#> INFO [2026-06-15 21:18:48] extracting
 summary(met)
 #>       Date              MET_tmpair      MET_pprain      
 #>  Min.   :2021-01-01   Min.   :19.08   Min.   : 0.06125  
@@ -227,10 +227,10 @@ df <- read_grib_point(file = files, shape = toba)
 head(df)
 #>              DateTime    value units
 #> 1 2024-01-01 00:00:00 293.0246     C
-#> 2 2024-01-01 01:00:00 293.3111     C
+#> 2 2024-01-01 01:00:00 293.3110     C
 #> 3 2024-01-01 02:00:00 293.9233     C
 #> 4 2024-01-01 03:00:00 294.9492     C
-#> 5 2024-01-01 04:00:00 296.1868     C
+#> 5 2024-01-01 04:00:00 296.1867     C
 #> 6 2024-01-01 05:00:00 297.0911     C
 #>                                                 variable short_name
 #> 1 SFC (Ground or water surface); 2 metre temperature [C]         2T
