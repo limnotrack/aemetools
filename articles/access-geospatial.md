@@ -169,6 +169,11 @@ tm_shape(nz_dem_metadata, name = "DEM coverage") +
   tm_polygons(fill = "red", col = "black", fill_alpha = 0.1, id = "title") +
   tm_shape(pnt, name = "Lake") +
   tm_dots(col = "blue", size = 0.2, popup.vars = "title") 
+#> [deprecated] The arguments `popup.vars` and `popup.format` of `tm_dots()` are
+#> deprecated.
+#> ℹ Use `popup` with `tm_popup()` instead, e.g. `popup = tm_popup(vars = ...,
+#>   format = ...)`.
+#> This message is displayed once every 8 hours.
 ```
 
 First we will transform our lake coordinates to NZTM and use this to
