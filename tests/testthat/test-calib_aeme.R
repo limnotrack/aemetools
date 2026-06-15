@@ -259,8 +259,7 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
   # model <- c("gotm_wet", "glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
+                           ext_elev = 5, use_bgc = FALSE)
   
   data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
@@ -558,8 +557,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
                            ext_elev = 5, use_bgc = FALSE) |> 
-    AEME::run_aeme(aeme = aeme, model = model,
-                   verbose = FALSE, path = path)
+    AEME::run_aeme(model = model, verbose = FALSE)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
   lke <- AEME::lake(aeme)
@@ -1326,7 +1324,7 @@ test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
   
   testthat::expect_true(is.list(plist))
   
-  best_pars <- get_param(calib = calib, best = TRUE)
+  best_pars <- get_best_params(calib = calib)
   best_pars2 <- get_param(calib = calib, na_value = ctrl$na_value, 
                           fit_col = "fit", quantile = 0.1, best = TRUE)
   testthat::expect_true(all(best_pars$value %in% best_pars2$value))
@@ -1411,9 +1409,10 @@ test_that("can update bgc parameters for GLM-AED", {
   model_controls <- AEME::get_model_controls()
   model_controls <- AEME::set_vars_sim(model_controls, vars_sim = vars_sim)
   model <- c("glm_aed")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = TRUE) |>
+  aeme <- aeme |> 
+    AEME::build_aeme(path = path,
+                     model = model, model_controls = model_controls,
+                     ext_elev = 5, use_bgc = TRUE) |>
     AEME::run_aeme()
   
   # Get parameters for calibration
@@ -1582,11 +1581,11 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
   model <- c("glm_aed")
   path <- "aeme"
   sed_param <- AEME::glm_sed_params(n_zones = 2, zone_heights = c(8, 15))
-  aeme <- AEME::add_param(aeme = aeme, param = sed_param)
-  
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = TRUE)
+  aeme <- aeme |> 
+    AEME::add_param(param = sed_param) |> 
+    AEME::build_aeme(path = path, 
+                     model = model, model_controls = model_controls,
+                     ext_elev = 5, use_bgc = TRUE)
   cfg <- AEME::configuration(aeme)
   cfg$glm_aed$hydrodynamic$sediment$n_zones
   AEME::get_glm_sed_zones(aeme, path)
