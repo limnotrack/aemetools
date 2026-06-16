@@ -1309,7 +1309,7 @@ test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
                                parallel = TRUE, file_type = "db",
                                na_value = 999, file_name = "results.db")
   
-  # aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model, verbose = T)
+  aeme <- AEME::run_aeme(aeme = aeme)
   
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
@@ -1324,6 +1324,7 @@ test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
   plist <- plot_calib(calib = calib, fit_col = "HYD_thmcln")
   
   testthat::expect_true(is.list(plist))
+  testthat::expect_true(ggplot2::is_ggplot(plist[[1]]))
   
   best_pars <- get_best_params(calib = calib)
   best_pars2 <- get_param(calib = calib, na_value = ctrl$na_value, 
@@ -1336,14 +1337,10 @@ test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
   testthat::expect_true(all(upd_param$value %in% upd_param2$value))
   testthat::expect_true(all(upd_param$min %in% upd_param2$min))
   testthat::expect_true(all(upd_param$max %in% upd_param2$max))
-  best_pars[!best_pars$value %in% upd_param$value, ]
+  # best_pars[!best_pars$value %in% upd_param$value, ]
   testthat::expect_true(all(best_pars$value %in% upd_param$value))
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
-  
-  aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model)
+  aeme <- AEME::build_aeme(aeme = aeme) |> 
+    AEME::run_aeme()
   aeme_temp <- AEME::get_var(aeme = aeme, model = "glm_aed", var = "HYD_temp",
                              use_obs = TRUE)
   mod_fit <- AEME::assess_model(aeme = aeme, model = model, var_sim = vars_sim)
@@ -1413,7 +1410,8 @@ test_that("can update bgc parameters for GLM-AED", {
   aeme <- aeme |> 
     AEME::build_aeme(path = path,
                      model = model, model_controls = model_controls,
-                     ext_elev = 5, use_bgc = TRUE) |>
+                     ext_elev = 5, use_bgc = TRUE)
+  aeme <- aeme |> 
     AEME::run_aeme()
   
   # Get parameters for calibration
@@ -1593,7 +1591,8 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
   AEME::set_aed_sed_const2d(aeme = aeme, path = path)
   
   
-  aeme <- AEME::run_aeme(aeme = aeme, path = path, model = model, verbose = T)
+  aeme <- AEME::run_aeme(aeme = aeme)
+  aeme <- AEME::run_aeme(aeme = aeme)
   AEME::plot_output(aeme, model = model, var_sim = "CHM_oxy")
   AEME::plot_output(aeme, model = model, var_sim = "PHY_tchla")
   
