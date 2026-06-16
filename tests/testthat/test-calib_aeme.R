@@ -639,6 +639,7 @@ test_that("can calibrate sediment parameters only for AEME-GLM", {
                            model = model, model_controls = model_controls,
                            ext_elev = 5, use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
+  aeme <- AEME::run_aeme(aeme = aeme)
   AEME::plot_output(aeme)
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
   lke <- AEME::lake(aeme)
