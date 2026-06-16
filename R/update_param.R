@@ -14,16 +14,19 @@
 #' @param replace Logical. If TRUE, the parameter values in the aeme object are
 #' replaced with the updated values. Defaults to FALSE. Only used when aeme is
 #' provided.
-#' @param quantile `r lifecycle::badge("deprecated")` The quantile to use for 
-#' the top quantile of the fit_value. Defaults to 0.1. This is no longer needed 
-#' and will be removed in a future version.
+#' @param quantile `r lifecycle::badge("deprecated")` No longer used, replaced 
+#' by `quantile_threshold`.
+#' @param quantile_threshold The quantile to use for 
+#' the top quantile of the fit_value. Defaults to 0.1. This is used to determine
+#' min, max, for parameters when best_pars is not provided. 
 #' @param na_value `r lifecycle::badge("deprecated")` Numeric. Penalty value 
 #' substituted for \code{NA} fit values, this is no longer needed as NA values 
 #' are now written to simulation_data in output of calib_aeme() and sa_aeme(). 
 #' The argument will be removed in a future version.
 #'
 #' @importFrom dplyr filter group_by select summarise all_of anti_join arrange
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows left_join rows_upsert semi_join
+#' @importFrom lifecycle deprecate_warn
 #'
 #' @return data frame with updated parameter values for running the model with
 #'  \code{\link{run_aeme_param}}
@@ -31,9 +34,21 @@
 
 update_param <- function(calib, param, aeme, replace = FALSE,
                          fit_col = "fit", best_pars, quantile_threshold = 0.1, 
-                         na_value = NULL) {
+                         na_value = NULL, quantile) {
   
   param_column_names <- AEME::param_colnames(incl_opt = FALSE)
+  
+  if (!missing(quantile)) {
+    # Warn it is deprecated but assign to quantile_threshold for backward compatibility
+    lifecycle::deprecate_warn(
+      when = "0.2.0",
+      what = "update_param(quantile)",
+      details = "The 'quantile' argument is deprecated and will be removed in a future
+      version. Please use 'quantile_threshold' instead."
+    )
+    quantile_threshold <- quantile
+  }
+  
   if (missing(param)) {
     param <- calib$parameter_metadata |>
       dplyr::select(all_of(param_column_names)) |> 

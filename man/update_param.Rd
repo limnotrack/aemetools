@@ -11,8 +11,9 @@ update_param(
   replace = FALSE,
   fit_col = "fit",
   best_pars,
-  quantile = 0.1,
-  na_value = NULL
+  quantile_threshold = 0.1,
+  na_value = NULL,
+  quantile
 )
 }
 \arguments{
@@ -37,14 +38,17 @@ provided.}
 Defaults to NULL. When NULL, \code{\link{get_param}} is called to get the
 best parameters.}
 
-\item{quantile}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} The quantile to use for
-the top quantile of the fit_value. Defaults to 0.1. This is no longer needed
-and will be removed in a future version.}
+\item{quantile_threshold}{The quantile to use for
+the top quantile of the fit_value. Defaults to 0.1. This is used to determine
+min, max, for parameters when best_pars is not provided.}
 
 \item{na_value}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Numeric. Penalty value
 substituted for \code{NA} fit values, this is no longer needed as NA values
 are now written to simulation_data in output of calib_aeme() and sa_aeme().
 The argument will be removed in a future version.}
+
+\item{quantile}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} No longer used, replaced
+by \code{quantile_threshold}.}
 }
 \value{
 data frame with updated parameter values for running the model with
