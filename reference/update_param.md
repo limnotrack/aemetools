@@ -12,8 +12,9 @@ update_param(
   replace = FALSE,
   fit_col = "fit",
   best_pars,
-  quantile = 0.1,
-  na_value = NULL
+  quantile_threshold = 0.1,
+  na_value = NULL,
+  quantile
 )
 ```
 
@@ -51,11 +52,11 @@ update_param(
   [`get_param`](get_param.md). Defaults to NULL. When NULL,
   [`get_param`](get_param.md) is called to get the best parameters.
 
-- quantile:
+- quantile_threshold:
 
-  **\[deprecated\]** The quantile to use for the top quantile of the
-  fit_value. Defaults to 0.1. This is no longer needed and will be
-  removed in a future version.
+  The quantile to use for the top quantile of the fit_value. Defaults to
+  0.1. This is used to determine min, max, for parameters when best_pars
+  is not provided.
 
 - na_value:
 
@@ -63,6 +64,10 @@ update_param(
   values, this is no longer needed as NA values are now written to
   simulation_data in output of calib_aeme() and sa_aeme(). The argument
   will be removed in a future version.
+
+- quantile:
+
+  **\[deprecated\]** No longer used, replaced by `quantile_threshold`.
 
 ## Value
 
