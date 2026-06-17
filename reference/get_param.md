@@ -38,9 +38,7 @@ get_param(calib, na_value, fit_col = "fit", best = FALSE, quantile = 0.1)
 
 - quantile:
 
-  **\[deprecated\]** The quantile to use for the top quantile of the
-  fit_value. Defaults to 0.1. This is no longer needed and will be
-  removed in a future version.
+  **\[deprecated\]** No longer used, replaced by `quantile_threshold`.
 
 ## Value
 
