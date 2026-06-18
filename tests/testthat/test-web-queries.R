@@ -1,11 +1,13 @@
 test_that("can get DEM value", {
 
-  lon <- 176.2717
-  lat <- -38.079
+  lon <- 176.17
+  lat <- -38.01
 
-  dem <- get_dem_value(lat = lat, lon = lon)
-
-  testthat::expect_equal(dem, 282)
+  dem <- get_dem_value(lat = lat, lon = lon, use_lidar = TRUE)
+  dem2 <- get_dem_value(lat = lat, lon = lon, use_lidar = FALSE)
+  
+  testthat::expect_equal(dem, 487.37)
+  testthat::expect_equal(dem2, 480.385681)
 
 })
 
