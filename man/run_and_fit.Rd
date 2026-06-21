@@ -25,7 +25,7 @@ run_and_fit(
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
@@ -36,11 +36,11 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \item{vars_sim}{vector; of variables names to be used in the calculation of
 model fit. Currently only supports using one variable.}
 
-\item{path}{filepath; where input files are located relative to the current 
-working directory.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[AEME:get_model_controls]{get_model_controls()}}.}
 
 \item{FUN_list}{function; of the form \verb{function(O, P)} which will be used in
 to calculate model fit. If NULL, uses mean absolute error (MAE).}

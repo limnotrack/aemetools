@@ -78,19 +78,42 @@ get_raster_layer_value <- function(lat, lon, layer_id, key = NULL) {
 #'
 #' This function uses the LINZ data service to obtain the elevation value for a
 #' given latitude and longitude. The function \code{get_raster_layer_value()} is
-#' used to obtain the value for the DEM layer (ID: 51768).
+#' used to obtain the value for the LiDAR DEM layer (ID: 121859) or the 8m 
+#' National DEM (ID: 51768). The user can choose which layer to use by setting 
+#' the \code{use_lidar} argument.
 #'
 #' @inheritParams get_raster_layer_value
+#' @param use_lidar logical; if TRUE, uses the LIDAR DEM layer (https://data.linz.govt.nz/layer/121859-new-zealand-lidar-1m-dem/) which
+#' provides higher resolution elevation data. If FALSE, uses the 8m National 
+#' DEM (https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/).
+#' 
+#' @importFrom cli cli_warn
 #'
 #' @return numeric value or NA if outside extent
 #' @export
 #'
 
-get_dem_value <- function(lat, lon, key = NULL) {
+get_dem_value <- function(lat, lon, key = NULL, use_lidar = TRUE) {
 
-  layer_id <- 51768
+  if (use_lidar) {
+    layer_id <- 121859
+  } else {
+    layer_id <- 51768
+  }
 
-  get_raster_layer_value(lat = lat, lon = lon, layer_id = layer_id, key = key)
+  val <- get_raster_layer_value(lat = lat, lon = lon, layer_id = layer_id,
+                                key = key)
+  if (is.null(val) & use_lidar) {
+     cli::cli_warn("No value returned from API. This may be because the point is
+                   outside the extent of the LIDAR DEM layer. Returning NA.")
+    val <- NA
+  } else if (is.null(val) & !use_lidar) {
+    cli::cli_warn("No value returned from API. This may be because the point is
+                   outside the extent of the National DEM layer. Returning NA.")
+    val <- NA
+  }
+  
+  return(val)
 }
 
 #' Add LINZ API key to environment variables

@@ -25,11 +25,6 @@ plot_ensemble <- function(aeme, model, var_sim = "HYD_temp", depth = NULL,
   # Check inputs
   aeme <- AEME::check_aeme(aeme)
   model <- AEME::check_model(model)
-  if (missing(path)) {
-    path <- AEME::get_aeme_path(aeme)
-  } else {
-    path <- AEME::check_path(path)
-  }
 
   # Check if var_sim is a character vector
   if (!is.character(var_sim)) {
@@ -113,9 +108,8 @@ plot_ensemble <- function(aeme, model, var_sim = "HYD_temp", depth = NULL,
                                 var_sim = var_sim)
 
   # Extract y labels
-  data("key_naming", package = "AEME", envir = environment())
-  var_df <- key_naming |>
-    dplyr::filter(name == var_sim)
+  var_df <- AEME::key_naming |> 
+    dplyr::filter(var_aeme == var_sim)
 
   y_lab <- eval(parse(text = var_df$name_parse[1]))
 

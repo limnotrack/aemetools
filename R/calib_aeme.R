@@ -270,6 +270,7 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
       cli::cli_inform(c("i" = "Using {.val {ncores}} cores for parallel 
                         calibration for {.val {m}}."))
 
+      unlink("parallel.log")
       cl <- parallel::makeCluster(ncores, outfile = "parallel.log")
       on.exit(parallel::stopCluster(cl))
       varlist <- list("param", "aeme", "path", "m", "vars_sim", "FUN_list",

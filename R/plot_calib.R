@@ -98,9 +98,8 @@ plot_calib <- function(calib, fit_col = "fit", nrow = 2, base_size = 8,
   ylims <- c(min(all_pars$fit2, na.rm = TRUE),
              stats::quantile(all_pars$fit2, 0.75, na.rm = TRUE))
   if (fit_col != "fit") {
-    data("key_naming", package = "AEME", envir = environment())
-    var_name <- key_naming |> 
-      dplyr::filter(name == fit_col) |>
+    var_name <- AEME::key_naming |> 
+      dplyr::filter(var_aeme == fit_col) |>
       dplyr::pull(name_text)
   }
   ylab <- ifelse(fit_col == "fit", "Fit", paste0("Fit (", var_name, ")"))
@@ -155,7 +154,7 @@ plot_calib <- function(calib, fit_col = "fit", nrow = 2, base_size = 8,
   pconverge <- patchwork::wrap_plots(plist, nrow = nsims,
                                      guides = "collect")
   
-  all_pars$gen <- forcats::fct_rev(all_pars$gen)
+  all_pars$gen <- factor(all_pars$gen, levels = rev(levels(all_pars$gen)))
   
   # Histogram ----
   plist <- lapply(sim_ids, \(s) {
