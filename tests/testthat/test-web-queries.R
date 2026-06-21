@@ -1,11 +1,15 @@
 test_that("can get DEM value", {
 
-  lon <- 176.2717
-  lat <- -38.079
+  lon <- 176.4376
+  lat <- -38.04
+  # lon <- 176.2717
+  # lat <- -38.079
 
-  dem <- get_dem_value(lat = lat, lon = lon)
+  elev_lidar <- get_dem_value(lat = lat, lon = lon, use_lidar = TRUE)
+  elev_8m_dem <- get_dem_value(lat = lat, lon = lon, use_lidar = FALSE)
 
-  testthat::expect_equal(dem, 282)
+  testthat::expect_equal(elev_lidar, 278.655)
+  testthat::expect_equal(elev_8m_dem, 278)
 
 })
 
@@ -148,7 +152,7 @@ test_that("can get LINZ lakes sf object", {
 test_that("can get tables from MfE", {
 
   lake_wq_status <- read_web_table(url = "https://data.mfe.govt.nz/",
-                                   layer_id = 109652, 
+                                   layer_id = 109652,
                                    key = Sys.getenv("MFE_KEY"))
 
   testthat::expect_true(is.data.frame(lake_wq_status))
