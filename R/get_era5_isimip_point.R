@@ -88,7 +88,9 @@ get_era5_isimip_point <- function(lon, lat, years,
       job_req <- httr2::request(job$job_url)
       job_res <- httr2::req_perform(job_req)
       job <- httr2::resp_body_json(job_res)
-      log_info("job updated", id = job$id, status = job$status, meta = job$meta)
+      logger::log_info(
+        "job {job$status} | {job$meta$created_files}/{job$meta$total_files} files created | id={job$id}"
+      )
     }
     
     if (job$status == "finished") {
@@ -96,13 +98,13 @@ get_era5_isimip_point <- function(lon, lat, years,
       zip_path <- file.path(download_path, job$file_name)
       dir.create(dirname(zip_path), showWarnings = FALSE, recursive = TRUE)
       log_info("downloading", file_url = job$file_url)
-      utils::download.file(job$file_url, zip_path, mode = "wb")
+      download.file(job$file_url, zip_path, mode = "wb")
       
       # Extract zip file
       out_path <- sub("\\.zip$", "", zip_path)
       dir.create(out_path, showWarnings = FALSE, recursive = TRUE)
       log_info("extracting", zip_path = zip_path, out_path = out_path)
-      utils::unzip(zip_path, exdir = out_path)
+      unzip(zip_path, exdir = out_path)
       
     } else {
       log_error("job did not finish successfully", status = job$status)
