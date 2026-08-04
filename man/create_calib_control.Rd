@@ -18,6 +18,8 @@ create_calib_control(
   reltol = 0.07,
   cutoff = 0.25,
   mutate = 0.1,
+  cutoff_final = NULL,
+  mutate_final = NULL,
   c_method = "CMAES",
   ...
 )
@@ -50,9 +52,22 @@ Default \code{parallel::detectCores() - 1}.}
 
 \item{reltol}{Numeric. Relative convergence tolerance. Default \code{0.07}.}
 
-\item{cutoff}{Numeric. Quantile cutoff (0–1).}
+\item{cutoff}{Numeric. Quantile cutoff (0–1). Used as-is for every
+generation unless \code{cutoff_final} is set.}
 
-\item{mutate}{Numeric. Fraction of population to mutate (0–1).}
+\item{mutate}{Numeric. Fraction of population to mutate (0–1). Used as-is
+for every generation unless \code{mutate_final} is set.}
+
+\item{cutoff_final}{Numeric. Quantile cutoff to anneal towards by the last
+generation (0–1). If \code{NULL} (the default), \code{cutoff} stays fixed for the
+whole run, matching prior behaviour. If set, \code{cutoff} is linearly
+interpolated from \code{cutoff} towards \code{cutoff_final} over the run, e.g.
+starting broad (more exploration) and narrowing towards the best
+individuals (more exploitation) as the search progresses.}
+
+\item{mutate_final}{Numeric. Mutation fraction to anneal towards by the
+last generation (0–1). If \code{NULL} (the default), \code{mutate} stays fixed for
+the whole run, matching prior behaviour.}
 
 \item{c_method}{Character. \code{"CMAES"} or \code{"LHC"}. Default \code{"CMAES"}.}
 

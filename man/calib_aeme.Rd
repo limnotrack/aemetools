@@ -22,10 +22,11 @@ calib_aeme(
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")}
+columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")}
 
 \item{path}{character; directory where input files are located. Defaults to
 the path stored in \code{aeme}, or the current working directory if not set.}
@@ -61,8 +62,8 @@ is used to restart from a previous calibration.}
 string of simulation id to be used to read the simulation output.
 }
 \description{
-\code{calib_model()} runs the model and compares it against observations provided.
-It can run in parallel by using multiple cores availlable on your computer
+\code{calib_aeme()} runs the model and compares it against observations provided.
+It can run in parallel by using multiple cores available on your computer
 to run quicker.
 }
 \examples{

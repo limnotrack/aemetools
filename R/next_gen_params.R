@@ -24,10 +24,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
     best_pars <- param_df[which.min(param_df$fit), ]
   }
   
-  survivors1 <- param_df[param_df$fit != ctrl$na_value, ]
-  if (nrow(survivors1) == 0) {
-    survivors <- param_df[order(param_df$fit), ]
-  }
+  survivors1 <- param_df[!is_failed_fit(param_df$fit, ctrl), ]
   survivors1 <- survivors1[order(survivors1$fit), ]
   keep_cols <- which(names(survivors1) %in% param$name_full)
   if (!is.null(param_var_matrix)) {
@@ -49,7 +46,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
         MASS::mvrnorm(
           n     = ctrl$NP,
           mu    = apply(pf, 2, mean),
-          Sigma = stats::cov(pf),
+          Sigma = regularize_cov(stats::cov(pf), param),
           tol   = 1
         )
       )
@@ -196,15 +193,18 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
     # colnames(g) <- summ_survivors$param
     g <- as.data.frame(g)
   } else {
+    Sigma <- regularize_cov(stats::cov(survivors2), param)
     g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP,
                                      mu = apply(survivors2, 2, mean),
-                                     Sigma = stats::cov(survivors2), tol = 1))
+                                     Sigma = Sigma, tol = 1))
   }
 
   # Correct parameters outside ranges ----
+  # Reflect (rather than clamp) out-of-range draws so candidate values don't
+  # pile up exactly on a boundary across generations.
   for (p in names(g)) {
-    g[[p]][g[[p]] < param$min[param$name_full == p]] <- param$min[param$name_full == p]
-    g[[p]][g[[p]] > param$max[param$name_full == p]] <- param$max[param$name_full == p]
+    g[[p]] <- reflect_bounds(g[[p]], param$min[param$name_full == p],
+                             param$max[param$name_full == p])
   }
   # Add mutation ----
   if (add_mutation) {

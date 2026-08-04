@@ -2,14 +2,14 @@
 #'
 #' @name calib_aeme
 #' @description
-#' `calib_model()` runs the model and compares it against observations provided.
-#' It can run in parallel by using multiple cores availlable on your computer
+#' `calib_aeme()` runs the model and compares it against observations provided.
+#' It can run in parallel by using multiple cores available on your computer
 #' to run quicker.
 #'
 #'
 #' @inheritParams AEME::build_aeme
 #' @param param dataframe; of parameters read in from a csv file. Requires the
-#' columns c("model", "file", "name", "value", "min", "max", "log")
+#' columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")
 #' @param vars_sim vector; of variables names to be used in the calculation of
 #' model fit.
 #' @param FUN_list list of functions; named according to the variables in the
@@ -209,9 +209,6 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
     # Extract parameters for the model ----
     param <- param[param$model == m, ]
     # par_idx <- which(param$model %in% c(m))
-    obs <- AEME::observations(aeme)
-    # Check if there are observations for the model or just calibrating wlev
-    ctrl$use_obs <- ifelse(!is.null(obs$lake), TRUE, FALSE)
 
     if (is.na(ctrl$NP)) {
       ctrl$NP <- 10 * nrow(param) # sum(par_idx)
@@ -247,456 +244,156 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
       gen_n <- max(param_df$gen) + 1
       tot_gen <- max(param_df$gen) + ctrl$ngen
     }
+
+    # Starting cutoff/mutate values to anneal from, if ctrl$cutoff_final /
+    # ctrl$mutate_final are set (see anneal_param()).
+    cutoff_start <- ctrl$cutoff
+    mutate_start <- ctrl$mutate
+
     if (is.null(ctrl$ncore)) {
       ctrl$ncore <- (parallel::detectCores() - 1)
-      if (ctrl$ncore > nrow(start_param)) ctrl$ncore <- nrow(start_param)
     }
+    # Bound ncore by the number of available cores, parameter sets and NP so
+    # that the cluster size and every generation's split use the same value.
+    ctrl$ncore <- min(ctrl$ncore, (parallel::detectCores() - 1),
+                      nrow(start_param), ctrl$NP)
 
-    # Correct N of splits if ncore is greater than number of parameters
-    splts <- min(ctrl$NP, ctrl$ncore)
-    
+    # Correct N of splits if ncore is greater than number of parameter sets
+    splts <- ctrl$ncore
+
     start_param <- adj_index_params(start_param, param = param)
 
     suppressWarnings({
       param_list <- split(start_param, 1:splts)
     })
 
-    # Calibrate in parallel
+    # Set up parallel cluster (or serial paths) ----
     if (ctrl$parallel) {
-
       temp_dirs <- make_temp_dir(m, lake_dir, n = ctrl$ncore)
-      # list.files(temp_dirs[1], recursive = TRUE)
-      ncores <- min((parallel::detectCores() - 1), ctrl$ncore, ctrl$NP)
-      cli::cli_inform(c("i" = "Using {.val {ncores}} cores for parallel 
+      paths <- temp_dirs
+      cli::cli_inform(c("i" = "Using {.val {ctrl$ncore}} cores for parallel
                         calibration for {.val {m}}."))
-
       unlink("parallel.log")
-      cl <- parallel::makeCluster(ncores, outfile = "parallel.log")
+      cl <- parallel::makeCluster(ctrl$ncore, outfile = "parallel.log")
       on.exit(parallel::stopCluster(cl))
-      varlist <- list("param", "aeme", "path", "m", "vars_sim", "FUN_list",
-                      "model_controls", "var_indices", "temp_dirs","ctrl",
-                      "weights", "var_indices", "include_wlev")
+      varlist <- list("param", "aeme", "paths", "m", "vars_sim", "FUN_list",
+                      "model_controls", "var_indices", "ctrl", "weights",
+                      "include_wlev")
       parallel::clusterExport(cl, varlist = varlist,
                               envir = environment())
-      cli::cli_inform(c(">" = "Starting generation {.val {gen_n}}/{.val 
-      {tot_gen}}, {.val {ctrl$NP}} members. [{format(Sys.time())}]"))
-      pr_df <- data.frame(rbind(signif(apply(start_param, 2, mean), 4),
-                                signif(apply(start_param, 2, median), 4),
-                                signif(apply(start_param, 2, sd), 4)),
-                          row.names = c("mean", "median", "sd"))
-      names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(start_param)))
-      cli::cli_inform("Parameter summary for generation {.val {gen_n}}:")
-      print(pr_df)
-      # model_out <- lapply(seq_along(param_list), \(pars, i) {
-      model_out <- parallel::parLapply(cl, seq_along(param_list), \(pars, i) {
+    } else {
+      cli::cli_inform("Using serial calibration for {.val {m}}.")
+      paths <- rep(path, ctrl$ncore)
+      cl <- NULL
+    }
 
-        path <- temp_dirs[i]
-        pars[[i]][["fit"]] <- NA
-
-        # Loop through each of the parameters
-        for (p in seq_len(nrow(pars[[i]]))) {
-
-          # Update the parameter value in the parameter table
-          for(n in names(pars[[i]])) {
-            param$value[param$name_full == n] <- pars[[i]][p, n]
-          }
-          # message(i, ", ", p)
-
-          # Save the fit value
-          res <- aemetools::run_and_fit(aeme = aeme,
-                                        param = param,
-                                        model = m,
-                                        path = path,
-                                        vars_sim = vars_sim,
-                                        FUN_list = FUN_list,
-                                        model_controls = model_controls,
-                                        na_value = ctrl$na_value,
-                                        var_indices = var_indices,
-                                        return_indices = FALSE,
-                                        include_wlev = include_wlev,
-                                        fit = TRUE,
-                                        weights = weights,
-                                        timeout = ctrl$timeout)
-
-          for (v in vars_sim) {
-            pars[[i]][[v]][p] <- res[[v]]
-          }
-
-          if (ctrl$na_value %in% unlist(res)) {
-            res1 <- ctrl$na_value
-          } else {
-            res1 <- sum(unlist(res))
-            res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
-          }
-
-          pars[[i]][["fit"]][p] <- res1
-          print(pars[[i]][["fit"]][p])
-        }
-        return(pars[[i]])
-      }, pars = param_list)
-
-      g1 <- dplyr::bind_rows(model_out)
-      best_pars <- signif(g1[which.min(g1$fit), 1:nrow(param)], 3)
-      rep_vars <- g1 |> 
-        dplyr::filter(fit != ctrl$na_value)
-      cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
-                             for {.val {m}}. [{format(Sys.time())}]")
-      cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd: 
-                      {.val {signif(sd(rep_vars$fit), 5)}})
-            Parameters: [ {.val {best_pars}} ]")
-      g1$gen <- 1
-      best_pars <- g1[which.min(g1$fit), ]
-      out_df <- apply(g1, 2, signif, digits = 6)
-      nsim <- nsim + nrow(out_df)
-      ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
-                                             FUN_list = FUN_list,
-                                             aeme = aeme, model = m,
-                                             param = param,
-                                             append_metadata = TRUE)
-
-      if (ctrl$c_method == "LHC") {
-        write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
-        cli::cli_alert_success("LHC calibration complete for {.val {m}}. 
-                               [{format(Sys.time())}]")
-        return(ctrl$sim_id)
+    # Evaluate every member of a generation's population, dispatching to the
+    # cluster when running in parallel and in-process (lapply) otherwise ----
+    evaluate_generation <- function(param_list) {
+      worker_fun <- \(pars, i) {
+        aemetools:::eval_param_chunk(pars_i = pars[[i]], path = paths[i],
+                                     aeme = aeme, param = param, model = m,
+                                     vars_sim = vars_sim, FUN_list = FUN_list,
+                                     model_controls = model_controls,
+                                     ctrl = ctrl, var_indices = var_indices,
+                                     weights = weights,
+                                     include_wlev = include_wlev,
+                                     parallel = ctrl$parallel)
       }
-      if (min(g1$fit) < ctrl$VTR) {
-        write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
-        cli::cli_alert_success("Model fitness is less than VTR. Stopping simulation for 
+      model_out <- if (is.null(cl)) {
+        lapply(seq_along(param_list), worker_fun, pars = param_list)
+      } else {
+        parallel::parLapply(cl, seq_along(param_list), worker_fun,
+                            pars = param_list)
+      }
+      dplyr::bind_rows(model_out)
+    }
+
+    # Generation 1 ----
+    announce_generation(start_param, gen_n, tot_gen, ctrl)
+    g1 <- evaluate_generation(param_list)
+
+    best_pars_fmt <- signif(g1[which.min(g1$fit), param$name_full], 3)
+    report_generation(g1, gen_n, tot_gen, m, ctrl, best_pars_fmt)
+
+    g1$gen <- 1
+    best_pars <- g1[which.min(g1$fit), ]
+    out_df <- apply(g1, 2, signif, digits = 6)
+    nsim <- nsim + nrow(out_df)
+    ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
+                                           FUN_list = FUN_list,
+                                           aeme = aeme, model = m,
+                                           param = param,
+                                           append_metadata = TRUE)
+
+    if (ctrl$c_method == "LHC") {
+      write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
+      cli::cli_alert_success("LHC calibration complete for {.val {m}}.
+                             [{format(Sys.time())}]")
+      return(ctrl$sim_id)
+    }
+    if (min(g1$fit) < ctrl$VTR) {
+      write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
+      cli::cli_alert_success("Model fitness is less than VTR. Stopping simulation for
+                             {.val {m}}. [{format(Sys.time())}]")
+      return(ctrl$sim_id)
+    }
+
+    # Select survivors ----
+    ctrl$cutoff <- anneal_param(cutoff_start, ctrl$cutoff_final, gen_n, tot_gen)
+    ctrl$mutate <- anneal_param(mutate_start, ctrl$mutate_final, gen_n, tot_gen)
+    g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
+                         best_pars = best_pars,
+                         param_var_matrix = param_var_matrix,
+                         weights = weights)
+
+    # Generations 2..ngen ----
+    for (gen in seq_len(ctrl$ngen)[-1]) {
+
+      gen_n <- gen_n + 1
+      announce_generation(g, gen_n, tot_gen, ctrl)
+
+      suppressWarnings({
+        param_list <- split(g, rep(1:ctrl$ncore, length.out = ctrl$NP))
+      })
+      g <- evaluate_generation(param_list)
+      g$gen <- gen_n
+
+      out_df <- apply(g, 2, signif, digits = 6)
+      nsim <- nsim + nrow(out_df)
+      write_simulation_output(x = out_df, ctrl = ctrl, aeme = aeme,
+                              model = m, param = param,
+                              FUN_list = FUN_list, sim_id = ctrl$sim_id,
+                              append_metadata = FALSE)
+
+      report_generation(g, gen_n, tot_gen, m, ctrl)
+
+      if (min(g$fit) < best_pars$fit) {
+        best_pars <- g[which.min(g$fit), ]
+      }
+
+      if (min(g$fit) < ctrl$VTR) {
+        cli::cli_alert_success("Model fitness is less than VTR. Stopping simulation for
                                {.val {m}}. [{format(Sys.time())}]")
         return(ctrl$sim_id)
       }
-
-
-      # Select survivors ----
-      g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
-                           best_pars = best_pars, 
-                           param_var_matrix = param_var_matrix, 
-                           weights = weights)
-
-      for (gen in 2:ctrl$ngen) {
-
-        gen_n <- gen_n + 1
-        cli::cli_inform(c(">" = "Starting generation {.val {gen_n}}/{.val 
-        {tot_gen}}, {.val {ctrl$NP}} members. [{format(Sys.time())}]"))
-        pr_df <- data.frame(rbind(signif(apply(g, 2, mean), 4),
-                                  signif(apply(g, 2, median), 4),
-                                  signif(apply(g, 2, sd), 4)),
-                            row.names = c("mean", "median", "sd"))
-        names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(g)))
-        cli::cli_inform("Parameter summary for generation {.val {gen_n}}:")
-        print(pr_df)
-        suppressWarnings({
-          param_list <- split(g, rep(1:ctrl$ncore, each = ctrl$ncore,
-                                     length.out = ctrl$NP))
-        })
-        # model_out <- lapply(seq_along(param_list), \(pars, i) {
-        model_out <- parallel::parLapply(cl, seq_along(param_list), \(pars, i) {
-
-          path <- temp_dirs[i]
-          pars[[i]][["fit"]] <- NA
-
-          # Loop through each of the parameters
-          for(p in seq_len(nrow(pars[[i]]))) {
-
-            # Update the parameter value in the parameter table
-            for(n in names(pars[[i]])) {
-              param$value[param$name_full == n] <- pars[[i]][p, n]
-            }
-            # print(i); print(p)
-
-            # Save the fit value
-            res <- aemetools::run_and_fit(aeme = aeme,
-                                          param = param,
-                                          model = m,
-                                          path = path,
-                                          vars_sim = vars_sim,
-                                          FUN_list = FUN_list,
-                                          model_controls = model_controls,
-                                          na_value = ctrl$na_value,
-                                          var_indices = var_indices,
-                                          return_indices = FALSE,
-                                          include_wlev = include_wlev,
-                                          fit = TRUE,
-                                          weights = weights,
-                                          timeout = ctrl$timeout)
-
-            for (v in vars_sim) {
-              pars[[i]][[v]][p] <- res[[v]]
-            }
-
-            if (ctrl$na_value %in% unlist(res)) {
-              res1 <- ctrl$na_value
-            } else {
-              res1 <- sum(unlist(res))
-              res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
-            }
-            print(res1)
-
-            pars[[i]][["fit"]][p] <- res1
-          }
-          return(pars[[i]])
-        }, pars = param_list)
-
-        g <- dplyr::bind_rows(model_out)
-        g$gen <- gen_n
-
-        out_df <- apply(g, 2, signif, digits = 6)
-        nsim <- nsim + nrow(out_df)
-        write_simulation_output(x = out_df, ctrl = ctrl, aeme = aeme,
-                                model = m, param = param,
-                                FUN_list = FUN_list, sim_id = ctrl$sim_id,
-                                append_metadata = FALSE)
-
-        rep_vars <- g |> 
-          dplyr::filter(fit != ctrl$na_value)
-        cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
-                             for {.val {m}}. [{format(Sys.time())}]")
-        cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd: 
-                      {.val {signif(sd(rep_vars$fit), 5)}})")
-        
-        # cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
-        #                        for {.val {m}}. [{format(Sys.time())}]")
-        # cli::cli_inform("Best fit: {.val {signif(min(g$fit), 5)}} (sd: 
-        #                 {.val {signif(sd(g$fit), 5)}})")
-        if(min(g$fit) < best_pars$fit) {
-          best_pars <- g[which.min(g$fit), ]
-        }
-
-        if (min(g$fit) < ctrl$VTR) {
-          cli::cli_alert_success("Model fitness is less than VTR. Stopping simulation for 
-                                 {.val {m}}. [{format(Sys.time())}]")
-          return(ctrl$sim_id)
-        }
-        if(sd(g$fit) < ctrl$reltol) {
-          cli::cli_alert_success("Model fitness has converged (sd < reltol). 
-                                 Stopping simulation for {.val {m}}. 
-                                 [{format(Sys.time())}]")
-          return(ctrl$sim_id)
-        }
-
-        g <- next_gen_params(param_df = g, param = param, ctrl = ctrl,
-                             best_pars = best_pars, 
-                             param_var_matrix = param_var_matrix, 
-                             weights = weights)
-      }
-    } else {
-      # Run in serial ----
-      cli::cli_inform("Using serial calibration for {.val {m}}.")
-      cli::cli_inform(c(">" = "Starting generation {.val {gen_n}}/{.val 
-      {tot_gen}}, {.val {ctrl$NP}} members. [{format(Sys.time())}]"))
-      pr_df <- data.frame(rbind(signif(apply(start_param, 2, mean), 4),
-                                signif(apply(start_param, 2, median), 4),
-                                signif(apply(start_param, 2, sd), 4)),
-                          row.names = c("mean", "median", "sd"))
-      names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(start_param)))
-      print(pr_df)
-      model_out <- lapply(seq_along(param_list), \(pars, i) {
-
-        pars[[i]][["fit"]] <- NA
-        for (v in vars_sim) {
-          pars[[i]][[v]] <- NA
-        }
-
-        # Loop through each of the parameters
-        for (p in seq_len(nrow(pars[[i]]))) {
-
-          # Update the parameter value in the parameter table
-          for(n in names(pars[[i]])) {
-            param$value[param$name_full == n] <- pars[[i]][p, n]
-          }
-          # message(i, ", ", p)
-
-          # Save the fit value
-          res <- run_and_fit(aeme = aeme,
-                             param = param,
-                             model = m,
-                             path = path,
-                             vars_sim = vars_sim,
-                             FUN_list = FUN_list,
-                             model_controls = model_controls,
-                             na_value = ctrl$na_value,
-                             var_indices = var_indices,
-                             return_indices = FALSE,
-                             include_wlev = include_wlev,
-                             fit = TRUE,
-                             weights = weights,
-                             timeout = ctrl$timeout)
-
-          for (v in vars_sim) {
-            pars[[i]][[v]][p] <- res[[v]]
-          }
-
-          if (ctrl$na_value %in% unlist(res)) {
-            res1 <- ctrl$na_value
-          } else {
-            res1 <- sum(unlist(res))
-            res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
-          }
-
-          pars[[i]][["fit"]][p] <- res1
-          print(pars[[i]][["fit"]][p])
-          # print(pars[[i]][p, ])
-        }
-        return(pars[[i]])
-      }, pars = param_list)
-
-      g1 <- dplyr::bind_rows(model_out)
-      best_pars <- signif(g1[which.min(g1$fit), 1:nrow(param)], 3)
-      rep_vars <- g1 |> 
-        dplyr::filter(fit != ctrl$na_value)
-      cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
-                             for {.val {m}}. [{format(Sys.time())}]")
-      cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd: 
-                      {.val {signif(sd(rep_vars$fit), 5)}})
-            Parameters: [ {.val {best_pars}} ]")
-      
-      
-      
-      # cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
-      #                        for {.val {m}}. [{format(Sys.time())}]")
-      # cli::cli_inform("Best fit: {.val {signif(min(g1$fit), 3)}} (sd: 
-      #                 {.val {signif(sd(g1$fit), 5)}})
-      #       Parameters: [ {.val {best_pars}} ]")
-      out_df <- apply(g1, 2, signif, digits = 6)
-      nsim <- nsim + nrow(out_df)
-      best_pars <- g1[which.min(g1$fit), ]
-
-      ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
-                                             FUN_list = FUN_list,
-                                             aeme = aeme, model = m,
-                                             param = param,
-                                             append_metadata = TRUE)
-      
-      if (ctrl$c_method == "LHC") {
-        write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
-        cli::cli_alert_success("LHC calibration complete for {.val {m}}. 
+      # `reltol` is a relative tolerance: population fitness spread as a
+      # fraction of the mean fitness, not an absolute spread. The
+      # denominator is floored to avoid dividing by (near) zero.
+      rel_spread <- sd(g$fit) / max(abs(mean(g$fit)), sqrt(.Machine$double.eps))
+      if (rel_spread < ctrl$reltol) {
+        cli::cli_alert_success("Model fitness has converged (sd < reltol).
+                               Stopping simulation for {.val {m}}.
                                [{format(Sys.time())}]")
         return(ctrl$sim_id)
       }
 
-      if (min(g1$fit) < ctrl$VTR) {
-        message("Model fitness is less than VTR. Stopping simulation.")
-        return(ctrl$sim_id)
-      }
-
-
-      # Select survivors ----
-      g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
-                           best_pars = best_pars, 
-                           param_var_matrix = param_var_matrix, 
+      ctrl$cutoff <- anneal_param(cutoff_start, ctrl$cutoff_final, gen_n, tot_gen)
+      ctrl$mutate <- anneal_param(mutate_start, ctrl$mutate_final, gen_n, tot_gen)
+      g <- next_gen_params(param_df = g, param = param, ctrl = ctrl,
+                           best_pars = best_pars,
+                           param_var_matrix = param_var_matrix,
                            weights = weights)
-
-      for (gen in 2:ctrl$ngen) {
-
-        gen_n <- gen_n + 1
-        cli::cli_inform(c(">" = "Starting generation {.val {gen_n}}/{.val 
-        {tot_gen}}, {.val {ctrl$NP}} members. [{format(Sys.time())}]"))
-        pr_df <- data.frame(rbind(signif(apply(g, 2, mean), 4),
-                                  signif(apply(g, 2, median), 4),
-                                  signif(apply(g, 2, sd), 4)),
-                            row.names = c("mean", "median", "sd"))
-        # names(pr_df) <- gsub("NA/", "", names(g))
-        names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(g)))
-        print(pr_df)
-        suppressWarnings({
-          param_list <- split(g, rep(1:ctrl$ncore, each = ctrl$ncore,
-                                     length.out = ctrl$NP))
-        })
-        model_out <- lapply(seq_along(param_list), \(pars, i) {
-
-          pars[[i]][["fit"]] <- NA
-          for (v in vars_sim) {
-            pars[[i]][[v]] <- NA
-          }
-
-          # Loop through each of the parameters
-          for(p in seq_len(nrow(pars[[i]]))) {
-
-            # Update the parameter value in the parameter table
-            for(n in names(pars[[i]])) {
-              param$value[param$name_full == n] <- pars[[i]][p, n]
-            }
-            # print(i); print(p)
-
-            # Save the fit value
-            res <- run_and_fit(aeme = aeme,
-                               param = param,
-                               model = m,
-                               path = path,
-                               vars_sim = vars_sim,
-                               FUN_list = FUN_list,
-                               model_controls = model_controls,
-                               na_value = ctrl$na_value,
-                               var_indices = var_indices,
-                               return_indices = FALSE,
-                               include_wlev = include_wlev,
-                               fit = TRUE,
-                               weights = weights,
-                               timeout = ctrl$timeout)
-
-            for (v in vars_sim) {
-              pars[[i]][[v]][p] <- res[[v]]
-            }
-
-            if (ctrl$na_value %in% unlist(res)) {
-              res1 <- ctrl$na_value
-            } else {
-              res1 <- sum(unlist(res))
-              res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
-            }
-
-            pars[[i]][["fit"]][p] <- res1
-            print(pars[[i]][["fit"]][p])
-            # print(pars[[i]][p, ])
-          }
-          return(pars[[i]])
-        }, pars = param_list)
-        
-
-        g <- dplyr::bind_rows(model_out)
-        g$gen <- gen_n
-        out_df <- apply(g, 2, signif, digits = 6)
-
-        nsim <- nsim + nrow(out_df)
-        write_simulation_output(x = out_df, ctrl = ctrl, aeme = aeme,
-                                 model = m, param = param,
-                                FUN_list = FUN_list, sim_id = ctrl$sim_id,
-                                append_metadata = FALSE)
-
-        
-        rep_vars <- g |> 
-          dplyr::filter(fit != ctrl$na_value)
-        cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
-                             for {.val {m}}. [{format(Sys.time())}]")
-        cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd: 
-                      {.val {signif(sd(rep_vars$fit), 5)}})")
-        
-        # cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}} 
-        #                        for {.val {m}}. [{format(Sys.time())}]")
-        # cli::cli_inform("Best fit: {.val {signif(min(g$fit), 5)}} (sd: 
-        #                 {.val {signif(sd(g$fit), 5)}})")
-        if(min(g$fit) < best_pars$fit) {
-          best_pars <- g[which.min(g$fit), ]
-        }
-
-        if (min(g$fit) < ctrl$VTR) {
-          cli::cli_alert_success("Model fitness is less than VTR. Stopping 
-          simulation for {.val {m}}. [{format(Sys.time())}]")
-          return(ctrl$sim_id)
-        }
-        if(sd(g$fit) < ctrl$reltol) {
-          cli::cli_alert_success("Model fitness has converged (sd < reltol). 
-                                 Stopping simulation for {.val {m}}. 
-                                 [{format(Sys.time())}]")
-          return(ctrl$sim_id)
-        }
-
-        g <- next_gen_params(param_df = g1, param = param, ctrl = ctrl,
-                             best_pars = best_pars, 
-                             param_var_matrix = param_var_matrix, 
-                             weights = weights)
-      }
     }
     write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
     return(ctrl$sim_id)

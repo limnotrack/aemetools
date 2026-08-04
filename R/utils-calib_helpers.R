@@ -134,3 +134,135 @@ get_pareto_front <- function(df, obj_cols) {
 resolve_na_value <- function(na_value, calib) {
   na_value %||% calib$calibration_metadata$na_value[1]
 }
+
+#' Check whether a fit value (or vector of per-variable fit values)
+#' indicates a failed simulation.
+#' @param fit numeric vector; combined or per-variable fit value(s).
+#' @param ctrl list; control object holding `na_value`.
+#' @return logical vector, the same length as `fit`.
+#' @noRd
+is_failed_fit <- function(fit, ctrl) {
+  fit == ctrl$na_value
+}
+
+#' Reflect out-of-range values back into `lo, hi` instead of clamping
+#' them to the boundary.
+#'
+#' Clamping out-of-range candidate parameter values to the nearest bound
+#' causes them to pile up exactly on that bound over successive
+#' generations, which can collapse the parameter's sample variance towards
+#' zero (see regularize_cov()) and stall the search there. Reflecting
+#' keeps the same `lo, hi` support without that pile-up.
+#'
+#' @param x numeric vector.
+#' @param lo,hi numeric; lower/upper bounds.
+#' @return `x` reflected off `lo`/`hi`, then clamped in case the overshoot
+#' was larger than the `[lo, hi]` range.
+#' @noRd
+reflect_bounds <- function(x, lo, hi) {
+  x <- ifelse(x < lo, lo + (lo - x), x)
+  x <- ifelse(x > hi, hi - (x - hi), x)
+  pmin(pmax(x, lo), hi)
+}
+
+#' Enforce a minimum-variance floor on a covariance matrix before it is
+#' used to sample a new generation with `MASS::mvrnorm()`.
+#'
+#' Repeated boundary clipping (or a survivor set that happens to agree on a
+#' parameter value) can drive a parameter's sample variance towards zero
+#' across generations, collapsing the search around that value. Flooring
+#' the diagonal keeps a minimum amount of exploration for every parameter.
+#'
+#' @param Sigma covariance matrix; column/row names must match
+#' `param$name_full`.
+#' @param param dataframe; with columns `name_full`, `min`, `max`.
+#' @param min_frac numeric; minimum standard deviation as a fraction of
+#' each parameter's `[min, max]` range. Default `0.01` (1% of the range).
+#' @return `Sigma` with `diag(Sigma)` floored.
+#' @noRd
+regularize_cov <- function(Sigma, param, min_frac = 0.01) {
+  idx <- match(colnames(Sigma), param$name_full)
+  min_sd <- min_frac * (param$max[idx] - param$min[idx])
+  diag(Sigma) <- pmax(diag(Sigma), min_sd^2)
+  Sigma
+}
+
+#' Linearly anneal a control value from a starting value towards a final
+#' value over the course of a calibration run.
+#'
+#' Used to shift `ctrl$cutoff`/`ctrl$mutate` from broad/exploratory values in
+#' early generations towards narrow/exploitative values in later ones. When
+#' `end` is `NULL` (the default for `cutoff_final`/`mutate_final`), the
+#' control value stays fixed at `start` for the whole run, matching the
+#' behaviour before annealing was added.
+#'
+#' @param start numeric; value to anneal from (generation 1).
+#' @param end numeric; value to anneal towards by the last generation. `NULL`
+#' disables annealing (returns `start` unchanged).
+#' @param gen_n numeric; the generation just completed.
+#' @param tot_gen numeric; total number of generations planned for this run.
+#' @return numeric; the annealed value for the *next* generation.
+#' @noRd
+anneal_param <- function(start, end, gen_n, tot_gen) {
+  if (is.null(end) || tot_gen <= 1) {
+    return(start)
+  }
+  frac <- min(gen_n / tot_gen, 1)
+  start + frac * (end - start)
+}
+
+#' Print a summary of a generation's candidate parameter values
+#' This function takes a data frame of candidate parameter values for a given
+#' generation and prints a summary of the mean, median, and standard deviation
+#' for each parameter. It also informs the user that the generation has started.
+#' @param df A data frame containing candidate parameter values for the current
+#' generation. Each column
+#' represents a parameter, and each row represents a candidate solution.
+#' @param gen_n The current generation number.
+#' @param tot_gen The total number of generations planned for this run.
+#' @param ctrl list; control object holding `NP`.
+#' @noRd
+announce_generation <- function(df, gen_n, tot_gen, ctrl) {
+  cli::cli_inform(c(">" = "Starting generation {.val {gen_n}}/{.val
+      {tot_gen}}, {.val {ctrl$NP}} members. [{format(Sys.time())}]"))
+  pr_df <- data.frame(rbind(signif(apply(df, 2, mean), 4),
+                            signif(apply(df, 2, median), 4),
+                            signif(apply(df, 2, sd), 4)),
+                      row.names = c("mean", "median", "sd"))
+  names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(df)))
+  cli::cli_inform("Parameter summary for generation {.val {gen_n}}:")
+  print(pr_df)
+}
+
+#' Report a generation's fitness once it has been evaluated
+#' This function takes a data frame of evaluated candidate parameter values for
+#'  a given generation and prints a summary of the best fit value, its standard
+#'  deviation, and optionally the best parameter values in a formatted string.
+#'  It also informs the user that the generation has completed.
+#' @param g_eval A data frame containing evaluated candidate parameter values
+#' for the current generation.
+#' Each row represents a candidate solution, and the `fit` column contains the
+#' fitness values.
+#' @param gen_n The current generation number.
+#' @param tot_gen The total number of generations planned for this run.
+#' @param m The model being calibrated, e.g. "glm_aed".
+#' @param ctrl list; control object holding `na_value`.
+#' @param best_pars_fmt An optional string containing the best parameter values
+#' in a formatted
+#' manner. If provided, it will be included in the report.
+#' @noRd
+report_generation <- function(g_eval, gen_n, tot_gen, m, ctrl,
+                              best_pars_fmt = NULL) {
+  rep_vars <- g_eval |>
+    dplyr::filter(!is_failed_fit(fit, ctrl))
+  cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}}
+                             for {.val {m}}. [{format(Sys.time())}]")
+  if (is.null(best_pars_fmt)) {
+    cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd:
+                        {.val {signif(sd(rep_vars$fit), 5)}})")
+  } else {
+    cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd:
+                        {.val {signif(sd(rep_vars$fit), 5)}})
+              Parameters: [ {.val {best_pars_fmt}} ]")
+  }
+}
