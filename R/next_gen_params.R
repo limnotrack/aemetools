@@ -12,6 +12,7 @@
 #' @importFrom stats cov rnorm sd quantile
 #' @importFrom FME Latinhyper
 #' @importFrom cli cli_alert_info
+#' @importFrom corpcor cov.shrink
 #'
 #' @return dataframe; with new parameters.
 #' @noRd
@@ -29,104 +30,36 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
   keep_cols <- which(names(survivors1) %in% param$name_full)
   if (!is.null(param_var_matrix)) {
     vars_sim <- names(param_var_matrix)[!names(param_var_matrix) %in% c("model", "file", "name_full", "group", "name", "index") ]
-    # pareto_front <- get_pareto_front(survivors1, vars_sim)
-    # print(nrow(survivors2))
-    block_pops <- lapply(vars_sim, \(v) {
-      
-      sel_param <- param_var_matrix[["name_full"]][param_var_matrix[[v]]]
-      sel_cols  <- c(sel_param, vars_sim)
-      
-      sel_survivors <- survivors1 |>
-        dplyr::select(dplyr::all_of(sel_cols))
-      
-      pf <- get_pareto_front(sel_survivors, vars_sim) |>
-        dplyr::select(dplyr::all_of(sel_param))
-      
-      as.data.frame(
-        MASS::mvrnorm(
-          n     = ctrl$NP,
-          mu    = apply(pf, 2, mean),
-          Sigma = regularize_cov(stats::cov(pf), param),
-          tol   = 1
-        )
-      )
-    })
-    
-    names(block_pops) <- vars_sim
-    
+
     all_params <- unique(param_var_matrix$name_full)
-    
-    g <- as.data.frame(
-      matrix(NA_real_, nrow = ctrl$NP, ncol = length(all_params))
+
+    # Dominance for the Pareto front is always computed over the full
+    # vars_sim objective set, so every variable's "block" would select the
+    # same elite rows - there is no statistical reason to estimate a
+    # separate covariance matrix per variable. Instead, sample all linked
+    # parameters jointly from one shrinkage-estimated covariance matrix
+    # (corpcor::cov.shrink()): this captures correlation between parameters
+    # that are genuinely linked to more than one variable directly from the
+    # data, while shrinkage keeps the estimate well-conditioned even when
+    # there are more parameters than Pareto-front survivors. Parameter
+    # pairs that share *no* linked variable at all (e.g. an oxygen-only
+    # parameter and a temperature-only parameter) are then masked back to
+    # zero covariance via param_var_matrix - that's a declared modelling
+    # constraint, not something to leave to shrinkage to (maybe) discover
+    # from a small sample. `weights` no longer factors in here - true
+    # multi-objective (Pareto-front) selection doesn't need per-variable
+    # weights to combine objectives; `weights` still shapes the combined
+    # `fit` column used earlier to decide which individuals survive.
+    pf <- get_pareto_front(survivors1, vars_sim) |>
+      dplyr::select(dplyr::all_of(all_params))
+
+    Sigma <- estimate_shrunk_cov(pf, param)
+    Sigma <- mask_unlinked_cov(Sigma, param_var_matrix, vars_sim)
+
+    survivors2 <- as.data.frame(
+      MASS::mvrnorm(n = ctrl$NP, mu = apply(pf, 2, mean), Sigma = Sigma,
+                    tol = 1)
     )
-    
-    colnames(g) <- all_params
-    
-    for (p in all_params) {
-      
-      # Which blocks contain this parameter?
-      blocks_with_p <- vars_sim[
-        sapply(vars_sim, function(v) {
-          p %in% param_var_matrix$name_full[param_var_matrix[[v]]]
-        })
-      ]
-      
-      if (length(blocks_with_p) == 1) {
-        
-        # Only one block → take full column
-        b <- blocks_with_p
-        g[[p]] <- block_pops[[b]][[p]]
-        
-      } else if (length(blocks_with_p) >= 2) {
-        
-        # --- get weights for relevant blocks ---
-        w <- weights[blocks_with_p]
-        
-        # if some blocks missing weights → assume 1
-        w[is.na(w)] <- 1
-        
-        # normalise
-        w <- w / sum(w)
-        
-        # --- number of rows per block ---
-        n_per_block <- floor(w * ctrl$NP)
-        
-        # ensure total exactly equals NP
-        remainder <- ctrl$NP - sum(n_per_block)
-        if (remainder > 0) {
-          # distribute remainder to largest weights
-          ord <- order(w, decreasing = TRUE)
-          n_per_block[ord[seq_len(remainder)]] <-
-            n_per_block[ord[seq_len(remainder)]] + 1
-        }
-        
-        # --- random row assignment ---
-        idx <- sample(seq_len(ctrl$NP))
-        
-        start <- 1
-        for (i in seq_along(blocks_with_p)) {
-          
-          end <- start + n_per_block[i] - 1
-          rows_i <- idx[start:end]
-          
-          block_name <- blocks_with_p[i]
-          
-          g[[p]][rows_i] <-
-            block_pops[[block_name]][[p]][rows_i]
-          
-          start <- end + 1
-        }
-      }
-    }
-    
-    survivors2 <- g
-    
-    
-    # sel_survivors[sel_survivors[[v]] <= stats::quantile(sel_survivors[[v]],
-    #                                                     ctrl$cutoff), ]# |>
-    # dplyr::select(-dplyr::all_of(v))
-    
-    # pf2 <- get_pareto_front(survivors2, vars_sim)
   } else  if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
     cli::cli_alert_info(
       "Survival rate: {round(nrow(survivors1) / nrow(param_df), 2)}"
@@ -191,9 +124,9 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
     # g <- FME::Latinhyper(summ_survivors[, c("min", "max")],
     #                      ctrl$NP)
     # colnames(g) <- summ_survivors$param
-    g <- as.data.frame(g)
+    g <- as.data.frame(survivors2)
   } else {
-    Sigma <- regularize_cov(stats::cov(survivors2), param)
+    Sigma <- estimate_shrunk_cov(survivors2, param)
     g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP,
                                      mu = apply(survivors2, 2, mean),
                                      Sigma = Sigma, tol = 1))
