@@ -38,7 +38,9 @@ The argument will be removed in a future version.}
 list of plots
 }
 \description{
-Plot calibration results
+Convenience wrapper that runs \code{\link[=plot_calib_dotty]{plot_calib_dotty()}}, \code{\link[=plot_calib_histogram]{plot_calib_histogram()}}
+and \code{\link[=plot_calib_convergence]{plot_calib_convergence()}} and returns all three. Call the individual
+\verb{plot_calib_*()} functions directly if you only need one of them.
 }
 \examples{
 aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
@@ -72,8 +74,8 @@ weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
 sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
                      param = param, FUN_list = FUN_list, ctrl = ctrl,
                      vars_sim = vars_sim, weights = weights)
-                     
-# Read calibration output                      
+
+# Read calibration output
 calib <- read_calib(sim_id = sim_id, ctrl = ctrl)
 plist <- plot_calib(calib = calib)
 
