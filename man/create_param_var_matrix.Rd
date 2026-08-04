@@ -8,7 +8,7 @@ create_param_var_matrix(param, vars_sim)
 }
 \arguments{
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")}
+columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
 model fit.}
