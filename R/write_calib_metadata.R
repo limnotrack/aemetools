@@ -6,6 +6,7 @@
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #' @importFrom duckdb duckdb
+#' @importFrom rlang `%||%`
 #'
 #' @return \code{write_calib_output} writes the calibration output to a file
 #' @noRd
@@ -29,6 +30,8 @@ write_calib_metadata <- function(ctrl, nsim, t0) {
                                      itermax = ctrl$itermax,
                                      reltol = ctrl$reltol, cutoff = ctrl$cutoff,
                                      mutate = ctrl$mutate,
+                                     cutoff_final = ctrl$cutoff_final %||% NA_real_,
+                                     mutate_final = ctrl$mutate_final %||% NA_real_,
                                      na_value = ctrl$na_value,
                                      c_method = ctrl$c_method,
                                      time_started = time_started,

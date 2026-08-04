@@ -187,6 +187,46 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
 }
 
 
+#' Reconcile a data frame about to be appended to an existing CSV file.
+#'
+#' If `df` has columns the CSV file doesn't yet have (e.g. a new metadata
+#' field added in a later package version), the file is rewritten with those
+#' columns added (backfilled with `NA` for existing rows). If the file has
+#' columns `df` doesn't have, those are added to `df` as `NA` so appended
+#' rows stay aligned. This is what lets old CSV files keep working after new
+#' columns are added to a table's schema, without a manual migration step
+#' per column.
+#'
+#' @param df dataframe; about to be appended to `fname`.
+#' @param fname string; path to the CSV file `df` will be appended to.
+#' @return `df`, column-aligned to `fname`'s (possibly updated) header. If
+#' `fname` doesn't exist yet, `df` is returned unchanged.
+#' @noRd
+sync_csv_columns <- function(df, fname) {
+  if (!file.exists(fname)) {
+    return(df)
+  }
+  existing_header <- names(read.csv(fname, nrows = 1, check.names = FALSE))
+
+  new_cols <- setdiff(names(df), existing_header)
+  if (length(new_cols) > 0) {
+    message("Adding missing column(s) '", paste(new_cols, collapse = "', '"),
+           "' to '", basename(fname), "'...")
+    temp_file <- tempfile(fileext = ".csv")
+    dat <- read.csv(fname, check.names = FALSE)
+    for (col in new_cols) dat[[col]] <- NA
+    write.csv(dat, temp_file, row.names = FALSE, quote = TRUE)
+    file.copy(temp_file, fname, overwrite = TRUE)
+    unlink(temp_file)
+    existing_header <- names(dat)
+  }
+
+  missing_cols <- setdiff(existing_header, names(df))
+  for (col in missing_cols) df[[col]] <- NA
+
+  df[, existing_header, drop = FALSE]
+}
+
 #' Write output to csv
 #'
 #' @param output list; output to be written to the csv files
@@ -204,66 +244,16 @@ write_to_csv <- function(output, path, sim_id, gen_n, add_lake_meta = FALSE) {
     tbl_name <- names(output)[i]
     fname <- file.path(path, paste0(tbl_name, ".csv"))
     file_chk <- file.exists(fname)
-    
+
     # Skip writing lake_metadata unless requested
     if (tbl_name == "lake_metadata" && !add_lake_meta) next
-    
+
     df <- output[[i]]
-    
-    # Handle parameter_metadata index column
-    if (tbl_name == "parameter_metadata" && file_chk) {
-      existing_header <- names(read.csv(fname, nrows = 1, check.names = FALSE))
-      
-      # Add missing index column if missing
-      if (!"index" %in% existing_header) {
-        message("Adding missing column 'index' to 'parameter_metadata.csv'...")
-        # Append column to existing CSV file
-        temp_file <- tempfile(fileext = ".csv")
-        # Read full file, add column, rewrite
-        dat <- read.csv(fname, check.names = FALSE)
-        dat$index <- NA
-        write.csv(dat, temp_file, row.names = FALSE, quote = TRUE)
-        # Replace old file with new one
-        file.copy(temp_file, fname, overwrite = TRUE)
-        unlink(temp_file)
-      }
+
+    if (file_chk) {
+      df <- sync_csv_columns(df, fname)
     }
-    
-    # --- Handle sensitivity_metadata specifically ---
-    if (tbl_name == "sensitivity_metadata" && file_chk) {
-      # Read existing header (first line only)
-      existing_header <- names(read.csv(fname, nrows = 1, check.names = FALSE))
-      
-      # Add na_value column if missing
-      if (!"na_value" %in% existing_header) {
-        message("Adding missing column 'na_value' to 'sensitivity_metadata.csv'...")
-        
-        # Append column to existing CSV file
-        temp_file <- tempfile(fileext = ".csv")
-        
-        # Read full file, add column, rewrite
-        dat <- read.csv(fname, check.names = FALSE)
-        dat$na_value <- NA
-        write.csv(dat, temp_file, row.names = FALSE, quote = TRUE)
-        
-        # Replace old file with new one
-        file.copy(temp_file, fname, overwrite = TRUE)
-        unlink(temp_file)
-        
-        # Update local reference for appending
-        existing_header <- names(dat)
-      }
-      
-      # Add missing columns to df (so it matches CSV)
-      missing_cols <- setdiff(existing_header, names(df))
-      if (length(missing_cols) > 0) {
-        for (col in missing_cols) df[[col]] <- NA
-      }
-      
-      # Ensure column order matches
-      df <- df[, existing_header, drop = FALSE]
-    }
-    
+
     # --- Write / append to CSV ---
     if (gen_n == 1 && !file_chk) {
       write.csv(df, fname, quote = TRUE, row.names = FALSE)
@@ -274,6 +264,60 @@ write_to_csv <- function(output, path, sim_id, gen_n, add_lake_meta = FALSE) {
   }
 }
 
+#' SQL column type to use when adding a missing column to a DB table.
+#' @param x vector; the `df` column the new DB column is being created for.
+#' @return string; a DuckDB column type.
+#' @noRd
+sql_type_for <- function(x) {
+  if (is.numeric(x)) {
+    "DOUBLE"
+  } else if (is.logical(x)) {
+    "BOOLEAN"
+  } else {
+    "VARCHAR"
+  }
+}
+
+#' Reconcile a data frame about to be appended to an existing DB table.
+#'
+#' Mirrors `sync_csv_columns()` for database tables: if `df` has columns the
+#' table doesn't yet have, they're added via `ALTER TABLE` (existing rows get
+#' `NULL`). If the table has columns `df` doesn't have, those are added to
+#' `df` as `NA` so the append stays aligned. This is what lets old database
+#' files keep working after new columns are added to a table's schema,
+#' without a manual migration step per column.
+#'
+#' @param con DBI connection.
+#' @param tbl_name string; table `df` will be appended to.
+#' @param df dataframe; about to be appended to `tbl_name`.
+#' @return `df`, column-aligned to `tbl_name`'s (possibly updated) schema. If
+#' `tbl_name` doesn't exist yet, `df` is returned unchanged.
+#' @noRd
+sync_db_columns <- function(con, tbl_name, df) {
+  if (!tbl_name %in% DBI::dbListTables(con)) {
+    return(df)
+  }
+  existing_cols <- DBI::dbListFields(con, tbl_name)
+
+  new_cols <- setdiff(names(df), existing_cols)
+  for (col in new_cols) {
+    sql_type <- sql_type_for(df[[col]])
+    message("Adding missing column '", col, "' (", sql_type, ") to '",
+           tbl_name, "'...")
+    DBI::dbExecute(
+      con,
+      paste0("ALTER TABLE ", tbl_name, " ADD COLUMN ", col, " ", sql_type, ";")
+    )
+  }
+  if (length(new_cols) > 0) {
+    existing_cols <- DBI::dbListFields(con, tbl_name)
+  }
+
+  missing_cols <- setdiff(existing_cols, names(df))
+  for (col in missing_cols) df[[col]] <- NA
+
+  df[, existing_cols, drop = FALSE]
+}
 
 #' Write output to database
 #'
@@ -288,68 +332,28 @@ write_to_csv <- function(output, path, sim_id, gen_n, add_lake_meta = FALSE) {
 #' @importFrom duckdb duckdb
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #'
-
 write_to_db <- function(file, path, output, add_lake_meta = FALSE) {
   file_path <- file.path(path, file)
   file_chk <- file.exists(file_path)
   con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file_path)
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
-  
+
   for (i in seq_along(output)) {
     tbl_name <- names(output)[i]
     df <- output[[i]]
-    
+
     # Skip writing lake_metadata unless requested
     if (tbl_name == "lake_metadata" && !add_lake_meta) next
-    
+
     # Replace NA groups in parameter_metadata
     if (tbl_name == "parameter_metadata" && "group" %in% names(df)) {
       df$group[is.na(df$group)] <- "NA"
     }
-    
-    if (tbl_name == "parameter_metadata") {
-      # Add index column if missing
-      if (file_chk && tbl_name %in% DBI::dbListTables(con)) {
-        existing_cols <- DBI::dbListFields(con, tbl_name)
-        if (!"index" %in% existing_cols) {
-          message("Adding missing column 'index' (INTEGER) to 'parameter_metadata'...")
-          DBI::dbExecute(
-            con,
-            "ALTER TABLE parameter_metadata ADD COLUMN index INTEGER;"
-          )
-        }
-      }
+
+    if (file_chk) {
+      df <- sync_db_columns(con, tbl_name, df)
     }
-    
-    
-    # --- Strictly handle sensitivity_metadata schema ---
-    if (tbl_name == "sensitivity_metadata" &&
-        file_chk && tbl_name %in% DBI::dbListTables(con)) {
-      
-      existing_cols <- DBI::dbListFields(con, tbl_name)
-      
-      # Add 'na_value' column if missing
-      if (!"na_value" %in% existing_cols) {
-        message("Adding missing column 'na_value' (DOUBLE) to 'sensitivity_metadata'...")
-        DBI::dbExecute(
-          con,
-          "ALTER TABLE sensitivity_metadata ADD COLUMN na_value DOUBLE;"
-        )
-      }
-      
-      # Refresh schema after ALTER TABLE
-      existing_cols <- DBI::dbListFields(con, tbl_name)
-      
-      # Add any missing columns that exist in DB but not in df
-      missing_cols <- setdiff(existing_cols, names(df))
-      if (length(missing_cols) > 0) {
-        for (col in missing_cols) df[[col]] <- NA
-      }
-      
-      # Ensure correct column order
-      df <- df[, existing_cols, drop = FALSE]
-    }
-    
+
     # --- Write or append table ---
     DBI::dbWriteTable(
       con,
