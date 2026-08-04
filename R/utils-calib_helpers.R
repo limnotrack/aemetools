@@ -121,6 +121,38 @@ get_pareto_front <- function(df, obj_cols) {
   args
 }
 
+#' Print a calibration or sensitivity analysis control object
+#'
+#' @param x a `calib_sa_control` object, as created by
+#' \code{\link{create_calib_control}} or \code{\link{create_sa_control}}.
+#' @param ... further arguments passed to or from other methods (unused).
+#'
+#' @importFrom cli cli_h1 cli_dl
+#'
+#' @return `x`, invisibly.
+#' @export
+print.calib_sa_control <- function(x, ...) {
+  method_label <- switch(x$method,
+                         calib = "Calibration control",
+                         sa = "Sensitivity analysis control",
+                         "Control")
+  cli::cli_h1(method_label)
+
+  fields <- x[setdiff(names(x), "method")]
+  vals <- vapply(fields, function(v) {
+    if (is.null(v)) {
+      "NULL"
+    } else if (is.atomic(v)) {
+      paste(format(v), collapse = ", ")
+    } else {
+      sprintf("<%s>", class(v)[1])
+    }
+  }, character(1))
+  cli::cli_dl(stats::setNames(vals, names(fields)))
+
+  invisible(x)
+}
+
 #' Resolve the NA value to use for calibration results.
 #' This function checks if the user has provided an `na_value` argument. If not
 #' it retrieves the default `na_value` from the calibration metadata. This 
@@ -184,6 +216,64 @@ regularize_cov <- function(Sigma, param, min_frac = 0.01) {
   idx <- match(colnames(Sigma), param$name_full)
   min_sd <- min_frac * (param$max[idx] - param$min[idx])
   diag(Sigma) <- pmax(diag(Sigma), min_sd^2)
+  Sigma
+}
+
+#' Estimate a covariance matrix for sampling the next generation, using
+#' shrinkage when there are enough points to support it and falling back
+#' gracefully when there aren't.
+#'
+#' `corpcor::cov.shrink()` errors outright ("Sample size too small!") with
+#' fewer than 3 rows, since it can't estimate the variance-shrinkage
+#' intensity from so little data. With only 1-2 points there also isn't
+#' enough information to estimate any correlation at all, so this falls
+#' back to a diagonal (zero-correlation) matrix in that case, and to the
+#' raw sample covariance for exactly 2 rows. `regularize_cov()` is always
+#' applied afterwards to floor the variance.
+#'
+#' @param pf dataframe; parameter values to estimate a covariance matrix
+#' from (rows = individuals, columns = parameters).
+#' @inheritParams calib_aeme
+#' @return covariance matrix, regularized via `regularize_cov()`.
+#' @noRd
+estimate_shrunk_cov <- function(pf, param) {
+  n <- nrow(pf)
+  Sigma <- if (n >= 3) {
+    corpcor::cov.shrink(as.matrix(pf), verbose = FALSE)
+  } else if (n == 2) {
+    stats::cov(pf)
+  } else {
+    matrix(0, nrow = ncol(pf), ncol = ncol(pf),
+          dimnames = list(names(pf), names(pf)))
+  }
+  regularize_cov(Sigma, param)
+}
+
+#' Zero out covariance entries between parameters that share no linked
+#' variable in `param_var_matrix`.
+#'
+#' `param_var_matrix` says which parameters are relevant to which response
+#' variables. Two parameters that share no variable in common (e.g. an
+#' oxygen-only parameter and a temperature-only parameter) have no declared
+#' reason to be correlated; rather than relying on shrinkage alone to
+#' discover that from what may be a small survivor sample, this forces
+#' their covariance to exactly zero. Parameters that share at least one
+#' linked variable - including parameters linked to multiple variables -
+#' keep whatever covariance `estimate_shrunk_cov()` estimated for them.
+#'
+#' @param Sigma covariance matrix; column/row names must match
+#' `param_var_matrix$name_full`.
+#' @inheritParams calib_aeme
+#' @param vars_sim character vector; the variable columns of
+#' `param_var_matrix` to check membership against.
+#' @return `Sigma` with disallowed off-diagonal entries set to zero.
+#' @noRd
+mask_unlinked_cov <- function(Sigma, param_var_matrix, vars_sim) {
+  membership <- param_var_matrix[match(colnames(Sigma), param_var_matrix$name_full),
+                                 vars_sim, drop = FALSE]
+  membership <- as.matrix(membership) * 1
+  shared_var <- (membership %*% t(membership)) > 0
+  Sigma[!shared_var] <- 0
   Sigma
 }
 
