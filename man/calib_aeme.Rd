@@ -52,7 +52,9 @@ more details.}
 response variables as columns. Created using
 \code{\link{create_param_var_matrix}}. This is used to specify which
 parameters are associated with which response variables, and therefore which
-parameters are updated in each generation of the calibration.}
+parameters are updated in each generation of the calibration. Requires
+\code{ctrl$c_method} to be \code{"MOEDA"} (see \code{\link{create_calib_control}}) -
+the two are mutually required.}
 
 \item{param_df}{dataframe; of parameters to be used in the calibration.
 Requires the columns c("model", "file", "name", "value", "min", "max"). This

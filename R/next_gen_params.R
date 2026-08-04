@@ -28,7 +28,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
   survivors1 <- param_df[!is_failed_fit(param_df$fit, ctrl), ]
   survivors1 <- survivors1[order(survivors1$fit), ]
   keep_cols <- which(names(survivors1) %in% param$name_full)
-  if (!is.null(param_var_matrix)) {
+  if (identical(ctrl$c_method, "MOEDA")) {
     vars_sim <- names(param_var_matrix)[!names(param_var_matrix) %in% c("model", "file", "name_full", "group", "name", "index") ]
 
     all_params <- unique(param_var_matrix$name_full)
@@ -99,9 +99,9 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
                          ctrl$NP)
     colnames(g) <- param$name_full
     g <- as.data.frame(g)
-  } else if (!is.null(param_var_matrix)) {
-    
-    # best_pars_long <- best_pars |> 
+  } else if (identical(ctrl$c_method, "MOEDA")) {
+
+    # best_pars_long <- best_pars |>
     #   dplyr::select(dplyr::all_of(param$name_full)) |>
     #   tidyr::pivot_longer(cols = dplyr::all_of(param$name_full), names_to = "param")
     # 

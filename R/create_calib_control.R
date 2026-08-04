@@ -30,7 +30,12 @@
 #' @param mutate_final Numeric. Mutation fraction to anneal towards by the
 #'   last generation (0–1). If `NULL` (the default), `mutate` stays fixed for
 #'   the whole run, matching prior behaviour.
-#' @param c_method Character. `"CMAES"` or `"LHC"`. Default `"CMAES"`.
+#' @param c_method Character. `"CMAES"`, `"LHC"`, or `"MOEDA"`. Default
+#'   `"CMAES"`. `"MOEDA"` (Multi-Objective Estimation of Distribution
+#'   Algorithm) selects the next generation via Pareto-front dominance
+#'   across `vars_sim` instead of a single combined fit value, and requires
+#'   `param_var_matrix` to be supplied to \code{\link{calib_aeme}} -
+#'   the two are mutually required.
 #'
 #' @param ... Must be empty. Additional arguments are not allowed.
 #'
@@ -57,6 +62,7 @@ create_calib_control <- function(
 ) {
 
   rlang::check_dots_used()
+  c_method <- rlang::arg_match(c_method, c("CMAES", "LHC", "MOEDA"))
 
   .create_control(
     method = "calib",

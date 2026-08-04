@@ -69,7 +69,12 @@ individuals (more exploitation) as the search progresses.}
 last generation (0–1). If \code{NULL} (the default), \code{mutate} stays fixed for
 the whole run, matching prior behaviour.}
 
-\item{c_method}{Character. \code{"CMAES"} or \code{"LHC"}. Default \code{"CMAES"}.}
+\item{c_method}{Character. \code{"CMAES"}, \code{"LHC"}, or \code{"MOEDA"}. Default
+\code{"CMAES"}. \code{"MOEDA"} (Multi-Objective Estimation of Distribution
+Algorithm) selects the next generation via Pareto-front dominance
+across \code{vars_sim} instead of a single combined fit value, and requires
+\code{param_var_matrix} to be supplied to \code{\link{calib_aeme}} -
+the two are mutually required.}
 
 \item{...}{Must be empty. Additional arguments are not allowed.}
 }
