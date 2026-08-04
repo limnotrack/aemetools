@@ -1,0 +1,135 @@
+starting worker pid=22884 on localhost:11301 at 09:16:48.643
+starting worker pid=22588 on localhost:11301 at 09:16:49.001
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:16:55]
+→ Simstrat-AED2 running... [2026-08-05 09:16:55]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:16:58]
+✔ Model run complete! [2026-08-05 09:16:58]
+[1] 26.89844
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_1/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:16:58]
+→ Simstrat-AED2 running... [2026-08-05 09:16:58]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:01]
+✔ Model run complete! [2026-08-05 09:17:01]
+[1] 26.908
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_1/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:01]
+→ Simstrat-AED2 running... [2026-08-05 09:17:01]
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:02]
+→ Simstrat-AED2 running... [2026-08-05 09:17:02]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:04]
+✔ Model run complete! [2026-08-05 09:17:04]
+[1] 26.85883
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_1/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:04]
+→ Simstrat-AED2 running... [2026-08-05 09:17:04]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:05]
+✔ Model run complete! [2026-08-05 09:17:05]
+[1] 26.94038
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_2/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:05]
+→ Simstrat-AED2 running... [2026-08-05 09:17:05]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:07]
+✔ Model run complete! [2026-08-05 09:17:07]
+[1] 26.85944
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_1/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:07]
+→ Simstrat-AED2 running... [2026-08-05 09:17:07]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:08]
+✔ Model run complete! [2026-08-05 09:17:08]
+[1] 26.85178
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_2/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:08]
+→ Simstrat-AED2 running... [2026-08-05 09:17:08]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:09]
+✔ Model run complete! [2026-08-05 09:17:09]
+[1] 26.88325
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:11]
+✔ Model run complete! [2026-08-05 09:17:11]
+[1] 26.84709
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_2/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:11]
+→ Simstrat-AED2 running... [2026-08-05 09:17:11]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:13]
+✔ Model run complete! [2026-08-05 09:17:13]
+[1] 26.86026
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_2/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:14]
+→ Simstrat-AED2 running... [2026-08-05 09:17:14]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:16]
+✔ Model run complete! [2026-08-05 09:17:16]
+[1] 26.85528
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_2/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:17]
+→ Simstrat-AED2 running... [2026-08-05 09:17:17]
+→ Simstrat-AED2 running... [2026-08-05 09:17:17]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:20]
+✔ Model run complete! [2026-08-05 09:17:20]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:20]
+✔ Model run complete! [2026-08-05 09:17:20]
+[1] 26.8494
+[1] 26.84906
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_1/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_2/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:20]
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:20]
+→ Simstrat-AED2 running... [2026-08-05 09:17:20]
+→ Simstrat-AED2 running... [2026-08-05 09:17:20]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:23]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:23]
+✔ Model run complete! [2026-08-05 09:17:23]
+✔ Model run complete! [2026-08-05 09:17:23]
+[1] 26.86918
+[1] 26.85313
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_2/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_1/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:23]
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:23]
+→ Simstrat-AED2 running... [2026-08-05 09:17:23]
+→ Simstrat-AED2 running... [2026-08-05 09:17:23]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:26]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:26]
+✔ Model run complete! [2026-08-05 09:17:26]
+✔ Model run complete! [2026-08-05 09:17:26]
+[1] 26.84468
+[1] 26.84731
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_1/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_2/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:26]
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:26]
+→ Simstrat-AED2 running... [2026-08-05 09:17:26]
+→ Simstrat-AED2 running... [2026-08-05 09:17:26]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:29]
+✔ Model run complete! [2026-08-05 09:17:29]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:29]
+✔ Model run complete! [2026-08-05 09:17:29]
+[1] 26.86059
+[1] 26.84356
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_1/LID45819_wainamu/simstrat_aed2/output.nc'
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:29]
+ℹ Deleted previous output for model SIMSTRAT-AED2 at
+  'C:/Users/mooret/AppData/Local/Temp/RtmpS04CZ1/n_2/LID45819_wainamu/simstrat_aed2/output.nc'
+→ Simstrat-AED2 running... [2026-08-05 09:17:29]
+ℹ Running models... (Have you tried parallelizing?) [2026-08-05 09:17:29]
+→ Simstrat-AED2 running... [2026-08-05 09:17:29]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:32]
+✔ Model run complete! [2026-08-05 09:17:32]
+✔ Simstrat-AED2 run successful! [2026-08-05 09:17:32]
+✔ Model run complete! [2026-08-05 09:17:32]
+[1] 26.88689
+[1] 26.84709
