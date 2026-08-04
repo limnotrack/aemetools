@@ -20,11 +20,13 @@
 #'  more details.
 #' @param weights a named vector; of weights for each variable in vars_sim. If not
 #' provided, defaults to 1 for each variable.
-#' @param param_var_matrix list of dataframes; with parameters as rows and 
-#' response variables as columns. Created using 
-#' \code{\link{create_param_var_matrix}}. This is used to specify which 
-#' parameters are associated with which response variables, and therefore which 
-#' parameters are updated in each generation of the calibration.
+#' @param param_var_matrix list of dataframes; with parameters as rows and
+#' response variables as columns. Created using
+#' \code{\link{create_param_var_matrix}}. This is used to specify which
+#' parameters are associated with which response variables, and therefore which
+#' parameters are updated in each generation of the calibration. Requires
+#' `ctrl$c_method` to be `"MOEDA"` (see \code{\link{create_calib_control}}) -
+#' the two are mutually required.
 #' @param param_df dataframe; of parameters to be used in the calibration.
 #' Requires the columns c("model", "file", "name", "value", "min", "max"). This
 #' is used to restart from a previous calibration.
@@ -136,7 +138,21 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
   if (is.null(ctrl$na_value)) {
     ctrl$na_value <- 999
   }
-  
+
+  # param_var_matrix and c_method = "MOEDA" are mutually required: MOEDA's
+  # Pareto-front selection needs param_var_matrix to know the objective
+  # structure, and param_var_matrix's Pareto-front/joint-covariance
+  # resampling in next_gen_params() is only honoured when c_method is
+  # "MOEDA".
+  if (!is.null(param_var_matrix) && !identical(ctrl$c_method, "MOEDA")) {
+    cli::cli_abort("{.arg param_var_matrix} requires {.code ctrl$c_method} to
+                   be {.val MOEDA}, not {.val {ctrl$c_method}}.")
+  }
+  if (is.null(param_var_matrix) && identical(ctrl$c_method, "MOEDA")) {
+    cli::cli_abort("{.code c_method = \"MOEDA\"} requires {.arg param_var_matrix}
+                   to be supplied.")
+  }
+
   # Add index to parameter name
   param <- param |> 
     dplyr::mutate(name_full = encode_param(group, name, index))
