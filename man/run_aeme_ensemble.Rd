@@ -20,7 +20,8 @@ run_aeme_ensemble(
 \item{aeme}{Aeme object.}
 
 \item{model}{character vector; models to use. One or more of \code{"dy_cd"},
-\code{"glm_aed"}, \code{"gotm_wet"}. Defaults to all models if not found in \code{aeme}.}
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{n}{numeric; number of ensemble members to generate.}
 
@@ -41,7 +42,9 @@ the function will use the parameters from the aeme object.}
 \item{na_value}{numeric; value to use for NA values. Default is 999.}
 }
 \value{
-an \code{aeme} object with model output loaded.
+Depends on \code{return_type} -- an \code{aeme} object with model output
+loaded (\code{"aeme"}), the raw \code{processx::run()} result(s) (\code{"exec_result"}),
+a list with both (\code{"both"}), or \code{NULL} invisibly (\code{"none"}).
 }
 \description{
 Run a parameter ensemble

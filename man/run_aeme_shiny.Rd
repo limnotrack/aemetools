@@ -10,7 +10,7 @@ run_aeme_shiny(aeme, param, path = ".", model_controls = NULL)
 \item{aeme}{Aeme object.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")}
+columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")}
 
 \item{path}{character; directory where input files are located. Defaults to
 the path stored in \code{aeme}, or the current working directory if not set.}
