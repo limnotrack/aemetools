@@ -42,7 +42,8 @@ the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
 
-\item{verbose}{logical; print model output to console. Defaults to FALSE.}
+\item{verbose}{logical; print model output to console. Defaults to
+\code{getOption("AEME.inform", FALSE)}.}
 
 \item{timeout}{Timeout for the process, in seconds, or as a \code{difftime}
 object. If it is not finished before this, it will be killed.}
