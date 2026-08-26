@@ -13,16 +13,15 @@
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If NULL, uses mean absolute error (MAE).
 #'
-#' @importFrom AEME lake get_aeme_path list_models check_aeme check_model 
+#' @importFrom AEME lake get_aeme_path list_models check_aeme check_model
 #' @importFrom AEME configuration get_lake_dir
 #' @importFrom parallel stopCluster clusterExport parLapply detectCores
 #' @importFrom parallel makeCluster
 #' @importFrom utils write.csv write.table
 #' @importFrom stats runif
 #' @importFrom FME Latinhyper
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows mutate filter
 #' @importFrom sensobol sobol_matrices
-#' @importFrom stringr str_split
 #'
 #' @return string of simulation id to be used to read the simulation output.
 #'
@@ -104,13 +103,12 @@ sa_aeme <- function(aeme, model, param, FUN_list, path,
   # Check if vars_sim and weights are the same length
   vars_sim <- sapply(ctrl$vars_sim, \(v) v$var) |>
     unique()
-  weights <- rep(1, length(vars_sim))
-  names(weights) <- vars_sim
-  
+  weights <- set_weights(vars_sim = vars_sim)
+
   if (missing(FUN_list) || is.null(FUN_list)) {
     # Default to mean
-    cli::cli_alert_info("No FUN_list supplied, defaulting to mean function for 
-                        all variables.")
+    AEME::cli_safe("No FUN_list supplied, defaulting to mean function for
+                        all variables.", FUN = cli::cli_alert_info)
     FUN_list <- list()
     for (v in vars_sim) {
       FUN_list[[v]] <- function(df) {
@@ -126,6 +124,28 @@ sa_aeme <- function(aeme, model, param, FUN_list, path,
     ctrl$na_value <- 999
   }
 
+  # Add a unique full name to each parameter ("group/name[index]") so
+  # parameter columns - including indexed (vector) parameters - can be
+  # matched back onto `param$value` unambiguously.
+  param <- param |>
+    dplyr::mutate(name_full = encode_param(group, name, index))
+
+  # Check for parameters where value, min, max are equal - these can't be
+  # perturbed, so drop them from the design and bake their fixed value in.
+  eq_pars <- param[param$value == param$min & param$value == param$max, ]
+  if (nrow(eq_pars) > 0) {
+    AEME::cli_safe(paste0("The following parameters have the same value, ",
+                          "min, and max and will not be updated during the ",
+                          "sensitivity analysis: ",
+                          "{.val ", paste(eq_pars$name, collapse = ", "), "}"),
+                   FUN = cli::cli_alert_warning)
+    AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars,
+                                 path = path)
+
+    param <- param |>
+      dplyr::filter(!name_full %in% eq_pars$name_full)
+  }
+
   include_wlev <- ifelse("LKE_lvlwtr" %in% vars_sim, TRUE, FALSE)
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
 
@@ -134,8 +154,10 @@ sa_aeme <- function(aeme, model, param, FUN_list, path,
     var_indices <- NULL
     if (any(vars_sim != "LKE_lvlwtr")) {
       # Extract indices for modelled variables
-      cli::cli_alert_info("Extracting variable indices for {.val {m}} modelled 
-                          variables {.val {vars_sim}}. [{format(Sys.time())}]")
+      AEME::cli_inform_safe(c("i" = paste0("Extracting variable indices for ",
+                                           "{.val ", m, "} modelled variables ",
+                                           "{.val ", paste(vars_sim, collapse = ", "),
+                                           "}. [", format(Sys.time()), "]")))
       suppressMessages(
         var_indices <- run_and_fit(aeme = aeme, param = param,
                                    model = m, path = path, FUN_list = FUN_list,
@@ -147,215 +169,118 @@ sa_aeme <- function(aeme, model, param, FUN_list, path,
                                    method = "sa", sa_ctrl = ctrl,
                                    fit = FALSE, timeout = ctrl$timeout)
       )
-      cli::cli_alert_success("Variable indices extracted for {.val {m}}. 
-                         [{format(Sys.time())}]")
+      AEME::cli_inform_safe(c("v" = paste0("Variable indices extracted for ",
+                                           "{.val ", m, "}. [",
+                                           format(Sys.time()), "]")))
     }
 
     # Extract parameters for the model ----
     param <- param[param$model == m, ]
-    # par_idx <- which(param$model %in% c(m))
 
     # Generate parameters for sensitivity analysis ----
     if (is.null(param_df)) {
       ## Create sample matrix to compute first and total-order indices:
-      mat <- sensobol::sobol_matrices(N = ctrl$N, params = param$name)
+      mat <- sensobol::sobol_matrices(N = ctrl$N, params = param$name_full)
       param_df <- mat
       for (i in 1:ncol(mat)) {
         param_df[, i] <- param$min[i] + (param$max[i] - param$min[i]) * mat[, i]
       }
-      colnames(param_df) <- paste0(param$group, "/", param$name)
+      colnames(param_df) <- param$name_full
       param_df <- as.data.frame(param_df)
     }
+
     if (is.null(ctrl$ncore)) {
-      ctrl$ncore <- (parallel::detectCores() - 1)
-      if (ctrl$ncore > nrow(param_df)) ctrl$ncore <- nrow(param_df)
+      ctrl$ncore <- parallel::detectCores() - 1
     }
+    # Bound ncore by the number of available cores and parameter sets so
+    # the cluster size and the split below use the same value.
+    ctrl$ncore <- min(ctrl$ncore, (parallel::detectCores() - 1),
+                      nrow(param_df))
 
     suppressWarnings({
-      param_list <- split(param_df, rep(1:ctrl$ncore))
+      param_list <- split(param_df, 1:ctrl$ncore)
     })
 
-    # Run in parallel
+    nmes <- names(ctrl$vars_sim)
+
+    pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
+                              signif(apply(param_df, 2, median), 4),
+                              signif(apply(param_df, 2, sd), 4)),
+                        row.names = c("mean", "median", "sd"))
+    names(pr_df) <- gsub("NA/", "", names(param_df))
+    if (isTRUE(getOption("AEME.inform", TRUE))) print(pr_df)
+
+    # Set up parallel cluster (or serial paths) ----
     if (ctrl$parallel) {
-
       temp_dirs <- make_temp_dir(m, lake_dir, n = ctrl$ncore)
-      # list.files(temp_dirs[1], recursive = TRUE)
-      ncores <- min(c((parallel::detectCores() - 1), ctrl$ncore))
-      nmes <- names(ctrl$vars_sim)
-      cli::cli_alert_info("Starting parallel sensitivity analysis for 
-                          {.val {m}} using {.val {ncores}} cores with 
-                          {.val {nrow(param_df)}} parameter sets. 
-                          [{format(Sys.time())}]")
-
-      cl <- parallel::makeCluster(ncores, outfile = "parallel.log")
+      paths <- temp_dirs
+      AEME::cli_safe(paste0("Starting parallel sensitivity analysis for ",
+                            "{.val ", m, "} using {.val ", ctrl$ncore,
+                            "} cores with {.val ", nrow(param_df),
+                            "} parameter sets. [", format(Sys.time()), "]"),
+                     FUN = cli::cli_alert_info)
+      unlink("parallel.log")
+      cl <- parallel::makeCluster(ctrl$ncore, outfile = "parallel.log")
       on.exit(parallel::stopCluster(cl))
-      varlist <- list("param", "aeme", "path", "m", "vars_sim",
-                      "FUN_list", "model_controls", "var_indices", "temp_dirs",
-                      "ctrl", "weights", "var_indices", "include_wlev", "nmes")
+      varlist <- list("param", "aeme", "paths", "m", "vars_sim", "FUN_list",
+                      "model_controls", "var_indices", "ctrl", "weights",
+                      "include_wlev", "nmes")
       parallel::clusterExport(cl, varlist = varlist,
                               envir = environment())
-      pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
-                                signif(apply(param_df, 2, median), 4),
-                                signif(apply(param_df, 2, sd), 4)),
-                          row.names = c("mean", "median", "sd"))
-      names(pr_df) <- gsub("NA/", "", names(param_df))
-      print(pr_df)
-
-      # model_out <- lapply(seq_along(param_list), \(pars, i) {
-      model_out <- parallel::parLapply(cl, seq_along(param_list), \(pars, i) {
-
-        path <- temp_dirs[i]
-        # Add columns to pars
-        # pars[[i]][["fit"]] <- NA
-        for (n in nmes) {
-          pars[[i]][[n]] <- NA
-        }
-
-        # Loop through each of the parameters
-        for (p in seq_len(nrow(pars[[i]]))) {
-
-          # Update the parameter value in the parameter table
-          for(n in names(pars[[i]])) {
-            grp <- strsplit(n, "/")[[1]][1]
-            nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
-            if (grp != "NA") {
-              param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
-            } else {
-              param$value[param$name == nme] <- pars[[i]][p, n]
-            }
-          }
-          # message(i, ", ", p)
-
-          # Save the fit value
-          res <- aemetools::run_and_fit(aeme = aeme,
-                                        param = param,
-                                        model = m,
-                                        path = path,
-                                        vars_sim = vars_sim,
-                                        FUN_list = FUN_list,
-                                        model_controls = model_controls,
-                                        na_value = ctrl$na_value,
-                                        var_indices = var_indices,
-                                        return_indices = FALSE,
-                                        include_wlev = include_wlev,
-                                        fit = TRUE,
-                                        method = "sa", sa_ctrl = ctrl,
-                                        weights = weights,
-                                        timeout = ctrl$timeout)
-
-          for (n in nmes) {
-            pars[[i]][[n]][p] <- res[[n]]
-          }
-
-          # if (ctrl$na_value %in% unlist(res)) {
-          #   res1 <- ctrl$na_value
-          # } else {
-          #   res1 <- sum(unlist(res))
-          #   res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
-          # }
-          #
-          # pars[[i]][["fit"]][p] <- res1
-          # print(pars[[i]][["fit"]][p])
-        }
-        return(pars[[i]])
-      }, pars = param_list)
-
-      cli::cli_alert_success("Parallel sensitivity analysis for 
-                          {.val {m}} completed. 
-                          [{format(Sys.time())}]")
-
-      g1 <- dplyr::bind_rows(model_out)
-      out_df <- apply(g1, 2, signif, digits = 6)
-      ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
-                                             FUN_list = FUN_list,
-                                             aeme = aeme, model = m,
-                                             param = param,
-                                             append_metadata = TRUE)
     } else {
-      # Run in serial ----
-      cli::cli_alert_info("Starting serial sensitivity analysis for 
-                          {.val {m}} with {.val {nrow(param_df)}} 
-                          parameter sets. [{format(Sys.time())}]")
-      pr_df <- data.frame(rbind(signif(apply(param_df, 2, mean), 4),
-                                signif(apply(param_df, 2, median), 4),
-                                signif(apply(param_df, 2, sd), 4)),
-                          row.names = c("mean", "median", "sd"))
-      names(pr_df) <- gsub("NA/", "", names(param_df))
-      print(pr_df)
-      nmes <- names(ctrl$vars_sim)
-      model_out <- lapply(seq_along(param_list), \(pars, i) {
-
-        # Add columns to pars
-        # pars[[i]][["fit"]] <- NA
-        for (n in nmes) {
-          pars[[i]][[n]] <- NA
-        }
-
-        # Loop through each of the parameters
-        for (p in seq_len(nrow(pars[[i]]))) {
-
-          # Update the parameter value in the parameter table
-          for(n in names(pars[[i]])) {
-            grp <- strsplit(n, "/")[[1]][1]
-            nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
-            spl <- stringr::str_split(nme, pattern = "\\.")
-            idx <- as.numeric(stringr::str_split(nme, pattern = "\\.")[[1]][2])
-            if (grp != "NA") {
-              param$value[param$name == nme & param$group == grp] <- pars[[i]][p, n]
-            } else if (!is.na(idx)) {
-              par_idx <- which(param$name == spl[[1]][1])
-              param$value[par_idx[idx + 1]] <- pars[[i]][p, n]
-            } else {
-              param$value[param$name == nme] <- pars[[i]][p, n]
-            }
-          }
-          # message(i, ", ", p)
-
-          # Save the fit value
-          res <- run_and_fit(aeme = aeme,
-                             param = param,
-                             model = m,
-                             path = path,
-                             vars_sim = vars_sim,
-                             FUN_list = FUN_list,
-                             model_controls = model_controls,
-                             na_value = ctrl$na_value,
-                             var_indices = var_indices,
-                             return_indices = FALSE,
-                             include_wlev = include_wlev,
-                             fit = TRUE, method = "sa", sa_ctrl = ctrl,
-                             weights = weights,
-                             timeout = ctrl$timeout)
-
-          for (n in nmes) {
-            pars[[i]][[n]][p] <- res[[n]]
-          }
-
-          # if (ctrl$na_value %in% unlist(res)) {
-          #   res1 <- ctrl$na_value
-          # } else {
-          #   res1 <- sum(unlist(res))
-          #   res1 <- ifelse(is.na(res1), ctrl$na_value, res1)
-          # }
-          #
-          # pars[[i]][["fit"]][p] <- res1
-        }
-
-        return(pars[[i]])
-      }, pars = param_list)
-
-      g1 <- dplyr::bind_rows(model_out)
-      out_df <- apply(g1, 2, signif, digits = 6)
-      ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl,
-                                             FUN_list = FUN_list,
-                                             aeme = aeme, model = m,
-                                             param = param,
-                                             append_metadata = TRUE)
-
-      cli::cli_alert_success("Serial sensitivity analysis for 
-                          {.val {m}} completed. 
-                          [{format(Sys.time())}]")
+      AEME::cli_safe(paste0("Starting serial sensitivity analysis for ",
+                            "{.val ", m, "} with {.val ", nrow(param_df),
+                            "} parameter sets. [", format(Sys.time()), "]"),
+                     FUN = cli::cli_alert_info)
+      paths <- rep(path, ctrl$ncore)
+      cl <- NULL
     }
+
+    # Evaluate every parameter set, dispatching to the cluster when running
+    # in parallel and in-process (lapply) otherwise - the two paths share the
+    # same per-chunk evaluation logic so they can't diverge ----
+    worker_fun <- \(pars, i) {
+      aemetools:::eval_param_chunk_sa(pars_i = pars[[i]], path = paths[i],
+                                      aeme = aeme, param = param, model = m,
+                                      vars_sim = vars_sim, FUN_list = FUN_list,
+                                      model_controls = model_controls,
+                                      ctrl = ctrl, var_indices = var_indices,
+                                      weights = weights,
+                                      include_wlev = include_wlev,
+                                      nmes = nmes, parallel = ctrl$parallel)
+    }
+    model_out <- if (is.null(cl)) {
+      lapply(seq_along(param_list), worker_fun, pars = param_list)
+    } else {
+      parallel::parLapply(cl, seq_along(param_list), worker_fun,
+                          pars = param_list)
+    }
+
+    AEME::cli_safe(paste0(ifelse(ctrl$parallel, "Parallel", "Serial"),
+                          " sensitivity analysis for {.val ", m,
+                          "} completed. [", format(Sys.time()), "]"),
+                   FUN = cli::cli_alert_success)
+
+    g1 <- dplyr::bind_rows(model_out)
+    out_df <- apply(g1, 2, signif, digits = 6)
+
+    # Register "run_failed" as a response variable for this write only (not
+    # in `ctrl$vars_sim` itself, which drives the model-output extraction in
+    # run_and_fit() and must stay limited to real simulated variables). Its
+    # name deliberately contains an underscore so write_simulation_output()'s
+    # existing long-format pivot (matched on `contains("_")`) picks it up
+    # with no schema changes to the (already long-format) simulation_data /
+    # sensitivity_metadata tables - old databases just won't have any
+    # "run_failed" rows, which read_sa() already handles gracefully.
+    ctrl_out <- ctrl
+    ctrl_out$vars_sim$run_failed <- list(var = "run_failed",
+                                         month = NA_real_,
+                                         depth_range = NA_real_)
+    ctrl$sim_id <- write_simulation_output(x = out_df, ctrl = ctrl_out,
+                                           FUN_list = FUN_list,
+                                           aeme = aeme, model = m,
+                                           param = param,
+                                           append_metadata = TRUE)
     ctrl$sim_id
   })
 }
