@@ -62,7 +62,8 @@ eval_param_chunk <- function(pars_i, path, aeme, param, model, vars_sim,
       pars_i[[v]][p] <- res[[v]]
     }
 
-    if (any(is_failed_fit(unlist(res), ctrl))) {
+    if (any(is.na(unlist(res)))) {
+    # if (any(is_failed_fit(unlist(res), ctrl))) {
       res1 <- ctrl$na_value
     } else {
       res1 <- sum(unlist(res))
