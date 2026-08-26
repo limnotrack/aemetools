@@ -1,21 +1,11 @@
 test_that("running GLM & GOTM works with params", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  # unlink(tmpdir, recursive = TRUE)
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
   model <- c("glm_aed", "gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                               model = model, model_controls = model_controls,
-                               ext_elev = 5, use_bgc = FALSE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                vars_sim = "ZOO_zoo1", run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls()
+  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = "ZOO_zoo1")
 
   lke <- AEME::lake(aeme)
 
@@ -91,31 +81,19 @@ test_that("running GLM & GOTM works with params", {
   testthat::expect_true(all(gotm_outf2[, 3] == 0))
 
   # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
   testthat::expect_true(all(file_chk))
 })
 
 test_that("running GOTM with different grid", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  # unlink(tmpdir, recursive = TRUE)
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
   model <- c("gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = FALSE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                vars_sim = "ZOO_zoo1", run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls()
+  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = "ZOO_zoo1")
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
 
   cfg <- AEME::configuration(aeme)
@@ -134,23 +112,13 @@ test_that("running GOTM with different grid", {
 })
 
 test_that("running DYRESM works with params", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  # unlink(tmpdir, recursive = TRUE)
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
   model <- c("dy_cd")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = FALSE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                vars_sim = "ZOO_zoo1", run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls()
+  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = "ZOO_zoo1")
 
   lke <- AEME::lake(aeme)
 
@@ -202,27 +170,19 @@ test_that("running DYRESM works with params", {
   testthat::expect_true(all(dy_outf2$flow == 0))
 
   # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "DYsim.nc"))
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
   testthat::expect_true(all(file_chk))
 })
 
 test_that("running GLM-AED works with bgc_params", {
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  path <- tempdir()
-  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
-  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
   model <- c("glm_aed")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = TRUE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                vars_sim = "ZOO_zoo1", run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
+  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = "ZOO_zoo1")
 
   utils::data("glm_aed_parameters", package = "AEME")
   param <- glm_aed_parameters
@@ -238,30 +198,19 @@ test_that("running GLM-AED works with bgc_params", {
                          na_value = 999, return_aeme = TRUE)
 
   # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
-  lke <- AEME::lake(aeme)
-  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
 })
 
 test_that("running GOTM-WET works with bgc_params", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  # unlink(tmpdir, recursive = TRUE)
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
   model <- c("gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme, model = model,
-                           model_controls = model_controls,
-                           ext_elev = 5, use_bgc = TRUE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                vars_sim = "ZOO_zoo1", run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
+  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = "ZOO_zoo1")
 
   utils::data("gotm_wet_parameters", package = "AEME")
   param <- gotm_wet_parameters |>
@@ -274,27 +223,18 @@ test_that("running GOTM-WET works with bgc_params", {
                          na_value = 999, return_aeme = TRUE)
 
   # AEME::plot_output(aeme, model = "gotm_wet")
-  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(lake_dir,
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
 })
 
 test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                               model = model, model_controls = model_controls,
-                               inf_factor = inf_factor, ext_elev = 5,
-                               use_bgc = TRUE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
 
   utils::data("gotm_wet_parameters", package = "AEME")
   param <- gotm_wet_parameters |>

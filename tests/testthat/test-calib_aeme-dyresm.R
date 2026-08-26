@@ -2,19 +2,16 @@
 options(ncore = 2L)
 
 test_that("can calibrate temperature for AEME-DYRESM in parallel", {
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
-                                inf_factor = inf_factor, run = TRUE)
+                                run = TRUE)
   aeme <- cached$aeme
   path <- cached$path
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "DYsim.nc"))
-  testthat::expect_true(file_chk)
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
 
   data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
@@ -57,19 +54,16 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
 })
 
 test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
-                                inf_factor = inf_factor, run = TRUE)
+                                run = TRUE)
   aeme <- cached$aeme
   path <- cached$path
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "DYsim.nc"))
-  testthat::expect_true(file_chk)
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
 
   data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
@@ -113,29 +107,24 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
   # build_aeme() here, and build_aeme()'s behaviour could depend on what
   # observations are present at build time - reusing a cached build made
   # without that mutation could silently produce a different result.
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
   path <- tempdir()
-  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   obs <- AEME::observations(aeme)
   obs$lake <- NULL
   AEME::observations(aeme) <- obs
   model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("dy_cd")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
+                           ext_elev = 5, use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
                          verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "DYsim.nc"))
-  testthat::expect_true(file_chk)
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
 
   data("aeme_parameters", package = "AEME")
   param <- aeme_parameters

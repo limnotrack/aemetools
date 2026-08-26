@@ -1,34 +1,20 @@
 test_that("can run_and_fit sensitivity analysis for AEME-GLM", {
-  
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  inp <- AEME::input(aeme)
-  model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+
   model <- c("glm_aed")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
-  
-  aeme <- AEME::run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                         path = path)
-  
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
-  
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                run = TRUE)
+  aeme <- cached$aeme
+  path <- cached$path
+  inp <- AEME::input(aeme)
+
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
+
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::filter(file != "wdr")
-  
+
   # Function to calculate fitness
   fit <- function(df) {
     mean(df$model)
@@ -61,12 +47,12 @@ test_that("can run_and_fit sensitivity analysis for AEME-GLM", {
                               )
                             )
   )
-  
+
   vars_sim <- sapply(ctrl$vars_sim, \(v) v$var) |>
     unique()
-  
+
   out <- run_and_fit(aeme = aeme, path = path, param = param, method = "sa",
-                     model = model, sa_ctrl = ctrl, FUN_list = FUN_list, 
+                     model = model, sa_ctrl = ctrl, FUN_list = FUN_list,
                      weights = weights, vars_sim = vars_sim)
   testthat::expect_true(is.list(out))
   na_chk <- sapply(out, function(x) !is.na(x)) |>
@@ -75,31 +61,16 @@ test_that("can run_and_fit sensitivity analysis for AEME-GLM", {
 })
 
 test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
-  
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+
   model <- c("dy_cd")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
-  
-  aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, path = path)
-  
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                run = TRUE)
+  aeme <- cached$aeme
+  path <- cached$path
   # AEME::plot(aeme, model = model)
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "DYsim.nc"))
-  testthat::expect_true(file_chk)
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
   
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
@@ -136,36 +107,22 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 })
 
 test_that("can execute sensitivity analysis with old fun", {
-  
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  inp <- AEME::input(aeme)
-  model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+
   model <- c("glm_aed")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
-  
-  aeme <- AEME::run_aeme(aeme = aeme, model = model, verbose = FALSE,
-                         path = path)
-  
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
-  
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                run = TRUE)
+  aeme <- cached$aeme
+  path <- cached$path
+  inp <- AEME::input(aeme)
+
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
+
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::filter(file != "wdr")
-  
+
   # Function to calculate fitness
   fit <- function(df) {
     mean(df$model)
@@ -214,26 +171,17 @@ test_that("can execute sensitivity analysis with old fun", {
 })
 
 test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
-  
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  inp <- AEME::input(aeme)
-  model_controls <- AEME::get_model_controls()
+
   model <- c("glm_aed")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5) |> 
-    AEME::run_aeme()
-  
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                run = TRUE)
+  aeme <- cached$aeme
+  path <- cached$path
+  inp <- AEME::input(aeme)
+
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
   
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
@@ -304,40 +252,25 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
 })
 
 test_that("can execute sensitivity analysis for AEME-GLM in parallel for just LKE_lvlwtr", {
-  
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+
   model <- c("glm_aed")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
-  
-  aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, path = path)
-  
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
-  
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                run = TRUE)
+  aeme <- cached$aeme
+  path <- cached$path
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
+
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::filter(file != "wdr")
-  
+
   # Function to calculate fitness
   fit <- function(df) {
     mean(df$model)
   }
-  
+
   FUN_list <- list(LKE_lvlwtr = fit)
   
   ctrl <- create_sa_control(N = 2^2, ncore = 2L, parallel = TRUE,
@@ -374,35 +307,23 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel for just LK
 })
 
 test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
-  
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+
   model <- c("gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
-  
-  aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, path = path)
-  
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                run = TRUE)
+  aeme <- cached$aeme
+  path <- cached$path
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
+
+  # lke$depth is used below when setting up ctrl's depth_range.
   lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
-  
+
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::filter(file != "wdr")
-  
+
   # Function to calculate fitness
   fit <- function(df) {
     mean(df$model)
@@ -410,7 +331,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
   fit2 <- function(df) {
     median(df$model, na.rm = TRUE)
   }
-  
+
   FUN_list <- list(HYD_temp = fit, HYD_thmcln = fit2, LKE_lvlwtr = fit2)
   
   
@@ -450,22 +371,16 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
 })
 
 test_that("can execute sensitivity analysis for derived variables", {
-  
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  path <- tempdir()
-  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
-  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
+
   model <- c("glm_aed")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = TRUE) |> 
-    AEME::run_aeme(model = model, verbose = FALSE)
-  
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                run = TRUE)
+  aeme <- cached$aeme
+  path <- cached$path
+
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
   
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
