@@ -171,9 +171,10 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
     gen_n <- sim_data[1, "gen"]
     
     file_to_print <- ifelse(type == "db", ctrl$file_name, "simulation_data.csv")
-    cli::cli_inform("Writing output for generation {.val {gen_n}} to
-    {.file {file_to_print}} with sim ID: {.val {sim_id}} 
-                    [{format(Sys.time())}]")
+    AEME::cli_inform_safe(paste0("Writing output for generation {.val ", gen_n,
+                                 "} to {.file ", file_to_print,
+                                 "} with sim ID: {.val ", sim_id, "} [",
+                                 format(Sys.time()), "]"))
   }
   
   if (type == "csv") {

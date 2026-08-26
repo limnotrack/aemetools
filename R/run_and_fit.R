@@ -61,17 +61,18 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     model_controls <- config$model_controls
   }
   if (missing(weights)) {
-    cli::cli_inform("No weights supplied. Defaulting to 1 for all variables.")
+    AEME::cli_inform_safe("No weights supplied. Defaulting to 1 for all variables.")
     weights <- set_weights(vars_sim = vars_sim)
   }
   if (include_wlev & !"LKE_lvlwtr" %in% names(weights)) {
     weights["LKE_lvlwtr"] <- 1
-    cli::cli_alert_info("Including water level in model fit with weight of 1.")
+    AEME::cli_safe("Including water level in model fit with weight of 1.",
+                   FUN = cli::cli_alert_info)
   }
   if (include_wlev & !"LKE_lvlwtr" %in% names(FUN_list)) {
     FUN_list[["LKE_lvlwtr"]] <- FUN_list[[1]]
-    cli::cli_alert_info("Including water level in model fit using first 
-                        function in FUN_list.")
+    AEME::cli_safe("Including water level in model fit using first
+                        function in FUN_list.", FUN = cli::cli_alert_info)
   }
   
   # Create a list for the return values
@@ -84,6 +85,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     for (n in names(sa_ctrl$vars_sim)) {
       return_list[[n]] <- na_value
     }
+    return_list$failed <- FALSE
   }
   
   key_naming <- AEME::key_naming
@@ -99,10 +101,11 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                        timeout = timeout)
   # if nc is not ncdf4 object, return return_list
   if (!is.list(nc) & !inherits(nc, "ncdf4")) {
-    cli::cli_alert_warning(
-      "Error opening netCDF file. Returning {.val {na_value}}."
+    AEME::cli_safe(
+      paste0("Error opening netCDF file. Returning {.val ", na_value, "}."),
+      FUN = cli::cli_alert_warning
     )
-    return(return_list)
+    return(mark_sa_failure(return_list, method))
   }
   
   on.exit({
@@ -110,23 +113,26 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   })
   
   if (!is.list(nc)) {
-    cli::cli_alert_warning(
-      "Error opening netCDF file. Returning {.val {na_value}}."
+    AEME::cli_safe(
+      paste0("Error opening netCDF file. Returning {.val ", na_value, "}."),
+      FUN = cli::cli_alert_warning
     )
-    return(return_list)
+    return(mark_sa_failure(return_list, method))
   }
   if (nc$error) {
-    cli::cli_alert_warning(
-      "Error opening netCDF file. Returning {.val {na_value}}."
+    AEME::cli_safe(
+      paste0("Error opening netCDF file. Returning {.val ", na_value, "}."),
+      FUN = cli::cli_alert_warning
     )
-    return(return_list)
+    return(mark_sa_failure(return_list, method))
   }
   # If error in running model, return na_value
   if (is.null(nc)) {
-    cli::cli_alert_warning(
-      "Error opening netCDF file. Returning {.val {na_value}}."
+    AEME::cli_safe(
+      paste0("Error opening netCDF file. Returning {.val ", na_value, "}."),
+      FUN = cli::cli_alert_warning
     )
-    return(return_list)
+    return(mark_sa_failure(return_list, method))
   }
   
   if (fit | return_indices) {
@@ -217,29 +223,34 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
           
           if (AEME::is_model_error(out)) {
             cli::cli_div(theme = list(span.emph = list(color = "red")))
-            cli::cli_alert_warning("Error reading model outputs for variable
-                                   {v}: {.emph {out$reason}}. Returning
-                                   na_value.")
+            AEME::cli_safe(paste0("Error reading model outputs for variable ",
+                                  v, ": {.emph ", out$reason,
+                                  "}. Returning na_value."),
+                           FUN = cli::cli_alert_warning)
             return(return_list)
           }
-          
+
           if (deriv_chk) {
-            out <- AEME::add_deriv_output(out_list = out, hyps = hyps, 
+            out <- AEME::add_deriv_output(out_list = out, hyps = hyps,
                                           vars_sim = deriv_var)
           }
           out <- out[[v]]
           if (is.null(nrow(out))) {
             if (length(out) < length(dates)) {
-              cli::cli_alert_warning("Mismatch in number of dates and model output
-                                     for variable {v}. Returning na_value.")
+              AEME::cli_safe(paste0("Mismatch in number of dates and model ",
+                                    "output for variable ", v,
+                                    ". Returning na_value."),
+                             FUN = cli::cli_alert_warning)
               dates <- dates[1:length(out)]
             }
             depths <- NA_real_
             each <- 1
           } else {
             if (ncol(out) != length(dates)) {
-              cli::cli_alert_warning("Mismatch in number of dates and model output
-                                     for variable {v}. Returning na_value.")
+              AEME::cli_safe(paste0("Mismatch in number of dates and model ",
+                                    "output for variable ", v,
+                                    ". Returning na_value."),
+                             FUN = cli::cli_alert_warning)
               dates <- dates[1:ncol(out)]
             }
             each <- length(depths)
@@ -284,9 +295,10 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
             
             if (AEME::is_model_error(depth)) {
               cli::cli_div(theme = list(span.emph = list(color = "red")))
-              cli::cli_alert_warning("Error reading model outputs for variable
-                                   {v}: {.emph {out$reason}}. Returning
-                                   na_value.")
+              AEME::cli_safe(paste0("Error reading model outputs for variable ",
+                                    v, ": {.emph ", depth$reason,
+                                    "}. Returning na_value."),
+                             FUN = cli::cli_alert_warning)
               return(return_list)
             }
             
@@ -319,12 +331,13 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                                           incl_fluxes = FALSE)
           if (AEME::is_model_error(out)) {
             cli::cli_div(theme = list(span.emph = list(color = "red")))
-            cli::cli_alert_warning("Error reading model outputs for variable
-                                   {v}: {.emph {out$reason}}. Returning
-                                   na_value.")
+            AEME::cli_safe(paste0("Error reading model outputs for variable ",
+                                  v, ": {.emph ", out$reason,
+                                  "}. Returning na_value."),
+                           FUN = cli::cli_alert_warning)
             return(return_list)
           }
-          
+
           if (deriv_chk) {
             out <- AEME::add_deriv_output(out_list = out, hyps = hyps, 
                                           vars_sim = deriv_var)
@@ -370,7 +383,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
       
       mod_out <- dplyr::bind_rows(vars_out)
       if (ncol(mod_out) == 1 & nrow(obs$lake) > 0) {
-        return(return_list)
+        return(mark_sa_failure(return_list, method))
       }
     }
     
@@ -430,7 +443,8 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
           dplyr::rename(obs = value)
         
         if (nrow(obs_sub) < 1) {
-          cli::cli_alert_warning("No observational data present.")
+          AEME::cli_safe("No observational data present.",
+                         FUN = cli::cli_alert_warning)
           return(return_list)
         }
         comp_df <- obs_sub |> 
@@ -442,7 +456,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
       }
       
       if (nrow(comp_df) == 0) {
-        return(return_list)
+        return(mark_sa_failure(return_list, method))
       }
       
       if (return_df) {

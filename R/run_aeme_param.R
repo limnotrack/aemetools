@@ -55,8 +55,9 @@ run_aeme_param <- function(aeme, param, model, path = ".",
                    model_controls = model_controls, verbose = verbose, 
                    return_type = "both", timeout = timeout)
   }, error = function(e) {
-    cli::cli_alert_danger("Error running AEME: {e$message}. Probably due to a 
-                          timeout.")
+    AEME::cli_safe(paste0("Error running AEME: ", e$message,
+                          ". Probably due to a timeout."),
+                   FUN = cli::cli_alert_danger)
     return(NULL)
   })
   if (is.null(mod_out)) {
@@ -67,7 +68,8 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   # Check for timeout ----
   for (m in names(model)) {
     if (mod_out$exec_result[[m]]$timeout) {
-      cli::cli_alert_danger("Model {.strong {m}} run timed out.")
+      AEME::cli_safe(paste0("Model {.strong ", m, "} run timed out."),
+                     FUN = cli::cli_alert_danger)
       return(na_value)
     }
   }
@@ -80,7 +82,10 @@ run_aeme_param <- function(aeme, param, model, path = ".",
     unlist()
   if (any(out_file_chk) | length(out_file_chk) == 0) {
     out_file_unl <- unlist(out_file)
-    cli::cli_alert_danger("No {.file {out_file_unl[out_file_chk]}} present.")
+    AEME::cli_safe(paste0("No {.file ",
+                          paste(out_file_unl[out_file_chk], collapse = ", "),
+                          "} present."),
+                   FUN = cli::cli_alert_danger)
     return(na_value)
   }
   
