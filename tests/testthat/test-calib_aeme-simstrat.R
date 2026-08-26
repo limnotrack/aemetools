@@ -63,8 +63,8 @@ test_that("can calibrate lake level only for AEME-Simstrat in parallel", {
                                 run = TRUE)
   aeme <- cached$aeme
   path <- cached$path
-  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
   testthat::expect_true(all(file_chk))
 
   data("aeme_parameters", package = "AEME")

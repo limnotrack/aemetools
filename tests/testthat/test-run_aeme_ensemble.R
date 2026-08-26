@@ -1,18 +1,9 @@
 test_that("can run an ensemble of AEME-GLM & GOTM in parallel", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
 
   data("aeme_parameters", package = "AEME")
 
@@ -28,27 +19,14 @@ test_that("can run an ensemble of AEME-GLM & GOTM in parallel", {
 })
 
 test_that("can run an ensemble of AEME-GLM in series", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
-  aeme <- AEME::run_aeme(aeme = aeme, model = model,
-                         verbose = FALSE, path = path)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                run = TRUE)
+  aeme <- cached$aeme
+  path <- cached$path
   # AEME::plot(aeme, model = model)
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
   testthat::expect_true(all(file_chk))
 
   data("aeme_parameters", package = "AEME")
@@ -90,20 +68,11 @@ test_that("can run an ensemble of AEME-GLM in series", {
 })
 
 test_that("can run an ensemble of AEME-GOTM-WET in parallel and plot", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
 
   data("aeme_parameters", package = "AEME")
   aeme_parameters <- aeme_parameters |>

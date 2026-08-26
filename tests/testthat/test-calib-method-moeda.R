@@ -2,12 +2,9 @@
 options(ncore = 2L)
 
 test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
+  path <- tempdir()
   model_controls <- AEME::get_model_controls(use_bgc = TRUE)
   model <- c("glm_aed")
   path <- "aeme"
@@ -55,11 +52,12 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
                    CHM_oxy = kge, PHY_tchla = kge)
   
   ctrl <- create_calib_control(NP = 40, itermax = 200,
-                               ncore = 5, 
-                               parallel = TRUE, file_type = "db", 
-                               na_value = 999, 
+                               ncore = 5,
+                               parallel = TRUE, file_type = "db",
+                               na_value = 999,
                                cutoff = 0.5, cutoff_final = 0.15,
                                mutate = 0.05, mutate_final = 0.2,
+                               c_method = "MOEDA",
                                file_name = "results.db")
   
   weights <- set_weights(vars_sim = vars_sim)
@@ -84,11 +82,16 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
                            vars_sim = vars_sim, weights = weights,
                            param_var_matrix = param_var_matrix)
   
+  # c_method = "MOEDA" requires param_var_matrix, so this comparison
+  # (calibrating the same problem *without* param_var_matrix) needs its own
+  # control object reverted to the default method.
+  ctrl_default <- ctrl
+  ctrl_default$c_method <- "CMAES"
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
-                       FUN_list = FUN_list, ctrl = ctrl,
+                       FUN_list = FUN_list, ctrl = ctrl_default,
                        vars_sim = vars_sim, weights = weights)
-  
+
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id_pvm)
   plist <- plot_calib(calib = calib)
   plist$dotty

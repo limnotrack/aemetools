@@ -8,8 +8,8 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
   aeme <- cached$aeme
   path <- cached$path
   # AEME::plot(aeme, model = model)
-  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
   testthat::expect_true(all(file_chk))
 
   data("aeme_parameters", package = "AEME")
@@ -75,8 +75,8 @@ test_that("can return NA if timeout is too low", {
   aeme <- cached$aeme
   path <- cached$path
   # AEME::plot(aeme, model = model)
-  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
   testthat::expect_true(all(file_chk))
 
   data("aeme_parameters", package = "AEME")
@@ -106,20 +106,12 @@ test_that("can return NA if timeout is too low", {
 })
 
 test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
-  # Not using get_cached_aeme_run(): model_controls is customised via
-  # AEME::set_vars_sim() before building, and the cache key doesn't
-  # currently distinguish custom model_controls from the default, so
-  # sharing the cache here risks a stale/mismatched cache hit.
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  path <- tempdir()
-  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
   vars_sim <- c("HYD_thmcln", "HYD_strat", "HYD_schstb")
-  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = vars_sim)
   model <- c("glm_aed", "gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = FALSE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                vars_sim = vars_sim, run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
 
   # Get parameters for calibration
   data("aeme_parameters", package = "AEME")
@@ -196,10 +188,9 @@ test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
 })
 
 test_that("can calibrate HYD_strat for AEME-GLM & GOTM in parallel", {
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("glm_aed", "gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
-                                inf_factor = inf_factor, run = FALSE)
+                                run = FALSE)
   aeme <- cached$aeme
   path <- cached$path
 

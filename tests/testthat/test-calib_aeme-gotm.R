@@ -7,11 +7,9 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
                                 run = TRUE)
   aeme <- cached$aeme
   path <- cached$path
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
 
   data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
@@ -77,29 +75,24 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
   # build_aeme() here, and build_aeme()'s behaviour could depend on what
   # observations are present at build time - reusing a cached build made
   # without that mutation could silently produce a different result.
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
   path <- tempdir()
-  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   obs <- AEME::observations(aeme)
   obs$lake <- NULL
   AEME::observations(aeme) <- obs
   model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
+                           ext_elev = 5, use_bgc = FALSE)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
                          verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
   #            obs = "temp", save = FALSE, show = FALSE)
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
 
   data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
@@ -139,20 +132,17 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
 test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in parallel", {
   # Not using get_cached_aeme_run(): observations() is mutated before
   # build_aeme() here - see note in the previous test.
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
   path <- tempdir()
-  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   obs <- AEME::observations(aeme)
   obs$lake <- NULL
   AEME::observations(aeme) <- obs
   model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
+                           ext_elev = 5, use_bgc = FALSE)
 
   obs <- AEME::observations(aeme)
   obs$level <- NULL
@@ -217,20 +207,17 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
 test_that("can calibrate lake level with no data for target time period", {
   # Not using get_cached_aeme_run(): observations() is mutated before
   # build_aeme() here - see note earlier in this file.
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
+  aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+  aeme <- readRDS(aeme_file)
   path <- tempdir()
-  aeme <- AEME::yaml_to_aeme(path = aeme_dir, "aeme.yaml")
   obs <- AEME::observations(aeme)
   obs$lake <- NULL
   AEME::observations(aeme) <- obs
   model_controls <- AEME::get_model_controls()
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           inf_factor = inf_factor, ext_elev = 5,
-                           use_bgc = FALSE)
+                           ext_elev = 5, use_bgc = FALSE)
 
   obs <- AEME::observations(aeme)
   obs$level <- obs$level |>
@@ -291,10 +278,9 @@ test_that("can calibrate lake level with no data for target time period", {
 })
 
 test_that("can calibrate temperature with LHC for AEME-GOTM in parallel with csv output", {
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
   model <- c("gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
-                                inf_factor = inf_factor, run = FALSE)
+                                run = FALSE)
   aeme <- cached$aeme
   path <- cached$path
 
