@@ -61,16 +61,19 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
                     tol = 1)
     )
   } else  if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
-    cli::cli_alert_info(
-      "Survival rate: {round(nrow(survivors1) / nrow(param_df), 2)}"
+    AEME::cli_safe(
+      paste0("Survival rate: ",
+            round(nrow(survivors1) / nrow(param_df), 2)),
+      FUN = cli::cli_alert_info
       )
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
                                                                ctrl$cutoff),
                              keep_cols]
   } else {
-    cli::cli_alert_info(
-      "Survival rate: {round(nrow(survivors1) / nrow(param_df), 2)} is too low.
-      Using all individuals."
+    AEME::cli_safe(
+      paste0("Survival rate: ", round(nrow(survivors1) / nrow(param_df), 2),
+            " is too low. Using all individuals."),
+      FUN = cli::cli_alert_info
       )
     survivors2 <- survivors1[, keep_cols]
   }
@@ -88,8 +91,8 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
   #                            keep_cols]
   # }
   if (nrow(survivors2) <= 1) {
-    cli::cli_alert_info("All parameter sets are NA.
-                        Generating base parameters...")
+    AEME::cli_safe("All parameter sets are NA.
+                        Generating base parameters...", FUN = cli::cli_alert_info)
     qt <- ctrl$cutoff * 3
     qt <- ifelse(qt > 1, 1, qt)
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
