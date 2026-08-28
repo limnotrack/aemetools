@@ -17,13 +17,15 @@ create_sa_control <- function(
     parallel = TRUE,
     ncore = parallel::detectCores() - 1,
     timeout = Inf,
+    preflight = TRUE,
+    trim_output = TRUE,
     N,
     vars_sim,
     ...
 ) {
-  
+
   rlang::check_dots_used()
-  
+
   .create_control(
     method = "sa",
     file_type = file_type,
@@ -33,6 +35,8 @@ create_sa_control <- function(
     parallel = parallel,
     ncore = ncore,
     timeout = timeout,
+    preflight = preflight,
+    trim_output = trim_output,
     N = N,
     vars_sim = vars_sim
   )
