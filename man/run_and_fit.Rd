@@ -30,11 +30,11 @@ run_and_fit(
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
 
-\item{model}{string; for which model. Options are c("dy_cd", "glm_aed" and
-"gotm_wet")}
+\item{model}{string; for which model. Options are c("dy_cd", "glm_aed",
+"gotm_wet", "simstrat_aed", "simstrat_aed2").}
 
-\item{vars_sim}{vector; of variables names to be used in the calculation of
-model fit. Currently only supports using one variable.}
+\item{vars_sim}{vector; of variable names used in the calculation of model
+fit.}
 
 \item{path}{character; directory where input files are located. Defaults to
 the path stored in \code{aeme}, or the current working directory if not set.}
@@ -42,15 +42,16 @@ the path stored in \code{aeme}, or the current working directory if not set.}
 \item{model_controls}{data.frame; model configuration, typically loaded via
 \code{\link[AEME:get_model_controls]{get_model_controls()}}.}
 
-\item{FUN_list}{function; of the form \verb{function(O, P)} which will be used in
-to calculate model fit. If NULL, uses mean absolute error (MAE).}
+\item{FUN_list}{function; of the form \verb{function(df)} using \code{df$model} and
+\code{df$obs}, used to calculate model fit. If NULL, uses mean absolute error
+(MAE).}
 
 \item{weights}{vector; of weights to be used in the calculation of model fit.}
 
-\item{na_value}{numeric; value to be returned if model fails to run.}
+\item{na_value}{numeric; value to be returned if the model fails to run.}
 
 \item{var_indices}{list; generated from running \code{run_and_fit()} with
-\verb{return indices = TRUE} on the first simulation.}
+\code{return_indices = TRUE} on the first simulation.}
 
 \item{return_indices}{boolean; return the indices (depths, time and dates)
 of each variable. Used when running calibration and the time period does not
@@ -61,20 +62,26 @@ fit.}
 
 \item{return_df}{boolean; return dataframe of modelled and observed.}
 
-\item{method}{string; of the method of the model run. Options are c("sa",
-"calib").}
+\item{method}{string; the method of the model run. One of c("sa", "calib").}
 
-\item{sa_ctrl}{list; of control parameters for the sensitivity analysis.
-Only required if \code{method = "sa"}.}
+\item{sa_ctrl}{list; control parameters for the sensitivity analysis. Only
+required if \code{method = "sa"}.}
 
-\item{fit}{boolean; fit model or not. If FALSE, only return netCDF file
-connection.}
+\item{fit}{boolean; calculate fit. When \code{FALSE} it is only ever paired with
+\code{return_indices = TRUE}, i.e. "run the model and hand back the indices".}
 
 \item{timeout}{numeric; time in seconds to run each simulation. Default is
 Inf.}
 }
 \value{
-A single value of model fit, calculated by \code{FUN_list}.
+For \code{method = "calib"}, a named list with one weighted fit value per
+entry of \code{vars_sim} (plus \code{LKE_lvlwtr} when \code{include_wlev = TRUE}). For
+\code{method = "sa"}, one value per \code{names(sa_ctrl$vars_sim)} sub-region, plus a
+\code{failed} flag. \code{return_df = TRUE} instead returns the modelled/observed
+comparison dataframe - one row per gridded observation and, when
+\code{include_wlev = TRUE}, one row per water-level observation with
+\code{var_aeme = "LKE_lvlwtr"} and \code{depth = NA}; \code{return_indices = TRUE}
+returns the date/depth indices.
 }
 \description{
 Run a model and calculate model fit.

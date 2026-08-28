@@ -103,6 +103,8 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
                            spin_up = tme$spin_up[[model]], start = tme$start,
                            stop = tme$stop, use_bgc = use_bgc,
                            n_params = nrow(param), method = ctrl$method,
+                           engine = if (is.null(ctrl$engine)) "builtin" else
+                             ctrl$engine,
                            time_started = format(Sys.time()))
     
     # Function metadata

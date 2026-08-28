@@ -12,6 +12,8 @@ create_sa_control(
   parallel = TRUE,
   ncore = parallel::detectCores() - 1,
   timeout = Inf,
+  preflight = TRUE,
+  trim_output = TRUE,
   N,
   vars_sim,
   ...
@@ -36,6 +38,18 @@ model output. Default \code{999}.}
 Default \code{parallel::detectCores() - 1}.}
 
 \item{timeout}{Numeric. Max runtime in seconds. Default \code{Inf}.}
+
+\item{preflight}{Logical. Run the model once at the initial parameter
+values before the search starts and abort with an actionable message if
+it does not produce a usable fit (model crash, no observations in the
+simulation window, an erroring \code{FUN_list}). Default \code{TRUE}.}
+
+\item{trim_output}{Logical. Before the first run, restrict each model's
+written output to \code{vars_sim} via \code{\link[AEME]{set_output_vars}}
+(and switch off GLM's \code{mass_balance.csv}), so the model does not write
+its full state on every one of the hundreds of calibration runs.
+Default \code{TRUE}. This rewrites the model configuration in the lake
+directory.}
 
 \item{N}{Integer. Base sample size.}
 

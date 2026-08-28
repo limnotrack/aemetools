@@ -56,6 +56,16 @@ update_param <- function(calib, param, aeme, replace = FALSE,
         name_full = encode_param(group, name, index)
       )
   }
+  # A caller-supplied `param` is otherwise used as-is, but every join below
+  # keys on `name_full`, which only the branch above adds. Derive it when
+  # absent so that the documented usage - passing your own parameter
+  # dataframe, e.g. `AEME::aeme_parameters` - works rather than failing in
+  # dplyr with "Join columns in `y` must be present in the data".
+  if (!"name_full" %in% names(param)) {
+    param <- param |>
+      dplyr::mutate(name_full = encode_param(group, name, index))
+  }
+
   na_value <- resolve_na_value(na_value = na_value, calib = calib)
   
   if (missing(best_pars)) {
@@ -85,8 +95,13 @@ update_param <- function(calib, param, aeme, replace = FALSE,
   matched_pars <- dplyr::semi_join(best_pars, param, by = key_cols)
   
   if (nrow(new_pars) > 0) {
-    cli::cli_alert_warning(
-      "{cli::qty(nrow(new_pars))} Parameter{?s} not found in {.arg param}, adding {?it/them}: {.val {new_pars$name_full}}"
+    n_new <- nrow(new_pars)
+    noun <- if (n_new == 1) "Parameter" else "Parameters"
+    pronoun <- if (n_new == 1) "it" else "them"
+    AEME::cli_safe(
+      paste0(noun, " not found in {.arg param}, adding ", pronoun, ": ",
+            "{.val ", paste(new_pars$name_full, collapse = ", "), "}"),
+      FUN = cli::cli_alert_warning
     )
     # New params have no established bounds in `param`, so fall back to the
     # observed range across the sampled simulations
