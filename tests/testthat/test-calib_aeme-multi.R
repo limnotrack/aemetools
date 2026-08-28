@@ -99,6 +99,9 @@ test_that("can return NA if timeout is too low", {
                                    param = param, FUN_list = FUN_list,
                                    vars_sim = vars_sim, weights = weights)
   ctrl$timeout <- 0.1
+  # Forces every run to time out; skip the pre-flight check that would
+  # otherwise abort before the calibration starts.
+  ctrl$preflight <- FALSE
   sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
                        param = param, FUN_list = FUN_list, ctrl = ctrl,
                        vars_sim = vars_sim, weights = weights)
