@@ -12,6 +12,16 @@
 #' @param ncore Integer. Number of cores if `parallel = TRUE`.
 #'   Default `parallel::detectCores() - 1`.
 #' @param timeout Numeric. Max runtime in seconds. Default `Inf`.
+#' @param preflight Logical. Run the model once at the initial parameter
+#'   values before the search starts and abort with an actionable message if
+#'   it does not produce a usable fit (model crash, no observations in the
+#'   simulation window, an erroring `FUN_list`). Default `TRUE`.
+#' @param trim_output Logical. Before the first run, restrict each model's
+#'   written output to `vars_sim` via \code{\link[AEME]{set_output_vars}}
+#'   (and switch off GLM's `mass_balance.csv`), so the model does not write
+#'   its full state on every one of the hundreds of calibration runs.
+#'   Default `TRUE`. This rewrites the model configuration in the lake
+#'   directory.
 #'
 #' @param VTR Numeric. Target objective value. Default `-Inf`.
 #' @param NP Integer. Population size. Default `NA`.
@@ -49,6 +59,8 @@ create_calib_control <- function(
     parallel = TRUE,
     ncore = parallel::detectCores() - 1,
     timeout = Inf,
+    preflight = TRUE,
+    trim_output = TRUE,
     VTR = -Inf,
     NP = NA,
     itermax = 200,
@@ -73,6 +85,8 @@ create_calib_control <- function(
     parallel = parallel,
     ncore = ncore,
     timeout = timeout,
+    preflight = preflight,
+    trim_output = trim_output,
     VTR = VTR,
     NP = NP,
     itermax = itermax,
