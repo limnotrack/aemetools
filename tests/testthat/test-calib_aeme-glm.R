@@ -240,6 +240,9 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
                                    vars_sim = vars_sim, weights = weights)
 
   ctrl$timeout <- 0.01
+  # This test deliberately forces every run to time out to exercise the
+  # all-NA path, so the pre-flight check (which would abort here) is off.
+  ctrl$preflight <- FALSE
   # Calibrate AEME model
   sim_id <- calib_aeme(aeme = aeme, path = path,
                        param = param, model = model,
