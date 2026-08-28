@@ -7,8 +7,6 @@
 #'  LINZ_KEY environment variable. If that is not set, will throw an error.
 #'  Use the \code{add_linz_key} function to set the key.
 #'
-#'  @importFrom maptiles create_provider get_tiles
-#'  @importFrom terra subset
 #'
 #' @return a raster object
 #' @export

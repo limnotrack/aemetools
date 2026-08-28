@@ -4,7 +4,6 @@
 #' @inheritParams download_era5_grib
 #' @inheritParams terra::extract
 #' 
-#' @importFrom terra rast extract vect project units describe
 #'
 #' @return A data frame with the extracted data.
 #' @export

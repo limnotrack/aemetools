@@ -11,7 +11,6 @@
 #' @details This function will get the DEM raster from LINZ for the given
 #' shape.
 #'
-#' @importFrom terra nlyr subset
 #' @importFrom sf st_buffer st_point_on_surface st_transform st_coordinates
 #'
 #' @return SpatRaster object
