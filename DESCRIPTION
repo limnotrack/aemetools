@@ -16,7 +16,7 @@ Depends:
     R (>= 4.2.0)
 Imports: 
     airGR,
-    AEME (>= 0.2.0),
+    AEME (>= 0.4.0),
     cli,
     corpcor,
     DBI,
@@ -40,6 +40,7 @@ Imports:
     ncdf4,
     parallel,
     patchwork,
+    processx,
     rhandsontable,
     rLakeAnalyzer,
     rlang,
