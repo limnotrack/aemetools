@@ -149,8 +149,40 @@ sa_aeme <- function(aeme, model, param, FUN_list, path,
   include_wlev <- ifelse("LKE_lvlwtr" %in% vars_sim, TRUE, FALSE)
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
 
+  # Restrict each model's output to the SA target variables before any run
+  # (also picked up by the PEST staging below). Default on; see
+  # `?create_sa_control`.
+  if (isTRUE(ctrl$trim_output)) {
+    aeme <- apply_trim_output(aeme = aeme, model = model, vars_sim = vars_sim,
+                              path = path)
+  }
+
+  # PEST++ owns the sampling design, the parallelism and the run history, so
+  # it replaces the Sobol' matrix and the parallel evaluation loop below.
+  if (identical(ctrl$engine, "pest")) {
+    names(model) <- model
+    return(sapply(model, \(m) {
+      sa_aeme_pest(aeme = aeme, param = param, m = m, path = path,
+                   lake_dir = lake_dir, vars_sim = vars_sim,
+                   FUN_list = FUN_list, weights = weights,
+                   model_controls = model_controls, ctrl = ctrl,
+                   include_wlev = include_wlev)
+    }))
+  }
+
   names(model) <- model
   sapply(model, \(m) {
+    # One model run at the initial parameters, so a broken setup fails now
+    # rather than after a whole SA of NA responses. Default on; see
+    # `?create_sa_control`.
+    if (isTRUE(ctrl$preflight)) {
+      calib_preflight(aeme = aeme, param = param, m = m, path = path,
+                      vars_sim = vars_sim, FUN_list = FUN_list,
+                      weights = weights, model_controls = model_controls,
+                      ctrl = ctrl, include_wlev = include_wlev,
+                      method = "sa", sa_ctrl = ctrl)
+    }
+
     var_indices <- NULL
     if (any(vars_sim != "LKE_lvlwtr")) {
       # Extract indices for modelled variables
