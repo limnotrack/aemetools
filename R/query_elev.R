@@ -13,7 +13,6 @@
 #' @param lon numeric; longitude to query
 #' @param layer_id integer; layer id of the DEM raster
 #'
-#' @importFrom terra metags
 #' @importFrom sf st_point_on_surface st_transform st_coordinates
 #' @importFrom dplyr rename filter pull
 #'
