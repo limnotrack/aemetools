@@ -51,6 +51,19 @@ read_sa <- function(ctrl = NULL, file_name, file_dir, sim_id, R = 1000,
     stop("No data found for that sim_id. Check the sim_id.")
   }
 
+  # A pestpp-sen run (create_sen_control()) stores the solver's own
+  # elementary-effects indices; Sobol' indices cannot be recomputed from a
+  # Morris design, so send the caller to the dedicated reader.
+  if ("engine" %in% names(out$simulation_metadata) &&
+      any(out$simulation_metadata$engine %in% "pest")) {
+    cli::cli_abort(c(
+      "{.val {sim_id}} was produced by {.fn create_sen_control} (engine
+       {.val pest}).",
+      "i" = "Use {.fn read_sen} and {.fn plot_sen}: Sobol' indices are not
+             defined for a Method-of-Morris design."
+    ))
+  }
+
   # Failed runs are written as NA (see write_simulation_output()'s
   # `na_if(fit_value, na_value)`). Rather than plugging in a single fixed
   # `na_value` sentinel - which can dominate the variance decomposition if

@@ -48,13 +48,21 @@ provided, defaults to 1 for each variable.}
 the \code{\link{create_control}} function. See \link{create_control} for
 more details.}
 
-\item{param_var_matrix}{list of dataframes; with parameters as rows and
-response variables as columns. Created using
-\code{\link{create_param_var_matrix}}. This is used to specify which
-parameters are associated with which response variables, and therefore which
-parameters are updated in each generation of the calibration. Requires
-\code{ctrl$c_method} to be \code{"MOEDA"} (see \code{\link{create_calib_control}}) -
-the two are mutually required.}
+\item{param_var_matrix}{a declaration of which parameters are associated
+with which response variables. Either the dataframe
+\code{\link{create_param_var_matrix}} returns - parameters as rows,
+response variables as logical columns - or the shorthand list keyed by
+variable, e.g. \code{list(HYD_temp = c("light", "mixing"), CHM_oxy = "sediment")}; see \code{\link{as_param_var_matrix}} for every accepted
+form and for how unmentioned variables and parameters are treated.
+
+How it is used depends on the engine. With \code{ctrl$c_method = "MOEDA"} it
+decides which parameters are resampled together in each generation, and
+the two are mutually required. With \code{ctrl$engine = "pest"} and
+\code{exe = "pestpp-ies"} it becomes the solver's localizer (see
+\code{\link{pest_localizer}}); it is equivalent to, and takes the place
+of, \code{localizer} in \code{\link{create_pest_control}}. Any parameter it
+associates with no variable at all is dropped from the calibration, with
+a warning.}
 
 \item{param_df}{dataframe; of parameters to be used in the calibration.
 Requires the columns c("model", "file", "name", "value", "min", "max"). This

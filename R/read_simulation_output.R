@@ -73,8 +73,20 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
   
   if (type == "sa") {
     meta_tables <- c(meta_tables, "sensitivity_metadata")
+    # Only a pestpp-sen run (create_sen_control()) writes solver sensitivity
+    # indices, so this table may be absent for a built-in Sobol' run -
+    # include it only when it exists.
+    if (.has_table("sensitivity_indices", file_dir, file_name, file_type)) {
+      meta_tables <- c(meta_tables, "sensitivity_indices")
+    }
   } else if (type == "calib") {
     meta_tables <- c(meta_tables, "calibration_metadata")
+    # Only PEST++ runs write a posterior ensemble, so this table may not
+    # exist even for a calibration - include it only when it does, rather
+    # than failing the read for every built-in run.
+    if (.has_table("pest_posterior", file_dir, file_name, file_type)) {
+      meta_tables <- c(meta_tables, "pest_posterior")
+    }
   } else if (type == "all") {
     meta_tables <- c(meta_tables, "sensitivity_metadata",
                      "calibration_metadata")
@@ -143,6 +155,21 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
     })
   }
   return(out)
+}
+
+#' Does an optional table exist in the results store?
+#' @noRd
+.has_table <- function(tbl, file_dir, file_name, file_type) {
+  if (identical(file_type, "csv")) {
+    return(file.exists(file.path(file_dir, paste0(tbl, ".csv"))))
+  }
+  f <- file.path(file_dir, file_name)
+  if (!file.exists(f)) return(FALSE)
+  con <- tryCatch(DBI::dbConnect(duckdb::duckdb(), dbdir = f, read_only = TRUE),
+                  error = function(e) NULL)
+  if (is.null(con)) return(FALSE)
+  on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
+  tbl %in% DBI::dbListTables(con)
 }
 
 #' @rdname read_simulation_output

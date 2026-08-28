@@ -85,22 +85,35 @@ get_pareto_front <- function(df, obj_cols) {
 
 #' Create a control object for calibration or sensitivity analysis.
 #' @noRd
-.create_control <- function(method, ...) {
-  
+.create_control <- function(method, engine = NULL, ...) {
+
   args <- list(...)
-  
-  if (method == "calib") {
-    
+
+  # `method` says what kind of run this is ("calib"/"sa") and is what the
+  # rest of the package dispatches on - which tables to read back, how the
+  # sim_id is stemmed, which plots apply. `engine` says who runs the search
+  # within that kind. Only the requirements differ per engine, so validate
+  # on the engine but record the method unchanged; giving PEST++ its own
+  # `method` instead would make every `method == "calib"` branch in the
+  # package silently skip it.
+  key <- engine %||% method
+
+  if (key == "calib") {
+
     required <- c("VTR", "NP", "itermax", "reltol",
                   "cutoff", "mutate", "c_method")
-    
-  } else if (method == "sa") {
-    
+
+  } else if (key == "sa") {
+
     required <- c("N", "vars_sim")
-    
+
+  } else if (key == "pest") {
+
+    required <- c("exe", "obj_mode", "noptmax", "case", "pest_dir")
+
   } else {
-    cli::cli_abort("Unknown method: {.val {method}} Can only be 'calib' or 
-                   'sa'.")
+    cli::cli_abort("Unknown method: {.val {key}} Can only be 'calib', 'sa'
+                   or 'pest'.")
   }
   
   # Optional: enforce required args present
@@ -117,6 +130,7 @@ get_pareto_front <- function(df, obj_cols) {
   }
   
   args$method <- method
+  args$engine <- engine
   class(args) <- "calib_sa_control"
   args
 }
@@ -132,10 +146,18 @@ get_pareto_front <- function(df, obj_cols) {
 #' @return `x`, invisibly.
 #' @export
 print.calib_sa_control <- function(x, ...) {
-  method_label <- switch(x$method,
-                         calib = "Calibration control",
-                         sa = "Sensitivity analysis control",
-                         "Control")
+  method_label <- if (identical(x$engine, "pest")) {
+    if (identical(x$method, "sa")) {
+      "PEST++ sensitivity analysis control"
+    } else {
+      "PEST++ calibration control"
+    }
+  } else {
+    switch(x$method,
+           calib = "Calibration control",
+           sa = "Sensitivity analysis control",
+           "Control")
+  }
   cli::cli_h1(method_label)
 
   fields <- x[setdiff(names(x), "method")]
@@ -313,15 +335,18 @@ anneal_param <- function(start, end, gen_n, tot_gen) {
 #' @param ctrl list; control object holding `NP`.
 #' @noRd
 announce_generation <- function(df, gen_n, tot_gen, ctrl) {
-  cli::cli_inform(c(">" = "Starting generation {.val {gen_n}}/{.val
-      {tot_gen}}, {.val {ctrl$NP}} members. [{format(Sys.time())}]"))
+  AEME::cli_inform_safe(c(">" = paste0("Starting generation {.val ", gen_n,
+                                       "}/{.val ", tot_gen, "}, {.val ",
+                                       ctrl$NP, "} members. [",
+                                       format(Sys.time()), "]")))
   pr_df <- data.frame(rbind(signif(apply(df, 2, mean), 4),
                             signif(apply(df, 2, median), 4),
                             signif(apply(df, 2, sd), 4)),
                       row.names = c("mean", "median", "sd"))
   names(pr_df) <- gsub("\\[NA\\]", "", gsub("NA/", "", names(df)))
-  cli::cli_inform("Parameter summary for generation {.val {gen_n}}:")
-  print(pr_df)
+  AEME::cli_inform_safe(paste0("Parameter summary for generation {.val ",
+                               gen_n, "}:"))
+  if (isTRUE(getOption("AEME.inform", TRUE))) print(pr_df)
 }
 
 #' Report a generation's fitness once it has been evaluated
@@ -345,14 +370,120 @@ report_generation <- function(g_eval, gen_n, tot_gen, m, ctrl,
                               best_pars_fmt = NULL) {
   rep_vars <- g_eval |>
     dplyr::filter(!is_failed_fit(fit, ctrl))
-  cli::cli_alert_success("Completed generation {.val {gen_n}}/{.val {tot_gen}}
-                             for {.val {m}}. [{format(Sys.time())}]")
+  AEME::cli_safe(paste0("Completed generation {.val ", gen_n, "}/{.val ",
+                        tot_gen, "} for {.val ", m, "}. [",
+                        format(Sys.time()), "]"),
+                 FUN = cli::cli_alert_success)
+  best_fit_msg <- paste0("Best fit: {.val ", signif(min(rep_vars$fit), 3),
+                         "} (sd: {.val ", signif(sd(rep_vars$fit), 5), "})")
   if (is.null(best_pars_fmt)) {
-    cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd:
-                        {.val {signif(sd(rep_vars$fit), 5)}})")
+    AEME::cli_inform_safe(best_fit_msg)
   } else {
-    cli::cli_inform("Best fit: {.val {signif(min(rep_vars$fit), 3)}} (sd:
-                        {.val {signif(sd(rep_vars$fit), 5)}})
-              Parameters: [ {.val {best_pars_fmt}} ]")
+    AEME::cli_inform_safe(paste0(best_fit_msg, "\n              Parameters: [ {.val ",
+                                 paste(best_pars_fmt, collapse = ", "), "} ]"))
   }
+}
+
+#' Restrict each model's on-disk output to the calibration / SA targets.
+#'
+#' Wraps `AEME::set_output_vars()` + `AEME::write_configuration()` so the
+#' model only writes what the objective needs (see `?AEME::set_output_vars`).
+#' A no-op, with a warning, when the installed AEME predates
+#' `set_output_vars()`. Driven by `ctrl$trim_output`.
+#'
+#' @param aeme,path as passed to `calib_aeme()` / `sa_aeme()`.
+#' @param model character; one or more model names.
+#' @param vars_sim character; the AEME variables the objective needs.
+#' @return `aeme`, with its configuration trimmed.
+#' @noRd
+apply_trim_output <- function(aeme, model, vars_sim, path) {
+  if (!"set_output_vars" %in% getNamespaceExports("AEME")) {
+    AEME::cli_safe("{.code trim_output = TRUE} needs a newer AEME
+                   ({.fn AEME::set_output_vars} is missing); leaving model
+                   output untrimmed.", FUN = cli::cli_alert_warning)
+    return(aeme)
+  }
+  for (m in model) {
+    aeme <- AEME::set_output_vars(aeme = aeme, model = m, vars = vars_sim,
+                                  mass_balance = FALSE)
+    AEME::write_configuration(aeme = aeme, model = m, path = path,
+                              include_boundary = FALSE)
+  }
+  AEME::cli_inform_safe(c("i" = paste0("Trimmed {.val ",
+                                       paste(model, collapse = ", "),
+                                       "} output to {.val ",
+                                       paste(vars_sim, collapse = ", "),
+                                       "} ({.code trim_output = TRUE}).")))
+  aeme
+}
+
+#' Pre-flight: one model run at the initial parameters, before the search.
+#'
+#' A broken setup - the model crashes, no observations fall in the
+#' simulation window, a `FUN_list` function errors - otherwise only shows up
+#' as a whole calibration (or SA) of `NA` fits. This runs the model once up
+#' front and aborts immediately, with the `run_and_fit()` call to reproduce
+#' it, if the fit is unusable. Driven by `ctrl$preflight`.
+#'
+#' @param aeme,param,path,vars_sim,FUN_list,weights,model_controls,include_wlev
+#'   as passed to `calib_aeme()` / `sa_aeme()`.
+#' @param m character; the single model being checked.
+#' @param ctrl list; control object (uses `na_value`, `timeout`).
+#' @param method "calib" or "sa".
+#' @param sa_ctrl the SA control, when `method = "sa"`.
+#' @return Invisibly, the `run_and_fit()` result. Aborts on failure.
+#' @noRd
+calib_preflight <- function(aeme, param, m, path, vars_sim, FUN_list, weights,
+                            model_controls, ctrl, include_wlev,
+                            method = "calib", sa_ctrl = NULL) {
+
+  AEME::cli_inform_safe(c("i" = paste0("Pre-flight check for {.val ", m,
+                                       "}: one model run at the initial ",
+                                       "parameters. [", format(Sys.time()),
+                                       "]")))
+
+  res <- tryCatch(
+    suppressMessages(run_and_fit(
+      aeme = aeme, param = param[param$model == m, ], model = m, path = path,
+      vars_sim = vars_sim, FUN_list = FUN_list, weights = weights,
+      model_controls = model_controls, na_value = ctrl$na_value,
+      include_wlev = include_wlev, method = method, sa_ctrl = sa_ctrl,
+      fit = TRUE, timeout = ctrl$timeout %||% Inf)),
+    error = function(e) e)
+
+  score_names <- if (identical(method, "sa")) {
+    names(sa_ctrl$vars_sim)
+  } else {
+    vars_sim
+  }
+  vals <- if (is.list(res) && !inherits(res, "error")) {
+    suppressWarnings(as.numeric(unlist(res[score_names])))
+  } else {
+    numeric(0)
+  }
+
+  ok <- !inherits(res, "error") && is.list(res) && !isTRUE(res$failed) &&
+    length(vals) > 0 && any(is.finite(vals)) &&
+    !all(vals == ctrl$na_value, na.rm = TRUE)
+
+  if (!ok) {
+    reason <- if (inherits(res, "error")) {
+      conditionMessage(res)
+    } else {
+      paste0("the run crashed or produced no value overlapping the ",
+             "observations (every fit came back NA / ", ctrl$na_value, ")")
+    }
+    cli::cli_abort(c(
+      "Pre-flight model run failed for {.val {m}}: {reason}",
+      "i" = "Reproduce and debug the setup with:",
+      "*" = "{.code run_and_fit(aeme, param, model = \"{m}\", path, vars_sim,
+             FUN_list, weights, return_df = TRUE)}",
+      "i" = "or pass {.code preflight = FALSE} to the control to skip this
+             check."
+    ), class = "aemetools_error_preflight")
+  }
+
+  AEME::cli_inform_safe(c("v" = paste0("Pre-flight OK for {.val ", m,
+                                       "}. [", format(Sys.time()), "]")))
+  invisible(res)
 }
