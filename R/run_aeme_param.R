@@ -37,7 +37,25 @@ run_aeme_param <- function(aeme, param, model, path = ".",
     config <- AEME::configuration(aeme = aeme)
     model_controls <- config$model_controls
   }
-  
+
+  # As of AEME 0.4.0 `run_aeme()` resolves the model output location - the
+  # previous-output deletion, the `load_output()` read-back and
+  # `get_model_outfile()` - from the path stored on the aeme object
+  # (`configuration(aeme)$path`), not from the `path` argument, which now
+  # only positions the run directory. When the model has been copied
+  # elsewhere to run (a PEST/PANTHER agent directory, the benchmark's staged
+  # dir) the two disagree: GLM runs in `path` but AEME looks for its output
+  # under the build directory, finds none, and the run is scored as a
+  # failure. Point the object at `path` so both agree.
+  cfg <- AEME::configuration(aeme = aeme)
+  # normalizePath() with the platform default separator, matching what
+  # AEME::check_path() stores, so the guard below actually compares equal.
+  path_norm <- normalizePath(path, mustWork = FALSE)
+  if (!identical(cfg$path, path_norm)) {
+    cfg$path <- path_norm
+    AEME::configuration(aeme) <- cfg
+  }
+
   # Load AEME data
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
   inp <- AEME::input(aeme)
@@ -76,7 +94,7 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   
   
   # Check if model output is produced ----
-  out_file <- AEME::get_model_outfile(lake_dir = lake_dir, model = model)
+  out_file <- AEME::get_model_outfile(path = lake_dir, model = model)
   
   out_file_chk <- sapply(out_file, \(x) !file.exists(x)) |> 
     unlist()
