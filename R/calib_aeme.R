@@ -20,13 +20,22 @@
 #'  more details.
 #' @param weights a named vector; of weights for each variable in vars_sim. If not
 #' provided, defaults to 1 for each variable.
-#' @param param_var_matrix list of dataframes; with parameters as rows and
-#' response variables as columns. Created using
-#' \code{\link{create_param_var_matrix}}. This is used to specify which
-#' parameters are associated with which response variables, and therefore which
-#' parameters are updated in each generation of the calibration. Requires
-#' `ctrl$c_method` to be `"MOEDA"` (see \code{\link{create_calib_control}}) -
-#' the two are mutually required.
+#' @param param_var_matrix a declaration of which parameters are associated
+#' with which response variables. Either the dataframe
+#' \code{\link{create_param_var_matrix}} returns - parameters as rows,
+#' response variables as logical columns - or the shorthand list keyed by
+#' variable, e.g. `list(HYD_temp = c("light", "mixing"), CHM_oxy =
+#' "sediment")`; see \code{\link{as_param_var_matrix}} for every accepted
+#' form and for how unmentioned variables and parameters are treated.
+#'
+#' How it is used depends on the engine. With `ctrl$c_method = "MOEDA"` it
+#' decides which parameters are resampled together in each generation, and
+#' the two are mutually required. With `ctrl$engine = "pest"` and
+#' `exe = "pestpp-ies"` it becomes the solver's localizer (see
+#' \code{\link{pest_localizer}}); it is equivalent to, and takes the place
+#' of, `localizer` in \code{\link{create_pest_control}}. Any parameter it
+#' associates with no variable at all is dropped from the calibration, with
+#' a warning.
 #' @param param_df dataframe; of parameters to be used in the calibration.
 #' Requires the columns c("model", "file", "name", "value", "min", "max"). This
 #' is used to restart from a previous calibration.
@@ -106,7 +115,7 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
     }
   }
   if (missing(weights)) {
-    cli::cli_inform("No weights supplied. Defaulting to 1 for all variables.")
+    AEME::cli_inform_safe("No weights supplied. Defaulting to 1 for all variables.")
     weights <- set_weights(vars_sim = vars_sim)
   }
   # Check if vars_sim are in weights names
@@ -139,12 +148,27 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
     ctrl$na_value <- 999
   }
 
-  # param_var_matrix and c_method = "MOEDA" are mutually required: MOEDA's
-  # Pareto-front selection needs param_var_matrix to know the objective
-  # structure, and param_var_matrix's Pareto-front/joint-covariance
-  # resampling in next_gen_params() is only honoured when c_method is
-  # "MOEDA".
-  if (!is.null(param_var_matrix) && !identical(ctrl$c_method, "MOEDA")) {
+  # param_var_matrix has two consumers, and which one applies depends on the
+  # engine: MOEDA's Pareto-front resampling in next_gen_params(), and
+  # pestpp-ies's localizer. Every other method has nowhere to put it.
+  is_pest <- identical(ctrl$engine, "pest")
+  if (!is.null(param_var_matrix) && is_pest &&
+      !identical(ctrl$exe, "pestpp-ies")) {
+    cli::cli_abort(c(
+      "{.arg param_var_matrix} becomes a localizer, which only
+       {.val pestpp-ies} uses - not {.val {ctrl$exe}}.",
+      "i" = "Express the structure through observation groups and weights
+             instead, or set {.code exe = \"pestpp-ies\"}."
+    ))
+  }
+
+  # For the built-in engines, param_var_matrix and c_method = "MOEDA" are
+  # mutually required: MOEDA's Pareto-front selection needs
+  # param_var_matrix to know the objective structure, and
+  # param_var_matrix's joint-covariance resampling in next_gen_params() is
+  # only honoured when c_method is "MOEDA".
+  if (!is.null(param_var_matrix) && !is_pest &&
+      !identical(ctrl$c_method, "MOEDA")) {
     cli::cli_abort("{.arg param_var_matrix} requires {.code ctrl$c_method} to
                    be {.val MOEDA}, not {.val {ctrl$c_method}}.")
   }
@@ -160,8 +184,10 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
   # Check for parameters where value, min, max are equal
   eq_pars <- param[param$value == param$min & param$value == param$max, ]
   if (nrow(eq_pars) > 0) {
-    cli::cli_alert_warning("The following parameters have the same value, min, 
-                           and max and will not be updated during calibration: {.val {eq_pars$name}}")
+    AEME::cli_safe(paste0("The following parameters have the same value, min, ",
+                          "and max and will not be updated during calibration: ",
+                          "{.val ", paste(eq_pars$name, collapse = ", "), "}"),
+                   FUN = cli::cli_alert_warning)
     AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars, 
                                  path = path)
     
@@ -169,6 +195,12 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
       dplyr::filter(!name_full %in% eq_pars$name_full)
   }
   
+  # Accept the shorthand forms (a list keyed by variable, a logical matrix)
+  # as well as the canonical dataframe; everything downstream sees the
+  # dataframe.
+  param_var_matrix <- as_param_var_matrix(param_var_matrix, param = param,
+                                          vars_sim = vars_sim)
+
   if (!is.null(param_var_matrix)) {
     # Check all variables have parameters
     for (v in vars_sim) {
@@ -183,9 +215,11 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
       dplyr::select(dplyr::all_of(vars_sim))
     rem_pars <- setdiff(param$name_full, param_var_matrix$name_full[apply(mat, 1, any)])
     if (length(rem_pars) > 0) {
-      cli::cli_alert_warning("The following parameters are not associated with 
-                             any of the response variables and will not be 
-                             updated during calibration: {.val {rem_pars}}")
+      AEME::cli_safe(paste0("The following parameters are not associated with ",
+                            "any of the response variables and will not be ",
+                            "updated during calibration: ",
+                            "{.val ", paste(rem_pars, collapse = ", "), "}"),
+                     FUN = cli::cli_alert_warning)
       param <- param |> 
         dplyr::filter(!name_full %in% rem_pars)
     }
@@ -195,11 +229,57 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
 
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
 
+  # Restrict each model's output to the calibration targets before any run
+  # (also picked up by the PEST staging below). Default on; see
+  # `?create_calib_control`.
+  if (isTRUE(ctrl$trim_output)) {
+    aeme <- apply_trim_output(aeme = aeme, model = model, vars_sim = vars_sim,
+                              path = path)
+  }
+
   names(model) <- model
+
+  # PEST++ owns the search loop, the parallelism and the run history, so it
+  # replaces the generation loop below rather than plugging into it.
+  if (identical(ctrl$engine, "pest")) {
+    # `param_var_matrix` and `create_pest_control(localizer = )` are the same
+    # declaration reached two ways; a localizer set on the control wins,
+    # because it was stated closer to the solver it configures.
+    if (!is.null(param_var_matrix)) {
+      if (is.null(ctrl$localizer)) {
+        ctrl$localizer <- param_var_matrix
+      } else {
+        AEME::cli_safe(
+          "Both {.arg param_var_matrix} and {.code ctrl$localizer} were
+           supplied; using {.code ctrl$localizer}.",
+          FUN = cli::cli_alert_warning)
+      }
+    }
+    return(sapply(model, \(m) {
+      calib_aeme_pest(aeme = aeme, param = param, m = m, path = path,
+                      lake_dir = lake_dir, vars_sim = vars_sim,
+                      FUN_list = FUN_list, weights = weights,
+                      model_controls = model_controls, ctrl = ctrl,
+                      include_wlev = include_wlev)
+    }))
+  }
+
   sapply(model, \(m) {
     var_indices <- list()
     t0 <- Sys.time() # Time check for calibration
     nsim <- 0 # Counter for number of simulations
+
+    # One model run at the initial parameters, so a broken setup fails now
+    # with an actionable message rather than after a whole calibration of
+    # NA fits. Default on; see `?create_calib_control`.
+    if (isTRUE(ctrl$preflight)) {
+      calib_preflight(aeme = aeme, param = param, m = m, path = path,
+                      vars_sim = vars_sim, FUN_list = FUN_list,
+                      weights = weights, model_controls = model_controls,
+                      ctrl = ctrl, include_wlev = include_wlev,
+                      method = "calib")
+    }
+
     if (!is.null(param_var_matrix)) {
       param_var_matrix <- param_var_matrix |> 
         dplyr::filter(model == m)
@@ -207,19 +287,21 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
 
     if (any(vars_sim != "LKE_lvlwtr")) {
       # Extract indices for modelled variables
-      cli::cli_inform(c("i" = "Extracting indices for {.val {m}} modelled 
-                        variables [{format(Sys.time())}]"))
+      AEME::cli_inform_safe(c("i" = paste0("Extracting indices for {.val ", m,
+                                           "} modelled variables [",
+                                           format(Sys.time()), "]")))
       suppressMessages(
         var_indices <- run_and_fit(aeme = aeme, param = param,
                                    model = m, path = path,
-                                   FUN_list = FUN_list, 
+                                   FUN_list = FUN_list,
                                    model_controls = model_controls,
                                    vars_sim = vars_sim, weights = weights,
                                    return_indices = TRUE,
                                    include_wlev = include_wlev, fit = FALSE)
       )
-      cli::cli_inform(c("v" = "Indices extracted for {.val {m}} modelled 
-                        variables [{format(Sys.time())}]"))
+      AEME::cli_inform_safe(c("v" = paste0("Indices extracted for {.val ", m,
+                                           "} modelled variables [",
+                                           format(Sys.time()), "]")))
     }
 
     # Extract parameters for the model ----
@@ -248,7 +330,8 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
       # Add check for parameters to be the same
       p_chk <- param$name_full %in% names(param_df)
       if (any(!p_chk)) {
-        cli::cli_alert_warning("Not all parameters are in supplied parameter dataframe")
+        AEME::cli_safe("Not all parameters are in supplied parameter dataframe",
+                       FUN = cli::cli_alert_warning)
       }
       best_pars <- param_df[param_df$fit == min(param_df$fit), ]
       if (nrow(best_pars) > 1) {
@@ -287,8 +370,9 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
     if (ctrl$parallel) {
       temp_dirs <- make_temp_dir(m, lake_dir, n = ctrl$ncore)
       paths <- temp_dirs
-      cli::cli_inform(c("i" = "Using {.val {ctrl$ncore}} cores for parallel
-                        calibration for {.val {m}}."))
+      AEME::cli_inform_safe(c("i" = paste0("Using {.val ", ctrl$ncore,
+                                           "} cores for parallel calibration ",
+                                           "for {.val ", m, "}.")))
       unlink("parallel.log")
       cl <- parallel::makeCluster(ctrl$ncore, outfile = "parallel.log")
       on.exit(parallel::stopCluster(cl))
@@ -298,7 +382,7 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
       parallel::clusterExport(cl, varlist = varlist,
                               envir = environment())
     } else {
-      cli::cli_inform("Using serial calibration for {.val {m}}.")
+      AEME::cli_inform_safe(paste0("Using serial calibration for {.val ", m, "}."))
       paths <- rep(path, ctrl$ncore)
       cl <- NULL
     }
@@ -344,14 +428,15 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
 
     if (ctrl$c_method == "LHC") {
       write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
-      cli::cli_alert_success("LHC calibration complete for {.val {m}}.
-                             [{format(Sys.time())}]")
+      AEME::cli_safe(paste0("LHC calibration complete for {.val ", m, "}. [",
+                            format(Sys.time()), "]"), FUN = cli::cli_alert_success)
       return(ctrl$sim_id)
     }
     if (min(g1$fit) < ctrl$VTR) {
       write_calib_metadata(ctrl = ctrl, nsim = nsim,  t0 = t0)
-      cli::cli_alert_success("Model fitness is less than VTR. Stopping simulation for
-                             {.val {m}}. [{format(Sys.time())}]")
+      AEME::cli_safe(paste0("Model fitness is less than VTR. Stopping ",
+                            "simulation for {.val ", m, "}. [",
+                            format(Sys.time()), "]"), FUN = cli::cli_alert_success)
       return(ctrl$sim_id)
     }
 
@@ -389,8 +474,9 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
       }
 
       if (min(g$fit) < ctrl$VTR) {
-        cli::cli_alert_success("Model fitness is less than VTR. Stopping simulation for
-                               {.val {m}}. [{format(Sys.time())}]")
+        AEME::cli_safe(paste0("Model fitness is less than VTR. Stopping ",
+                              "simulation for {.val ", m, "}. [",
+                              format(Sys.time()), "]"), FUN = cli::cli_alert_success)
         return(ctrl$sim_id)
       }
       # `reltol` is a relative tolerance: population fitness spread as a
@@ -398,9 +484,9 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
       # denominator is floored to avoid dividing by (near) zero.
       rel_spread <- sd(g$fit) / max(abs(mean(g$fit)), sqrt(.Machine$double.eps))
       if (rel_spread < ctrl$reltol) {
-        cli::cli_alert_success("Model fitness has converged (sd < reltol).
-                               Stopping simulation for {.val {m}}.
-                               [{format(Sys.time())}]")
+        AEME::cli_safe(paste0("Model fitness has converged (sd < reltol). ",
+                              "Stopping simulation for {.val ", m, "}. [",
+                              format(Sys.time()), "]"), FUN = cli::cli_alert_success)
         return(ctrl$sim_id)
       }
 
