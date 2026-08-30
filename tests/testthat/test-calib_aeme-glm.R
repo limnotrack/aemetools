@@ -348,11 +348,11 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
   obs$lake <- NULL
   obs$level <- NULL
   AEME::observations(aeme) <- obs
-  model_controls <- AEME::get_model_controls()
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
   model <- c("glm_aed")
   aeme <- AEME::build_aeme(path = path, aeme = aeme,
                            model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = FALSE)
+                           ext_elev = 5, use_bgc = T)
   aeme <- AEME::run_aeme(aeme = aeme, model = model,
                          verbose = FALSE, path = path)
   # AEME::plot(aeme, model = model, path = path, plot = "calib",
@@ -364,7 +364,8 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
   data("aeme_parameters", package = "AEME")
   param <- aeme_parameters
 
-  param <- aeme_parameters[aeme_parameters$name == "outflow", ]
+  param <- aeme_parameters[aeme_parameters$name == "outflow" & 
+                             aeme_parameters$model == "glm_aed", ]
 
   # Function to calculate fitness
   fit <- function(df) {

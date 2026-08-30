@@ -77,11 +77,14 @@ get_cached_aeme_run <- function(model, ext_elev = 5, use_bgc = FALSE,
   cached <- .aeme_run_cache[[key]]
 
   # Fresh copy so a test calibrating/writing into `path` can't corrupt the
-  # shared cache or bleed into any other test reusing the same entry.
+  # shared cache or bleed into any other test reusing the same entry. Always
+  # a copy - `build_path` only exists on the branch above, so returning it
+  # errored on every cache hit, and handing back the shared directory would
+  # defeat the isolation this copy is here to provide.
   new_path <- tempfile("aeme_run_")
   dir.create(new_path)
   file.copy(list.files(cached$build_path, full.names = TRUE), new_path,
            recursive = TRUE)
 
-  list(aeme = cached$aeme, path = if (run) build_path else new_path)
+  list(aeme = cached$aeme, path = new_path)
 }
