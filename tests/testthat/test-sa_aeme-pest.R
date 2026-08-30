@@ -274,8 +274,11 @@ test_that("sa_aeme dispatches to pestpp-sen and stores Morris indices", {
   sen <- read_sen(ctrl = ctrl, sim_id = sim_id)
   expect_true(is.list(sen))
   expect_gt(nrow(sen[[sim_id]]$indices), 0)
+  # pestpp-sen writes <case>.mos alongside the Morris indices, so
+  # read_pest_sen_indices() also returns the range-scaled effect as
+  # index_type "scaled_sen".
   expect_setequal(unique(sen[[sim_id]]$indices$index_type),
-                  c("mu_star", "mu", "sigma"))
+                  c("mu_star", "mu", "sigma", "scaled_sen"))
   expect_setequal(unique(sen[[sim_id]]$indices$variable),
                   c("surf_temp", "bot_temp"))
   expect_s3_class(plot_sen(sen), "ggplot")

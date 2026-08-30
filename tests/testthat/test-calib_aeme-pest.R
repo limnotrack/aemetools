@@ -447,37 +447,39 @@ test_that("solver progress is read from the phi CSV", {
 
 test_that("progress is reported once per change, and respects AEME.inform", {
   skip_on_cran()
+  rscript <- file.path(R.home("bin"), "Rscript")
   d <- withr::local_tempdir()
   ctrl <- create_pest_control(pest_dir = d, case = "aeme", ncore = 1,
                               noptmax = 4, solver_timeout = 60)
   hdr <- "iteration,total_runs,mean,standard_deviation,min,max,real_0"
+  # A single, unchanging phi row: .pest_wait() polls many times over the
+  # ~6s master, but .pest_status() returns the same string every time, so
+  # exactly one message should be emitted rather than one per poll.
   writeLines(c(hdr, "0,6,12.3,2.1,8.76,20.1,8.76"),
              file.path(d, "aeme.phi.actual.csv"))
 
-  aemetools:::.pest_detach(file.path(R.home("bin"), "Rscript"),
-                           "-e \"Sys.sleep(6)\"", d)
-  # setup.R sets AEME.inform = FALSE for the whole test session, so this
-  # must be turned back on explicitly - otherwise this test can never see a
-  # message, and the AEME.inform = FALSE assertion below would pass
-  # vacuously rather than proving anything.
-  # poll = 1 over a ~6s run: many polls, but the status never changes, so
-  # exactly one message should be emitted rather than one per poll.
+  spawn_master <- function(secs) {
+    procs <- aemetools:::.pest_procs()
+    procs$master <- aemetools:::.pest_spawn(
+      rscript, c("-e", sprintf("Sys.sleep(%d)", secs)), d, "run_master")
+    procs
+  }
+
+  # setup.R sets AEME.inform = FALSE for the whole test session, so turn it
+  # back on explicitly here - otherwise the test could never see a message
+  # and the AEME.inform = FALSE assertion below would pass vacuously.
   msgs <- withr::with_options(
     list(AEME.inform = TRUE),
     testthat::capture_messages(
-      aemetools:::.pest_wait(d, "aeme.pst", ctrl, poll = 1))
+      aemetools:::.pest_wait(spawn_master(6), d, "aeme.pst", ctrl, poll = 1))
   )
-  hits <- grep("model runs", msgs, value = TRUE)
-  expect_length(hits, 1L)
+  expect_length(grep("model runs", msgs), 1L)
 
   # AEME.inform = FALSE silences it, like every other message in the package.
-  file.remove(file.path(d, "run_master.done"))
-  aemetools:::.pest_detach(file.path(R.home("bin"), "Rscript"),
-                           "-e \"Sys.sleep(4)\"", d)
   quiet <- withr::with_options(
     list(AEME.inform = FALSE),
     testthat::capture_messages(
-      aemetools:::.pest_wait(d, "aeme.pst", ctrl, poll = 1))
+      aemetools:::.pest_wait(spawn_master(4), d, "aeme.pst", ctrl, poll = 1))
   )
   expect_length(grep("model runs", quiet), 0L)
 })
@@ -555,7 +557,7 @@ test_that("a partially simulated run is failed, not padded", {
             weights = c(HYD_temp = 1),
             FUN_list = list(HYD_temp = function(df) 1))
 
-  local_mocked_bindings(run_and_fit = function(...) comp)
+  local_mocked_bindings(run_and_fit = function(...) comp, .package = "aemetools")
   expect_message(out <- aemetools:::.pest_run_residual(p, param = NULL,
                                                        path = "."),
                  "no simulated equivalent")
@@ -565,7 +567,7 @@ test_that("a partially simulated run is failed, not padded", {
   comp_all <- data.frame(var_aeme = "HYD_temp", Date = map$Date,
                          depth = map$depth, model = c(12, 13, 9.5),
                          obs = ot$obsval, stringsAsFactors = FALSE)
-  local_mocked_bindings(run_and_fit = function(...) comp_all)
+  local_mocked_bindings(run_and_fit = function(...) comp_all, .package = "aemetools")
   out2 <- aemetools:::.pest_run_residual(p, param = NULL, path = ".")
   expect_equal(as.numeric(out2), c(12, 13, 9.5))
 })
@@ -787,7 +789,7 @@ test_that("residual mode reports a simulated value for each water-level obs", {
             FUN_list = list(HYD_temp = function(df) 1,
                             LKE_lvlwtr = function(df) 1))
 
-  local_mocked_bindings(run_and_fit = function(...) comp)
+  local_mocked_bindings(run_and_fit = function(...) comp, .package = "aemetools")
   out <- aemetools:::.pest_run_residual(p, param = NULL, path = ".")
   expect_equal(as.numeric(out), c(12.5, 13.1, 9.6))
   expect_true("LKE_lvlwtr" %in% names(attr(out, "fits")))
@@ -810,7 +812,7 @@ test_that("residual mode defaults the LKE_lvlwtr fit fn when the caller omits it
             na_value = 999, include_wlev = TRUE, weights = c(HYD_temp = 1),
             FUN_list = list(HYD_temp = function(df) mean(abs(df$diff))))
 
-  local_mocked_bindings(run_and_fit = function(...) comp)
+  local_mocked_bindings(run_and_fit = function(...) comp, .package = "aemetools")
   expect_no_error(
     out <- aemetools:::.pest_run_residual(p, param = NULL, path = "."))
   expect_equal(as.numeric(out), c(12.5, 9.6))

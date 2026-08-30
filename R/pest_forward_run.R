@@ -88,8 +88,36 @@ pest_forward_run <- function(payload, par_file = NULL, out_file = NULL,
   unlink(out_file)
 
   if (is.null(sim) || anyNA(sim) || !all(is.finite(sim))) {
+    # Say *which* observations, not just that the run failed. A non-finite
+    # simulated value is usually structural rather than a one-off crash -
+    # a depth diagnostic on a mixed day, or a variable this configuration
+    # never actually produces - and it recurs on every evaluation, so
+    # every realisation fails and PEST++ reports only "all realizations
+    # failed during initial evaluation". Naming the variables turns that
+    # into something the caller can act on: drop the variable, or accept
+    # that it cannot be a residual-mode target.
     message("aemetools forward run produced no usable output; ",
             "leaving no result file so PEST++ treats this run as failed.")
+    if (!is.null(sim)) {
+      bad <- !is.finite(sim)
+      msg <- paste0(sum(bad), " of ", length(sim),
+                    " simulated values were not finite")
+      map <- p$obs_map
+      if (!is.null(map) && nrow(map) == length(sim)) {
+        n_bad <- table(map$var_aeme[bad])
+        n_all <- table(map$var_aeme)
+        parts <- sprintf("%s %d/%d", names(n_bad), as.integer(n_bad),
+                         as.integer(n_all[names(n_bad)]))
+        msg <- paste0(msg, ": ", paste(parts, collapse = ", "))
+        whole <- names(n_bad)[as.integer(n_bad) == as.integer(n_all[names(n_bad)])]
+        if (length(whole) > 0) {
+          msg <- paste0(msg, ". Never produced at all by this configuration: ",
+                        paste(whole, collapse = ", "),
+                        " - drop from vars_sim.")
+        }
+      }
+      message(msg)
+    }
     .pest_log_run(p = p, par_file = par_file, fits = NULL)
     return(invisible(NULL))
   }

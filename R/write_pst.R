@@ -205,9 +205,28 @@ pest_obs_table <- function(aeme, vars_sim, weights, obj_mode = "residual",
   # `var_indices` carries the dates the model actually wrote, which is the
   # exact answer; the simulation window is the fallback when it is absent.
   n_before <- nrow(df)
+  # A failed index run hands back AEME's model-error object rather than a
+  # per-variable list. Left unchecked it reaches the lookup below and dies
+  # as "subscript out of bounds", which says nothing about what went wrong.
+  if (!is.null(var_indices) && length(var_indices) > 0 &&
+      (isTRUE(AEME::is_model_error(var_indices)) ||
+       !all(vapply(var_indices, is.list, logical(1))))) {
+    cli::cli_abort(c(
+      "{.arg var_indices} does not describe the dates the model wrote.",
+      "x" = "The run that produces them failed, so there is nothing to
+             build a {.field .pst} against.",
+      "i" = "Check the model runs at the initial parameter values before
+             calibrating."
+    ))
+  }
   if (!is.null(var_indices) && length(var_indices) > 0) {
     keep <- vapply(seq_len(nrow(df)), function(i) {
-      d <- var_indices[[df$var_aeme[i]]][["dates"]]
+      # Split the lookup: `var_indices` has no entry for a non-gridded
+      # variable - LKE_lvlwtr is compared against the modelled surface, not
+      # read off the output grid - and `NULL[["dates"]]` is a subscript
+      # error rather than NULL, so the is.null() guard below never ran.
+      vi <- var_indices[[df$var_aeme[i]]]
+      d <- if (is.null(vi)) NULL else vi[["dates"]]
       is.null(d) || df$Date[i] %in% as.Date(d)
     }, logical(1))
     df <- df[keep, , drop = FALSE]

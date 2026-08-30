@@ -91,9 +91,17 @@ read_pest_phi_group <- function(ctrl) {
   }
 
   wide <- utils::read.csv(f, stringsAsFactors = FALSE, check.names = FALSE)
-  meta <- intersect(c("iteration", "total_runs"), names(wide))
+  # pestpp-ies writes one row per realisation per iteration, identified by
+  # `obs_realization`/`par_realization`. Those are read as character, so
+  # leaving them in the pivot aborts with a type error the moment there is
+  # more than one group - i.e. on every real multi-variable run.
+  meta <- intersect(c("iteration", "total_runs", "obs_realization",
+                      "par_realization"), names(wide))
   grp_cols <- setdiff(names(wide), c(meta, "mean", "standard_deviation",
                                      "min", "max"))
+  # Belt and braces against a future identifier column: a group's phi is
+  # always numeric, so anything else cannot be one.
+  grp_cols <- grp_cols[vapply(wide[grp_cols], is.numeric, logical(1))]
   if (length(grp_cols) == 0) {
     cli::cli_abort("No group columns in {.file {f}}.")
   }

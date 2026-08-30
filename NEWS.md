@@ -1,3 +1,16 @@
+# aemetools 0.3.0.9000
+
+## New features
+
+* `pest_posterior_params()` extracts the posterior parameter ensemble from a
+  finished `pestpp-ies` run as a list of runnable `param` dataframes (one per
+  realisation), with frozen parameters carried through unchanged.
+  `iteration = 0` returns the prior instead.
+* `run_aeme_ensemble()` gains a `param_sets` argument: given a list of `param`
+  dataframes, or a long data.frame with an `ensemble` id column, it runs that
+  supplied ensemble instead of sampling from the parameter bounds. The
+  sampling and supplied paths now share one internal parallel engine.
+
 # aemetools 0.3.0
 
 This is a large development release that overhauls the calibration and

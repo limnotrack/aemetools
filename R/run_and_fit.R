@@ -137,6 +137,12 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                               vars_sim = r$var, month = r$month,
                               depth_range = r$depth_range)[[1]]
       }), regions)
+    } else if (length(vars_sim) == 0) {
+      # Water level is the only target. It is not a gridded variable - it was
+      # stripped from `vars_sim` above and is handled by `.raf_wlev()` - so
+      # there is nothing to index, and `get_var_indices()` cannot be asked
+      # for an empty set (it fails building its frame from zero variables).
+      list()
     } else {
       AEME::get_var_indices(nc = nc, model = model, aeme = aeme, path = path,
                             vars_sim = AEME::get_vars_sim(vars_sim = vars_sim))
