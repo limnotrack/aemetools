@@ -10,6 +10,16 @@
   dataframes, or a long data.frame with an `ensemble` id column, it runs that
   supplied ensemble instead of sampling from the parameter bounds. The
   sampling and supplied paths now share one internal parallel engine.
+* `ensemble_summary()` extracts an ensemble once into a tidy object holding
+  the per-date (and per-depth, per-model, per-variable) `mean`, `sd`, `n` and
+  quantile bands, the underlying per-member frame, and the depth-aligned
+  observations. `plot_ensemble()` now accepts that object directly, so one
+  extraction can back many plots (variables, depths, intervals) instead of
+  re-running `AEME::get_var()` over every member on each call. `plot_ensemble()`
+  on an `aeme` is unchanged in behaviour and just routes through it.
+* `score_ensemble()` is added as a documented stub for forthcoming ensemble
+  verification scores (coverage, ensemble-mean bias/RMSE, spread-skill ratio,
+  CRPS).
 
 # aemetools 0.3.0
 
