@@ -813,7 +813,9 @@ pest_posterior_runs <- function(ctrl, param, res) {
   }
 
   if (killed > 0) {
-    AEME::cli_safe(paste0("Stopped {.val ", killed,
+    # {cli::qty()} before {.val N}: cli reads the plural quantity from a glue
+    # substitution, and {.val <literal>} pasted in by paste0() is not one.
+    AEME::cli_safe(paste0("Stopped {cli::qty(", killed, ")}{.val ", killed,
                           "} running PEST++ process tree{?s}."),
                    FUN = cli::cli_alert_info)
   }

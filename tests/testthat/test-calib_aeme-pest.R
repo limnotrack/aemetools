@@ -403,6 +403,12 @@ test_that(".pest_cleanup kills running process trees and spares finished ones", 
   Sys.sleep(1)
   expect_true(procs$agents[[1]]$is_alive())
 
+  # setup.R sets AEME.inform = FALSE, which no-ops AEME::cli_safe() and so
+  # never renders the "Stopped {n} process tree{?s}" message. Force it on:
+  # the cli plural markup needs a quantity or it aborts with
+  # "Cannot pluralize without a quantity" (killed > 0 only, i.e. a parallel
+  # run with a lingering agent).
+  withr::local_options(AEME.inform = TRUE)
   expect_equal(aemetools:::.pest_cleanup(procs), 1L)
   expect_false(procs$agents[[1]]$is_alive())
 })

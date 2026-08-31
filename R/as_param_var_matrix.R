@@ -282,7 +282,10 @@ as_param_var_matrix <- function(x, param, vars_sim) {
   unknown <- setdiff(key_x, .pvm_key(param$model, param$name_full))
   if (length(unknown) > 0) {
     AEME::cli_safe(
-      paste0("Dropping {.val ", length(unknown), "} {.arg param_var_matrix} ",
+      # {cli::qty()} before {.val N}: cli takes the plural quantity from a
+      # glue substitution, not from a literal number pasted in by paste0().
+      paste0("Dropping {cli::qty(", length(unknown), ")}{.val ",
+             length(unknown), "} {.arg param_var_matrix} ",
              "row{?s} for parameters that are not being calibrated: {.val ",
              paste(sub("^.*::", "", unknown), collapse = ", "), "}"),
       FUN = cli::cli_alert_warning)
