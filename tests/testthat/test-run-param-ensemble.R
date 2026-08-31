@@ -1,6 +1,7 @@
 # Tests for run_aeme_ensemble()'s supplied-ensemble path (`param_sets`).
-# Uses the AEME test lake via the session cache; gotm_wet because its
-# make_temp_dir() staging works in parallel on all CI runners.
+# Uses the AEME test lake via the session cache; gotm_wet for most cases
+# (it makes its own output dir), plus one glm_aed parallel case that only
+# works once make_temp_dir() recreates the empty output/ directory.
 
 rpe_sets <- function(model = "gotm_wet", n = 4, seed = 1) {
   utils::data("aeme_parameters", package = "AEME", envir = environment())
@@ -37,6 +38,24 @@ test_that("run_aeme_ensemble runs a supplied list of parameter sets", {
   expect_true(ggplot2::is_ggplot(p))
   expect_true(ggplot2::is_ggplot(
     plot_ensemble(aeme2, model = model, depth = 5, type = "line")))
+})
+
+test_that("glm_aed runs a supplied ensemble in parallel (make_temp_dir output/)", {
+  skip_on_cran()
+  # Regression: make_temp_dir() copies the model config without output/ and,
+  # unlike .pest_stage_model(), used not to recreate it - GLM 4.0.0 aborts at
+  # init without output/, so every parallel member returned na_value and
+  # .assemble_ens_output() aborted "No ensemble member ran successfully".
+  model <- "glm_aed"
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, run = TRUE)
+  aeme <- cached$aeme
+  path <- cached$path
+  sets <- rpe_sets(model, n = 3)
+
+  aeme2 <- run_aeme_ensemble(aeme = aeme, model = model, path = path,
+                             param_sets = sets, parallel = TRUE, ncore = 2)
+  expect_equal(AEME::output(aeme2)$n_members, 3)
+  expect_true("Date" %in% names(AEME::output(aeme2)$ens_001[[model]]))
 })
 
 test_that("serial and a long dataframe give the same ensemble", {

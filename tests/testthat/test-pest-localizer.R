@@ -130,6 +130,35 @@ test_that("create_param_var_matrix output round-trips unchanged", {
   expect_equal(again[, loc_vars], pvm[, loc_vars])
 })
 
+test_that("rows for uncalibrated parameters are dropped with a plural-safe warning", {
+  p <- loc_param()
+  pvm <- suppressMessages(
+    as_param_var_matrix(list(HYD_temp = "light", CHM_oxy = "sediment"),
+                        param = p, vars_sim = loc_vars))
+  # Canonical dataframe carrying an extra row for a parameter that is not in
+  # `param` - `.pvm_from_df()` must drop it and say so. The message uses cli
+  # plural markup (`row{?s}`); the quantity must come through or cli aborts
+  # with "Cannot pluralize without a quantity".
+  stray <- pvm[1, ]
+  stray$name_full <- "sediment/not_calibrated"
+  pvm2 <- rbind(pvm, stray)
+
+  # setup.R sets AEME.inform = FALSE, which makes AEME::cli_safe() a no-op and
+  # hides the bug - force the message on.
+  # AEME::cli_safe(FUN = cli::cli_alert_warning) is a styled *message*, not an
+  # R warning; setup.R's AEME.inform = FALSE would otherwise suppress it.
+  withr::with_options(list(AEME.inform = TRUE), {
+    expect_message(
+      out1 <- as_param_var_matrix(pvm2, param = p, vars_sim = loc_vars),
+      "Dropping .*1.* row\\b")
+    stray$name_full <- "sediment/also_not_calibrated"
+    expect_message(
+      as_param_var_matrix(rbind(pvm2, stray), param = p, vars_sim = loc_vars),
+      "Dropping .*2.* rows\\b")
+  })
+  expect_equal(nrow(out1), nrow(pvm))
+})
+
 test_that("a logical matrix is accepted", {
   p <- loc_param()
   m <- matrix(FALSE, nrow = 4, ncol = 2, dimnames = list(NULL, loc_vars))
