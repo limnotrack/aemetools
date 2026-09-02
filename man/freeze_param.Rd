@@ -15,7 +15,7 @@ freeze_param(param, names = NULL)
 error rather than a silent no-op.}
 }
 \value{
-\code{param}, with \code{min == max == value} for the selected rows.
+\code{param}, with \verb{min == max == value} for the selected rows.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

@@ -19,7 +19,7 @@ list; passed to \code{\link{get_best_params}}. Default \code{"fit"}.}
 }
 \value{
 A \code{param} dataframe (\code{model}, \code{file}, \code{name}, \code{value}, \code{min},
-\code{max}, \code{group}, \code{index}, plus \code{name_full}) with \code{min == max == value}.
+\code{max}, \code{group}, \code{index}, plus \code{name_full}) with \verb{min == max == value}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
