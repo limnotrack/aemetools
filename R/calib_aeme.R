@@ -181,19 +181,33 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
   param <- param |> 
     dplyr::mutate(name_full = encode_param(group, name, index))
   
-  # Check for parameters where value, min, max are equal
+  # Check for parameters where value, min, max are equal.
+  #
+  # For the built-in engines these are written to the model config and then
+  # dropped - the search has nowhere to record a held parameter. A PEST run
+  # does: pest_param_table() emits them with `partrans = "fixed"`, so they
+  # stay in the .pst, the parameter map, the pestpp-ies ensembles and the
+  # sensitivity output. Keep them in `param` for that path.
   eq_pars <- param[param$value == param$min & param$value == param$max, ]
   if (nrow(eq_pars) > 0) {
-    AEME::cli_safe(paste0("The following parameters have the same value, min, ",
-                          "and max and will not be updated during calibration: ",
-                          "{.val ", paste(eq_pars$name, collapse = ", "), "}"),
+    verb <- if (is_pest) {
+      "held fixed (partrans = fixed) and reported in the calibration output"
+    } else {
+      "not be updated during calibration"
+    }
+    AEME::cli_safe(paste0("The following parameters have equal value, min and ",
+                          "max and will ", verb, ": {.val ",
+                          paste(eq_pars$name, collapse = ", "), "}"),
                    FUN = cli::cli_alert_warning)
-    AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars, 
+    AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars,
                                  path = path)
-    
-    param <- param |> 
-      dplyr::filter(!name_full %in% eq_pars$name_full)
+
+    if (!is_pest) {
+      param <- param |>
+        dplyr::filter(!name_full %in% eq_pars$name_full)
+    }
   }
+  fixed_nf <- if (is_pest) eq_pars$name_full else character(0)
   
   # Accept the shorthand forms (a list keyed by variable, a logical matrix)
   # as well as the canonical dataframe; everything downstream sees the
@@ -211,16 +225,20 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
     }
     
     # Select logical columnms
-    mat <- param_var_matrix |> 
+    mat <- param_var_matrix |>
       dplyr::select(dplyr::all_of(vars_sim))
-    rem_pars <- setdiff(param$name_full, param_var_matrix$name_full[apply(mat, 1, any)])
+    # A fixed parameter is deliberately linked to nothing; keep it so
+    # pest_param_table() can still emit it as `partrans = fixed`.
+    rem_pars <- setdiff(param$name_full,
+                        param_var_matrix$name_full[apply(mat, 1, any)])
+    rem_pars <- setdiff(rem_pars, fixed_nf)
     if (length(rem_pars) > 0) {
       AEME::cli_safe(paste0("The following parameters are not associated with ",
                             "any of the response variables and will not be ",
                             "updated during calibration: ",
                             "{.val ", paste(rem_pars, collapse = ", "), "}"),
                      FUN = cli::cli_alert_warning)
-      param <- param |> 
+      param <- param |>
         dplyr::filter(!name_full %in% rem_pars)
     }
   }
@@ -374,7 +392,7 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
                                            "} cores for parallel calibration ",
                                            "for {.val ", m, "}.")))
       unlink("parallel.log")
-      cl <- parallel::makeCluster(ctrl$ncore, outfile = "parallel.log")
+      cl <- aeme_make_cluster(ctrl$ncore)
       on.exit(parallel::stopCluster(cl))
       varlist <- list("param", "aeme", "paths", "m", "vars_sim", "FUN_list",
                       "model_controls", "var_indices", "ctrl", "weights",

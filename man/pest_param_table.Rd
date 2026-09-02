@@ -15,7 +15,14 @@ the columns \code{model}, \code{file}, \code{group}, \code{name}, \code{index}, 
 for strictly-positive parameters? Default \code{TRUE}. Set \code{FALSE} for a
 sensitivity analysis, where every parameter must be sampled linearly on
 \verb{[min, max]} so the indices are comparable with a built-in
-\code{\link{sa_aeme}} run.}
+\code{\link{sa_aeme}} run.
+
+A parameter with \verb{value == min == max} is written with
+\code{partrans = "fixed"}: PEST keeps it in the control file - and hence in the
+parameter map, the \code{pestpp-ies} ensembles and the sensitivity output - but
+holds it at \code{value}. This is how a frozen earlier stage of a staged
+calibration is carried through visibly instead of being baked into the
+model configuration and dropped from every PEST table.}
 }
 \value{
 A dataframe with columns \code{parnme}, \code{partrans}, \code{parchglim},

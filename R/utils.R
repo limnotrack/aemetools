@@ -13,6 +13,25 @@ round_any <- function(x, accuracy, f = round) f(x / accuracy) * accuracy
 #' @noRd
 `%||%` <- function(x, y) if (!is.null(x)) x else y
 
+#' Start a PSOCK cluster with a worker-startup timeout that tolerates a slow
+#' first R session.
+#'
+#' `parallel::makeCluster()` defaults `setup_timeout` to 120 s. A worker here
+#' is a fresh R session that sources the project `.Rprofile`; when that
+#' activates `renv`, building the package sandbox on the first worker can take
+#' several minutes - far past 120 s - so most workers "fail to connect" when
+#' really they are still starting, and the run collapses to a serial fallback
+#' or aborts. The workers are not doing anything a 10-minute cap would mask a
+#' real hang behind, so raise it. Overridable with the
+#' `AEMETOOLS_CLUSTER_SETUP_TIMEOUT` environment variable.
+#' @noRd
+aeme_make_cluster <- function(ncore, outfile = "parallel.log") {
+  to <- suppressWarnings(as.numeric(
+    Sys.getenv("AEMETOOLS_CLUSTER_SETUP_TIMEOUT", "600")))
+  if (!is.finite(to) || to <= 0) to <- 600
+  parallel::makeCluster(ncore, outfile = outfile, setup_timeout = to)
+}
+
 #' Ensure a lake observations data frame has a numeric `depth` column
 #'
 #' AEME (>= 0.4.0) stores lake observations with a single required `depth`
