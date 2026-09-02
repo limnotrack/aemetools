@@ -94,8 +94,14 @@ read_pest_ensemble <- function(ctrl, iteration = NULL, type = "par") {
   long <- tidyr::pivot_longer(ens, cols = -dplyr::all_of(real_col),
                               names_to = "pest_name", values_to = "value") |>
     dplyr::rename(realisation = dplyr::all_of(real_col)) |>
-    dplyr::mutate(iteration = it,
-                  is_base = tolower(as.character(realisation)) == "base")
+    # Realisation identifiers are labels ("base", "0", "1", ...), not numbers.
+    # PEST++ writes them quoted in some ensemble files and bare in others, so
+    # readr may type the column as character for one iteration and integer for
+    # another. Pin it to character so downstream binds (prior + posterior)
+    # never hit a type mismatch.
+    dplyr::mutate(realisation = as.character(realisation),
+                  iteration = it,
+                  is_base = tolower(realisation) == "base")
 
   if (type == "par") {
     map <- .pest_par_map(ctrl)

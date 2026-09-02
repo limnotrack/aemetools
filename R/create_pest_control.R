@@ -51,7 +51,11 @@
 #'   run in which the master evaluates the model itself. aemetools does
 #'   **not** create its own `parallel::makeCluster()` for a PEST++ run;
 #'   `ncore` is the number of PANTHER agents.
-#' @param port Integer. TCP port for the PANTHER master. Default `4004`.
+#' @param port Integer. Preferred TCP port for the PANTHER master. Default
+#'   `4004`. This is the starting point of a search, not a fixed binding: at
+#'   launch the run takes this port if it is free and otherwise steps to the
+#'   next free one, so concurrent runs (per lake, per stage) and agents
+#'   orphaned by an aborted run do not collide on it.
 #' @param stall_minutes Numeric. Abort if the solver goes this many minutes
 #'   without completing a model run or writing to its record file. Default
 #'   `10`. This is the practical guard: PEST++ can finish every run,
@@ -78,12 +82,24 @@
 #'   ensemble is left for `pestpp-ies` to draw), `"normal"` (Gaussian about
 #'   the initial values) or `"triangular"`. See
 #'   \code{\link{pest_prior_ensemble}}.
-#' @param prior_par_ensemble Logical, character or `NULL`. Controls the
-#'   `++ies_parameter_ensemble`. `NULL` (default) generates one in R only
-#'   when `seed`, `prior_cov` or a non-uniform `prior_dist` / `noise_sd`
-#'   makes it necessary, and otherwise leaves `pestpp-ies` to draw its own.
-#'   `TRUE`/`FALSE` force or suppress generation; a path uses that CSV
-#'   as-is.
+#' @param prior_par_ensemble Logical, character, `NULL`, or a previous run.
+#'   Controls the `++ies_parameter_ensemble`. `NULL` (default) generates one
+#'   in R only when `seed`, `prior_cov` or a non-uniform `prior_dist` /
+#'   `noise_sd` makes it necessary, and otherwise leaves `pestpp-ies` to draw
+#'   its own. `TRUE`/`FALSE` force or suppress generation; a **file** path
+#'   uses that CSV as-is.
+#'
+#'   A **finished `pestpp-ies` run** - a \code{\link{read_calib}} object, a
+#'   `create_pest_control()` object, or its run-directory path - seeds this
+#'   run's prior from that run's posterior ensemble. Parameters shared by
+#'   `name_full` take their columns from the source posterior (carrying its
+#'   marginals *and* correlations); parameters new to this run are drawn from
+#'   their own prior. This is the natural way to chain the stages of a staged
+#'   calibration - stage N+1 starts from stage N's posterior rather than from
+#'   a re-widened box of independent bounds. Unlike `restart_from` (which
+#'   resumes the *same* problem and requires an unchanged parameter and
+#'   observation set), the parameter set here may grow or shrink between
+#'   stages. `restart_from` still takes precedence if both are given.
 #' @param seed Integer or `NULL`. Random seed for the prior parameter and
 #'   observation ensembles, for reproducible runs. Setting it triggers
 #'   in-R generation of the parameter ensemble.

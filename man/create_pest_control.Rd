@@ -106,7 +106,11 @@ cleared on each run.}
 \item{case}{Character. Basename for the generated files, so the control
 file is \verb{<case>.pst}. Default \code{"aeme"}.}
 
-\item{port}{Integer. TCP port for the PANTHER master. Default \code{4004}.}
+\item{port}{Integer. Preferred TCP port for the PANTHER master. Default
+\code{4004}. This is the starting point of a search, not a fixed binding: at
+launch the run takes this port if it is free and otherwise steps to the
+next free one, so concurrent runs (per lake, per stage) and agents
+orphaned by an aborted run do not collide on it.}
 
 \item{solver_timeout}{Numeric. Maximum seconds to wait for the solver to
 finish before aborting. Default \code{86400} (24 hours). This is a backstop
@@ -139,12 +143,24 @@ ensemble is left for \code{pestpp-ies} to draw), \code{"normal"} (Gaussian about
 the initial values) or \code{"triangular"}. See
 \code{\link{pest_prior_ensemble}}.}
 
-\item{prior_par_ensemble}{Logical, character or \code{NULL}. Controls the
-\code{++ies_parameter_ensemble}. \code{NULL} (default) generates one in R only
-when \code{seed}, \code{prior_cov} or a non-uniform \code{prior_dist} / \code{noise_sd}
-makes it necessary, and otherwise leaves \code{pestpp-ies} to draw its own.
-\code{TRUE}/\code{FALSE} force or suppress generation; a path uses that CSV
-as-is.}
+\item{prior_par_ensemble}{Logical, character, \code{NULL}, or a previous run.
+Controls the \code{++ies_parameter_ensemble}. \code{NULL} (default) generates one
+in R only when \code{seed}, \code{prior_cov} or a non-uniform \code{prior_dist} /
+\code{noise_sd} makes it necessary, and otherwise leaves \code{pestpp-ies} to draw
+its own. \code{TRUE}/\code{FALSE} force or suppress generation; a \strong{file} path
+uses that CSV as-is.
+
+A \strong{finished \code{pestpp-ies} run} - a \code{\link{read_calib}} object, a
+\code{create_pest_control()} object, or its run-directory path - seeds this
+run's prior from that run's posterior ensemble. Parameters shared by
+\code{name_full} take their columns from the source posterior (carrying its
+marginals \emph{and} correlations); parameters new to this run are drawn from
+their own prior. This is the natural way to chain the stages of a staged
+calibration - stage N+1 starts from stage N's posterior rather than from
+a re-widened box of independent bounds. Unlike \code{restart_from} (which
+resumes the \emph{same} problem and requires an unchanged parameter and
+observation set), the parameter set here may grow or shrink between
+stages. \code{restart_from} still takes precedence if both are given.}
 
 \item{seed}{Integer or \code{NULL}. Random seed for the prior parameter and
 observation ensembles, for reproducible runs. Setting it triggers

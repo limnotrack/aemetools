@@ -24,6 +24,13 @@
 #'   `[min, max]` so the indices are comparable with a built-in
 #'   \code{\link{sa_aeme}} run.
 #'
+#' A parameter with `value == min == max` is written with
+#' `partrans = "fixed"`: PEST keeps it in the control file - and hence in the
+#' parameter map, the `pestpp-ies` ensembles and the sensitivity output - but
+#' holds it at `value`. This is how a frozen earlier stage of a staged
+#' calibration is carried through visibly instead of being baked into the
+#' model configuration and dropped from every PEST table.
+#'
 #' @return A dataframe with columns `parnme`, `partrans`, `parchglim`,
 #'   `parval1`, `parlbnd`, `parubnd`, `pargp`, `scale`, `offset`, `dercom`,
 #'   carrying a `map` attribute (a dataframe of `parnme`/`name_full`/`model`).
@@ -33,10 +40,22 @@ pest_param_table <- function(param, transform = TRUE) {
   if (!"name_full" %in% names(param)) {
     param$name_full <- encode_param(param$group, param$name, param$index)
   }
-  if (any(param$min >= param$max)) {
-    bad <- param$name_full[param$min >= param$max]
-    cli::cli_abort("PEST requires {.field min} < {.field max}; violated by
-                   {.val {bad}}.")
+
+  # A parameter with value == min == max is held fixed: PEST keeps it in the
+  # control file (and so in the parameter map, the ensemble CSVs, the
+  # sensitivity output and pest_posterior_params()) but never perturbs it -
+  # `partrans = "fixed"`. This is what carries a frozen earlier stage of a
+  # staged calibration through visibly, rather than baking it into the model
+  # config and dropping it from every PEST table.
+  is_fixed <- !is.na(param$value) & !is.na(param$min) & !is.na(param$max) &
+    param$value == param$min & param$value == param$max
+  is_fixed[is.na(is_fixed)] <- FALSE
+
+  viol <- (param$min >= param$max) & !is_fixed
+  if (any(viol)) {
+    bad <- param$name_full[viol]
+    cli::cli_abort("PEST requires {.field min} < {.field max} for an adjustable
+                   parameter; violated by {.val {bad}}.")
   }
 
   parnme <- sprintf("p%03d", seq_len(nrow(param)))
@@ -51,8 +70,8 @@ pest_param_table <- function(param, transform = TRUE) {
     rep(FALSE, nrow(param))
   }
   log_req[is.na(log_req)] <- FALSE
-  log_ok <- log_req & param$min > 0
-  if (any(log_req & !log_ok)) {
+  log_ok <- log_req & param$min > 0 & !is_fixed
+  if (any(log_req & !log_ok & !is_fixed)) {
     AEME::cli_safe(
       paste0("Log transform dropped for parameters whose lower bound is not ",
              "positive: {.val ", paste(param$name_full[log_req & !log_ok],
@@ -62,17 +81,23 @@ pest_param_table <- function(param, transform = TRUE) {
   }
 
   # PARCHGLIM "factor" limits are undefined for a parameter that is zero or
-  # whose range straddles zero, so use "relative" limits for those.
+  # whose range straddles zero, so use "relative" limits for those - and for
+  # a fixed parameter, whose range is a single point.
   straddles <- param$min <= 0 & param$max >= 0
-  parchglim <- ifelse(log_ok | !straddles, "factor", "relative")
+  parchglim <- ifelse(!is_fixed & (log_ok | !straddles), "factor", "relative")
+
+  # PEST ignores the bounds of a fixed parameter but still parses them; keep
+  # them equal to the value so the row is self-consistent.
+  parlbnd <- ifelse(is_fixed, param$value, param$min)
+  parubnd <- ifelse(is_fixed, param$value, param$max)
 
   tbl <- data.frame(
     parnme    = parnme,
-    partrans  = ifelse(log_ok, "log", "none"),
+    partrans  = ifelse(is_fixed, "fixed", ifelse(log_ok, "log", "none")),
     parchglim = parchglim,
     parval1   = param$value,
-    parlbnd   = param$min,
-    parubnd   = param$max,
+    parlbnd   = parlbnd,
+    parubnd   = parubnd,
     # One PEST parameter group per aemetools group keeps the derivative
     # settings and the group-wise sensitivity output interpretable.
     pargp     = .pest_safe_name(ifelse(is.na(param$group), "misc", param$group)),

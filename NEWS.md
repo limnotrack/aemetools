@@ -20,6 +20,18 @@
 * `score_ensemble()` is added as a documented stub for forthcoming ensemble
   verification scores (coverage, ensemble-mean bias/RMSE, spread-skill ratio,
   CRPS).
+* A frozen parameter (`value == min == max`) in a PEST calibration is now
+  written to the control file as `partrans = "fixed"` instead of being baked
+  into the model configuration and dropped. It stays visible in the parameter
+  map, the `pestpp-ies` ensembles, `pest_param_summary()` and
+  `pest_posterior_params()`. Built-in calibration engines are unchanged.
+* `create_pest_control(prior_par_ensemble = )` also accepts a finished
+  `pestpp-ies` run (a `read_calib()` object, a control, or a run directory).
+  The new run's prior ensemble is seeded from that run's posterior:
+  parameters shared by name carry their posterior marginals and correlations,
+  parameters new to this run are drawn from their prior. This is the intended
+  way to chain the stages of a staged calibration - see
+  `?vignette("staged-calibration")` and `inst/scripts/staged-calibration.R`.
 
 ## Compatibility
 
@@ -30,6 +42,29 @@
   still accept the legacy `depth_from` / `depth_to` layout, collapsing it to
   the interval midpoint - the same value they computed before. A latent
   half-thickness calculation in `run_aeme_param()` (unused) was removed.
+
+## Bug fixes
+
+* PEST++ runs now bind a free TCP port for the PANTHER master instead of
+  always using the configured `port` (default `4004`). Concurrent
+  calibration or sensitivity runs - one per lake, one per stage - all
+  targeted the same port, and agents orphaned by an aborted run kept
+  retrying it; the next master would accept those stale agents, reject them
+  all and stall out. `port` is now the preferred starting point of a
+  search: the run takes it if free and otherwise steps to the next free
+  port.
+* `read_pest_ensemble()` now always returns `realisation` as a character
+  column. PEST++ quotes the realisation labels in some ensemble files and
+  not others, so the column was typed as character for one iteration and
+  integer for another; binding the prior and posterior together
+  (`plot_pest_ensemble()`, `pest_param_summary()`) then aborted with a type
+  mismatch.
+* The PSOCK clusters started by `calib_aeme()`, `sa_aeme()` and
+  `run_aeme_ensemble()` now allow 600 s (was `parallel`'s default 120 s)
+  for a worker to come up, since a worker that activates `renv` on start
+  can spend minutes building the package sandbox before it connects -
+  previously read as "worker failed to connect" and collapsed to a serial
+  fallback. Override with `AEMETOOLS_CLUSTER_SETUP_TIMEOUT`.
 
 # aemetools 0.3.0
 

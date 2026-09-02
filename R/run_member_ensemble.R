@@ -38,7 +38,7 @@
     temp_dirs <- make_temp_dir(model, lake_dir, n = ncore)
     idx_list <- split(seq_len(n), rep(seq_len(ncore), length.out = n))
 
-    cl <- parallel::makeCluster(ncore, outfile = "parallel.log")
+    cl <- aeme_make_cluster(ncore)
     on.exit(parallel::stopCluster(cl), add = TRUE)
     parallel::clusterExport(
       cl, varlist = c("member_params", "idx_list", "aeme", "model",

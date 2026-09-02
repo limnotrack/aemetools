@@ -397,6 +397,26 @@ test_that("read_pest_ensemble flags the base realisation", {
   expect_true("is_base" %in% names(obs))
 })
 
+test_that("realisation is character even when a CSV has all-numeric labels", {
+  # PEST++ quotes the realisation labels in some ensemble files and not
+  # others, so read.csv types the first column as character for one
+  # iteration (it contains "base") and integer for another (it does not).
+  # Binding prior + posterior then aborted on the type mismatch.
+  s <- make_pest_dir()
+  ef <- aemetools:::.pest_ensemble_files(s$d, "aeme", "par")
+  prior_f <- ef$path[ef$iteration == 0]
+  ens <- utils::read.csv(prior_f, check.names = FALSE, stringsAsFactors = FALSE)
+  ens[[1]] <- seq_len(nrow(ens)) - 1L          # 0, 1, 2, ... : reads as integer
+  utils::write.csv(ens, prior_f, row.names = FALSE, quote = FALSE)
+
+  prior <- read_pest_ensemble(s$ctrl, iteration = 0)
+  post <- read_pest_ensemble(s$ctrl)
+  expect_type(prior$realisation, "character")
+  expect_type(post$realisation, "character")
+  expect_s3_class(dplyr::bind_rows(prior, post), "data.frame")
+  expect_no_error(ggplot2::ggplot_build(plot_pest_ensemble(s$ctrl, s$param)))
+})
+
 test_that("pest_param_summary reports the base realisation's posterior value", {
   s <- make_pest_dir()
   sm <- pest_param_summary(s$ctrl, s$param)
