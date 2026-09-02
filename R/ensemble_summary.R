@@ -159,7 +159,8 @@ ensemble_summary <- function(aeme, model, vars_sim = "HYD_temp", depths = NULL,
                    obs$lake$Date >= period[1] & obs$lake$Date <= period[2], ,
                  drop = FALSE]
   if (!nrow(lk)) return(NULL)
-  lk$depth_mid <- (lk$depth_from + lk$depth_to) / 2
+  lk <- normalise_lake_obs(lk)
+  lk$depth_mid <- lk$depth
 
   out <- lapply(vars_sim, function(v) {
     s <- lk[lk$var_aeme == v, , drop = FALSE]

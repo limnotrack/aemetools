@@ -1248,7 +1248,6 @@ test_that("observations the model cannot simulate are excluded", {
   # Every observation kept must be one the model could produce, so the
   # forward run's per-observation match cannot come up short.
   obs <- AEME::observations(aeme)$lake
-  obs$depth <- (obs$depth_to + obs$depth_from) / 2
   o <- obs[obs$var_aeme == "HYD_temp" & !is.na(obs$value), ]
   inside <- sum(o$Date >= as.Date(tme$start) & o$Date <= as.Date(tme$stop))
   expect_equal(nrow(ot), inside)

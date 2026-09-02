@@ -360,10 +360,10 @@ print.aeme_calib_periods <- function(x, ...) {
                    value = numeric(), depth = numeric(),
                    stringsAsFactors = FALSE)
   if (have_lake) {
-    lk <- obs$lake
-    # Same midpoint pest_obs_table() uses, so "a profile" means the same
-    # thing here as it does downstream.
-    lk$depth <- (lk$depth_from + lk$depth_to) / 2
+    # Same `depth` pest_obs_table() uses (midpoint of any legacy
+    # depth_from / depth_to pair), so "a profile" means the same thing here
+    # as it does downstream.
+    lk <- normalise_lake_obs(obs$lake)
     df <- rbind(df, lk[, cols, drop = FALSE])
   }
   if (have_lvl) {

@@ -12,9 +12,8 @@ va_aeme <- function(obs_dates = seq(as.Date("2020-01-01"), by = "month",
                                     length.out = 12),
                     vars = "HYD_temp") {
   aeme <- readRDS(system.file("extdata/aeme.rds", package = "AEME"))
-  lake <- expand.grid(Date = obs_dates, var_aeme = vars, depth_from = 1:2,
+  lake <- expand.grid(Date = obs_dates, var_aeme = vars, depth = 1:2,
                       stringsAsFactors = FALSE)
-  lake$depth_to <- lake$depth_from
   lake$value <- seq_len(nrow(lake))
   obs <- AEME::observations(aeme)
   obs$lake <- lake
@@ -41,7 +40,7 @@ va_fake_run <- function(err = c(calib = 1, valid = 1)) {
     d <- obs[keep, , drop = FALSE]
     # Which period this is, inferred from the window the caller set.
     e <- if (as.Date(tme$start) == min(obs$Date)) err[["calib"]] else err[["valid"]]
-    data.frame(var_aeme = d$var_aeme, Date = d$Date, depth = d$depth_from,
+    data.frame(var_aeme = d$var_aeme, Date = d$Date, depth = d$depth,
                obs = d$value, model = d$value + e, stringsAsFactors = FALSE)
   }
 }
