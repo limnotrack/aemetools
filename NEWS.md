@@ -2,6 +2,24 @@
 
 ## New features
 
+* Three helpers for assembling a `param` dataframe ahead of a (staged)
+  calibration, factored out of the `staged-calibration` script:
+  * `set_param_log()` populates the logical `log` column that
+    `pest_param_table()` and `pest_prior_cov()` read, flagging any strictly
+    positive parameter whose `[min, max]` range spans at least `ratio`
+    (default one order of magnitude).
+  * `freeze_param()` sets `min == max == value` for named parameters (or
+    all of them). Paired with the `partrans = "fixed"` support, this is how
+    a parameter is held at a value while staying visible in the PEST
+    parameter map, ensembles and sensitivity output. `carry_param()` is the
+    common case: it takes a finished `read_calib()` run (or a
+    `get_best_params()` frame), keeps/drops by name, and freezes the rest -
+    ready to `rbind()` onto the next stage's adjustable set.
+  * `check_param_targets()` compares each `param$name` against the fields
+    present in `AEME::configuration(aeme)[[model]]` after a build and
+    returns (or errors on) the rows that match nothing, catching a typo or
+    an inactive module before it becomes a silent no-op or a forward-run
+    error.
 * `pest_posterior_params()` extracts the posterior parameter ensemble from a
   finished `pestpp-ies` run as a list of runnable `param` dataframes (one per
   realisation), with frozen parameters carried through unchanged.
