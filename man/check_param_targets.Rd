@@ -40,7 +40,7 @@ phytoplankton and zooplankton parameter tables - and returns the rows
 that match nothing. Run it after \code{AEME::build_aeme()} and before the
 first \code{calib_aeme()} / \code{sa_aeme()} call.
 
-The comparison is by bare name (any \code{block/} or \code{phyto/} qualifier is
+The comparison is by bare name (any \verb{block/} or \verb{phyto/} qualifier is
 stripped first), so it catches typos and inactive modules but not a
 parameter placed in the wrong namelist block.
 }

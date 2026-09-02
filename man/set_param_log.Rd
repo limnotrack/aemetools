@@ -10,7 +10,7 @@ set_param_log(param, ratio = 10, overwrite = TRUE)
 \item{param}{dataframe; as passed to \code{\link{calib_aeme}}, requiring
 at least the \code{min} and \code{max} columns.}
 
-\item{ratio}{Numeric \code{>= 1}. Minimum \code{max / min} for a parameter to be
+\item{ratio}{Numeric \verb{>= 1}. Minimum \code{max / min} for a parameter to be
 flagged. \code{Inf} flags nothing. Default \code{10}.}
 
 \item{overwrite}{Logical. Replace an existing \code{log} column outright?
