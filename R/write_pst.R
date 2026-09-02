@@ -172,7 +172,7 @@ pest_obs_table <- function(aeme, vars_sim, weights, obj_mode = "residual",
                    var_aeme = character(), value = numeric(),
                    stringsAsFactors = FALSE)
   if (have_lake) {
-    obs$lake$depth <- (obs$lake$depth_to + obs$lake$depth_from) / 2
+    obs$lake <- normalise_lake_obs(obs$lake)
     df <- obs$lake |>
       dplyr::filter(var_aeme %in% grid_vars, !is.na(value)) |>
       dplyr::select(Date, depth, var_aeme, value)

@@ -21,6 +21,16 @@
   verification scores (coverage, ensemble-mean bias/RMSE, spread-skill ratio,
   CRPS).
 
+## Compatibility
+
+* Track the AEME (>= 0.4.0) lake-observations schema, which replaces the
+  `depth_from` / `depth_to` column pair with a single `depth` column. All
+  consumers of `observations(aeme)$lake` (`pest_obs_table()`, `run_and_fit()`,
+  `get_calib_periods()`, `ensemble_summary()`) now read `depth` directly and
+  still accept the legacy `depth_from` / `depth_to` layout, collapsing it to
+  the interval midpoint - the same value they computed before. A latent
+  half-thickness calculation in `run_aeme_param()` (unused) was removed.
+
 # aemetools 0.3.0
 
 This is a large development release that overhauls the calibration and

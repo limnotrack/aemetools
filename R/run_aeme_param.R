@@ -59,9 +59,7 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   # Load AEME data
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
   inp <- AEME::input(aeme)
-  obs <- AEME::observations(aeme)
-  obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
-  
+
   # Update parameter values ----
   AEME::input_model_parameters(aeme = aeme, model = model, param = param,
                                path = path)

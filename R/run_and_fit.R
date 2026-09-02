@@ -109,7 +109,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   hyps <- inp$hypsograph
   obs <- AEME::observations(aeme)
   if (!is.null(obs$lake)) {
-    obs$lake$depth <- (obs$lake$depth_to + obs$lake$depth_from) / 2
+    obs$lake <- normalise_lake_obs(obs$lake)
   }
 
   if (is.null(FUN_list)) {
@@ -402,9 +402,9 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     dplyr::rename(model = LKE_lvlwtr) |>
     dplyr::mutate(
       model = dplyr::case_when(is.na(model) ~ 0, .default = model),
-      LID = NA, var_aeme = "DEPTH", depth = NA, depth_from = NA,
+      LID = NA, var_aeme = "DEPTH", depth = NA,
       diff = model - value) |>
     dplyr::filter(!is.na(diff), Date >= tme$start, Date <= tme$stop) |>
-    dplyr::select(LID, Date, value, var_aeme, depth, depth_from, model, diff) |>
+    dplyr::select(LID, Date, value, var_aeme, depth, model, diff) |>
     dplyr::rename(obs = value)
 }
