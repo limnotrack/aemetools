@@ -264,7 +264,7 @@ setup_real_dir <- function(env = parent.frame()) {
   ctrl <- create_pest_control(pest_dir = d, case = "aeme", ncore = 1,
                               ies_num_reals = 6, noptmax = 1)
   param <- data.frame(
-    model = "glm_aed", file = "glm3.nml", group = NA_character_,
+    model = "glm_aed", file = "glm4.nml", group = NA_character_,
     name = c("light/Kw", "mixing/coef_mix_conv", "mixing/coef_mix_hyp"),
     index = NA_integer_, value = 0.5, min = 0.1, max = 0.8,
     stringsAsFactors = FALSE)
@@ -272,7 +272,7 @@ setup_real_dir <- function(env = parent.frame()) {
 
   utils::write.csv(data.frame(parnme = c("p001", "p002", "p003"),
                               name_full = param$name_full,
-                              model = "glm_aed", file = "glm3.nml"),
+                              model = "glm_aed", file = "glm4.nml"),
                    file.path(d, "aeme_par_map.csv"), row.names = FALSE)
   writeLines(real_ens_0, file.path(d, "aeme.0.par.csv"))
   writeLines(real_ens_1, file.path(d, "aeme.1.par.csv"))
