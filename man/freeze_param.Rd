@@ -37,7 +37,7 @@ common case of freezing the winners of a finished run.
 }
 \examples{
 param <- data.frame(
-  model = "glm_aed", file = "glm3.nml", group = "light",
+  model = "glm_aed", file = "glm4.nml", group = "light",
   name = c("Kw", "ce"), index = NA_real_,
   value = c(0.5, 0.0013), min = c(0.1, 5e-4), max = c(1.5, 5e-3)
 )

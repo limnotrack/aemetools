@@ -37,7 +37,7 @@ the column is meaningful on its own.
 }
 \examples{
 param <- data.frame(
-  model = "glm_aed", file = "glm3.nml", group = "light",
+  model = "glm_aed", file = "glm4.nml", group = "light",
   name = c("Kw", "sed_temp_mean"), index = NA_real_,
   value = c(0.5, 8), min = c(0.05, 4), max = c(5, 12)
 )

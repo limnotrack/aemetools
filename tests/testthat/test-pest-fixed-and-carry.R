@@ -13,7 +13,7 @@ nf_cols <- function(p) {
 frozen_param <- function() {
   rbind(
     pest_param(),                          # Kw[1], ce  (both adjustable)
-    data.frame(model = "glm_aed", file = "glm3.nml", group = "mixing",
+    data.frame(model = "glm_aed", file = "glm4.nml", group = "mixing",
                name = "coef_mix_conv", index = NA_integer_,
                value = 0.2, min = 0.2, max = 0.2, log = FALSE,
                stringsAsFactors = FALSE))
@@ -80,7 +80,7 @@ test_that("pest_localizer() ignores a fixed parameter instead of aborting", {
 # different parnme than in the source), then the two the source calibrated.
 carry_dest_param <- function() {
   rbind(
-    data.frame(model = "glm_aed", file = "glm3.nml", group = "mixing",
+    data.frame(model = "glm_aed", file = "glm4.nml", group = "mixing",
                name = "coef_mix_conv", index = NA_integer_,
                value = 0.2, min = 0.1, max = 0.3, log = FALSE,
                stringsAsFactors = FALSE),
