@@ -5,7 +5,7 @@
 
 demo_param <- function() {
   data.frame(
-    model = "glm_aed", file = "glm3.nml",
+    model = "glm_aed", file = "glm4.nml",
     group = c("light", "light", "sediment"),
     name = c("Kw", "ce", "sed_temp_mean"),
     index = c(1L, NA_integer_, NA_integer_),
@@ -112,7 +112,7 @@ test_that(".config_keys() walks lists and table leaves", {
 test_that("check_param_targets() finds names absent from the built model", {
   aeme <- get_cached_aeme_run("glm_aed", use_bgc = FALSE, run = FALSE)$aeme
 
-  good <- data.frame(model = "glm_aed", file = "glm3.nml", group = NA,
+  good <- data.frame(model = "glm_aed", file = "glm4.nml", group = NA,
                      name = "Kw", index = NA, value = 0.5, min = 0.1, max = 1,
                      stringsAsFactors = FALSE)
   bad <- good

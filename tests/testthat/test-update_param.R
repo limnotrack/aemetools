@@ -6,7 +6,7 @@ make_fake_calib <- function(sim_id = "LID1_glmaed_C_001", na_value = 999) {
   param_meta <- data.frame(
     sim_id = sim_id,
     model = "glm_aed",
-    file = c("glm3.nml", "glm3.nml"),
+    file = c("glm4.nml", "glm4.nml"),
     name = c("Kw", "ce"),
     value = c(0.5, 0.0013),
     min = c(0.1, 0.0005),
@@ -52,7 +52,7 @@ test_that("update_param works with a caller-supplied param dataframe", {
 
   param <- data.frame(
     model = "glm_aed",
-    file = c("glm3.nml", "glm3.nml"),
+    file = c("glm4.nml", "glm4.nml"),
     name = c("Kw", "ce"),
     value = c(0.5, 0.0013),
     min = c(0.1, 0.0005),
