@@ -124,9 +124,10 @@ rototoa_run <- function(model = "glm_aed", vars_sim = NULL, years = 1,
   list(aeme = cached$aeme, path = new_path, vars_sim = cached$vars_sim)
 }
 
-#' KGE for every variable in `vars`, as calib_aeme()/validate_aeme() want it.
+#' KGE loss for every variable in `vars`, as calib_aeme()/validate_aeme() want
+#' it (minimise-oriented: -1 * KGE).
 rototoa_fun_list <- function(vars) {
-  stats::setNames(lapply(vars, function(v) kge), vars)
+  stats::setNames(lapply(vars, function(v) kge_loss), vars)
 }
 
 #' Trim an object's observations to its simulation window.

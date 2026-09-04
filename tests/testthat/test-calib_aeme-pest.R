@@ -887,7 +887,7 @@ test_that("calib_aeme dispatches to PEST++ and imports the results", {
   
   sim_id <- calib_aeme(aeme = aeme, param = param,
                        model = "glm_aed", vars_sim = "HYD_temp",
-                       FUN_list = list(HYD_temp = kge),
+                       FUN_list = list(HYD_temp = kge_loss),
                        weights = set_weights("HYD_temp"), ctrl = ctrl)
 
   expect_type(sim_id, "character")
@@ -1008,7 +1008,7 @@ test_that("a localizer splits GLM-AED parameters between variables", {
 
   sim_id <- calib_aeme(aeme = aeme, path = path, param = param,
                        model = "glm_aed", vars_sim = vars_sim,
-                       FUN_list = list(HYD_temp = kge, CHM_oxy = kge),
+                       FUN_list = list(HYD_temp = kge_loss, CHM_oxy = kge_loss),
                        weights = set_weights(vars_sim), ctrl = ctrl)
 
   expect_type(sim_id, "character")
@@ -1187,7 +1187,7 @@ test_that("calib_aeme completes a serial PEST++ run end to end", {
 
   sim_id <- calib_aeme(aeme = aeme, path = path, param = param,
                        model = "gotm_wet", vars_sim = "HYD_temp",
-                       FUN_list = list(HYD_temp = kge),
+                       FUN_list = list(HYD_temp = kge_loss),
                        weights = set_weights("HYD_temp"), ctrl = ctrl)
 
   expect_type(sim_id, "character")
@@ -1230,7 +1230,7 @@ test_that("a frozen parameter is held fixed, not dropped, in a PEST run", {
 
   sim_id <- calib_aeme(aeme = aeme, path = path, param = param,
                        model = "gotm_wet", vars_sim = "HYD_temp",
-                       FUN_list = list(HYD_temp = kge),
+                       FUN_list = list(HYD_temp = kge_loss),
                        weights = set_weights("HYD_temp"), ctrl = ctrl)
   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
   run_dir <- calib$calibration_metadata$pest_dir[1]

@@ -305,7 +305,7 @@ test_that("calib_aeme calibrates Rototoa on HYD_temp with pestpp-ies", {
 
   sim_id <- calib_aeme(aeme = aeme, path = path, param = param,
                        model = "glm_aed", vars_sim = "HYD_temp",
-                       FUN_list = list(HYD_temp = kge),
+                       FUN_list = list(HYD_temp = kge_loss),
                        weights = set_weights("HYD_temp"), ctrl = ctrl)
 
   expect_type(sim_id, "character")

@@ -77,9 +77,10 @@ or to conditions that do not recur, which is exactly what a \code{pestpp-ies}
 run driven to a low phi can produce. \code{degradation} reports that gap.
 
 Fit values come from \code{FUN_list}, so they carry the same orientation as in
-calibration - the package's fitness functions are all written so that
-\emph{lower is better} (see \code{\link{nse}} and friends, which return the
-negated statistic). A positive \code{degradation} therefore always means the
+calibration - objectives are written so that \emph{lower is better} (see
+\code{\link{nse_loss}} and friends, which return the negated statistic,
+and \code{\link{mae}}/\code{\link{rmse}}/\code{\link{pbias}}, which are
+already \code{0}-is-best). A positive \code{degradation} therefore always means the
 validation period fits worse.
 }
 \examples{
@@ -94,7 +95,7 @@ best <- update_param(calib = calib, param = param)
 
 v <- validate_aeme(aeme = aeme, param = best, periods = p,
                    model = "glm_aed", vars_sim = "HYD_temp",
-                   FUN_list = list(HYD_temp = kge))
+                   FUN_list = list(HYD_temp = kge_loss))
 v$degradation
 }
 }

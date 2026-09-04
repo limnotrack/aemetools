@@ -51,6 +51,18 @@
   way to chain the stages of a staged calibration - see
   `?vignette("staged-calibration")` and `inst/scripts/staged-calibration.R`.
 
+## Breaking changes
+
+* `nse()`, `kge()`, `kge_prime()` and `log_kge()` now return the
+  **conventional** statistic, where `1` is a perfect fit and higher is
+  better - previously they returned `-1 *` that value. Calibration
+  (`calib_aeme()`, `run_and_fit()`) minimises `FUN_list` entries, so pass the
+  new `nse_loss()`, `kge_loss()`, `kge_prime_loss()` or `log_kge_loss()`
+  companions (each `-1 *` the corresponding statistic) as calibration
+  objectives instead of the bare metric. `mae()`, `rmse()` and `pbias()` are
+  unchanged - they are already `0`-is-best and minimise-oriented, so they
+  have no `_loss` companion.
+
 ## Compatibility
 
 * Track the AEME (>= 0.4.0) lake-observations schema, which replaces the

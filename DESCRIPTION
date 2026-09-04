@@ -1,6 +1,6 @@
 Package: aemetools
 Title: Tools to expand the Aquatic Ecosystem Model Ensemble Package
-Version: 0.3.0
+Version: 0.3.0.9000
 Authors@R: c(
     person("Tadhg", "Moore", , "tadhg@limnotrack.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3834-8868")),
