@@ -78,9 +78,10 @@ set_calib_period <- function(aeme, periods, period = NULL, spin_up = NULL) {
 #' run driven to a low phi can produce. `degradation` reports that gap.
 #'
 #' Fit values come from `FUN_list`, so they carry the same orientation as in
-#' calibration - the package's fitness functions are all written so that
-#' *lower is better* (see \code{\link{nse}} and friends, which return the
-#' negated statistic). A positive `degradation` therefore always means the
+#' calibration - objectives are written so that *lower is better* (see
+#' \code{\link{nse_loss}} and friends, which return the negated statistic,
+#' and \code{\link{mae}}/\code{\link{rmse}}/\code{\link{pbias}}, which are
+#' already `0`-is-best). A positive `degradation` therefore always means the
 #' validation period fits worse.
 #'
 #' @inheritParams run_and_fit
@@ -117,7 +118,7 @@ set_calib_period <- function(aeme, periods, period = NULL, spin_up = NULL) {
 #'
 #' v <- validate_aeme(aeme = aeme, param = best, periods = p,
 #'                    model = "glm_aed", vars_sim = "HYD_temp",
-#'                    FUN_list = list(HYD_temp = kge))
+#'                    FUN_list = list(HYD_temp = kge_loss))
 #' v$degradation
 #' }
 validate_aeme <- function(aeme, param, periods, model, vars_sim, path,

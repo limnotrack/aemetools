@@ -12,14 +12,12 @@ kge(df)
 calculating.}
 }
 \value{
-numeric; \code{-1 * KGE}.
+numeric; KGE, with a maximum of \code{1} (perfect fit).
 }
 \description{
 Calculates the Kling-Gupta Efficiency (Gupta et al. 2009) between
-observed and modelled values, negated so that lower values indicate a
-better fit - the convention expected of \code{FUN_list} entries by
-\code{\link{calib_aeme}} and \code{\link{run_and_fit}}, which minimise
-the returned value.
+observed and modelled values, in its conventional orientation where
+\strong{higher is better} (\code{1} = perfect fit).
 }
 \details{
 KGE decomposes fit into three components instead of conflating them the
@@ -31,9 +29,17 @@ maximum of \code{1} (perfect fit). Being dimensionless like NSE, it is also a
 reasonable choice when combining fit values across variables with
 different units or magnitudes, and is generally preferred over NSE in
 current hydrological/environmental modelling practice.
+
+\code{calib_aeme()} and \code{run_and_fit()} \strong{minimise} the values returned by
+\code{FUN_list} entries - use \code{\link{kge_loss}} (which returns
+\code{-1 * kge(df)}) as a calibration objective.
 }
 \examples{
 df <- data.frame(obs = c(1, 2, 3, 4), model = c(1.1, 2.1, 2.9, 4.2))
 kge(df)
 
+}
+\seealso{
+\code{\link{kge_loss}} for the minimise-oriented variant used in
+\code{FUN_list}.
 }

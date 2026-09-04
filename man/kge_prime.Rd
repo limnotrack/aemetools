@@ -12,17 +12,27 @@ kge_prime(df)
 calculating.}
 }
 \value{
-numeric; \verb{-1 * KGE'}.
+numeric; KGE', with a maximum of \code{1} (perfect fit).
 }
 \description{
 As \code{\link{kge}}, but replaces the raw variability ratio with a
 coefficient-of-variation ratio (Kling et al. 2012),
 \eqn{\gamma = (sd(sim) / mean(sim)) / (sd(obs) / mean(obs))}, which
 decouples the variability term from the bias term more cleanly. This is
-generally the recommended default over the original KGE.
+generally the recommended default over the original KGE. Returned in its
+conventional orientation where \strong{higher is better} (\code{1} = perfect fit).
+}
+\details{
+\code{calib_aeme()} and \code{run_and_fit()} \strong{minimise} the values returned by
+\code{FUN_list} entries - use \code{\link{kge_prime_loss}} (which returns
+\code{-1 * kge_prime(df)}) as a calibration objective.
 }
 \examples{
 df <- data.frame(obs = c(1, 2, 3, 4), model = c(1.1, 2.1, 2.9, 4.2))
 kge_prime(df)
 
+}
+\seealso{
+\code{\link{kge_prime_loss}} for the minimise-oriented variant
+used in \code{FUN_list}.
 }
