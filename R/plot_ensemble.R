@@ -1,166 +1,166 @@
 #' Plot AEME ensemble output
 #'
+#' @description
+#' Plots an ensemble produced by [run_aeme_ensemble()] as a quantile ribbon
+#' (`type = "ribbon"`) or as one line per member (`type = "line"`), with the
+#' matching lake observations overlaid.
+#'
+#' `aeme` may be either an `aeme` object carrying `AEME::output()$ens_*` or an
+#' [ensemble_summary()] result. Passing a summary skips the per-member
+#' extraction, so building one summary and plotting several variables, depths
+#' or intervals from it is cheap.
+#'
 #' @inheritParams AEME::plot_output
 #' @inheritParams AEME::get_var
-#' @param conf_int numeric; confidence interval to plot when `type = "ribbon"`.
-#'  Default is 0.95.
-#' @param type character; type of plot to create. Can be `"ribbon"`, where it
-#' plots a geom_ribbon to represent the confidence intervals specified in
-#' `conf_int` or `"line`, where it plots all the ensemble members as lines.
-#'  Default is "ribbon".
+#' @param aeme an `aeme` object with ensemble output, or an
+#'   [ensemble_summary()].
+#' @param model character; model(s) to plot. Optional when `aeme` is an
+#'   [ensemble_summary()].
+#' @param conf_int numeric; central interval for the ribbon. Default 0.95.
+#'   When `aeme` is a summary the interval's quantiles must have been included
+#'   in its `probs`.
+#' @param type character; `"ribbon"` (default) or `"line"`.
 #'
 #' @return ggplot object
 #' @export
 #'
-#' @importFrom ggplot2 ggplot geom_line geom_ribbon scale_x_date scale_y_continuous
-#' @importFrom dplyr filter mutate bind_rows group_by summarise
-#' @importFrom withr local_locale local_timezone
+#' @importFrom ggplot2 ggplot geom_line geom_ribbon geom_point labs ylab theme_bw aes
 #' @importFrom AEME observations input
-#'
-
+#' @seealso [ensemble_summary()], [run_aeme_ensemble()]
 plot_ensemble <- function(aeme, model, var_sim = "HYD_temp", depth = NULL,
                           conf_int = 0.95, type = "ribbon",
                           remove_spin_up = TRUE, add_obs = TRUE,
                           var_lims = NULL) {
 
-  # Set timezone temporarily to UTC
-  withr::local_locale(c("LC_TIME" = "C"))
-  withr::local_timezone("UTC")
+  if (!is.character(var_sim)) {
+    cli::cli_abort("{.arg var_sim} must be a character vector")
+  }
+  type <- rlang::arg_match(type, c("ribbon", "line"))
 
-  # Check if aeme is a aeme class
-  if (!inherits(aeme, "Aeme")) stop("aeme must be an Aeme class")
-
-  # Check if model is a character vector
-  if (!is.character(model)) stop("model must be a character vector")
-
-  # Check if model length is 0
-  if (length(model) == 0) stop("model must be a character vector of length >0")
-
-  # Check if var_sim is a character vector
-  if (!is.character(var_sim)) stop("var_sim must be a character vector")
-
-  # Load data from aeme
-  obs <- AEME::observations(aeme)
-  inp <- AEME::input(aeme)
-  tme <- AEME::time(aeme)
-
-  if (!is.null(obs$level)) {
-    obs_level <- obs$level
+  if (inherits(aeme, "aeme_ensemble_summary")) {
+    return(.plot_ensemble_summary(
+      aeme, model = if (missing(model)) NULL else model, var_sim = var_sim,
+      depth = depth, conf_int = conf_int, type = type, add_obs = add_obs))
   }
 
-  outp <- AEME::output(aeme)
+  # aeme object: extract once into a summary, then render the same way.
+  aeme <- AEME::check_aeme(aeme)
+  model <- AEME::check_model(model)
+  var_sim <- AEME::check_aeme_vars(var_sim)
 
-  ens_lab <- paste0("ens_", sprintf("%03d", 1))
+  probs <- sort(unique(c((1 - conf_int) / 2, 0.5, 1 - (1 - conf_int) / 2)))
+  s <- ensemble_summary(aeme = aeme, model = model, vars_sim = var_sim,
+                        depths = depth, probs = probs,
+                        remove_spin_up = remove_spin_up,
+                        add_obs = add_obs, keep_members = TRUE)
+  .plot_ensemble_summary(s, model = model, var_sim = var_sim, depth = depth,
+                         conf_int = conf_int, type = type, add_obs = add_obs)
+}
 
-  # Check if var_sim is in output
-  chk <- sapply(model, \(m){
-    var_sim %in% names(outp[[ens_lab]][[m]])
-  })
-  if (any(!chk)) {
-    if (all(!chk)) {
-      stop(paste0("Variable '", var_sim, "' not in output for model(s) ",
-                  paste0(model, collapse = ", ")))
-    }
-    warning(paste0("Variable '", var_sim, "' not in output for model(s) ",
-                   paste0(model[!chk], collapse = ", ")))
-    model <- model[chk]
+#' Render an [ensemble_summary()] to a ggplot. Shared by both `plot_ensemble()`
+#' entry points.
+#' @noRd
+.plot_ensemble_summary <- function(x, model = NULL, var_sim = "HYD_temp",
+                                   depth = NULL, conf_int = 0.95,
+                                   type = "ribbon", add_obs = TRUE) {
+
+  var_sim <- var_sim[[1]]
+  st <- x$stats[x$stats$var_sim == var_sim, , drop = FALSE]
+  if (!nrow(st)) {
+    cli::cli_abort(c(
+      "{.val {var_sim}} is not in this summary.",
+      "i" = "It has: {.val {attr(x, 'vars_sim')}}."))
   }
 
-  # Date lims
-  # Find date range and have output in Date format
-  this.list <- sapply(model, \(m){
-    "[["(outp[[ens_lab]][[m]], "Date")
-  })
-  xlim <- as.Date(range(this.list, na.rm = TRUE))
-  if (remove_spin_up) {
-    xlim <- c(as.Date(tme$start), as.Date(tme$stop))
+  if (!is.null(model)) {
+    disp <- tryCatch(AEME::toggle_models(model, to = "display"),
+                     error = function(e) model)
+    keep <- st$Model %in% c(model, disp)
+    if (any(keep)) st <- st[keep, , drop = FALSE]
   }
 
-  # Filter observations by variable and Date
-  if (!is.null(obs$lake)) {
-    obs_lake <- obs$lake |>
-      dplyr::filter(var_aeme == var_sim & Date >= xlim[1] & Date <= xlim[2])
-  } else {
-    obs_lake <- NULL
+  # Depth selection: snap the request to the nearest summarised depth.
+  pick <- NULL
+  has_dep <- any(!is.na(st$depth))
+  if (has_dep && !is.null(depth)) {
+    ud <- sort(unique(st$depth[!is.na(st$depth)]))
+    pick <- ud[which.min(abs(ud - depth))]
+    st <- st[!is.na(st$depth) & st$depth == pick, , drop = FALSE]
   }
 
-  # colour lims
-  if (is.null(var_lims)) {
-    this.list <- sapply(1:outp$n_members, \(i) {
-      ens_lab <- paste0("ens_", sprintf("%03d", i))
-      sapply(model, \(m){
-        "[["(outp[[ens_lab]][[m]], var_sim)
-      })
-    })
-    vect <- unlist(this.list)
-    if (add_obs) {
-      var_lims <- range(c(vect, obs_lake[["value"]]), na.rm = TRUE)
-    } else {
-      var_lims <- range(vect, na.rm = TRUE)
-    }
-  }
-
-  df <- lapply(1:outp$n_members, \(i) {
-    ens_lab <- paste0("ens_", sprintf("%03d", i))
-    AEME::get_var(aeme = aeme, model = model, var_sim = var_sim, ens_n = i,
-                   return_df = TRUE, remove_spin_up = remove_spin_up,
-                   cumulative = FALSE, depth = depth) |>
-      dplyr::mutate(ens = i)
-  }) |>
-    dplyr::bind_rows()
-
-  # Align observations to modelled depths because observations are relative to
-  # the lake surface while modelled depths are relative to the lake bottom
-  obs <- AEME::align_depth_data(aeme = aeme, model = model, ens_n = 1,
-                                var_sim = var_sim)
-
-  # Extract y labels
-  utils::data("key_naming", package = "AEME", envir = environment())
-  var_df <- key_naming |>
-    dplyr::filter(name == var_sim)
-
-  y_lab <- eval(parse(text = var_df$name_parse[1]))
-
-  if (!is.null(depth)) {
-    obs_lake <- obs$lake |>
-      dplyr::mutate(depth_mid = (depth_from + depth_to) / 2) |>
-      dplyr::filter(depth_mid >= (depth - 0.5) &
-                      depth_mid <= (depth + 0.5) & var_aeme == var_sim &
-                      Date >= xlim[1] & Date <= xlim[2])
-  }
+  y_lab <- .ens_ylab(var_sim)
 
   if (type == "ribbon") {
-    df2 <- df |>
-      dplyr::group_by(Date, Model, var_sim) |>
-      dplyr::summarise(mn = mean(value, na.rm = TRUE),
-                       med = median(value, na.rm = TRUE),
-                       lower = quantile(value, (1 - conf_int) / 2,
-                                        na.rm = TRUE),
-                       upper = quantile(value, 1 - (1 - conf_int) / 2,
-                                        na.rm = TRUE),
-                       n = dplyr::n(),
-                       .groups = "drop")
-
-    p <- ggplot2::ggplot(df2) +
-      ggplot2::geom_ribbon(ggplot2::aes(x = Date, ymin = lower, ymax = upper,
-                                        fill = Model), alpha = 0.2) +
-      ggplot2::geom_line(ggplot2::aes(x = Date, y = med, color = Model)) +
-      ggplot2::ylab(y_lab) +
-      ggplot2::theme_bw()
-  } else if (type == "line") {
-    p <- ggplot2::ggplot(df) +
-      ggplot2::geom_line(ggplot2::aes(x = Date, y = value, color = Model,
-                                      group = ens), alpha = 0.8) +
-      ggplot2::ylab(y_lab) +
-      ggplot2::theme_bw()
+    lo <- .ens_q_name((1 - conf_int) / 2)
+    hi <- .ens_q_name(1 - (1 - conf_int) / 2)
+    mid <- .ens_q_name(0.5)
+    miss <- setdiff(c(lo, hi, mid), names(st))
+    if (length(miss)) {
+      cli::cli_abort(c(
+        "The {.val {conf_int}} interval needs columns {.val {miss}}, which
+         this summary does not carry.",
+        "i" = "It has quantiles at {.val {attr(x, 'probs') * 100}} %.",
+        "i" = "Rebuild {.fn ensemble_summary} with a matching {.arg probs}."))
+    }
+    st$.lower <- st[[lo]]
+    st$.upper <- st[[hi]]
+    st$.mid <- st[[mid]]
+    p <- ggplot2::ggplot(st) +
+      ggplot2::geom_ribbon(ggplot2::aes(x = .data$Date, ymin = .data$.lower,
+                                        ymax = .data$.upper, fill = .data$Model),
+                           alpha = 0.2) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$Date, y = .data$.mid,
+                                      color = .data$Model)) +
+      ggplot2::ylab(y_lab) + ggplot2::theme_bw()
+  } else {
+    if (is.null(x$members)) {
+      cli::cli_abort(c(
+        "{.code type = \"line\"} needs the per-member frame.",
+        "i" = "Rebuild {.fn ensemble_summary} with {.code keep_members = TRUE}."))
+    }
+    mem <- x$members[x$members$var_sim == var_sim, , drop = FALSE]
+    if (!is.null(model)) {
+      disp <- tryCatch(AEME::toggle_models(model, to = "display"),
+                       error = function(e) model)
+      keep <- mem$Model %in% c(model, disp)
+      if (any(keep)) mem <- mem[keep, , drop = FALSE]
+    }
+    if (!is.null(pick)) {
+      mem <- mem[!is.na(mem$depth) & mem$depth == pick, , drop = FALSE]
+    }
+    p <- ggplot2::ggplot(mem) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$Date, y = .data$value,
+                                      color = .data$Model, group = .data$ens),
+                         alpha = 0.8) +
+      ggplot2::ylab(y_lab) + ggplot2::theme_bw()
   }
 
-  if (add_obs) {
-    p <- p +
-      ggplot2::geom_point(data = obs_lake, ggplot2::aes(x = Date, y = value,
-                                                      fill = "Obs")) +
-      ggplot2::labs(fill = "")
+  if (add_obs && !is.null(x$obs)) {
+    ob <- x$obs[x$obs$var_sim == var_sim, , drop = FALSE]
+    if (has_dep && !is.null(pick) && any(!is.na(ob$depth))) {
+      ob <- ob[!is.na(ob$depth) & ob$depth == pick, , drop = FALSE]
+    }
+    if (nrow(ob)) {
+      p <- p +
+        ggplot2::geom_point(data = ob,
+                            ggplot2::aes(x = .data$Date, y = .data$value,
+                                         fill = "Obs")) +
+        ggplot2::labs(fill = "")
+    }
   }
 
-  return(p)
+  p
+}
+
+#' Parsed y-axis label for a variable, from AEME::key_naming.
+#' @noRd
+.ens_ylab <- function(var_sim) {
+  kn <- AEME::key_naming
+  row <- kn[kn$var_aeme == var_sim, , drop = FALSE]
+  if (!nrow(row) || is.na(row$name_parse[1]) || !nzchar(row$name_parse[1])) {
+    return(var_sim)
+  }
+  out <- tryCatch(eval(parse(text = row$name_parse[1])),
+                  error = function(e) var_sim)
+  out
 }

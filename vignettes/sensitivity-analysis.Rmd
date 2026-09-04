@@ -56,9 +56,9 @@ inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("gotm_wet")
 aeme <- build_aeme(path = path, aeme = aeme,
-                       model = model, model_controls = model_controls,
-                       inf_factor = inf_factor, ext_elev = 5,
-                       use_bgc = TRUE)
+                   model = model, model_controls = model_controls,
+                   inf_factor = inf_factor, ext_elev = 5,
+                   use_bgc = TRUE)
 
 ```
 
@@ -152,7 +152,7 @@ the `sa_aeme` function. The control parameters for the sensitivity analysis are
 as follows:
 
 ```{r create-control-args, tidy=FALSE, printr.help.sections=c('arguments'), comment=''}
-?create_control
+?create_sa_control
 ```
 
 Here is an example for examining surface temperature (surf_temp) in the months
@@ -160,22 +160,22 @@ December to February, bottom temperature (bot_temp), (10 - 13 m) and also total
 chlorophyll-a (PHY_tchla) at the surface (0 - 2 m) during the summer period.
 
 ```{r define-control-parameters}
-ctrl <- create_control(method = "sa", N = 2^4, ncore = 2, na_value = 999,
-                       parallel = TRUE, file_name = "results.db",
-                       vars_sim = list(
-                         surf_temp = list(var = "HYD_temp",
-                                          month = c(12, 1:2),
-                                          depth_range = c(0, 2) 
-                         ),
-                         bot_temp = list(var = "HYD_temp",
-                                         month = c(12, 1:2),
-                                         depth_range = c(10, 13)
-                         ),
-                         surf_chla = list(var = "PHY_tchla",
-                                          month = c(12, 1:2),
-                                          depth_range = c(0, 2)
-                         )
-                       )
+ctrl <- create_sa_control(N = 2^4, ncore = 2, na_value = 999,
+                          parallel = TRUE, file_name = "results.db",
+                          vars_sim = list(
+                            surf_temp = list(var = "HYD_temp",
+                                             month = c(12, 1:2),
+                                             depth_range = c(0, 2) 
+                            ),
+                            bot_temp = list(var = "HYD_temp",
+                                            month = c(12, 1:2),
+                                            depth_range = c(10, 13)
+                            ),
+                            surf_chla = list(var = "PHY_tchla",
+                                             month = c(12, 1:2),
+                                             depth_range = c(0, 2)
+                            )
+                          )
 )
 ```
 

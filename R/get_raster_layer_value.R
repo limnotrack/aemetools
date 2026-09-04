@@ -78,19 +78,42 @@ get_raster_layer_value <- function(lat, lon, layer_id, key = NULL) {
 #'
 #' This function uses the LINZ data service to obtain the elevation value for a
 #' given latitude and longitude. The function \code{get_raster_layer_value()} is
-#' used to obtain the value for the DEM layer (ID: 51768).
+#' used to obtain the value for the LiDAR DEM layer (ID: 121859) or the 8m 
+#' National DEM (ID: 51768). The user can choose which layer to use by setting 
+#' the \code{use_lidar} argument.
 #'
 #' @inheritParams get_raster_layer_value
+#' @param use_lidar logical; if TRUE, uses the LIDAR DEM layer (https://data.linz.govt.nz/layer/121859-new-zealand-lidar-1m-dem/) which
+#' provides higher resolution elevation data. If FALSE, uses the 8m National 
+#' DEM (https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/).
+#' 
+#' @importFrom cli cli_warn
 #'
 #' @return numeric value or NA if outside extent
 #' @export
 #'
 
-get_dem_value <- function(lat, lon, key = NULL) {
+get_dem_value <- function(lat, lon, key = NULL, use_lidar = TRUE) {
 
-  layer_id <- 51768
+  if (use_lidar) {
+    layer_id <- 121859
+  } else {
+    layer_id <- 51768
+  }
 
-  get_raster_layer_value(lat = lat, lon = lon, layer_id = layer_id, key = key)
+  val <- get_raster_layer_value(lat = lat, lon = lon, layer_id = layer_id,
+                                key = key)
+  if (is.null(val) & use_lidar) {
+     cli::cli_warn("No value returned from API. This may be because the point is
+                   outside the extent of the LIDAR DEM layer. Returning NA.")
+    val <- NA
+  } else if (is.null(val) & !use_lidar) {
+    cli::cli_warn("No value returned from API. This may be because the point is
+                   outside the extent of the National DEM layer. Returning NA.")
+    val <- NA
+  }
+  
+  return(val)
 }
 
 #' Add LINZ API key to environment variables
@@ -116,8 +139,9 @@ add_linz_key <- function(key) {
 #' the environment variables using the \code{add_linz_key()} function.
 #'
 #' @export
+#' @importFrom utils browseURL
 
 create_linz_key <- function() {
-  browseURL("https://id.koordinates.com/signup/?next=%2Fo%2Fauthorize%2F%3Fclient_id%3Dt1RwFgXlDfvmPvqGaAoqj1GnULvYOGTOh81AuiS5%26response_type%3Dcode%26state%3DeyJjc3JmdG9rZW4iOiJ5eHRFRUZSYTNVYjBtdXk3OURHUXBtNjltRlMwN2NXVms1Vmk1WXF1YVZ5Qnp2bFY2V0RxZE5qZ3RzemhVTUlKIiwibmV4dCI6Ii8iLCJ3YXJlaG91c2VfaWQiOjIwMDEsImhhc2hlZF9zZXNzaW9uX2tleSI6ImNlOGI1ODJhM2UzNmExY2JhNDc0YmNlNzg5M2VkMzZkYzc0NWZhZjZhNWExYWYzYzBjODUxNDUwZjNhN2IwY2QifQ%253A1rDA4H%253AM77POBdI8sFwySjZI-tgXmmnTcmGWxMtxM3pqyTyoDY%26redirect_uri%3Dhttps%253A%252F%252Fdata.linz.govt.nz%252Flogin%252Foauth%252Fcallback%252F&_no_redirect=1")
+  utils::browseURL("https://id.koordinates.com/signup/?next=%2Fo%2Fauthorize%2F%3Fclient_id%3Dt1RwFgXlDfvmPvqGaAoqj1GnULvYOGTOh81AuiS5%26response_type%3Dcode%26state%3DeyJjc3JmdG9rZW4iOiJ5eHRFRUZSYTNVYjBtdXk3OURHUXBtNjltRlMwN2NXVms1Vmk1WXF1YVZ5Qnp2bFY2V0RxZE5qZ3RzemhVTUlKIiwibmV4dCI6Ii8iLCJ3YXJlaG91c2VfaWQiOjIwMDEsImhhc2hlZF9zZXNzaW9uX2tleSI6ImNlOGI1ODJhM2UzNmExY2JhNDc0YmNlNzg5M2VkMzZkYzc0NWZhZjZhNWExYWYzYzBjODUxNDUwZjNhN2IwY2QifQ%253A1rDA4H%253AM77POBdI8sFwySjZI-tgXmmnTcmGWxMtxM3pqyTyoDY%26redirect_uri%3Dhttps%253A%252F%252Fdata.linz.govt.nz%252Flogin%252Foauth%252Fcallback%252F&_no_redirect=1")
 }
 

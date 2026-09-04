@@ -9,73 +9,112 @@
 #' @importFrom AEME run_aeme lake input observations outflows
 #' @importFrom AEME read_nml write_nml set_nml
 #' @importFrom AEME write_yaml
-#' @importFrom yaml read_yaml
-#' @importFrom ncdf4 nc_open nc_close
 #'
 #' @return `na_value` if model run is unsuccessful
 #' @export
 
 run_aeme_param <- function(aeme, param, model, path = ".",
-                           model_controls = NULL,
-                           na_value = 999, return_nc = FALSE,
-                           return_aeme = FALSE, parallel = FALSE) {
-
+                           model_controls = NULL, na_value = 999, 
+                           return_nc = FALSE, return_aeme = FALSE, 
+                           parallel = FALSE, verbose = FALSE, timeout = Inf) {
+  
   # Function checks ----
   if (!is.data.frame(param))
-    stop("Parameter 'param' must be a data.frame.")
+    cli::cli_abort("{.arg param} must be a data.frame.")
+  if (missing(model)) {
+    model <- AEME::list_models(aeme)
+  } else {
+    model <- AEME::check_model(model)
+  }
   if (!is.character(model))
-    stop("Parameter 'model' must be a character string.")
+    cli::cli_abort("{.arg model} must be a character string.")
   if (return_nc & return_aeme)
-    stop("Only one of 'return_nc' and 'return_aeme' can be TRUE.")
-  # if (length(model) != 1)
-  #   stop("Only one model can be run at a time.")
+    cli::cli_abort("Only one of 'return_nc' and 'return_aeme' can be TRUE.")
+  if (return_nc & length(model) > 1)
+    cli::cli_abort("Only one model can be run when 'return_nc' is TRUE.")
+  
   if (is.null(model_controls)) {
     config <- AEME::configuration(aeme = aeme)
     model_controls <- config$model_controls
   }
 
+  # As of AEME 0.4.0 `run_aeme()` resolves the model output location - the
+  # previous-output deletion, the `load_output()` read-back and
+  # `get_model_outfile()` - from the path stored on the aeme object
+  # (`configuration(aeme)$path`), not from the `path` argument, which now
+  # only positions the run directory. When the model has been copied
+  # elsewhere to run (a PEST/PANTHER agent directory, the benchmark's staged
+  # dir) the two disagree: GLM runs in `path` but AEME looks for its output
+  # under the build directory, finds none, and the run is scored as a
+  # failure. Point the object at `path` so both agree.
+  cfg <- AEME::configuration(aeme = aeme)
+  # normalizePath() with the platform default separator, matching what
+  # AEME::check_path() stores, so the guard below actually compares equal.
+  path_norm <- normalizePath(path, mustWork = FALSE)
+  if (!identical(cfg$path, path_norm)) {
+    cfg$path <- path_norm
+    AEME::configuration(aeme) <- cfg
+  }
+
   # Load AEME data
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
   inp <- AEME::input(aeme)
-  obs <- AEME::observations(aeme)
-  obs$lake$depth_mid <- (obs$lake$depth_to - obs$lake$depth_from) / 2
 
   # Update parameter values ----
   AEME::input_model_parameters(aeme = aeme, model = model, param = param,
                                path = path)
-
+  
   # Run model ----
-  aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path,
-                         check_output = FALSE, parallel = parallel,
-                         model_controls = model_controls, return = return_aeme)
-
-
-  # Check if model output is produced ----
-  out_file <- dplyr::case_when(model == "dy_cd" ~
-                                 file.path(lake_dir,
-                                           model, "DYsim.nc"),
-                               model == "glm_aed" ~
-                                 file.path(lake_dir, model,
-                                           "output", "output.nc"),
-                               model == "gotm_pclake" ~
-                                 file.path(lake_dir, model,
-                                           "output", "output.nc"),
-                               model == "gotm_wet" ~
-                                 file.path(lake_dir, model,
-                                           "output", "output.nc")
-  )
-
-  out_file_chk <-  !file.exists(out_file)
-  if (any(out_file_chk)) {
-    message("No ", out_file[out_file_chk], " present.")
+  mod_out <- tryCatch({
+    AEME::run_aeme(aeme = aeme, model = model, path = path,
+                   check_output = FALSE, parallel = parallel,
+                   model_controls = model_controls, verbose = verbose, 
+                   return_type = "both", timeout = timeout)
+  }, error = function(e) {
+    AEME::cli_safe(paste0("Error running AEME: ", e$message,
+                          ". Probably due to a timeout."),
+                   FUN = cli::cli_alert_danger)
+    return(NULL)
+  })
+  if (is.null(mod_out)) {
     return(na_value)
   }
-
+  aeme <- mod_out$aeme
+  
+  # Check for timeout ----
+  for (m in names(model)) {
+    if (mod_out$exec_result[[m]]$timeout) {
+      AEME::cli_safe(paste0("Model {.strong ", m, "} run timed out."),
+                     FUN = cli::cli_alert_danger)
+      return(na_value)
+    }
+  }
+  
+  
+  # Check if model output is produced ----
+  out_file <- AEME::get_model_outfile(path = lake_dir, model = model)
+  
+  out_file_chk <- sapply(out_file, \(x) !file.exists(x)) |> 
+    unlist()
+  if (any(out_file_chk) | length(out_file_chk) == 0) {
+    out_file_unl <- unlist(out_file)
+    AEME::cli_safe(paste0("No {.file ",
+                          paste(out_file_unl[out_file_chk], collapse = ", "),
+                          "} present."),
+                   FUN = cli::cli_alert_danger)
+    return(na_value)
+  }
+  
   if (return_nc) {
-    nc <- ncdf4::nc_open(out_file, return_on_error = TRUE)
+    if (model == "gotm_wet") {
+      file <- out_file[[model]][["output"]]
+    } else {
+      file <- out_file[[model]]
+    }
+    nc <- AEME::open_nc_safe(file = file, model = model)
     return(nc)
   }
-
+  
   if (return_aeme) {
     return(aeme)
   }

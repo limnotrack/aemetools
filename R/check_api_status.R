@@ -7,7 +7,7 @@
 #' @inheritParams api_request
 #' 
 #' @importFrom httr2 request req_url_path_append req_perform resp_status 
-#' resp_body_string
+#' @importFrom httr2 resp_body_string
 #'
 #' @returns TRUE if the API is available, FALSE otherwise.
 #' @export

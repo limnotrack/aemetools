@@ -11,7 +11,6 @@
 #' @param path filepath to where the downloaded ERA5 ncdf files are stored.
 #' @param format string; Either "AEME" or "LER". Default is "AEME".
 #'
-#' @importFrom stars read_ncdf st_extract
 #' @importFrom sf st_as_sf
 #' @importFrom stats aggregate
 #' @importFrom utils data
@@ -35,7 +34,7 @@ convert_era5_ncdf <- function(lat,
                               format = "AEME") {
 
   # Load Rdata
-  utils::data("era5_ref_table", package = "aemetools", envir = environment())
+  data("era5_ref_table", package = "aemetools", envir = environment())
 
   coords <- data.frame(lat = lat, lon = lon)
   coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)

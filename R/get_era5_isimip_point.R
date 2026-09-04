@@ -14,10 +14,9 @@
 #' @importFrom httr2 req_url_query req_url_path_append req_headers
 #' @importFrom httr2 req_perform
 #' @importFrom jsonlite toJSON
-#' @importFrom terra rast values
 #' @importFrom dplyr bind_rows full_join
-#' @importFrom zip unzip
 #' @importFrom logger log_info log_error
+#' @importFrom utils download.file
 #'
 #' @returns A data frame with the requested variables
 #' @export
@@ -88,7 +87,9 @@ get_era5_isimip_point <- function(lon, lat, years,
       job_req <- httr2::request(job$job_url)
       job_res <- httr2::req_perform(job_req)
       job <- httr2::resp_body_json(job_res)
-      log_info("job updated", id = job$id, status = job$status, meta = job$meta)
+      logger::log_info(
+        "job {job$status} | {job$meta$created_files}/{job$meta$total_files} files created | id={job$id}"
+      )
     }
     
     if (job$status == "finished") {
@@ -102,7 +103,7 @@ get_era5_isimip_point <- function(lon, lat, years,
       out_path <- sub("\\.zip$", "", zip_path)
       dir.create(out_path, showWarnings = FALSE, recursive = TRUE)
       log_info("extracting", zip_path = zip_path, out_path = out_path)
-      zip::unzip(zip_path, exdir = out_path)
+      unzip(zip_path, exdir = out_path)
       
     } else {
       log_error("job did not finish successfully", status = job$status)
@@ -123,7 +124,6 @@ get_era5_isimip_point <- function(lon, lat, years,
       # read.csv(f, header = FALSE)
     }) |>
       dplyr::bind_rows()
-    head(df)
     names(df) <- c("Date", v)
     return(df)
   })
@@ -181,6 +181,7 @@ check_vars <- function(vars) {
 #'
 #' @param vars A character vector of variable names
 #' @return A vector of variable names suitable for ISIMIP3a or AEME
+#' @importFrom stats setNames
 #' @noRd
 switch_vars <- function(vars) {
 
@@ -191,8 +192,8 @@ switch_vars <- function(vars) {
              "MET_prsttn", "MET_radlwd", "MET_humrel")
   )
   # Create a named vector for mapping
-  era5_to_aeme <- setNames(mapping_df$aeme, mapping_df$era5)
-  aeme_to_era5 <- setNames(mapping_df$era5, mapping_df$aeme)
+  era5_to_aeme <- stats::setNames(mapping_df$aeme, mapping_df$era5)
+  aeme_to_era5 <- stats::setNames(mapping_df$era5, mapping_df$aeme)
 
   aeme_chk <- grepl("^MET_", vars)
   if (any(aeme_chk)) {

@@ -6,6 +6,7 @@
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #' @importFrom duckdb duckdb
+#' @importFrom rlang `%||%`
 #'
 #' @return \code{write_calib_output} writes the calibration output to a file
 #' @noRd
@@ -23,14 +24,41 @@ write_calib_metadata <- function(ctrl, nsim, t0) {
   time_finished <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
   time_elapsed <- round(as.numeric(difftime(Sys.time(), t0, units = "secs")))
 
+  # VTR/NP/ngen/... describe the built-in generational search and are absent
+  # from a PEST++ control, where the solver owns the search. A missing field
+  # is NULL, which data.frame() turns into a zero-length column and then
+  # rejects as "differing number of rows", so every optional field is read
+  # through num_field() and recorded as NA instead.
+  num_field <- function(nm) {
+    v <- ctrl[[nm]]
+    if (length(v) != 1) NA_real_ else as.numeric(v)
+  }
+  chr_field <- function(nm) {
+    v <- ctrl[[nm]]
+    if (length(v) != 1) NA_character_ else as.character(v)
+  }
+
   calibration_metadata <- data.frame(sim_id = ctrl$sim_id, n_sim = nsim,
-                                     ncore = ctrl$ncore, VTR = ctrl$VTR,
-                                     NP = ctrl$NP, ngen = ctrl$ngen,
-                                     itermax = ctrl$itermax,
-                                     reltol = ctrl$reltol, cutoff = ctrl$cutoff,
-                                     mutate = ctrl$mutate,
+                                     ncore = ctrl$ncore,
+                                     VTR = num_field("VTR"),
+                                     NP = num_field("NP"),
+                                     ngen = num_field("ngen"),
+                                     itermax = num_field("itermax"),
+                                     reltol = num_field("reltol"),
+                                     cutoff = num_field("cutoff"),
+                                     mutate = num_field("mutate"),
+                                     cutoff_final = num_field("cutoff_final"),
+                                     mutate_final = num_field("mutate_final"),
                                      na_value = ctrl$na_value,
                                      c_method = ctrl$c_method,
+                                     # PEST++ leaves artefacts the database
+                                     # cannot hold - per-observation
+                                     # residuals (.rei), the Jacobian
+                                     # (.jcb), FOSM covariances - so record
+                                     # where they are, or a sim_id cannot be
+                                     # traced back to them later.
+                                     engine = chr_field("engine"),
+                                     pest_dir = chr_field("pest_dir"),
                                      time_started = time_started,
                                      time_finished = time_finished,
                                      time_elapsed = time_elapsed)

@@ -6,13 +6,14 @@
 \usage{
 update_param(
   calib,
-  param = NULL,
-  na_value = NULL,
-  aeme = NULL,
+  param,
+  aeme,
   replace = FALSE,
-  quantile = 0.1,
   fit_col = "fit",
-  best_pars = NULL
+  best_pars,
+  quantile_threshold = 0.1,
+  na_value = NULL,
+  quantile
 )
 }
 \arguments{
@@ -22,9 +23,6 @@ update_param(
 \item{param}{A data frame with parameters to update. Defaults to NULL. When
 NULL, the parameter values are extracted from \code{calib$parameter_metadata}.}
 
-\item{na_value}{The value to replace NA values with. Defaults to NULL. When
-NULL, the value is extracted from \code{calib$calibration_metadata$na_value}.}
-
 \item{aeme}{aeme; object. Defaults to NULL. When NULL, a dataframe of the
 updated parameter values is returned. When provided, the updated parameter
 values are added to the aeme object and the aeme object is returned.}
@@ -33,19 +31,28 @@ values are added to the aeme object and the aeme object is returned.}
 replaced with the updated values. Defaults to FALSE. Only used when aeme is
 provided.}
 
-\item{quantile}{The quantile to use for the top quantile of the fit_value.
-Defaults to 0.1.}
-
 \item{fit_col}{character; name of column containing fit values. Default is
 \code{"fit"}.}
 
-\item{best_pars}{A data frame with the best parameters from \code{get_param}.
-Defaults to NULL. When NULL, \code{get_param} is called to get the best
-parameters.}
+\item{best_pars}{A data frame with the best parameters from \code{\link{get_param}}.
+Defaults to NULL. When NULL, \code{\link{get_param}} is called to get the
+best parameters.}
+
+\item{quantile_threshold}{The quantile to use for
+the top quantile of the fit_value. Defaults to 0.1. This is used to determine
+min, max, for parameters when best_pars is not provided.}
+
+\item{na_value}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Numeric. Penalty value
+substituted for \code{NA} fit values, this is no longer needed as NA values
+are now written to simulation_data in output of calib_aeme() and sa_aeme().
+The argument will be removed in a future version.}
+
+\item{quantile}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} No longer used, replaced
+by \code{quantile_threshold}.}
 }
 \value{
 data frame with updated parameter values for running the model with
-\code{run_aeme_param}
+\code{\link{run_aeme_param}}
 }
 \description{
 Update parameter values in param based on best_pars

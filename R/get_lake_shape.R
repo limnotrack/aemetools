@@ -11,7 +11,6 @@
 #' @export
 #' 
 #' @importFrom httr2 resp_body_string
-#' @importFrom geojsonsf geojson_sf
 #' @importFrom sf st_set_crs
 #'
 #' @examples

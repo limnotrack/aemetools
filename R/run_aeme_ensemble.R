@@ -1,48 +1,74 @@
-#' Run AEME ensemble
+#' Run an AEME parameter ensemble
 #'
-#' Run a parameter ensemble
+#' @description
+#' Runs a model once per parameter set and stores every member's output on
+#' the returned `aeme` object under `AEME::output()$ens_*`, ready for
+#' [plot_ensemble()].
+#'
+#' By default the members are **sampled**: `n` parameter vectors are drawn
+#' from each parameter's `[min, max]` (normally or uniformly, per `dist`).
+#' Pass `param_sets` to run a **supplied** ensemble instead - for example the
+#' posterior from a `pestpp-ies` calibration via [pest_posterior_params()] -
+#' in which case `n`, `dist` and `param` are ignored.
 #'
 #' @inheritParams calib_aeme
-#' @param n numeric; number of ensemble members to generate.
-#' @param dist character; distribution to sample from. Default is "norm". Other
-#' options are "unif".
-#' @param parallel logical; whether to run in parallel. Default is FALSE.
-#' @param ncore numeric; number of cores to use for parallel processing. Default
-#' is NULL. If NULL, the function will use the number of cores minus 1.
-#' @param param data.frame; parameter values to use. Default is NULL. If NULL,
-#' the function will use the parameters from the aeme object.
-#' @param na_value numeric; value to use for NA values. Default is 999.
+#' @param n numeric; number of ensemble members to sample. Ignored when
+#'   `param_sets` is supplied.
+#' @param dist character; distribution to sample from, `"norm"` (default) or
+#'   `"unif"`. Ignored when `param_sets` is supplied.
+#' @param parallel logical; run members in parallel. Default `FALSE`.
+#' @param ncore numeric; cores for parallel processing. `NULL` (default) uses
+#'   one fewer than are available.
+#' @param param data.frame; parameter template supplying `min`/`max` for the
+#'   sampling path. `NULL` (default) takes it from the `aeme` object. Ignored
+#'   when `param_sets` is supplied.
+#' @param param_sets a supplied ensemble to run instead of sampling. Either a
+#'   list of long `param` dataframes (one per member, `value` set) - such as
+#'   an [pest_posterior_params()] result - or a single long data.frame with
+#'   an `ensemble` id column plus the `param` columns.
+#' @param na_value numeric; value a failed member run returns. Default 999;
+#'   such members are dropped from the ensemble.
 #'
 #' @importFrom parallel parLapply clusterExport stopCluster detectCores
-#' makeCluster
+#' @importFrom parallel makeCluster
+#' @importFrom dplyr filter mutate select distinct
+#' @importFrom methods is
+#' @importFrom rlang arg_match
+#' @importFrom AEME check_aeme check_model get_aeme_path get_lake_dir
+#' @importFrom AEME configuration output parameters
 #'
-#' @inherit AEME::run_aeme return
+#' @return The `aeme` object with `AEME::output()$ens_001 .. ens_00k` and
+#'   `$n_members` populated. `attr(AEME::output(aeme), "realisation")` carries
+#'   the surviving realisation ids when `param_sets` was named.
+#' @seealso [pest_posterior_params()], [plot_ensemble()]
 #' @export
-#'
-
-run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
+run_aeme_ensemble <- function(aeme, model, n = 10, dist = c("norm", "unif"),
+                              path = ".",
                               parallel = FALSE, ncore = NULL, param = NULL,
-                              na_value = 999) {
+                              param_sets = NULL, na_value = 999) {
 
   # Check inputs
-  if (!is(aeme, "Aeme")) stop("aeme must be an Aeme object")
-  # if (!is.character(sim_id)) stop("sim_id must be a character")
-  # if (!is.data.frame(param)) stop("param must be a data frame")
+  aeme <- AEME::check_aeme(aeme)
+  model <- AEME::check_model(model)
+  if (missing(path)) {
+    path <- AEME::get_aeme_path(aeme)
+  } else {
+    path <- AEME::check_path(path)
+  }
+  dist <- rlang::arg_match(dist)
 
-  # if (is.null(calib)) {
-  #   calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
-  # }
-
-  if (is.null(param)) {
+  sets <- NULL
+  if (!is.null(param_sets)) {
+    sets <- .normalise_param_sets(param_sets)
+    if (!missing(n) && !identical(n, 10)) {
+      cli::cli_inform(c("i" = "{.arg n} is ignored when {.arg param_sets} is
+                        supplied; running {length(sets)} member{?s}."))
+    }
+    n <- length(sets)
+  } else if (is.null(param)) {
     param <- AEME::parameters(aeme)
     if (nrow(param) == 0) stop("No parameters found in aeme object")
   }
-
-  # model <- names(sim_id)
-  cfg <- AEME::configuration(aeme)
-  model_controls <- cfg$model_controls
-  outp <- AEME::output(aeme)
-  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
 
   if (dist == "norm") {
     FUN <- rnorm_limits
@@ -50,145 +76,32 @@ run_aeme_ensemble <- function(aeme, model, n = 10, dist = "norm", path = ".",
     FUN <- runif
   }
 
-  mod_list <- lapply(model, \(m) {
-  # Catch if calib is NULL
+  mod_list <- lapply(model, function(m) {
 
-    model_pars <- param |>
-      dplyr::filter(model == m)
-
-    new_params <- sapply(seq_len(nrow(model_pars)), \(i) {
-      FUN(n = n, min = model_pars$min[i], max = model_pars$max[i])
-    }) |>
-      as.data.frame()
-    names(new_params) <- paste0(model_pars$group, "/", model_pars$name)
-
-    # # Identify the fixed and variable columns
-    # fixed_cols <- c("gen", "run", "fit_value")
-    #
-    # # Select parameters below the cutoff
-    # sid <- sim_id[m]
-    # sel_pars <- calib$simulation_data |>
-    #   dplyr::filter(sim_id == sid & fit_type == fit_col) |>
-    #   tidyr::pivot_wider(id_cols = dplyr::all_of(fixed_cols),
-    #                      names_from = parameter_name,
-    #                      values_from = parameter_value)
-    # variable_cols <- setdiff(names(sel_pars), fixed_cols)
-    #
-    # # Filter out duplicates based on the variable columns
-    # filtered_sel_pars <- sel_pars |>
-    #   dplyr::distinct(dplyr::across(dplyr::all_of(variable_cols)),
-    #                   .keep_all = TRUE)
-    #
-    # print(filtered_sel_pars)
-    #
-    # cutoff_value <- quantile(filtered_sel_pars$fit_value, ctrl$cutoff)
-    # # filt_pars <- filtered_sel_pars |>
-    # #   dplyr::filter(fit_value <= cutoff_value) |>
-    # #   dplyr::rename(fit = fit_value)
-    # # ctrl <- list(na_value = 999,)
-    # param_df <- filtered_sel_pars |>
-    #   dplyr::select(-gen, - run) |>
-    #   dplyr::rename(fit = fit_value)
-    #
-    # new_params <- next_gen_params(param_df = param_df, param = model_pars,
-    #                               ctrl = ctrl, add_mutation = FALSE,
-    #                               keep_best_pars = TRUE)
-
-    if (is.null(ncore)) {
-      ncore <- (parallel::detectCores() - 1)
-      if (ncore > nrow(new_params)) ncore <- nrow(new_params)
-    }
-
-    # Correct N of splits if ncore is greater than number of parameters
-    splts <- ncore # min(ctrl$NP, ncore)
-
-    suppressWarnings({
-      param_list <- split(new_params, 1:splts)
-    })
-
-    # Loop through each of the parameters
-    if (parallel) {
-
-      temp_dirs <- make_temp_dir(m, lake_dir, n = ncore)
-      # list.files(temp_dirs[1], recursive = TRUE)
-      tryCatch(parallel::stopCluster(cl), error = function(e) {})
-      cl <- parallel::makeCluster(ncore, outfile = "parallel.log")
-      on.exit(parallel::stopCluster(cl))
-      varlist <- list("param_list", "aeme", "path", "m", "model_pars",
-                      "temp_dirs")
-      parallel::clusterExport(cl, varlist = varlist,
-                              envir = environment())
-      message("Running an ensemble of ", m, " with ", n,
-              " members using ", ncore, " cores. ", "[",
-              format(Sys.time()), "]")
-
-      # Run the ensemble in parallel
-      out_list <- parallel::parLapply(cl = cl, seq_along(param_list), \(pars, i) {
-
-        path <- temp_dirs[i]
-        # Update the parameter value in the parameter table
-        pars_out <- lapply(seq_len(nrow(pars[[i]])), \(p) {
-          for(n in names(pars[[i]])) {
-            grp <- strsplit(n, "/")[[1]][1]
-            nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
-            if (grp != "NA") {
-              model_pars$value[model_pars$name == nme &
-                                 model_pars$group == grp] <- pars[[i]][p, n]
-            } else {
-              model_pars$value[model_pars$name == nme] <- pars[[i]][p, n]
-            }
-          }
-          # message(i, ", ", p)
-
-          a2 <- aemetools::run_aeme_param(aeme = aeme, param = model_pars, model = m,
-                                          path = path, na_value = na_value,
-                                          return_aeme = TRUE)
-          outp2 <- AEME::output(a2)
-          outp2[["ens_001"]][[m]]
-        })
-      }, pars = param_list)
-      out_list <- unlist(out_list, recursive = FALSE)
-    } else {
-      out_list <- lapply(seq_len(nrow(new_params)), \(p) {
-
-        # Update the parameter value in the parameter table
-        for(n in names(new_params)) {
-          grp <- strsplit(n, "/")[[1]][1]
-          nme <- paste0(strsplit(n, "/")[[1]][-1], collapse = "/")
-          if (grp != "NA") {
-            model_pars$value[model_pars$name == nme &
-                               model_pars$group == grp] <- new_params[p, n]
-          } else {
-            model_pars$value[model_pars$name == nme] <- new_params[p, n]
-          }
-        }
-        # message(i, ", ", p)
-
-        a2 <- aemetools::run_aeme_param(aeme = aeme, param = model_pars, model = m,
-                                        path = path, na_value = na_value,
-                                        return_aeme = TRUE)
-        outp2 <- AEME::output(a2)
-        outp2[["ens_001"]][[m]]
+    members <- if (is.null(sets)) {
+      model_pars <- dplyr::filter(param, model == m)
+      # n x nrow(model_pars); matrix() guards the n == 1 collapse.
+      draws <- matrix(
+        vapply(seq_len(nrow(model_pars)), function(i)
+          FUN(n = n, min = model_pars$min[i], max = model_pars$max[i]),
+          numeric(n)),
+        nrow = n)
+      lapply(seq_len(n), function(k) {
+        mp <- model_pars
+        mp$value <- draws[k, ]
+        mp
       })
+    } else {
+      lapply(sets, function(s) s[s$model == m, , drop = FALSE])
     }
-    out_list
+
+    .run_member_ensemble(aeme = aeme, model = m, member_params = members,
+                         path = path, parallel = parallel, ncore = ncore,
+                         na_value = na_value)
   })
   names(mod_list) <- model
 
-  # Add output to the AEME object
-  ens_n <- outp$n_members
-  outp <- list()
-  for (i in 1:n) {
-    ens_n <- i # ens_n + 1
-    ens_lab <- paste0("ens_", sprintf("%03d", ens_n))
-    outp[[ens_lab]] <- list(dy_cd = mod_list[["dy_cd"]][[i]],
-                            glm_aed = mod_list[["glm_aed"]][[i]],
-                            gotm_wet = mod_list[["gotm_wet"]][[i]])
-    outp$n_members <- ens_n
-  }
-
-  AEME::output(aeme) <- outp
-  return(aeme)
+  .assemble_ens_output(aeme, mod_list, model)
 }
 
 #' Generate a normal distribution with a min and a max

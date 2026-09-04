@@ -7,25 +7,27 @@
 get_simulation_time(aeme, model, path, param, FUN_list, vars_sim, weights)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model}{string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")}
+columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")}
 
 \item{FUN_list}{list of functions; named according to the variables in the
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
-to calculate model fit. If NULL, uses mean absolute error (MAE).}
+to calculate model fit. If nor provided, uses mean absolute error (MAE).}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
-model fit. Currently only supports using one variable.}
+model fit.}
 
-\item{weights}{vector; of weights for each variable in vars_sim. Default to
-c(1).}
+\item{weights}{a named vector; of weights for each variable in vars_sim. If not
+provided, defaults to 1 for each variable.}
 }
 \value{
 numeric vector of simulation time for each model.
@@ -46,7 +48,7 @@ aeme <- AEME::build_aeme(path = path, aeme = aeme,
 model = model, model_controls = model_controls,
 ext_elev = 5, use_bgc = FALSE)
 aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-utils::data("aeme_parameters", package = "AEME")
+data("aeme_parameters", package = "AEME")
 param <- aeme_parameters
 # Function to calculate fitness
 fit <- function(df) {

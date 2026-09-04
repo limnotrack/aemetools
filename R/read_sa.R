@@ -4,6 +4,14 @@
 #' @inheritParams AEME::build_aeme
 #' @inheritParams sensobol::sobol_indices
 #' @inheritParams read_simulation_output
+#' @param R positive integer; number of bootstrap replicas passed to
+#' `sensobol::sobol_indices()`/`sobol_dummy()`. Only used when `boot = TRUE`
+#' (the default here). Defaults to `1000`, a common choice for bootstrap
+#' confidence intervals - unlike `sensobol`'s own functions, which default to
+#' `R = NULL` because they default to `boot = FALSE`. If you pass
+#' `boot = TRUE` explicitly with `R = NULL`, this errors immediately with a
+#' clear message rather than letting the failure surface deep inside
+#' `boot::boot()`.
 #'
 #' @importFrom dplyr case_when left_join mutate select summarise group_by
 #' @importFrom tidyr pivot_longer
@@ -18,9 +26,18 @@
 #' the sobol indices for each variable.
 #' @export
 
-read_sa <- function(ctrl = NULL, file_name, file_dir, sim_id, R = NULL,
+read_sa <- function(ctrl = NULL, file_name, file_dir, sim_id, R = 1000,
                     boot = TRUE) {
-  
+
+  if (boot && (is.null(R) || !is.numeric(R) || length(R) != 1 || R < 1)) {
+    cli::cli_abort(c(
+      "{.arg R} must be a single positive integer when {.arg boot} is
+      {.val TRUE}.",
+      "i" = "Got {.val {R}}. Either supply {.arg R} or set
+      {.code boot = FALSE} for point estimates without bootstrap CIs."
+    ))
+  }
+
   if (is.null(ctrl)) {
     ctrl <- list()
     ctrl$file_dir <- file_dir
@@ -28,12 +45,56 @@ read_sa <- function(ctrl = NULL, file_name, file_dir, sim_id, R = NULL,
     ctrl$file_type <- tools::file_ext(file_name)
     ctrl$method <- "sa"
   }
-  
+
   out <- read_simulation_output(ctrl = ctrl, sim_id = sim_id)
   if (nrow(out$simulation_data) == 0) {
     stop("No data found for that sim_id. Check the sim_id.")
   }
-  
+
+  # A pestpp-sen run (create_sen_control()) stores the solver's own
+  # elementary-effects indices; Sobol' indices cannot be recomputed from a
+  # Morris design, so send the caller to the dedicated reader.
+  if ("engine" %in% names(out$simulation_metadata) &&
+      any(out$simulation_metadata$engine %in% "pest")) {
+    cli::cli_abort(c(
+      "{.val {sim_id}} was produced by {.fn create_sen_control} (engine
+       {.val pest}).",
+      "i" = "Use {.fn read_sen} and {.fn plot_sen}: Sobol' indices are not
+             defined for a Method-of-Morris design."
+    ))
+  }
+
+  # Failed runs are written as NA (see write_simulation_output()'s
+  # `na_if(fit_value, na_value)`). Rather than plugging in a single fixed
+  # `na_value` sentinel - which can dominate the variance decomposition if
+  # it's far outside the metric's natural range - impute the 97.5th
+  # percentile of that variable's own successful runs, so a failure still
+  # counts as a bad outcome without swamping the Sobol' estimator. This
+  # applies uniformly to sim_ids written before or after this change, since
+  # both store failures as NA in the same way.
+  impute_failed <- function(Y, na_value) {
+    if (any(is.na(Y))) {
+      fill <- stats::quantile(Y, probs = 0.975, na.rm = TRUE)
+      if (is.na(fill)) fill <- na_value # every run failed - nothing to derive a fill from
+      Y[is.na(Y)] <- fill
+    }
+    Y
+  }
+
+  # Sobol' first/total-order indices divide by Var(Y), so a near-constant Y
+  # (e.g. a "run_failed" indicator when nothing failed) gives NaN/garbage
+  # indices rather than a real error. `sd(Y) < 1e-3` (the previous check) was
+  # an absolute threshold, which silently mis-skips any variable whose
+  # natural scale happens to be small. Scale the threshold to the variable's
+  # own magnitude instead, so it's scale-invariant.
+  is_degenerate <- function(Y, rel_tol = 1e-6) {
+    Y <- Y[!is.na(Y)]
+    if (length(Y) < 2) return(TRUE)
+    scale <- max(abs(Y))
+    if (scale == 0) return(TRUE) # every value is exactly zero
+    sd(Y) < rel_tol * scale
+  }
+
   all <- lapply(sim_id, \(sid) {
     wid <- out$simulation_data |>
       dplyr::filter(sim_id == sid) |>
@@ -97,17 +158,23 @@ read_sa <- function(ctrl = NULL, file_name, file_dir, sim_id, R = NULL,
     
     sobol_indices <- lapply(vars, function(v) {
       Y <- wid[[v]]
-      Y[is.na(Y)] <- na_value
+      Y <- impute_failed(Y, na_value)
       Y[Y > 1e10] <- na_value
-      if (sd(Y, na.rm = TRUE) < 1e-3) return()
+      if (is_degenerate(Y)) {
+        AEME::cli_safe(paste0("Skipping {.val ", v, "}: near-zero variance, ",
+                              "Sobol' indices are not computable (division by ",
+                              "~0 variance)."),
+                       FUN = cli::cli_warn)
+        return()
+      }
       sensobol::sobol_indices(Y = Y, N = N, params = params, boot = boot, R = R)
     })
-    
+
     sobol_dummy_indices <- lapply(vars, function(v) {
       Y <- wid[[v]]
-      Y[is.na(Y)] <- na_value
+      Y <- impute_failed(Y, na_value)
       Y[Y > 1e10] <- na_value
-      if (sd(Y, na.rm = TRUE) < 1e-3) return()
+      if (is_degenerate(Y)) return()
       sensobol::sobol_dummy(Y = Y, N = N, params = params, boot = boot, R = R)
     })
     
