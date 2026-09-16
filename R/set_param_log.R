@@ -20,8 +20,9 @@
 #' @param ratio Numeric `>= 1`. Minimum `max / min` for a parameter to be
 #'   flagged. `Inf` flags nothing. Default `10`.
 #' @param overwrite Logical. Replace an existing `log` column outright?
-#'   Default `TRUE`. When `FALSE`, rows already `TRUE` are kept and only the
-#'   remaining rows are set from the rule.
+#'   Default `TRUE`. When `FALSE`, any existing non-`NA` `log` value is kept
+#'   (a deliberate `TRUE` or `FALSE` set by hand), and only the rows where it
+#'   is `NA` - or where the column is absent - are set from the rule.
 #'
 #' @return `param` with a logical `log` column.
 #' @seealso [pest_param_table()], [pest_prior_cov()], [freeze_param()]
@@ -53,8 +54,8 @@ set_param_log <- function(param, ratio = 10, overwrite = TRUE) {
   lg[is.na(lg)] <- FALSE
 
   if (!isTRUE(overwrite) && "log" %in% names(param)) {
-    kept <- !is.na(param$log) & param$log
-    lg <- lg | kept
+    keep <- !is.na(param$log)
+    lg[keep] <- as.logical(param$log[keep])
   }
 
   param$log <- lg
