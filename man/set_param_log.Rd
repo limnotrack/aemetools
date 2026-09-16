@@ -14,8 +14,9 @@ at least the \code{min} and \code{max} columns.}
 flagged. \code{Inf} flags nothing. Default \code{10}.}
 
 \item{overwrite}{Logical. Replace an existing \code{log} column outright?
-Default \code{TRUE}. When \code{FALSE}, rows already \code{TRUE} are kept and only the
-remaining rows are set from the rule.}
+Default \code{TRUE}. When \code{FALSE}, any existing non-\code{NA} \code{log} value is kept
+(a deliberate \code{TRUE} or \code{FALSE} set by hand), and only the rows where it
+is \code{NA} - or where the column is absent - are set from the rule.}
 }
 \value{
 \code{param} with a logical \code{log} column.
