@@ -51,6 +51,23 @@
   way to chain the stages of a staged calibration - see
   `?vignette("staged-calibration")` and `inst/scripts/staged-calibration.R`.
 
+## Deprecated
+
+* ERA5 extraction, conversion and bias-correction have moved to the new
+  [metscale](https://github.com/limnotrack/metscale) package. The
+  `aemetools` originals are soft-deprecated - they still work exactly as
+  before, but calling them directly (not from inside another `aemetools`
+  function) now emits a one-time-per-session message naming the
+  replacement:
+  * `download_era5_grib()` -> `metscale::download_era5_cds()`
+  * `get_era5_isimip_point()` -> `metscale::download_era5_isimip_point()`
+  * `get_era5_land_point_nz()` -> `metscale::extract_era5_hourly_met()` /
+    `metscale::extract_era5_lake_met()` (note the mechanism differs: this
+    function calls the limnotrack LERNZmp API, its metscale replacements
+    read local ERA5-Land netCDF files)
+  * `convert_era5_ncdf()` -> `metscale::convert_era5_netcdf()`
+  * `read_grib_point()` -> `metscale::read_era5_grib_point()`
+
 ## Breaking changes
 
 * `nse()`, `kge()`, `kge_prime()` and `log_kge()` now return the
@@ -65,6 +82,38 @@
 
 ## Compatibility
 
+* Track AEME (>= 0.4.0), which stores `AEME::time(aeme)$start` / `$stop` as
+  UTC `POSIXct`, reads model output on a `POSIXct` axis for sub-daily runs,
+  and is moving lake / level observations to a `POSIXct` `datetime` column.
+  `run_and_fit()` (and the `validate_aeme()` / `calib_aeme()` paths through
+  it), `get_calib_periods()`, `pest_obs_table()`, `ensemble_summary()` and
+  `write_simulation_output()` now reduce every time value - simulation
+  bounds, model output, and the observation timestamp - to a UTC calendar
+  `Date` before comparing or joining, via the new internal
+  `obs_calendar_date()` helper (which accepts a `datetime` or a `Date`
+  column). This keeps the daily model comparison working whether the model
+  output comes back as `Date` or `POSIXct` and whether observations are
+  `Date` or `POSIXct`, and stops a non-UTC session timezone shifting a
+  calibration window by a day. Daily runs are unchanged. A sub-daily
+  observation is snapped to its UTC calendar day for now; a proper
+  sub-daily observation-to-output alignment will follow once AEME exposes
+  one, and `obs_calendar_date()` is the single seam it plugs into.
+* `run_and_fit()` / `calib_preflight()` now separate "no observations for
+  these variables" from "observations exist but none share a timestamp with
+  a model output step" (tagged `obs_unaligned`), so a cadence mismatch
+  aborts with a message that points at alignment instead of reading as an
+  empty lake.
+* Documented (not changed): `run_and_fit()`'s calibration score and
+  `AEME::assess_aeme()` / `AEME::assess_model()`'s diagnostics are not
+  expected to agree, even on the exact best-fit parameter set - see the new
+  `@return` details on `run_and_fit()` and the "Reproducing the calibration
+  fit value" section of `vignette("calibrate-aeme")` for why (different
+  `AEME` extraction paths, no weighting or cross-variable summation in
+  `assess_aeme()`) and for the supported way to verify a recorded
+  `fit_value`. For a **sub-daily** run the two can also pick a different
+  output timestep for the same observation day (`run_and_fit()` takes the
+  day's first step, `AEME::get_var()` the one nearest midnight); daily-output
+  runs (the common case) are unaffected.
 * Track the AEME (>= 0.4.0) lake-observations schema, which replaces the
   `depth_from` / `depth_to` column pair with a single `depth` column. All
   consumers of `observations(aeme)$lake` (`pest_obs_table()`, `run_and_fit()`,
@@ -95,6 +144,19 @@
   can spend minutes building the package sandbox before it connects -
   previously read as "worker failed to connect" and collapsed to a serial
   fallback. Override with `AEMETOOLS_CLUSTER_SETUP_TIMEOUT`.
+* `read_sa(boot = FALSE)` no longer errors. Its default `R = 1000` was
+  passed through to `sensobol::sobol_indices()` / `sobol_dummy()` even with
+  `boot = FALSE`, which recent `sensobol` rejects ("Bootstrapping requires
+  `boot = TRUE` and an integer in `R`"). `R` is now forced to `NULL`
+  whenever `boot` is not `TRUE`.
+* `carry_param()` now raises a real, catchable warning (`cli::cli_warn()`)
+  when it drops rows with no best value, instead of a `cli` alert that
+  `withCallingHandlers()` / `tryCatch()` could not see and that
+  `options(AEME.inform = FALSE)` silenced.
+* `set_param_log(overwrite = FALSE)` now preserves an existing hand-set
+  `log == FALSE` as well as `log == TRUE`, only filling rows where `log`
+  is `NA` (or the column is absent) from the range rule. It previously
+  kept `TRUE` values but overwrote deliberate `FALSE` ones.
 
 # aemetools 0.3.0
 

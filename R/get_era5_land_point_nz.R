@@ -1,5 +1,17 @@
 #' Get ERA5 data for a coordinate
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `get_era5_land_point_nz()` is superseded by
+#' \code{metscale::extract_era5_hourly_met()} (and, for a lake looked up by
+#' id or name, \code{metscale::extract_era5_lake_met()}). ERA5 extraction,
+#' conversion and bias-correction have moved to the
+#' \href{https://github.com/limnotrack/metscale}{metscale} package; install it
+#' with `remotes::install_github("limnotrack/metscale")`. Note the mechanism
+#' differs: this function calls the limnotrack LERNZmp API, while its
+#' metscale replacements read local ERA5-Land netCDF files directly.
+#'
 #' Extract [ERA5-Land](https://www.ecmwf.int/en/era5-land) meteorological data
 #' for the closest grid to a particular latitude and longitude for a selected
 #' number of years (1980-2023).
@@ -24,6 +36,7 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom dplyr mutate
 #' @importFrom rlang `%||%`
+#' @importFrom lifecycle deprecate_soft
 #'
 #' @return dataframe of daily ERA5 data.
 #'
@@ -40,6 +53,9 @@ get_era5_land_point_nz <- function(lat, lon, years,
                                             "MET_radswd"),
                                    api_url = "https://api.limnotrack.com",
                                    api_key = NULL) {
+  lifecycle::deprecate_soft("0.3.0.9000", "get_era5_land_point_nz()",
+                            "metscale::extract_era5_hourly_met()")
+
   if (is.null(api_key)) {
     api_key <- Sys.getenv("LERNZMP_KEY")
   }
