@@ -39,6 +39,33 @@
 #' `var_aeme = "LKE_lvlwtr"` and `depth = NA`; `return_indices = TRUE`
 #' returns the date/depth indices.
 #'
+#' This is the calibration objective itself - `calib_aeme()` (via
+#' `eval_param_chunk()`) sums this function's per-`vars_sim` components into
+#' the single `fit` value it records - so it is **not** expected to
+#' numerically match `AEME::assess_aeme()` / `AEME::assess_model()` on the
+#' same parameter set, even for the exact best-fit run. The two answer
+#' different questions: `assess_aeme()` reports a fixed set of per-variable,
+#' unweighted, conventionally-oriented statistics (`nse`, `kge`, `mae`, ...)
+#' read via `AEME::get_var()`, for general model diagnostics; `run_and_fit()`
+#' reports whatever `FUN_list` returns, weighted and (for `method = "calib"`)
+#' later summed across variables, read via `AEME::read_model_outputs()`, as
+#' the quantity calibration actually minimises.
+#'
+#' To reproduce a recorded `fit_value` for verification, call this function
+#' again with the same `param`, `FUN_list`, `vars_sim` and `weights` used for
+#' the original `calib_aeme()` call, then reduce it the same way
+#' `eval_param_chunk()` does - summed, with `na_value` substituted whenever
+#' any component is `NA` (a component can come back as the `na_value`
+#' sentinel rather than `NA` on a failed run, so guard on that rather than
+#' summing directly):
+#' \preformatted{
+#' res <- run_and_fit(aeme, param, model, vars_sim, path, FUN_list, weights,
+#'                    include_wlev = TRUE, method = "calib", fit = TRUE)
+#' fit <- if (any(is.na(unlist(res)))) na_value else sum(unlist(res))
+#' }
+#' Use `assess_aeme()`/`assess_model()` separately for interpretable,
+#' per-variable fit statistics - it is not a substitute for the above.
+#'
 #' @importFrom dplyr bind_rows case_when filter left_join mutate rename select
 #' @importFrom ncdf4 nc_close
 #'
@@ -111,6 +138,13 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   if (!is.null(obs$lake)) {
     obs$lake <- normalise_lake_obs(obs$lake)
   }
+  # AEME observations may now carry a POSIXct timestamp while daily model
+  # output reads back as `Date`. Built-in calibration keys the model
+  # comparison on the calendar day, so collapse obs$lake and obs$level to a
+  # UTC `Date` here, once - so they agree with the (also day-collapsed) model
+  # output both in the scoring block below and inside `.raf_wlev()`.
+  obs$lake  <- obs_calendar_date(obs$lake)
+  obs$level <- obs_calendar_date(obs$level)
 
   if (is.null(FUN_list)) {
     FUN_list <- function(df) mean(abs(df$model - df$obs), na.rm = TRUE)
@@ -194,6 +228,13 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     pieces <- pieces[!vapply(pieces, is.null, logical(1))]
     if (length(pieces) == 0) return(mark_sa_failure(return_list, method))
     mod_out <- dplyr::bind_rows(pieces)
+    # Model output reads back as `Date` (daily run) or UTC POSIXct (sub-daily).
+    # The calibration obs were collapsed to a UTC calendar `Date` above, so
+    # collapse the model side the same way and the scoring join keys cleanly.
+    # No-op for a daily run (Date -> Date).
+    if (method == "calib" && !is.null(mod_out)) {
+      mod_out$Date <- as.Date(mod_out$Date, tz = "UTC")
+    }
   }
 
   # --- Water level -------------------------------------------------------------
@@ -227,8 +268,27 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
         dplyr::filter(Date %in% mod_out$Date, var_aeme %in% vars_sim) |>
         dplyr::rename(obs = value)
       if (nrow(obs_sub) < 1) {
-        AEME::cli_safe("No observational data present.",
-                       FUN = cli::cli_alert_warning)
+        # Distinguish "this lake has no observations for these variables" from
+        # "it has observations, but none share a timestamp with a model output
+        # step". The second is what a daily-vs-sub-daily cadence mismatch (or
+        # observations that carry a time-of-day the output grid never lands on)
+        # looks like, and it needs a different fix - aligning the observations
+        # to the output grid - so name it rather than let it read as an empty
+        # lake.
+        n_var_obs <- sum(obs$lake$var_aeme %in% vars_sim, na.rm = TRUE)
+        if (n_var_obs > 0) {
+          AEME::cli_safe(
+            paste0("None of the {.val ", n_var_obs, "} observation",
+                   if (n_var_obs == 1) "" else "s", " for {.val {vars_sim}} ",
+                   "share a timestamp with a model output step - check the ",
+                   "observation cadence against the model output timestep."),
+            FUN = cli::cli_alert_warning)
+          attr(return_list, "diag") <- "obs_unaligned"
+        } else {
+          AEME::cli_safe("No observational data present.",
+                         FUN = cli::cli_alert_warning)
+          attr(return_list, "diag") <- "no_obs"
+        }
         # A residual-mode run that also fits water level can still proceed
         # on the water-level rows alone.
         if (return_df && !is.null(lvl_comp)) return(lvl_comp)
@@ -374,6 +434,11 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
 
   balance <- AEME::read_model_wlev(nc = nc, model = model)
   if (is.null(ncol(balance))) return(NULL)
+  # AEME (>= 0.4.0) time bounds are UTC POSIXct and a sub-daily run's Date
+  # column is POSIXct; obs$level and the water-balance frame are a daily Date
+  # axis. Work on the UTC calendar date so the join and window filter below
+  # stay Date-to-Date.
+  balance$Date <- as.Date(balance$Date, tz = "UTC")
   if (any(balance[["LKE_lvlwtr"]] <= 0) || anyNA(balance[["LKE_lvlwtr"]])) {
     return(NULL)
   }
@@ -381,7 +446,8 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   wbal <- AEME::water_balance(aeme)
   tme <- AEME::time(aeme)
   time_check <- !is.null(obs$level) &&
-    any(obs$level$Date > tme$start & obs$level$Date < tme$stop)
+    any(obs$level$Date > as.Date(tme$start, tz = "UTC") &
+          obs$level$Date < as.Date(tme$stop, tz = "UTC"))
 
   if (!is.null(obs$level) && time_check) {
     lvl_adj <- obs$level |>
@@ -397,6 +463,11 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
       dplyr::mutate(value = inp$init_depth, var_aeme = "LKE_lvlwtr")
   }
 
+  # `lvl_adj` is drawn from obs$level, the water balance, or `balance` itself;
+  # keep its key a UTC `Date` so the join to `balance` (also a UTC `Date`)
+  # cannot silently miss on a class mismatch.
+  lvl_adj$Date <- as.Date(lvl_adj$Date, tz = "UTC")
+
   balance |>
     dplyr::left_join(lvl_adj, by = "Date") |>
     dplyr::rename(model = LKE_lvlwtr) |>
@@ -404,7 +475,8 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
       model = dplyr::case_when(is.na(model) ~ 0, .default = model),
       LID = NA, var_aeme = "DEPTH", depth = NA,
       diff = model - value) |>
-    dplyr::filter(!is.na(diff), Date >= tme$start, Date <= tme$stop) |>
+    dplyr::filter(!is.na(diff), Date >= as.Date(tme$start, tz = "UTC"),
+                  Date <= as.Date(tme$stop, tz = "UTC")) |>
     dplyr::select(LID, Date, value, var_aeme, depth, model, diff) |>
     dplyr::rename(obs = value)
 }
