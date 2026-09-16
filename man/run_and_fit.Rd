@@ -82,6 +82,33 @@ comparison dataframe - one row per gridded observation and, when
 \code{include_wlev = TRUE}, one row per water-level observation with
 \code{var_aeme = "LKE_lvlwtr"} and \code{depth = NA}; \code{return_indices = TRUE}
 returns the date/depth indices.
+
+This is the calibration objective itself - \code{calib_aeme()} (via
+\code{eval_param_chunk()}) sums this function's per-\code{vars_sim} components into
+the single \code{fit} value it records - so it is \strong{not} expected to
+numerically match \code{AEME::assess_aeme()} / \code{AEME::assess_model()} on the
+same parameter set, even for the exact best-fit run. The two answer
+different questions: \code{assess_aeme()} reports a fixed set of per-variable,
+unweighted, conventionally-oriented statistics (\code{nse}, \code{kge}, \code{mae}, ...)
+read via \code{AEME::get_var()}, for general model diagnostics; \code{run_and_fit()}
+reports whatever \code{FUN_list} returns, weighted and (for \code{method = "calib"})
+later summed across variables, read via \code{AEME::read_model_outputs()}, as
+the quantity calibration actually minimises.
+
+To reproduce a recorded \code{fit_value} for verification, call this function
+again with the same \code{param}, \code{FUN_list}, \code{vars_sim} and \code{weights} used for
+the original \code{calib_aeme()} call, then reduce it the same way
+\code{eval_param_chunk()} does - summed, with \code{na_value} substituted whenever
+any component is \code{NA} (a component can come back as the \code{na_value}
+sentinel rather than \code{NA} on a failed run, so guard on that rather than
+summing directly):
+\preformatted{
+res <- run_and_fit(aeme, param, model, vars_sim, path, FUN_list, weights,
+                   include_wlev = TRUE, method = "calib", fit = TRUE)
+fit <- if (any(is.na(unlist(res)))) na_value else sum(unlist(res))
+}
+Use \code{assess_aeme()}/\code{assess_model()} separately for interpretable,
+per-variable fit statistics - it is not a substitute for the above.
 }
 \description{
 Run a model and calculate model fit.
