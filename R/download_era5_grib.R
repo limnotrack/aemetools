@@ -1,6 +1,14 @@
 #' Download ERA5 GRIB files
 #'
 #' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `download_era5_grib()` is superseded by
+#' \code{metscale::download_era5_cds()}. ERA5 extraction, conversion and
+#' bias-correction have moved to the
+#' \href{https://github.com/limnotrack/metscale}{metscale} package; install it
+#' with `remotes::install_github("limnotrack/metscale")`.
+#'
 #' Download ERA5 meteorological data from the Copernicus Data Store (CDS).
 #' Create a free CDS user account by \href{https://cds.climate.copernicus.eu/user/register}{self
 #'  registering}.
@@ -27,6 +35,7 @@
 #' @param path filepath to store downloaded file
 #'
 #' @importFrom ecmwfr wf_check_request wf_request_batch
+#' @importFrom lifecycle deprecate_soft
 #'
 #' @examples
 #' \dontrun{
@@ -63,6 +72,9 @@ download_era5_grib <- function(shape = NULL,
                                user = NULL,
                                era5_dataset = "reanalysis-era5-land",
                                path = ".") {
+
+  lifecycle::deprecate_soft("0.3.0.9000", "download_era5_grib()",
+                            "metscale::download_era5_cds()")
 
   # Create dir if it does not exist
   if (!dir.exists(path)) {
