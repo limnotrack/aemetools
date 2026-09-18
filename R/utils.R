@@ -32,6 +32,43 @@ aeme_make_cluster <- function(ncore, outfile = "parallel.log") {
   parallel::makeCluster(ncore, outfile = outfile, setup_timeout = to)
 }
 
+#' Reduce an AEME observation frame's timestamp to a UTC calendar `Date`
+#'
+#' AEME is moving lake / level observations from a daily `Date` column to a
+#' `POSIXct` `datetime` (UTC). Built-in calibration, `get_calib_periods()` and
+#' the ensemble summary all compare observations against model output on the
+#' calendar day, so this guarantees a `Date`-class column named `Date`:
+#' \itemize{
+#'   \item a `Date` column is AEME's own calendar-day column - it was reduced
+#'     with knowledge of the source timezone, so it is authoritative and is
+#'     taken as-is (only its class is enforced).
+#'   \item otherwise a `datetime` column (the post-rename schema) is reduced
+#'     with `as.Date(datetime, tz = "UTC")`, matching AEME's own
+#'     "everything runs in UTC" convention.
+#' }
+#'
+#' Lossless while observations are daily. This is the single seam where a
+#' sub-daily observation-to-output alignment step plugs in once AEME provides
+#' one - until then a sub-daily observation is snapped to its UTC calendar day,
+#' which at least matches it to daily model output instead of dropping it.
+#'
+#' @param df an observation data frame (`obs$lake` / `obs$level`), or `NULL`.
+#' @return `df` with a `Date` column of class `Date`; `df` unchanged when it is
+#'   `NULL`, not a data frame, or carries no recognised timestamp column.
+#' @noRd
+obs_calendar_date <- function(df) {
+  if (is.null(df) || !is.data.frame(df)) return(df)
+  src <- if ("Date" %in% names(df)) {
+    df$Date
+  } else if ("datetime" %in% names(df)) {
+    df$datetime
+  } else {
+    return(df)
+  }
+  df$Date <- if (inherits(src, "Date")) as.Date(src) else as.Date(src, tz = "UTC")
+  df
+}
+
 #' Ensure a lake observations data frame has a numeric `depth` column
 #'
 #' AEME (>= 0.4.0) stores lake observations with a single required `depth`
