@@ -115,10 +115,10 @@ carry_param <- function(x, names = NULL, except = NULL, fit_col = "fit") {
 
   drop_na <- is.na(best$value)
   if (any(drop_na)) {
-    AEME::cli_safe(
-      paste0("Dropping parameter{?s} with no best value: {.val ",
-             paste(unique(best$name[drop_na]), collapse = ", "), "}"),
-      FUN = cli::cli_alert_warning)
+    dropped <- unique(best$name[drop_na])
+    # A genuine warning condition (catchable, not silenceable via
+    # `AEME.inform`): the caller needs to know rows were removed.
+    cli::cli_warn("Dropping parameter{?s} with no best value: {.val {dropped}}")
     best <- best[!drop_na, , drop = FALSE]
   }
 
