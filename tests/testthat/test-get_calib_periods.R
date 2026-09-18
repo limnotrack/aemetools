@@ -43,7 +43,9 @@ test_that("the split lands on observation dates and covers the record", {
   expect_equal(p$periods$period, c("calib", "valid"))
   # Every boundary is a date that actually carries data, so neither period
   # opens or closes on a stretch with nothing to compare against.
-  for (d in c(p$periods$start, p$periods$stop)) expect_true(d %in% dates)
+  # (Iterate with a vectorised %in% - a `for` loop over a Date vector drops
+  # the class and breaks the comparison.)
+  expect_true(all(c(p$periods$start, p$periods$stop) %in% dates))
   # Contiguous and non-overlapping: calib ends before valid starts.
   expect_lt(p$periods$stop[1], p$periods$start[2])
   expect_equal(p$split_date, p$periods$start[2])

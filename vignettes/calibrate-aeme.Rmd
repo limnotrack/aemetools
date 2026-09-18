@@ -49,7 +49,7 @@ list.files(path, recursive = TRUE)
 Using the `AEME` functions, we will build the AEME model setup. For this
 example, we will use the `glm_aed` model. The `build_aeme` function will build the model setup and the `run_aeme` function will run the model. The model output is stored in the lake folder.
 
-Note that `AEME` funtions can be used in pipelines to allow for more efficient code. For example, the `build_aeme` function can be used in a pipeline with the `run_aeme` function to build and run the model in one step.
+Note that `AEME` functions can be used in pipelines to allow for more efficient code. For example, the `build_aeme` function can be used in a pipeline with the `run_aeme` function to build and run the model in one step.
 
 ```{r build-aeme-example, warning=FALSE, message=FALSE}
 
@@ -202,9 +202,10 @@ FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = rmse)
 ### Define control parameters
 
 Next, we will define the control parameters for the calibration. The control
-parameters are generated using the `create_control` funtion and are then passed
-to the `calib_aeme` function. The control parameters for calibration are as
-follows:
+parameters are generated using `create_calib_control()` and are then passed to
+`calib_aeme()`. (`create_control()` still exists but is deprecated in favour of
+the dedicated `create_calib_control()` and `create_sa_control()` constructors.)
+The control parameters for calibration are as follows:
 
 ```{r create-control-args, tidy=FALSE, printr.help.sections=c('arguments'), comment=''}
 ?create_calib_control
@@ -319,7 +320,7 @@ around that value. If a parameter is not converging on a value, then the
 histogram will show a flat distribution.
 
 ```{r histogram-plot, fig.width = 8, fig.height = 6}
-plist$hist
+plist$histogram
 ```
 
 ### Convergence plot
@@ -336,17 +337,18 @@ plist$convergence
 
 ## Assess calibrated values
 
-The best parameter values can be extracted using the `get_param` function. This
-function takes the following arguments:
+The single best parameter set is extracted with `get_best_params()`, which takes:
 
--   `calib`: The calibration results as read in using the `read_calib` function.
--   `na_value`: The value to use for missing values in the observed and
-    predicted data. This is used to indicate when the model crashes and then can
-    be easily removed from the calibration results.
--   `fit_col`: The name of the column in the calibration results that contains
-    the fitness value. Defaults to `fit`.
--   `best`: A logical indicating whether to return the best parameter values or
-    the entire calibration dataset. Defaults to `FALSE`.
+-   `calib`: the calibration results as read in with `read_calib()`.
+-   `fit_col`: the name of the column holding the fitness value. Defaults to
+    `"fit"`.
+-   `na_value`: the sentinel used for crashed runs, dropped before ranking.
+    Defaults to the value stored on the control.
+
+Use `get_sim_params(calib, quantile_threshold = )` for every evaluated set below
+a fitness quantile rather than just the best one, and `update_param()` to fold a
+calibrated set back into a `param` dataframe. (`get_param()` is retained as a
+thin wrapper over these two.)
 
 ```{r extract-best-parameters}
 best_params <- get_best_params(calib)
@@ -384,6 +386,43 @@ assess_model(aeme = aeme, model = model, var_sim = vars_sim)
 
 ```
 
+### Reproducing the calibration fit value
+
+`assess_model()`'s table above is a general-purpose diagnostic: a fixed set of
+per-variable, unweighted statistics (`nse`, `kge`, `mae`, ...) computed however
+`var_sim` happens to be assessed right now. It is **not** the number
+`calib_aeme()` recorded as `best_params$fit_value` for this parameter set, and
+is not expected to match it - even run on the exact best parameters. That
+number is the calibration objective itself: whatever `FUN_list` returned,
+weighted per variable and summed across `vars_sim` (this is what
+`eval_param_chunk()` does internally on every candidate). To reproduce it for
+verification, call `run_and_fit()` again with the *same* `param`, `FUN_list`,
+`vars_sim` and `weights` used for the original `calib_aeme()` call, then
+reduce it the same way `eval_param_chunk()` does:
+
+```{r verify-calib-fit}
+res <- run_and_fit(aeme = aeme, param = best_params, model = model,
+                   vars_sim = vars_sim, path = path, FUN_list = FUN_list,
+                   weights = weights,
+                   include_wlev = "LKE_lvlwtr" %in% vars_sim,
+                   method = "calib", fit = TRUE)
+fit <- if (any(is.na(unlist(res)))) ctrl$na_value else sum(unlist(res))
+fit
+min(best_params$fit_value)
+```
+
+`fit` matches `best_params$fit_value`; `res` holds the weighted value for each
+entry of `vars_sim` before summation. Use this pattern to check a recorded fit
+value is reproducible, and `assess_model()` separately for interpretable,
+per-variable model performance - they answer different questions and are not
+interchangeable.
+
+(One caveat if a model runs sub-daily: `run_and_fit()` and
+`assess_aeme()`/`assess_model()` extract modelled values through different
+`AEME` code paths and can pick a different output timestep for the same
+observation day, which can shift the comparison slightly even beyond the
+differences described above. Daily-output runs, as here, are unaffected.)
+
 ### Visualise model performance
 
 The model performance can be visualised using the `plot_resid` function within
@@ -418,3 +457,25 @@ pl$HYD_temp
 pl$LKE_lvlwtr
 
 ```
+
+## Other calibration approaches
+
+The workflow above uses the built-in differential-evolution engine. `aemetools`
+also provides:
+
+-   **Multi-objective (Pareto) calibration** with the `"MOEDA"` method. Set
+    `create_calib_control(c_method = "MOEDA")` and pass a parameter covariance
+    matrix built with `create_param_var_matrix()` to
+    `calib_aeme(param_var_matrix = )` (the two are mutually required). Extract
+    the non-dominated sets with `get_pareto_front()` and inspect them across
+    generations with `plot_pareto_generations()`.
+-   **PEST++ calibration** using the `pestpp-ies` iterative ensemble smoother,
+    with Morris screening and localisation. Install the solver once with
+    `install_pest()`, then see `vignette("screen-then-calibrate")` and
+    `vignette("staged-calibration")`.
+-   **Split-sample validation**: `get_calib_periods()` proposes calibration and
+    validation windows from the observation record (or returns the whole record
+    with `split = FALSE`), and `validate_aeme()` scores a parameter set over the
+    held-out period.
+-   A `timeout` argument on `create_calib_control()` returns the best set found
+    so far if a wall-clock limit is reached.

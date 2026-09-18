@@ -37,11 +37,11 @@ test_that("set_param_log() never flags a non-positive lower bound", {
   expect_false(set_param_log(p)$log[1])
 })
 
-test_that("set_param_log(overwrite = FALSE) keeps existing TRUE flags", {
+test_that("set_param_log(overwrite = FALSE) keeps existing flags", {
   p <- demo_param()
-  p$log <- c(FALSE, FALSE, TRUE)                     # ce..sed set by hand
+  p$log <- c(NA, FALSE, TRUE)                        # ce..sed set by hand
   out <- set_param_log(p, overwrite = FALSE)
-  expect_equal(out$log, c(TRUE, FALSE, TRUE))
+  expect_equal(out$log, c(TRUE, FALSE, TRUE))        # NA filled, hand values kept
   expect_equal(set_param_log(p, overwrite = TRUE)$log, c(TRUE, TRUE, FALSE))
 })
 
