@@ -100,8 +100,10 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
     
     # Simulation metadata
     sim_meta <- data.frame(sim_id = sim_id, id = lke$id, model = model,
-                           spin_up = tme$spin_up[[model]], start = tme$start,
-                           stop = tme$stop, use_bgc = use_bgc,
+                           spin_up = tme$spin_up[[model]],
+                           start = as.Date(tme$start, tz = "UTC"),
+                           stop = as.Date(tme$stop, tz = "UTC"),
+                           use_bgc = use_bgc,
                            n_params = nrow(param), method = ctrl$method,
                            engine = if (is.null(ctrl$engine)) "builtin" else
                              ctrl$engine,
