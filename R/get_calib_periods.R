@@ -362,12 +362,14 @@ print.aeme_calib_periods <- function(x, ...) {
   if (have_lake) {
     # Same `depth` pest_obs_table() uses (midpoint of any legacy
     # depth_from / depth_to pair), so "a profile" means the same thing here
-    # as it does downstream.
-    lk <- normalise_lake_obs(obs$lake)
+    # as it does downstream. `obs_calendar_date()` reduces a POSIXct
+    # `datetime` / `Date` column to a UTC calendar `Date` so the split-search,
+    # coverage and `n_days` logic below stays day-based.
+    lk <- obs_calendar_date(normalise_lake_obs(obs$lake))
     df <- rbind(df, lk[, cols, drop = FALSE])
   }
   if (have_lvl) {
-    lv <- obs$level
+    lv <- obs_calendar_date(obs$level)
     lv$depth <- NA_real_   # water level is a scalar series, not a profile
     df <- rbind(df, lv[, cols, drop = FALSE])
   }
@@ -394,7 +396,7 @@ print.aeme_calib_periods <- function(x, ...) {
   sub <- df[df$Date >= rng[1] & df$Date <= rng[2], , drop = FALSE]
   data.frame(
     period = period, start = rng[1], stop = rng[2],
-    n_days = as.integer(rng[2] - rng[1]) + 1L,
+    n_days = as.integer(difftime(rng[2], rng[1], units = "days")) + 1L,
     n_obs = nrow(sub),
     n_dates = length(unique(sub$Date)),
     n_months = length(unique(format(sub$Date, "%m"))),
