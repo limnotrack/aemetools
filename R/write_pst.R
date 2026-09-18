@@ -177,6 +177,11 @@ pest_obs_table <- function(aeme, vars_sim, weights, obj_mode = "residual",
   grid_vars <- setdiff(vars_sim, "LKE_lvlwtr")
 
   obs <- AEME::observations(aeme)
+  # AEME observations may now carry a POSIXct timestamp. The PEST obs map and
+  # its `_obs_map.csv` round-trip are keyed on the calendar day, so normalise
+  # to a UTC `Date` on the way in.
+  obs$lake  <- obs_calendar_date(obs$lake)
+  obs$level <- obs_calendar_date(obs$level)
   have_lake <- !is.null(obs$lake) && nrow(obs$lake) > 0
   have_lvl  <- !is.null(obs$level) && nrow(obs$level) > 0
 
