@@ -126,7 +126,7 @@ ensemble_summary <- function(aeme, model, vars_sim = "HYD_temp", depths = NULL,
 
   members <- dplyr::bind_rows(lapply(per_var, `[[`, "members"))
   stats <- dplyr::bind_rows(lapply(per_var, `[[`, "stats"))
-  period <- as.Date(range(members$Date, na.rm = TRUE))
+  period <- as.Date(range(members$Date, na.rm = TRUE), tz = "UTC")
 
   # ---- observations -----------------------------------------------------
   obs_df <- .ens_obs(aeme, vars_sim, vars_2d, depths, obs_tol, period,
@@ -155,6 +155,10 @@ ensemble_summary <- function(aeme, model, vars_sim = "HYD_temp", depths = NULL,
   if (!enabled) return(NULL)
   obs <- AEME::observations(aeme)
   if (is.null(obs$lake)) return(NULL)
+  # AEME observations may now carry a POSIXct timestamp; `period` is a `Date`
+  # range. Reduce the obs timestamp to a UTC calendar `Date` so the window
+  # test and the downstream depth alignment stay Date-to-Date.
+  obs$lake <- obs_calendar_date(obs$lake)
   lk <- obs$lake[obs$lake$var_aeme %in% vars_sim &
                    obs$lake$Date >= period[1] & obs$lake$Date <= period[2], ,
                  drop = FALSE]

@@ -37,6 +37,9 @@ read_sa <- function(ctrl = NULL, file_name, file_dir, sim_id, R = 1000,
       {.code boot = FALSE} for point estimates without bootstrap CIs."
     ))
   }
+  # `sensobol` rejects a non-NULL `R` when `boot = FALSE`, so the default
+  # `R = 1000` must not leak through to sobol_indices()/sobol_dummy() there.
+  if (!isTRUE(boot)) R <- NULL
 
   if (is.null(ctrl)) {
     ctrl <- list()
