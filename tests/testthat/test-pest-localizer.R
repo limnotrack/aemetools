@@ -4,7 +4,7 @@
 loc_param <- function() {
   data.frame(
     model = "glm_aed",
-    file = c("glm3.nml", "glm3.nml", "glm3.nml", "met"),
+    file = c("glm4.nml", "glm4.nml", "glm4.nml", "met"),
     group = c("light", "light", "sediment", NA),
     name = c("Kw", "ce", "Fsed_oxy", "MET_tmpair"),
     index = c(1, NA, NA, NA),

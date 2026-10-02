@@ -82,6 +82,14 @@ pest_localizer <- function(param_var_matrix, par_tbl, obs_tbl, file = NULL) {
     cli::cli_abort("{.arg par_tbl} has no {.field map} attribute; it must come
                    from {.fn pest_param_table}.")
   }
+
+  # A `partrans = "fixed"` parameter is held by PEST whatever the localizer
+  # says, so it needs no column here - and including one would trip the
+  # "missing row" / "unlinked parameter" guards below. Drop them.
+  if ("partrans" %in% names(par_tbl)) {
+    keep_pn <- par_tbl$parnme[par_tbl$partrans != "fixed"]
+    pmap <- pmap[pmap$parnme %in% keep_pn, , drop = FALSE]
+  }
   if (is.null(omap) || !"var_aeme" %in% names(omap)) {
     cli::cli_abort("{.arg obs_tbl} has no {.field map} attribute; it must come
                    from {.fn pest_obs_table}.")

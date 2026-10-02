@@ -38,32 +38,22 @@ eval_param_chunk <- function(pars_i, path, aeme, param, model, vars_sim,
 
     # On cluster workers the package is not attached, so `run_and_fit()`
     # must be namespace-qualified to resolve.
-    if (parallel) {
-      res <- aemetools::run_and_fit(aeme = aeme, param = param, model = model,
-                                    path = path, vars_sim = vars_sim,
-                                    FUN_list = FUN_list,
-                                    model_controls = model_controls,
-                                    na_value = ctrl$na_value,
-                                    var_indices = var_indices,
-                                    return_indices = FALSE,
-                                    include_wlev = include_wlev, fit = TRUE,
-                                    weights = weights, timeout = ctrl$timeout)
-    } else {
-      res <- run_and_fit(aeme = aeme, param = param, model = model,
-                         path = path, vars_sim = vars_sim,
-                         FUN_list = FUN_list, model_controls = model_controls,
-                         na_value = ctrl$na_value, var_indices = var_indices,
-                         return_indices = FALSE, include_wlev = include_wlev,
-                         fit = TRUE, weights = weights,
-                         timeout = ctrl$timeout)
-    }
+    run_fun <- if (parallel) aemetools::run_and_fit else run_and_fit
+    res <- run_fun(aeme = aeme, param = param, model = model,
+                   path = path, vars_sim = vars_sim,
+                   FUN_list = FUN_list,
+                   model_controls = model_controls,
+                   na_value = ctrl$na_value,
+                   var_indices = var_indices,
+                   return_indices = FALSE,
+                   include_wlev = include_wlev, fit = TRUE,
+                   weights = weights, timeout = ctrl$timeout)
 
     for (v in vars_sim) {
       pars_i[[v]][p] <- res[[v]]
     }
 
     if (any(is.na(unlist(res)))) {
-    # if (any(is_failed_fit(unlist(res), ctrl))) {
       res1 <- ctrl$na_value
     } else {
       res1 <- sum(unlist(res))

@@ -8,7 +8,7 @@
 make_sen_param <- function() {
   data.frame(
     model = "glm_aed",
-    file  = c("glm3.nml", "glm3.nml", "met"),
+    file  = c("glm4.nml", "glm4.nml", "met"),
     group = c("light", "light", NA),
     name  = c("Kw", "ce", "MET_tmpair"),
     index = c(1, NA, NA),

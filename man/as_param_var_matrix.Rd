@@ -73,7 +73,7 @@ nothing I am fitting" - and, on the PEST path, avoids handing
 }
 
 \examples{
-param <- data.frame(model = "glm_aed", file = "glm3.nml",
+param <- data.frame(model = "glm_aed", file = "glm4.nml",
                     group = c("light", "light", NA),
                     name = c("Kw", "ce", "MET_tmpair"),
                     index = c(1, NA, NA))

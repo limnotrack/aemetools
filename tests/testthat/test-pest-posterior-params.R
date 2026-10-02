@@ -15,7 +15,7 @@ mk_calib <- function(s, extra_rows = NULL) {
 }
 
 frozen_row <- data.frame(
-  model = "glm_aed", file = "glm3.nml", group = "sediment", name = "n_zones",
+  model = "glm_aed", file = "glm4.nml", group = "sediment", name = "n_zones",
   index = NA_integer_, value = 3, min = 3, max = 3, log = FALSE,
   stringsAsFactors = FALSE
 )

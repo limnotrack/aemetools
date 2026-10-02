@@ -40,7 +40,7 @@ fake_pest_write_pars <- function(tpl, out, values) {
 # A two-parameter calibration set: one log/indexed (Kw[1]), one plain (ce).
 pest_param <- function() {
   data.frame(
-    model = "glm_aed", file = "glm3.nml",
+    model = "glm_aed", file = "glm4.nml",
     group = c("light", "light"), name = c("Kw", "ce"),
     index = c(1L, NA_integer_), value = c(0.5, 0.0013),
     min = c(0.1, 0.0005), max = c(1.5, 0.005), log = c(FALSE, FALSE),

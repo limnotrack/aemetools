@@ -55,13 +55,8 @@ aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path,
 data("aeme_parameters", package = "AEME")
 param <- aeme_parameters
 
-# Function to calculate fitness
-nse <- function(df) {
-# Calculate Nash-Sutcliffe Efficiency
-  nse <- 1 - (sum((df$obs - df$model)^2) / sum((df$obs - mean(df$obs))^2))
-  -1 * nse
-}
-FUN_list <- list(HYD_temp = nse, LKE_lvlwtr = nse)
+# Function to calculate fitness (nse_loss = -1 * NSE, minimised by calib_aeme)
+FUN_list <- list(HYD_temp = nse_loss, LKE_lvlwtr = nse_loss)
 
 ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
                        parallel = TRUE, file_type = "db",

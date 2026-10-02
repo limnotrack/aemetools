@@ -260,6 +260,115 @@ read_pest_results <- function(ctrl, param, vars_sim) {
          identical(ctrl$noise_method %||% "ensemble", "ensemble")))
 }
 
+#' Build this run's prior parameter ensemble from a previous `pestpp-ies`
+#' run's posterior.
+#'
+#' Parameters shared with the source run (matched by `name_full`) take their
+#' columns from the source's final-iteration parameter ensemble; parameters
+#' new to this run are drawn from their prior with
+#' \code{\link{pest_prior_ensemble}}. Realisations are trimmed to `n` (the
+#' target `ies_num_reals`); if the source has fewer, that smaller count is
+#' used and a warning is issued. `partrans = "fixed"` columns ride along
+#' unchanged - they are constant in both runs.
+#'
+#' @param source a \code{\link{read_calib}} object, a
+#'   \code{\link{create_pest_control}} object, a resolved `list(pest_dir,
+#'   case)`, or a run-directory path.
+#' @param par_tbl this run's parameter table (from
+#'   \code{\link{pest_param_table}}), carrying its `map` attribute.
+#' @param param this run's aemetools parameter dataframe, with `name_full`.
+#' @param n target realisation count (`ctrl$ies_num_reals`).
+#' @param dist,seed passed to \code{\link{pest_prior_ensemble}} for the new
+#'   parameters.
+#' @return A dataframe: a `real_name` column (`"0"`..`"N-1"`) then one column
+#'   per `par_tbl$parnme`, ready to write as `++ies_parameter_ensemble`.
+#' @noRd
+.pest_carry_ensemble <- function(source, par_tbl, param, n, dist = "uniform",
+                                 seed = NULL) {
+
+  loc <- .pest_locate(source)
+  ef <- .pest_ensemble_files(loc$pest_dir, loc$case, "par")
+  if (nrow(ef) == 0) {
+    cli::cli_abort(c(
+      "No {.val pestpp-ies} parameter ensemble in {.file {loc$pest_dir}} to
+       carry forward.",
+      "i" = "{.arg prior_par_ensemble} given as a run needs a finished
+             {.val pestpp-ies} stage (with its kept files)."
+    ))
+  }
+  src <- .pest_read_ens_file(ef$path[which.max(ef$iteration)])
+  real_col <- names(src)[1]
+
+  smap_f <- file.path(loc$pest_dir, paste0(loc$case, "_par_map.csv"))
+  if (!file.exists(smap_f)) {
+    cli::cli_abort("Source run is missing {.file {basename(smap_f)}}, so its
+                   parameters cannot be matched by name.")
+  }
+  smap <- utils::read.csv(smap_f, stringsAsFactors = FALSE)
+
+  # Rename the source ensemble's p### columns to name_full; drop any it has
+  # no mapping for.
+  src_cols <- setdiff(names(src), real_col)
+  src_nf <- smap$name_full[match(src_cols, smap$parnme)]
+  keep <- !is.na(src_nf)
+  src <- src[, c(real_col, src_cols[keep]), drop = FALSE]
+  names(src)[-1] <- src_nf[keep]
+
+  pmap <- attr(par_tbl, "map")             # this run: parnme <-> name_full
+  # Fixed parameters are held at parval1 whatever the source did with them,
+  # so they are neither carried nor drawn - just written as their constant.
+  is_fixed_pn <- par_tbl$partrans == "fixed"
+  adj_nf  <- pmap$name_full[!is_fixed_pn]
+  carried <- intersect(adj_nf, names(src))
+  new_nf  <- setdiff(adj_nf, names(src))
+
+  nsrc <- nrow(src)
+  if (nsrc >= n) {
+    if (!is.null(seed)) set.seed(as.integer(seed))
+    src <- src[sample.int(nsrc, n), , drop = FALSE]
+    nkeep <- n
+  } else {
+    cli::cli_warn(c(
+      "Source posterior has {nsrc} realisation{?s}, fewer than the target
+       {.arg ies_num_reals} ({n}); running {nsrc}.",
+      "i" = "Raise the source stage's {.arg ies_num_reals} to carry more."
+    ))
+    nkeep <- nsrc
+  }
+
+  out <- data.frame(real_name = as.character(seq_len(nkeep) - 1L),
+                    check.names = FALSE, stringsAsFactors = FALSE)
+  for (nf in carried) {
+    out[[pmap$parnme[match(nf, pmap$name_full)]]] <- src[[nf]]
+  }
+  # Held parameters: their constant, repeated.
+  for (pn in par_tbl$parnme[is_fixed_pn]) {
+    out[[pn]] <- par_tbl$parval1[match(pn, par_tbl$parnme)]
+  }
+
+  if (length(new_nf) > 0) {
+    new_param <- param[match(new_nf, param$name_full), , drop = FALSE]
+    draw <- pest_prior_ensemble(
+      new_param, n = nkeep, dist = dist,
+      seed = if (is.null(seed)) NULL else as.integer(seed) + 7L,
+      include_base = FALSE)
+    # `draw`'s parameter columns are p001..p0kk in `new_param` row order.
+    dcols <- setdiff(names(draw), names(draw)[1])
+    for (k in seq_along(new_nf)) {
+      out[[pmap$parnme[match(new_nf[k], pmap$name_full)]]] <- draw[[dcols[k]]]
+    }
+  }
+
+  AEME::cli_safe(
+    paste0("Seeded the prior ensemble from {.val ", nkeep,
+           "} realisations of {.val ", loc$case, "}: {.val ",
+           length(carried), "} parameters carried from its posterior, {.val ",
+           length(new_nf), "} drawn from prior."),
+    FUN = cli::cli_alert_info)
+
+  out[, c("real_name", par_tbl$parnme), drop = FALSE]
+}
+
 #' Generate the prior parameter and observation ensembles (when requested)
 #' and record the matching `++ies_*` options on `ctrl`.
 #' @noRd
@@ -315,8 +424,33 @@ read_pest_results <- function(ctrl, param, vars_sim) {
     return(ctrl)
   }
 
-  want <- .pest_want_par_en(ctrl)
-  if (is.character(want)) {
+  # Carry a previous stage's posterior ensemble in as this run's prior.
+  # Unlike restart_from - which resumes the *same* problem mid-run and needs
+  # an unchanged parameter/observation set - the parameter set here may
+  # differ: parameters shared with the source run (matched by `name_full`)
+  # are seeded from its posterior, parameters new to this run are drawn from
+  # their own prior. This carries the source's joint posterior (marginals +
+  # correlations), not just a re-drawn box of independent bounds.
+  ppe <- ctrl$prior_par_ensemble
+  is_carry <- !is.null(ppe) &&
+    (inherits(ppe, "calib_sa_control") ||
+       (is.list(ppe) && !is.null(ppe[["calibration_metadata"]])) ||
+       (is.list(ppe) && !is.null(ppe[["pest_dir"]])) ||
+       (is.character(ppe) && length(ppe) == 1L && dir.exists(ppe)))
+
+  want <- if (is_carry) FALSE else .pest_want_par_en(ctrl)
+
+  if (is_carry) {
+    par_en_file <- file.path(ctrl$pest_dir, "prior_par_en.csv")
+    merged <- .pest_carry_ensemble(
+      source = ppe, par_tbl = par_tbl, param = param, n = n,
+      dist = ctrl$prior_dist %||% "uniform", seed = ctrl$seed)
+    utils::write.csv(merged, par_en_file, row.names = FALSE, quote = FALSE)
+    opts$ies_parameter_ensemble <- basename(par_en_file)
+    opts$ies_num_reals <- nrow(merged)
+    ctrl$ies_num_reals <- nrow(merged)
+
+  } else if (is.character(want)) {
     if (!file.exists(want)) {
       cli::cli_abort("{.arg prior_par_ensemble} file not found: {.file {want}}")
     }
@@ -727,6 +861,47 @@ pest_posterior_runs <- function(ctrl, param, res) {
   c(case, "/h", paste0(host, ":", port))
 }
 
+#' Find a TCP port the PANTHER master can actually bind.
+#'
+#' `create_pest_control()` / `create_sen_control()` both default `port` to
+#' 4004, and nothing downstream varied it, so every concurrent calibration
+#' or sensitivity run - each lake, each stage - tried to listen on the same
+#' port. Worse, agents orphaned by an aborted run keep retrying that port;
+#' the next master accepts them, reads its own (stale to them) control file,
+#' rejects them all and stalls out.
+#'
+#' Binding a fresh port per run fixes both: concurrent masters no longer
+#' collide, and a stale agent pointed at the old port cannot reach the new
+#' master. The configured `port` is tried first (so a deliberately chosen
+#' one is honoured when free); if it is busy the search jumps by a random
+#' offset so two sessions racing for the same starting port diverge instead
+#' of marching in lockstep.
+#'
+#' `serverSocket()` binding then closing is only a probe - PEST++ still does
+#' its own bind a moment later - but it collapses the collision window from
+#' "always" to a sub-millisecond race.
+#' @noRd
+.pest_free_port <- function(preferred = 4004L, tries = 400L) {
+  preferred <- as.integer(preferred)
+  # Jitter the fallback order so two sessions racing for the same starting
+  # port diverge, but keep the caller's RNG stream untouched - a calibration
+  # seeded with set.seed() must still be reproducible.
+  jitter <- withr::with_preserve_seed(sample.int(tries))
+  candidates <- c(preferred, preferred + jitter)
+  candidates <- candidates[candidates >= 1024L & candidates <= 65535L]
+  for (p in candidates) {
+    con <- tryCatch(serverSocket(p), error = function(e) NULL)
+    if (!is.null(con)) {
+      close(con)
+      return(p)
+    }
+  }
+  cli::cli_abort(c(
+    "No free TCP port for the PANTHER master near {.val {preferred}}.",
+    "i" = "Set {.arg port} in {.fn create_pest_control} to a known-free port."
+  ))
+}
+
 #' Spawn a PEST++ process with its whole descendant tree tracked.
 #'
 #' `cleanup_tree = TRUE` + `$kill_tree()` reaches the model processes an
@@ -768,6 +943,16 @@ pest_posterior_runs <- function(ctrl, param, res) {
       cli::cli_abort("{.val {ctrl$exe}} exited with status {.val {res$status}}.")
     }
     return(invisible(procs))
+  }
+
+  # Resolve the configured port to one that is actually free, so concurrent
+  # runs (per lake, per stage) and agents orphaned by an earlier abort - all
+  # of which target the shared default 4004 - cannot poison this master.
+  want_port <- ctrl$port
+  ctrl$port <- .pest_free_port(ctrl$port)
+  if (!identical(as.integer(ctrl$port), as.integer(want_port))) {
+    AEME::cli_inform_safe(c("i" = paste0(
+      "Port {.val ", want_port, "} busy; using {.val ", ctrl$port, "}.")))
   }
 
   AEME::cli_inform_safe(c("i" = paste0(

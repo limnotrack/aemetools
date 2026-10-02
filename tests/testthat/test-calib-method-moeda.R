@@ -48,8 +48,9 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
     as.data.frame()
   
   vars_sim <- c("HYD_temp", "HYD_thmcln", "LKE_lvlwtr", "CHM_oxy", "PHY_tchla")
-  FUN_list <- list(HYD_temp = kge, HYD_thmcln = kge, LKE_lvlwtr = kge,
-                   CHM_oxy = kge, PHY_tchla = kge)
+  FUN_list <- list(HYD_temp = kge_loss, HYD_thmcln = kge_loss,
+                   LKE_lvlwtr = kge_loss, CHM_oxy = kge_loss,
+                   PHY_tchla = kge_loss)
   
   ctrl <- create_calib_control(NP = 40, itermax = 200,
                                ncore = 5,

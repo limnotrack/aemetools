@@ -20,12 +20,12 @@ values - the average tendency of the modelled values to be larger
 (positive bias) or smaller (negative bias) than the observed values,
 expressed as a percentage of the observed total. Already \code{0} (perfect
 fit, no systematic bias) at its best and increasing as fit worsens in
-\emph{either} direction, so - unlike \code{\link{nse}}/\code{\link{kge}} - it
-is returned as-is, with no negation needed to match \code{FUN_list}'s
-minimise-the-returned-value convention. The absolute value is used
-rather than the signed value, since an equally large over- or
-under-estimate is an equally poor fit - minimising the signed value
-would instead push the calibration towards the most negative
+\emph{either} direction, so it is minimise-oriented as-is and needs no \verb{_loss}
+companion - pass it straight into \code{FUN_list}, which
+\code{\link{calib_aeme}} and \code{\link{run_and_fit}} minimise. The
+absolute value is used rather than the signed value, since an equally
+large over- or under-estimate is an equally poor fit - minimising the
+signed value would instead push the calibration towards the most negative
 (under-estimating) bias possible.
 }
 \details{

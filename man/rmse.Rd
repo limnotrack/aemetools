@@ -18,9 +18,11 @@ numeric; root mean square error, in the same units as
 \description{
 Calculates the root mean square error between observed and modelled
 values. Already \code{0} (perfect fit) at its best and increasing as fit
-worsens, so - unlike \code{\link{nse}}/\code{\link{kge}} - it is
-returned as-is, with no negation needed to match \code{FUN_list}'s
-minimise-the-returned-value convention.
+worsens, so it is minimise-oriented as-is and needs no \verb{_loss} companion
+\itemize{
+\item pass it straight into \code{FUN_list}, which \code{\link{calib_aeme}} and
+\code{\link{run_and_fit}} minimise.
+}
 }
 \details{
 Like \code{\link{mae}}, RMSE stays in the variable's native units and so

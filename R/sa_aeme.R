@@ -252,7 +252,7 @@ sa_aeme <- function(aeme, model, param, FUN_list, path,
                             "} parameter sets. [", format(Sys.time()), "]"),
                      FUN = cli::cli_alert_info)
       unlink("parallel.log")
-      cl <- parallel::makeCluster(ctrl$ncore, outfile = "parallel.log")
+      cl <- aeme_make_cluster(ctrl$ncore)
       on.exit(parallel::stopCluster(cl))
       varlist <- list("param", "aeme", "paths", "m", "vars_sim", "FUN_list",
                       "model_controls", "var_indices", "ctrl", "weights",
