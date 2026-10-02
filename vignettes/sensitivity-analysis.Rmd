@@ -293,3 +293,50 @@ pl[[1]][2]
 pl[[1]][3]
 
 ```
+
+## Global sensitivity with PEST++ (`pestpp-sen`)
+
+As an alternative to the built-in Sobol' sampler, the evaluation loop can be
+handed to the external `pestpp-sen` engine to run the **Method of Morris**
+(elementary effects). This is global screening at only
+`(n_par + 1) * morris_r` model runs, tolerant of a noisy or nonlinear model
+response, and it can distribute the runs across a PANTHER worker pool.
+
+Install the solver once with `install_pest()`, then swap
+`create_sa_control()` for `create_sen_control()`:
+
+```{r sen-setup, eval=FALSE}
+ctrl <- create_sen_control(
+  morris_r = 10, ncore = 4,
+  vars_sim = list(
+    surf_temp = list(var = "HYD_temp", month = c(12, 1, 2),
+                     depth_range = c(0, 2)),
+    bot_temp  = list(var = "HYD_temp", month = c(12, 1, 2),
+                     depth_range = c(10, 13))
+  )
+)
+
+sim_id <- sa_aeme(aeme = aeme, path = path, param = param,
+                  model = model, ctrl = ctrl, FUN_list = FUN_list)
+```
+
+`sa_aeme()` writes the individual model runs into the same
+`simulation_data` table the built-in method uses, and stores the solver's
+per-parameter Morris indices (`mu_star`, `mu`, `sigma`) in a
+`sensitivity_indices` table. Read them back with `read_sen()` and plot the
+`mu*`-vs-`sigma` screening view with `plot_sen()`:
+
+```{r sen-read, eval=FALSE}
+sen <- read_sen(ctrl = ctrl, sim_id = sim_id)
+plot_sen(sen)
+```
+
+Notes:
+
+* Every `vars_sim` name must contain an underscore (the results writer keys
+  on it), and one Morris response is produced per named sub-region.
+* The sensitivity path always samples parameters linearly on `[min, max]`
+  (`partrans = "none"`), so the indices are comparable with a built-in
+  `sa_aeme()` run on the same `param`.
+* `read_sa()` is for the built-in Sobol' output only; it will redirect a
+  `pestpp-sen` run to `read_sen()`.
