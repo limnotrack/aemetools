@@ -27,7 +27,7 @@ Invisibly, a length-one named character vector
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Writes a PEST template file for a single side-car parameter CSV, rather
-than templating the model configuration files (\code{glm3.nml}, \code{gotm.yaml},
+than templating the model configuration files (\code{glm4.nml}, \code{gotm.yaml},
 \code{simstrat.par}, ...) directly.
 
 This is a deliberate choice. \code{AEME::input_model_parameters()} does not

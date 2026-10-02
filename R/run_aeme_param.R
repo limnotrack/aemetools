@@ -106,7 +106,7 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   }
   
   if (return_nc) {
-    if (model == "gotm_wet") {
+    if (model %in% c("gotm_wet", "glm_aed")) {
       file <- out_file[[model]][["output"]]
     } else {
       file <- out_file[[model]]

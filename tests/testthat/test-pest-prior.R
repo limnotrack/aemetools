@@ -3,7 +3,7 @@
 
 pp_param <- function() {
   data.frame(
-    model = "glm_aed", file = "glm3.nml",
+    model = "glm_aed", file = "glm4.nml",
     group = c("light", "light", NA),
     name  = c("Kw", "ce", "MET_tmpair"),
     index = c(1L, NA_integer_, NA_integer_),

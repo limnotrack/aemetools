@@ -12,13 +12,12 @@ nse(df)
 calculating.}
 }
 \value{
-numeric; \code{-1 * NSE}.
+numeric; NSE, ranging \code{-Inf} to \code{1} (\code{1} = perfect fit).
 }
 \description{
 Calculates the Nash-Sutcliffe Efficiency between observed and modelled
-values, negated so that lower values indicate a better fit - the
-convention expected of \code{FUN_list} entries by \code{\link{calib_aeme}}
-and \code{\link{run_and_fit}}, which minimise the returned value.
+values, in its conventional orientation where \strong{higher is better}
+(\code{1} = perfect fit).
 }
 \details{
 NSE is \eqn{1 - \sum (obs - sim)^2 / \sum (obs - \bar{obs})^2}, ranging
@@ -30,9 +29,18 @@ and under-weights errors in the low/baseline range, and it conflates
 bias, variability and timing error into one number. See
 \code{\link{kge}}/\code{\link{kge_prime}} for a fit function that keeps
 those separate.
+
+\code{calib_aeme()} and \code{run_and_fit()} \strong{minimise} the values returned by
+\code{FUN_list} entries, so \code{nse()} is not suitable as a calibration
+objective directly - use \code{\link{nse_loss}} (which returns
+\code{-1 * nse(df)}) for that.
 }
 \examples{
 df <- data.frame(obs = c(1, 2, 3, 4), model = c(1.1, 2.1, 2.9, 4.2))
 nse(df)
 
+}
+\seealso{
+\code{\link{nse_loss}} for the minimise-oriented variant used in
+\code{FUN_list}.
 }

@@ -264,7 +264,7 @@ setup_real_dir <- function(env = parent.frame()) {
   ctrl <- create_pest_control(pest_dir = d, case = "aeme", ncore = 1,
                               ies_num_reals = 6, noptmax = 1)
   param <- data.frame(
-    model = "glm_aed", file = "glm3.nml", group = NA_character_,
+    model = "glm_aed", file = "glm4.nml", group = NA_character_,
     name = c("light/Kw", "mixing/coef_mix_conv", "mixing/coef_mix_hyp"),
     index = NA_integer_, value = 0.5, min = 0.1, max = 0.8,
     stringsAsFactors = FALSE)
@@ -272,7 +272,7 @@ setup_real_dir <- function(env = parent.frame()) {
 
   utils::write.csv(data.frame(parnme = c("p001", "p002", "p003"),
                               name_full = param$name_full,
-                              model = "glm_aed", file = "glm3.nml"),
+                              model = "glm_aed", file = "glm4.nml"),
                    file.path(d, "aeme_par_map.csv"), row.names = FALSE)
   writeLines(real_ens_0, file.path(d, "aeme.0.par.csv"))
   writeLines(real_ens_1, file.path(d, "aeme.1.par.csv"))
@@ -395,6 +395,26 @@ test_that("read_pest_ensemble flags the base realisation", {
 
   obs <- read_pest_ensemble(s$ctrl, type = "obs")
   expect_true("is_base" %in% names(obs))
+})
+
+test_that("realisation is character even when a CSV has all-numeric labels", {
+  # PEST++ quotes the realisation labels in some ensemble files and not
+  # others, so read.csv types the first column as character for one
+  # iteration (it contains "base") and integer for another (it does not).
+  # Binding prior + posterior then aborted on the type mismatch.
+  s <- make_pest_dir()
+  ef <- aemetools:::.pest_ensemble_files(s$d, "aeme", "par")
+  prior_f <- ef$path[ef$iteration == 0]
+  ens <- utils::read.csv(prior_f, check.names = FALSE, stringsAsFactors = FALSE)
+  ens[[1]] <- seq_len(nrow(ens)) - 1L          # 0, 1, 2, ... : reads as integer
+  utils::write.csv(ens, prior_f, row.names = FALSE, quote = FALSE)
+
+  prior <- read_pest_ensemble(s$ctrl, iteration = 0)
+  post <- read_pest_ensemble(s$ctrl)
+  expect_type(prior$realisation, "character")
+  expect_type(post$realisation, "character")
+  expect_s3_class(dplyr::bind_rows(prior, post), "data.frame")
+  expect_no_error(ggplot2::ggplot_build(plot_pest_ensemble(s$ctrl, s$param)))
 })
 
 test_that("pest_param_summary reports the base realisation's posterior value", {

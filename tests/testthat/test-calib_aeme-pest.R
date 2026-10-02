@@ -26,7 +26,7 @@ fake_pest_write_pars <- function(tpl, out, values) {
 make_param <- function() {
   data.frame(
     model = "glm_aed",
-    file = c("glm3.nml", "glm3.nml", "met"),
+    file = c("glm4.nml", "glm4.nml", "met"),
     group = c("light", "light", NA),
     name = c("Kw", "ce", "MET_tmpair"),
     index = c(1, NA, NA),
@@ -411,6 +411,26 @@ test_that(".pest_cleanup kills running process trees and spares finished ones", 
   withr::local_options(AEME.inform = TRUE)
   expect_equal(aemetools:::.pest_cleanup(procs), 1L)
   expect_false(procs$agents[[1]]$is_alive())
+})
+
+test_that(".pest_free_port honours a free port and steps past a busy one", {
+  # Find a port we can actually hold for the duration of the test.
+  held <- NULL
+  for (p in 45000:45100) {
+    held <- tryCatch(serverSocket(p), error = function(e) NULL)
+    if (!is.null(held)) { busy <- p; break }
+  }
+  skip_if(is.null(held), "no bindable port in the test range")
+  on.exit(close(held), add = TRUE)
+
+  # A free preferred port comes back unchanged...
+  expect_equal(aemetools:::.pest_free_port(busy + 1L), busy + 1L)
+
+  # ...but a held one is stepped past, to a port that is genuinely free.
+  got <- aemetools:::.pest_free_port(busy)
+  expect_false(identical(got, busy))
+  probe <- serverSocket(got)
+  close(probe)
 })
 
 test_that("solver progress is read from the phi CSV", {
@@ -867,7 +887,7 @@ test_that("calib_aeme dispatches to PEST++ and imports the results", {
   
   sim_id <- calib_aeme(aeme = aeme, param = param,
                        model = "glm_aed", vars_sim = "HYD_temp",
-                       FUN_list = list(HYD_temp = kge),
+                       FUN_list = list(HYD_temp = kge_loss),
                        weights = set_weights("HYD_temp"), ctrl = ctrl)
 
   expect_type(sim_id, "character")
@@ -988,7 +1008,7 @@ test_that("a localizer splits GLM-AED parameters between variables", {
 
   sim_id <- calib_aeme(aeme = aeme, path = path, param = param,
                        model = "glm_aed", vars_sim = vars_sim,
-                       FUN_list = list(HYD_temp = kge, CHM_oxy = kge),
+                       FUN_list = list(HYD_temp = kge_loss, CHM_oxy = kge_loss),
                        weights = set_weights(vars_sim), ctrl = ctrl)
 
   expect_type(sim_id, "character")
@@ -1167,7 +1187,7 @@ test_that("calib_aeme completes a serial PEST++ run end to end", {
 
   sim_id <- calib_aeme(aeme = aeme, path = path, param = param,
                        model = "gotm_wet", vars_sim = "HYD_temp",
-                       FUN_list = list(HYD_temp = kge),
+                       FUN_list = list(HYD_temp = kge_loss),
                        weights = set_weights("HYD_temp"), ctrl = ctrl)
 
   expect_type(sim_id, "character")
@@ -1182,6 +1202,54 @@ test_that("calib_aeme completes a serial PEST++ run end to end", {
   expect_length(list.files(run_dir, pattern = "^agent_"), 0L)
   # Each model gets its own subdirectory under pest_dir.
   expect_equal(basename(run_dir), "gotm_wet")
+})
+
+test_that("a frozen parameter is held fixed, not dropped, in a PEST run", {
+  skip_on_cran()
+  skip_if_not(have_pest(), "PEST++ not installed; run install_pest()")
+
+  cached <- get_cached_aeme_run(model = "gotm_wet", vars_sim = "HYD_temp")
+  aeme <- cached$aeme
+  path <- cached$path
+
+  data("aeme_parameters", package = "AEME")
+  param <- aeme_parameters |>
+    dplyr::filter(model == "gotm_wet", !duplicated(name)) |>
+    head(4) |>
+    as.data.frame()
+  # Freeze the 4th: value == min == max.
+  param$min[4] <- param$value[4]
+  param$max[4] <- param$value[4]
+  frozen_name <- param$name[4]
+
+  ctrl <- create_pest_control(
+    exe = "pestpp-ies", noptmax = 1, ies_num_reals = 4,
+    parallel = FALSE, ncore = 1,
+    file_dir = file.path(path, "calib_sa"), pest_dir = "pest",
+    pestpp_options = list(ies_lambda_mults = 1, lambda_scale_fac = 1))
+
+  sim_id <- calib_aeme(aeme = aeme, path = path, param = param,
+                       model = "gotm_wet", vars_sim = "HYD_temp",
+                       FUN_list = list(HYD_temp = kge_loss),
+                       weights = set_weights("HYD_temp"), ctrl = ctrl)
+  calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
+  run_dir <- calib$calibration_metadata$pest_dir[1]
+
+  # The .pst carries it as `partrans = fixed`, not as one fewer parameter.
+  pst <- readLines(file.path(run_dir, "aeme.pst"))
+  expect_true(any(grepl("^p0\\d\\d\\s+fixed\\b", pst)))
+  pm <- utils::read.csv(file.path(run_dir, "aeme_par_map.csv"))
+  expect_equal(nrow(pm), 4)
+  expect_true(any(grepl(frozen_name, pm$name_full, fixed = TRUE)))
+
+  # It survives into the metadata and the posterior sets, as a constant.
+  expect_true(frozen_name %in% calib$parameter_metadata$name)
+  post <- pest_posterior_params(calib)
+  s1 <- post[[1]]
+  expect_true(frozen_name %in% s1$name)
+  across_sets <- vapply(post, function(s) s$value[s$name == frozen_name],
+                        numeric(1))
+  expect_equal(stats::sd(across_sets), 0)
 })
 
 test_that("each model gets its own PEST directory", {

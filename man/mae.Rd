@@ -16,10 +16,10 @@ numeric; mean absolute error, in the same units as \code{obs}/\code{model}.
 }
 \description{
 Calculates the mean absolute error between observed and modelled values.
-Already \code{0} (perfect fit) at its best and increasing as fit worsens, so -
-unlike \code{\link{nse}}/\code{\link{kge}} - it is returned as-is, with
-no negation needed to match \code{FUN_list}'s minimise-the-returned-value
-convention.
+Already \code{0} (perfect fit) at its best and increasing as fit worsens, so
+it is minimise-oriented as-is and needs no \verb{_loss} companion - pass it
+straight into \code{FUN_list}, which \code{\link{calib_aeme}} and
+\code{\link{run_and_fit}} minimise.
 }
 \details{
 MAE stays in the variable's native units, so it is \strong{not} directly
@@ -27,10 +27,10 @@ comparable across variables with different units or magnitudes -
 summing MAE from, say, a temperature fit (degC) and an oxygen fit (mg/L)
 in a multi-variable \code{FUN_list} lets whichever variable happens to have
 the larger natural magnitude dominate the combined fit. Prefer a
-dimensionless metric such as \code{\link{nse}} or \code{\link{kge}} when
-combining fits across variables; MAE/RMSE are more suited to
-single-variable calibration or to reporting fit in interpretable,
-original units.
+dimensionless metric such as \code{\link{nse_loss}} or
+\code{\link{kge_loss}} when combining fits across variables; MAE/RMSE are
+more suited to single-variable calibration or to reporting fit in
+interpretable, original units.
 }
 \examples{
 df <- data.frame(obs = c(1, 2, 3, 4), model = c(1.1, 2.1, 2.9, 4.2))

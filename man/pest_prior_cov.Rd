@@ -39,7 +39,7 @@ The result is written in the PEST ASCII matrix format and can be passed to
 Gaussian rather than from independent uniforms on the bounds.
 }
 \examples{
-param <- data.frame(model = "glm_aed", file = "glm3.nml",
+param <- data.frame(model = "glm_aed", file = "glm4.nml",
                     group = "light", name = c("Kw", "ce"),
                     index = c(1, NA), value = c(0.5, 0.0013),
                     min = c(0.1, 0.0005), max = c(1.5, 0.005),

@@ -4,7 +4,7 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' Writes a PEST template file for a single side-car parameter CSV, rather
-#' than templating the model configuration files (`glm3.nml`, `gotm.yaml`,
+#' than templating the model configuration files (`glm4.nml`, `gotm.yaml`,
 #' `simstrat.par`, ...) directly.
 #'
 #' This is a deliberate choice. `AEME::input_model_parameters()` does not

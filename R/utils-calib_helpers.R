@@ -469,6 +469,11 @@ calib_preflight <- function(aeme, param, m, path, vars_sim, FUN_list, weights,
   if (!ok) {
     reason <- if (inherits(res, "error")) {
       conditionMessage(res)
+    } else if (identical(attr(res, "diag"), "obs_unaligned")) {
+      paste0("the observations do not share a timestamp with any model output ",
+             "step (check the observation cadence against the model output ",
+             "timestep - sub-daily observations need aligning to the output ",
+             "grid)")
     } else {
       paste0("the run crashed or produced no value overlapping the ",
              "observations (every fit came back NA / ", ctrl$na_value, ")")

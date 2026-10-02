@@ -12,17 +12,28 @@ log_kge(df)
 calculating.}
 }
 \value{
-numeric; \code{-1 * KGE} calculated on \code{log1p(obs)}/\code{log1p(model)}.
+numeric; KGE calculated on \code{log1p(obs)}/\code{log1p(model)}, with a
+maximum of \code{1} (perfect fit).
 }
 \description{
 \code{\link{kge}} calculated on \code{log1p()}-transformed observed and
 modelled values, for skewed/concentration-type variables (e.g. oxygen,
 chlorophyll, nutrients) where a few peak events would otherwise dominate
 the fit. \code{log1p()} tolerates zeros but not negative values - not
-suitable for variables that can be negative.
+suitable for variables that can be negative. Returned in its conventional
+orientation where \strong{higher is better} (\code{1} = perfect fit).
+}
+\details{
+\code{calib_aeme()} and \code{run_and_fit()} \strong{minimise} the values returned by
+\code{FUN_list} entries - use \code{\link{log_kge_loss}} (which returns
+\code{-1 * log_kge(df)}) as a calibration objective.
 }
 \examples{
 df <- data.frame(obs = c(1, 2, 3, 4), model = c(1.1, 2.1, 2.9, 4.2))
 log_kge(df)
 
+}
+\seealso{
+\code{\link{log_kge_loss}} for the minimise-oriented variant
+used in \code{FUN_list}.
 }

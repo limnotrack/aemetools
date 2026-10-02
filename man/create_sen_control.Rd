@@ -75,7 +75,11 @@ cleared on each run.}
 \item{case}{Character. Basename for the generated files, so the control
 file is \verb{<case>.pst}. Default \code{"aeme"}.}
 
-\item{port}{Integer. TCP port for the PANTHER master. Default \code{4004}.}
+\item{port}{Integer. Preferred TCP port for the PANTHER master. Default
+\code{4004}. This is the starting point of a search, not a fixed binding: at
+launch the run takes this port if it is free and otherwise steps to the
+next free one, so concurrent runs (per lake, per stage) and agents
+orphaned by an aborted run do not collide on it.}
 
 \item{solver_timeout}{Numeric. Maximum seconds to wait for the solver to
 finish before aborting. Default \code{86400} (24 hours). This is a backstop
