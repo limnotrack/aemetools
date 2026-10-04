@@ -1,2 +1,2 @@
 # --- Config ---
-options(ncore = 5L, AEME.inform = FALSE)
+options(ncore = 2L, AEME.inform = FALSE)

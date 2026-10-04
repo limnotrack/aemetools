@@ -16,6 +16,7 @@ rpe_sets <- function(model = "gotm_wet", n = 4, seed = 1) {
 }
 
 test_that("run_aeme_ensemble runs a supplied list of parameter sets", {
+  skip_if_slow()
   skip_on_cran()
   model <- "gotm_wet"
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, run = FALSE)
@@ -41,6 +42,7 @@ test_that("run_aeme_ensemble runs a supplied list of parameter sets", {
 })
 
 test_that("glm_aed runs a supplied ensemble in parallel (make_temp_dir output/)", {
+  skip_if_slow()
   skip_on_cran()
   # Regression: make_temp_dir() copies the model config without output/ and,
   # unlike .pest_stage_model(), used not to recreate it - GLM 4.0.0 aborts at
@@ -59,6 +61,7 @@ test_that("glm_aed runs a supplied ensemble in parallel (make_temp_dir output/)"
 })
 
 test_that("serial and a long dataframe give the same ensemble", {
+  skip_if_slow()
   skip_on_cran()
   model <- "gotm_wet"
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, run = FALSE)
@@ -78,6 +81,7 @@ test_that("serial and a long dataframe give the same ensemble", {
 })
 
 test_that("an aeme_param_sets object is accepted directly", {
+  skip_if_slow()
   skip_on_cran()
   model <- "gotm_wet"
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, run = FALSE)
@@ -92,6 +96,7 @@ test_that("an aeme_param_sets object is accepted directly", {
 })
 
 test_that("a member that fails to run is dropped with a warning", {
+  skip_if_slow()
   skip_on_cran()
   model <- "gotm_wet"
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, run = FALSE)
@@ -110,6 +115,7 @@ test_that("a member that fails to run is dropped with a warning", {
 })
 
 test_that("a malformed param_sets aborts informatively", {
+  skip_if_slow()
   skip_on_cran()
   model <- "gotm_wet"
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, run = FALSE)

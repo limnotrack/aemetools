@@ -35,7 +35,6 @@
 #' @importFrom httr2 resp_body_string
 #' @importFrom jsonlite fromJSON
 #' @importFrom dplyr mutate
-#' @importFrom rlang `%||%`
 #' @importFrom lifecycle deprecate_soft
 #'
 #' @return dataframe of daily ERA5 data.

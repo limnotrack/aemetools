@@ -15,7 +15,6 @@
 #' @importFrom ggplot2 coord_cartesian scale_y_log10
 #' @importFrom patchwork wrap_plots
 #' @importFrom dplyr filter distinct mutate left_join
-#' @importFrom rlang `%||%`
 #'
 #' @examples
 #' \dontrun{

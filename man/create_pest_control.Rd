@@ -99,9 +99,12 @@ only. Default \code{6}, a common starting point for \code{pestpp-ies}.}
 than with the number of parameters.}
 
 \item{pest_dir}{Character. Working directory for the generated \code{.pst},
-\code{.tpl}, \code{.ins} and forward-run files. Defaults to \code{"pest"} under the
-lake directory. This directory is created and, if \code{overwrite = TRUE},
-cleared on each run.}
+\code{.tpl}, \code{.ins} and forward-run files. A relative path (the default,
+\code{"pest"}) resolves against the current working directory - not the
+lake directory, which may be a scratch/temp location that will not
+outlive the session - namespaced by the lake and then given each
+model its own subdirectory, e.g. \verb{pest/<lake>/<model>}. This directory
+is created and, if \code{overwrite = TRUE}, cleared on each run.}
 
 \item{case}{Character. Basename for the generated files, so the control
 file is \verb{<case>.pst}. Default \code{"aeme"}.}

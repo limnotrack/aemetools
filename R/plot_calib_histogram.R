@@ -13,7 +13,6 @@
 #' @importFrom ggplot2 ggplot aes geom_histogram geom_vline facet_wrap labs
 #' @importFrom ggplot2 theme_bw scale_fill_viridis_d
 #' @importFrom patchwork wrap_plots
-#' @importFrom rlang `%||%`
 #'
 #' @examples
 #' \dontrun{

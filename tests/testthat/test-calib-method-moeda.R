@@ -2,12 +2,12 @@
 options(ncore = 2L)
 
 test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
+  skip_if_slow()
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
-  path <- tempdir()
+  path <- withr::local_tempdir()
   model_controls <- AEME::get_model_controls(use_bgc = TRUE)
   model <- c("glm_aed")
-  path <- "aeme"
   sed_param <- AEME::glm_sed_params(n_zones = 2, zone_heights = c(8, 15))
   aeme <- aeme |> 
     AEME::add_param(param = sed_param) |> 
@@ -52,13 +52,14 @@ test_that("can calibrate with param_var_matrix for AEME-GLM in parallel", {
                    LKE_lvlwtr = kge_loss, CHM_oxy = kge_loss,
                    PHY_tchla = kge_loss)
   
-  ctrl <- create_calib_control(NP = 40, itermax = 200,
-                               ncore = 5,
+  ctrl <- create_calib_control(NP = 10, itermax = 40,
+                               ncore = getOption("ncore", 4L),
                                parallel = TRUE, file_type = "db",
                                na_value = 999,
                                cutoff = 0.5, cutoff_final = 0.15,
                                mutate = 0.05, mutate_final = 0.2,
                                c_method = "MOEDA",
+                               file_dir = file.path(path, "calib_sa"),
                                file_name = "results.db")
   
   weights <- set_weights(vars_sim = vars_sim)

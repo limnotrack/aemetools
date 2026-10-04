@@ -864,9 +864,87 @@ test_that("balanced weighting equalises each variable's contribution to phi", {
   expect_equal(as.numeric(phi), rep(phi[[1]], length(phi)), tolerance = 0.05)
 })
 
+test_that("regions split one variable's observations into their own PEST groups", {
+  aeme <- readRDS(system.file("extdata/aeme.rds", package = "AEME"))
+  obs <- AEME::observations(aeme)
+  d <- obs$lake[obs$lake$var_aeme == "HYD_temp", ]
+  skip_if(nrow(d) == 0, "test aeme has no HYD_temp observations")
+
+  regions <- list(
+    surf_temp = list(var = "HYD_temp", depth_range = c(0, 2)),
+    bot_temp  = list(var = "HYD_temp", depth_range = c(10, 12))
+  )
+  w <- c(HYD_temp = 1)
+  ot <- pest_obs_table(aeme, vars_sim = "HYD_temp", weights = w,
+                       obj_mode = "residual", regions = regions)
+
+  expect_setequal(unique(ot$obgnme), c("surf_temp", "bot_temp"))
+  omap <- attr(ot, "map")
+  expect_true(all(omap$var_aeme == "HYD_temp"))
+  # every row's depth actually falls inside the region it was assigned to
+  surf <- omap[omap$region == "surf_temp", ]
+  bot  <- omap[omap$region == "bot_temp", ]
+  expect_true(all(surf$depth >= 0 & surf$depth <= 2))
+  expect_true(all(bot$depth >= 10 & bot$depth <= 12))
+  # observations strictly between the two windows are excluded altogether
+  expect_true(nrow(ot) < sum(!is.na(d$value)))
+})
+
+test_that("a region's weight multiplies its variable's weight", {
+  aeme <- readRDS(system.file("extdata/aeme.rds", package = "AEME"))
+  base_regions <- list(
+    surf_temp = list(var = "HYD_temp", depth_range = c(0, 2)),
+    bot_temp  = list(var = "HYD_temp", depth_range = c(10, 12))
+  )
+  weighted_regions <- base_regions
+  weighted_regions$surf_temp$weight <- 4
+
+  w <- c(HYD_temp = 2)
+  ot1 <- pest_obs_table(aeme, vars_sim = "HYD_temp", weights = w,
+                        obj_mode = "residual", regions = base_regions,
+                        weight_method = "unit")
+  ot2 <- pest_obs_table(aeme, vars_sim = "HYD_temp", weights = w,
+                        obj_mode = "residual", regions = weighted_regions,
+                        weight_method = "unit")
+
+  ratio <- ot2$weight[ot2$obgnme == "surf_temp"] /
+    ot1$weight[ot1$obgnme == "surf_temp"]
+  expect_equal(ratio, rep(4, length(ratio)), tolerance = 1e-6)
+  # the untouched region's weights are unaffected
+  expect_equal(ot2$weight[ot2$obgnme == "bot_temp"],
+               ot1$weight[ot1$obgnme == "bot_temp"])
+})
+
+test_that("obj_mode = 'fit' with regions writes one pooled observation per region", {
+  aeme <- readRDS(system.file("extdata/aeme.rds", package = "AEME"))
+  regions <- list(
+    surf_temp = list(var = "HYD_temp", depth_range = c(0, 2)),
+    bot_temp  = list(var = "HYD_temp", depth_range = c(10, 12))
+  )
+  ot <- pest_obs_table(aeme, vars_sim = c("HYD_temp", "LKE_lvlwtr"),
+                       weights = c(HYD_temp = 1, LKE_lvlwtr = 1),
+                       obj_mode = "fit", regions = regions)
+
+  omap <- attr(ot, "map")
+  expect_setequal(omap$region, c("surf_temp", "bot_temp", "LKE_lvlwtr"))
+  expect_true(all(ot$obsval == 0))
+  expect_equal(omap$var_aeme[omap$region == "surf_temp"], "HYD_temp")
+  expect_equal(omap$var_aeme[omap$region == "LKE_lvlwtr"], "LKE_lvlwtr")
+})
+
+test_that("pest_obs_table without regions is unchanged (regression guard)", {
+  aeme <- readRDS(system.file("extdata/aeme.rds", package = "AEME"))
+  w <- c(HYD_temp = 1)
+  ot <- pest_obs_table(aeme, vars_sim = "HYD_temp", weights = w,
+                       obj_mode = "residual")
+  expect_setequal(unique(ot$obgnme), "hyd_temp")
+  expect_true(all(attr(ot, "map")$var_aeme == "HYD_temp"))
+})
+
 test_that("calib_aeme dispatches to PEST++ and imports the results", {
   skip_on_cran()
   skip_if_not(have_pest(), "PEST++ not installed; run install_pest()")
+  skip_if_slow()
   install_pest()
 
   cached <- get_cached_aeme_run(model = "glm_aed", vars_sim = "HYD_temp")
@@ -898,10 +976,11 @@ test_that("calib_aeme dispatches to PEST++ and imports the results", {
   
   plot_calib_convergence(calib)
   
-  # Read through `calib`, not `ctrl`: pest_dir is resolved against the lake
-  # directory when the run starts, so the control still holds the relative
-  # path. The resolved one is in the metadata, which is what calib carries.
-  expect_error(read_pest_phi(ctrl), "lake directory")
+  # Read through `calib`, not `ctrl`: pest_dir is resolved against the
+  # working directory when the run starts, so the control still holds the
+  # relative path. The resolved one is in the metadata, which is what
+  # calib carries.
+  expect_error(read_pest_phi(ctrl), "working directory")
 
   phi <- read_pest_phi(calib)
   expect_gt(nrow(phi), 0)
@@ -936,6 +1015,7 @@ test_that("a localizer splits GLM-AED parameters between variables", {
   # mixing parameter.
   skip_on_cran()
   skip_if_not(have_pest(), "PEST++ not installed; run install_pest()")
+  skip_if_slow()
   install_pest()
 
   vars_sim <- c("HYD_temp", "CHM_oxy")
@@ -1166,6 +1246,7 @@ test_that("calib_aeme completes a serial PEST++ run end to end", {
   # misbehaves, which has now happened more than once.
   skip_on_cran()
   skip_if_not(have_pest(), "PEST++ not installed; run install_pest()")
+  skip_if_slow()
 
   cached <- get_cached_aeme_run(model = "gotm_wet", vars_sim = "HYD_temp")
   aeme <- cached$aeme
@@ -1207,6 +1288,7 @@ test_that("calib_aeme completes a serial PEST++ run end to end", {
 test_that("a frozen parameter is held fixed, not dropped, in a PEST run", {
   skip_on_cran()
   skip_if_not(have_pest(), "PEST++ not installed; run install_pest()")
+  skip_if_slow()
 
   cached <- get_cached_aeme_run(model = "gotm_wet", vars_sim = "HYD_temp")
   aeme <- cached$aeme
@@ -1266,8 +1348,12 @@ test_that("each model gets its own PEST directory", {
   # backslashes from tempdir() meeting forward slashes from file.path().
   norm <- function(x) normalizePath(x, winslash = "/", mustWork = FALSE)
   resolve <- function(pest_dir, m) {
+    # A relative pest_dir resolves against the working directory, not
+    # lake_dir (which may be a scratch/temp build location) - namespaced by
+    # the lake so different lakes sharing a working directory cannot
+    # collide either.
     p <- if (grepl("^(/|~|[A-Za-z]:)", pest_dir)) pest_dir else
-      file.path(lake_dir, pest_dir)
+      file.path(pest_dir, basename(lake_dir))
     norm(file.path(p, m))
   }
 
@@ -1276,6 +1362,7 @@ test_that("each model gets its own PEST directory", {
   expect_false(identical(a, b))
   expect_equal(basename(a), "glm_aed")
   expect_equal(dirname(a), dirname(b))
+  expect_equal(basename(dirname(a)), basename(lake_dir))
 
   # An absolute pest_dir is separated per model too - the collision is the
   # same whether the path was given relative or absolute.

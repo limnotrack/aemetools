@@ -1,4 +1,5 @@
 test_that("can run an ensemble of AEME-GLM & GOTM in parallel", {
+  skip_if_slow()
   model <- c("glm_aed", "gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = FALSE)
@@ -19,6 +20,7 @@ test_that("can run an ensemble of AEME-GLM & GOTM in parallel", {
 })
 
 test_that("can run an ensemble of AEME-GLM in series", {
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -68,6 +70,7 @@ test_that("can run an ensemble of AEME-GLM in series", {
 })
 
 test_that("can run an ensemble of AEME-GOTM-WET in parallel and plot", {
+  skip_if_slow()
   model <- c("gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = FALSE)

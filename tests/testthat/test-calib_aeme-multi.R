@@ -2,6 +2,7 @@
 options(ncore = 2L)
 
 test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
+  skip_if_slow()
   model <- c("glm_aed", "gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -69,6 +70,7 @@ test_that("can calibrate temperature for AEME-GLM & GOTM in parallel", {
 })
 
 test_that("can return NA if timeout is too low", {
+  skip_if_slow()
   model <- c("glm_aed", "gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -109,6 +111,7 @@ test_that("can return NA if timeout is too low", {
 })
 
 test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
+  skip_if_slow()
   vars_sim <- c("HYD_thmcln", "HYD_strat", "HYD_schstb")
   model <- c("glm_aed", "gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
@@ -191,6 +194,7 @@ test_that("can calibrate derived vars for AEME-GLM & GOTM in parallel", {
 })
 
 test_that("can calibrate HYD_strat for AEME-GLM & GOTM in parallel", {
+  skip_if_slow()
   model <- c("glm_aed", "gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = FALSE)

@@ -2,6 +2,7 @@
 options(ncore = 2L)
 
 test_that("can calibrate lake level for AEME-GOTM in parallel", {
+  skip_if_slow()
   model <- c("gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -71,6 +72,7 @@ test_that("can calibrate lake level for AEME-GOTM in parallel", {
 })
 
 test_that("can calibrate lake level only for AEME-GOTM in parallel", {
+  skip_if_slow()
   # Not using get_cached_aeme_run(): observations() is mutated before
   # build_aeme() here, and build_aeme()'s behaviour could depend on what
   # observations are present at build time - reusing a cached build made
@@ -130,6 +132,7 @@ test_that("can calibrate lake level only for AEME-GOTM in parallel", {
 })
 
 test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in parallel", {
+  skip_if_slow()
   # Not using get_cached_aeme_run(): observations() is mutated before
   # build_aeme() here - see note in the previous test.
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
@@ -205,6 +208,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-GOTM in par
 })
 
 test_that("can calibrate lake level with no data for target time period", {
+  skip_if_slow()
   # Not using get_cached_aeme_run(): observations() is mutated before
   # build_aeme() here - see note earlier in this file.
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
@@ -278,6 +282,7 @@ test_that("can calibrate lake level with no data for target time period", {
 })
 
 test_that("can calibrate temperature with LHC for AEME-GOTM in parallel with csv output", {
+  skip_if_slow()
   model <- c("gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = FALSE)

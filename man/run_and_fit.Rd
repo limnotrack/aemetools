@@ -20,6 +20,7 @@ run_and_fit(
   return_df = FALSE,
   method = "calib",
   sa_ctrl = NULL,
+  regions = NULL,
   fit = TRUE,
   timeout = Inf
 )
@@ -66,6 +67,13 @@ fit.}
 
 \item{sa_ctrl}{list; control parameters for the sensitivity analysis. Only
 required if \code{method = "sa"}.}
+
+\item{regions}{named list; calibration sub-regions, exactly as
+\code{\link{calib_aeme}} accepts as its named-list \code{vars_sim} form. Only
+meaningful when \code{method = "calib"}. Each named entry's variable is scored
+separately over its own \code{month}/\code{depth_range} window and weighted by
+\code{weights[[var]] * region$weight}, instead of being pooled with the rest
+of that variable's observations.}
 
 \item{fit}{boolean; calculate fit. When \code{FALSE} it is only ever paired with
 \code{return_indices = TRUE}, i.e. "run the model and hand back the indices".}

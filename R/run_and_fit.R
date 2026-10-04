@@ -27,6 +27,12 @@
 #' `return_indices = TRUE`, i.e. "run the model and hand back the indices".
 #' @param sa_ctrl list; control parameters for the sensitivity analysis. Only
 #' required if `method = "sa"`.
+#' @param regions named list; calibration sub-regions, exactly as
+#' \code{\link{calib_aeme}} accepts as its named-list `vars_sim` form. Only
+#' meaningful when `method = "calib"`. Each named entry's variable is scored
+#' separately over its own `month`/`depth_range` window and weighted by
+#' `weights[[var]] * region$weight`, instead of being pooled with the rest
+#' of that variable's observations.
 #' @param timeout numeric; time in seconds to run each simulation. Default is
 #' Inf.
 #'
@@ -75,8 +81,17 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                         FUN_list = NULL, weights, na_value = 999,
                         var_indices = NULL, return_indices = FALSE,
                         include_wlev = FALSE, return_df = FALSE,
-                        method = "calib", sa_ctrl = NULL,
+                        method = "calib", sa_ctrl = NULL, regions = NULL,
                         fit = TRUE, timeout = Inf) {
+
+  # The variables covered by a calibration sub-region are scored separately
+  # (their own depth/month window, their own weight) rather than pooled with
+  # the rest of that variable's observations - see the "Score" block below.
+  region_vars <- if (method == "calib" && !is.null(regions)) {
+    unique(vapply(regions, function(v) v$var, character(1)))
+  } else {
+    character(0)
+  }
 
   return_nc <- fit || return_indices
 
@@ -100,7 +115,13 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
 
   # Return-value skeleton: one na_value slot per thing that gets scored, so
   # every early exit can hand back a correctly shaped result.
-  score_names <- if (method == "sa") names(sa_ctrl$vars_sim) else vars_sim
+  score_names <- if (method == "sa") {
+    names(sa_ctrl$vars_sim)
+  } else if (length(region_vars) > 0) {
+    c(names(regions), setdiff(vars_sim, region_vars))
+  } else {
+    vars_sim
+  }
   return_list <- stats::setNames(vector("list", length(score_names)),
                                  score_names)
   return_list[] <- na_value
@@ -130,6 +151,37 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   }
   on.exit(try(ncdf4::nc_close(nc), silent = TRUE), add = TRUE)
 
+  # --- Early dry-lake guard -------------------------------------------------
+  #
+  # Checked unconditionally, before ANY per-variable extraction - regardless
+  # of which water-balance variable (if any) this calibration actually
+  # targets. Previously this check only existed inside .raf_wlev(), gated on
+  # include_wlev/LKE_lvlwtr specifically (see that function, below): a
+  # calibration scoring water balance via LKE_vol instead (this project's
+  # current stage 2, switched from LKE_lvlwtr to avoid elevation-datum
+  # issues) never triggered it at all. A lake that has gone dry, or produced
+  # a non-finite water level at some point in the run, is a structurally
+  # failed run - left uncaught here, every other depth-resolved variable's
+  # extraction (interp_static_grid(), in AEME::read_model_outputs()) then
+  # fails silently and separately on each affected day (too few valid model
+  # layers to interpolate from), surfacing as scattered NA in the scored
+  # output instead of one clean whole-run failure. Checking the model's own
+  # water level FIRST, independent of vars_sim/regions, catches this in one
+  # place and fails the whole run the same way a crashed model run does.
+  wlev_check <- tryCatch(AEME::read_model_wlev(nc = nc, model = model),
+                        error = function(e) NULL)
+  if (!is.null(wlev_check) && !is.null(ncol(wlev_check)) &&
+      "LKE_lvlwtr" %in% names(wlev_check) &&
+      (any(wlev_check[["LKE_lvlwtr"]] <= 0) || anyNA(wlev_check[["LKE_lvlwtr"]]))) {
+    AEME::cli_safe(
+      paste0("Water level reached zero or was non-finite at some point in ",
+             "the run. Returning {.val ", na_value, "} for every scored ",
+             "variable rather than letting depth-resolved extraction fail ",
+             "silently, day by day."),
+      FUN = cli::cli_alert_warning)
+    return(mark_sa_failure(return_list, method))
+  }
+
   # --- Load the pieces needed to score -------------------------------------
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
   inp <- AEME::input(aeme)
@@ -158,19 +210,36 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     if (include_wlev) wlev_weight <- weights[["LKE_lvlwtr"]]
     vars_sim <- setdiff(vars_sim, "LKE_lvlwtr")
     weights  <- weights[names(weights) != "LKE_lvlwtr"]
+    # Region-covered variables are indexed/extracted/scored via `regions`
+    # below instead of being pooled into the flat vars_sim path.
+    vars_sim <- setdiff(vars_sim, region_vars)
   }
 
   # --- Date & depth indices ------------------------------------------------
   if (return_indices) var_indices <- NULL
   if (is.null(var_indices)) {
     var_indices <- if (method == "sa") {
-      regions <- names(sa_ctrl$vars_sim)
-      stats::setNames(lapply(regions, function(n) {
-        r <- sa_ctrl$vars_sim[[n]]
+      sa_regions <- names(sa_ctrl$vars_sim)
+      stats::setNames(lapply(sa_regions, function(n) {
+        .region_var_indices(nc = nc, model = model, aeme = aeme, path = path,
+                            region = sa_ctrl$vars_sim[[n]])
+      }), sa_regions)
+    } else if (length(region_vars) > 0) {
+      # Calibration with sub-regions: index each region over its own
+      # depth/month window, and any remaining flat vars_sim (e.g.
+      # LKE_lvlwtr is handled separately, but another gridded variable not
+      # split into regions) as before.
+      region_idx <- stats::setNames(lapply(names(regions), function(n) {
+        .region_var_indices(nc = nc, model = model, aeme = aeme, path = path,
+                            region = regions[[n]])
+      }), names(regions))
+      flat_idx <- if (length(vars_sim) == 0) {
+        list()
+      } else {
         AEME::get_var_indices(nc = nc, model = model, aeme = aeme, path = path,
-                              vars_sim = r$var, month = r$month,
-                              depth_range = r$depth_range)[[1]]
-      }), regions)
+                              vars_sim = AEME::get_vars_sim(vars_sim = vars_sim))
+      }
+      c(region_idx, flat_idx)
     } else if (length(vars_sim) == 0) {
       # Water level is the only target. It is not a gridded variable - it was
       # stripped from `vars_sim` above and is handled by `.raf_wlev()` - so
@@ -186,11 +255,22 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
 
   # --- Extract modelled values as one long dataframe -----------------------
   mod_out <- NULL
-  if (length(vars_sim) > 0) {
+  if (length(vars_sim) > 0 || length(region_vars) > 0) {
+
+    flat_pieces_fun <- function() {
+      vs <- stats::setNames(vars_sim, vars_sim)
+      lapply(vs, function(v) {
+        key <- if (isTRUE(deriv_lookup[[v]])) AEME::get_deriv_inputs(v)[1] else v
+        .raf_extract_var(v = v, idx = var_indices[[key]], nc = nc,
+                         lake_dir = lake_dir, model = model,
+                         deriv_lookup = deriv_lookup, conv_lookup = conv_lookup,
+                         hyps = hyps)
+      })
+    }
 
     pieces <- if (method == "sa") {
-      regions <- names(sa_ctrl$vars_sim)
-      lapply(stats::setNames(regions, regions), function(n) {
+      sa_regions <- names(sa_ctrl$vars_sim)
+      lapply(stats::setNames(sa_regions, sa_regions), function(n) {
         v <- sa_ctrl$vars_sim[[n]]$var
         idx <- var_indices[[n]]
         if (identical(v, "LKE_lvlwtr")) {
@@ -210,15 +290,18 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                          model = model, deriv_lookup = deriv_lookup,
                          conv_lookup = conv_lookup, hyps = hyps, name = n)
       })
-    } else {
-      vs <- stats::setNames(vars_sim, vars_sim)
-      lapply(vs, function(v) {
-        key <- if (isTRUE(deriv_lookup[[v]])) AEME::get_deriv_inputs(v)[1] else v
-        .raf_extract_var(v = v, idx = var_indices[[key]], nc = nc,
+    } else if (length(region_vars) > 0) {
+      region_pieces <- lapply(stats::setNames(names(regions), names(regions)),
+                              function(n) {
+        v <- regions[[n]]$var
+        .raf_extract_var(v = v, idx = var_indices[[n]], nc = nc,
                          lake_dir = lake_dir, model = model,
                          deriv_lookup = deriv_lookup, conv_lookup = conv_lookup,
-                         hyps = hyps)
+                         hyps = hyps, name = n)
       })
+      c(region_pieces, if (length(vars_sim) > 0) flat_pieces_fun() else list())
+    } else {
+      flat_pieces_fun()
     }
 
     # A NULL piece is a variable whose output could not be extracted; drop
@@ -260,12 +343,13 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   }
 
   # --- Score -----------------------------------------------------------------
-  if (!is.null(obs$lake) && length(vars_sim) > 0) {
+  all_grid_vars <- c(vars_sim, region_vars)
+  if (!is.null(obs$lake) && length(all_grid_vars) > 0) {
 
     if (method == "calib") {
       obs_sub <- obs$lake |>
         dplyr::select(Date, depth, var_aeme, value) |>
-        dplyr::filter(Date %in% mod_out$Date, var_aeme %in% vars_sim) |>
+        dplyr::filter(Date %in% mod_out$Date, var_aeme %in% all_grid_vars) |>
         dplyr::rename(obs = value)
       if (nrow(obs_sub) < 1) {
         # Distinguish "this lake has no observations for these variables" from
@@ -275,11 +359,11 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
         # looks like, and it needs a different fix - aligning the observations
         # to the output grid - so name it rather than let it read as an empty
         # lake.
-        n_var_obs <- sum(obs$lake$var_aeme %in% vars_sim, na.rm = TRUE)
+        n_var_obs <- sum(obs$lake$var_aeme %in% all_grid_vars, na.rm = TRUE)
         if (n_var_obs > 0) {
           AEME::cli_safe(
             paste0("None of the {.val ", n_var_obs, "} observation",
-                   if (n_var_obs == 1) "" else "s", " for {.val {vars_sim}} ",
+                   if (n_var_obs == 1) "" else "s", " for {.val {all_grid_vars}} ",
                    "share a timestamp with a model output step - check the ",
                    "observation cadence against the model output timestep."),
             FUN = cli::cli_alert_warning)
@@ -307,9 +391,28 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     if (return_df) return(dplyr::bind_rows(comp_df, lvl_comp))
 
     if (method == "calib") {
-      for (v in unique(comp_df$var_aeme)) {
-        sub <- comp_df[comp_df$var_aeme == v, ]
+      # `name` is only populated (by mod_out, via the left_join above) for
+      # rows extracted through a sub-region; every other row scores through
+      # the flat, pooled-by-variable path exactly as before. A region-covered
+      # variable's observation that falls outside every region's window has
+      # no matching mod_out row (left_join leaves it with model = NA, name =
+      # NA) - it belongs to no target at all, so it must not fall back into
+      # the flat path, which would score it against no simulated value.
+      is_region_row <- if ("name" %in% names(comp_df)) {
+        !is.na(comp_df$name)
+      } else {
+        rep(FALSE, nrow(comp_df))
+      }
+      flat_row <- !is_region_row & comp_df$var_aeme %in% vars_sim
+      for (v in unique(comp_df$var_aeme[flat_row])) {
+        sub <- comp_df[flat_row & comp_df$var_aeme == v, ]
         return_list[[v]] <- FUN_list[[v]](sub) * weights[[v]]
+      }
+      for (n in unique(comp_df$name[is_region_row])) {
+        sub <- comp_df[is_region_row & comp_df$name == n, ]
+        r <- regions[[n]]
+        return_list[[n]] <- FUN_list[[r$var]](sub) * weights[[r$var]] *
+          (r$weight %||% 1)
       }
     } else {
       for (n in unique(comp_df$name)) {
@@ -332,6 +435,80 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     return_list[["LKE_lvlwtr"]] <- ifelse(is.nan(res1), na_value, res1)
   }
   return_list
+}
+
+#' Build one calibration/SA sub-region's model date/depth index.
+#'
+#' Always routes through `AEME::get_var_indices()`'s month/depth_range
+#' branch - substituting a placeholder for whichever of `region$month` /
+#' `region$depth_range` is `NULL` - rather than ever taking its
+#' observation-driven default (`month` and `depth_range` both absent).
+#' That default has two problems that make it unusable for a region:
+#'
+#' * it derives dates/depths from `observations(aeme)$lake` rows for
+#'   *this exact variable* - but a region is just as often built around a
+#'   variable that has no observations of its own at all: a Morris
+#'   screening target like `HYD_schstb` (Schmidt stability, a value derived
+#'   from the full `HYD_temp` profile, not something ever logged as an
+#'   observation) or a whole-lake diagnostic like `LKE_vol`/`LKE_nrgtot`.
+#'   With zero matching rows it returns a zero-length index, and for a
+#'   *derived* variable that reaches `AEME::add_deriv_output()` with a
+#'   zero-column input matrix, which crashes several frames down in
+#'   `rLakeAnalyzer`'s `safe_apply()` (`seq_len(NULL)`/`seq_len(integer(0))`:
+#'   "argument must be coercible to non-negative integer") rather than
+#'   failing cleanly.
+#' * even when the variable *is* observed, gating the index on its
+#'   observation dates silently changes what a `method = "sa"` region
+#'   aggregates over - Morris screening has never joined to observations
+#'   (see the "Score" section of `run_and_fit()`), so every existing region
+#'   convention (always supplying both `month` and `depth_range`) already
+#'   aggregates over the *whole* simulated window, observed or not.
+#'
+#' The month/depth_range branch instead derives dates from the model's own
+#' time axis regardless of observations - correct for `LKE_lvlwtr` (which
+#' has no rows in `observations(aeme)$lake` at all, only in `$level`) and
+#' every other variable alike - and:
+#'
+#' * `depth_range = NULL` (the only sensible spec for a variable with no
+#'   depth axis) is substituted with a degenerate placeholder so the
+#'   branch's unconditional `seq(min(depth_range), max(depth_range), by =
+#'   0.5)` does not error on non-finite bounds. The placeholder depths are
+#'   harmless regardless of value: `.raf_extract_var()` overwrites them
+#'   with `NA` once it sees the model output come back as a plain vector
+#'   rather than a depth x time matrix.
+#' * `month = NULL` with a depth_range given is substituted with every
+#'   month, because the branch's own date filter (`dates %in% month`) is
+#'   silently always `FALSE` against a `NULL` month - "no month filter",
+#'   not "match nothing".
+#' @noRd
+.region_var_indices <- function(nc, model, aeme, path, region) {
+  # A `derived` variable (AEME::key_naming$derived) is computed from another
+  # variable's full depth profile (AEME::get_deriv_inputs()) - e.g.
+  # HYD_schstb and LKE_nrgtot both derive from HYD_temp's whole water
+  # column - so `depth_range = NULL` is wrong for it even though its own
+  # output is a single value per timestep. Left unchecked, requesting a
+  # degenerate one-depth placeholder starves the derived calculation of a
+  # profile and it fails several frames down inside rLakeAnalyzer
+  # (`seq_len(NULL)`/`seq_len(integer(0))`) with no clue what caused it.
+  # `depth_range = NULL` is only for a variable with no depth axis at all,
+  # e.g. LKE_vol or LKE_lvlwtr.
+  kn <- AEME::key_naming
+  is_deriv <- isTRUE(kn$derived[match(region$var, kn$var_aeme)])
+  if (is.null(region$depth_range) && is_deriv) {
+    cli::cli_abort(c(
+      "{.arg depth_range} is {.val NULL} for {.val {region$var}}, a derived
+       variable computed from {.val {AEME::get_deriv_inputs(region$var)}}'s
+       full depth profile - not a true whole-lake scalar.",
+      "i" = "Supply a {.field depth_range} spanning the water column (e.g.
+             {.code c(0, z)}), as for any other depth-resolved variable.
+             {.val NULL} is only for a variable with no depth axis at all,
+             e.g. {.val LKE_vol} or {.val LKE_lvlwtr}."
+    ))
+  }
+  AEME::get_var_indices(nc = nc, model = model, aeme = aeme, path = path,
+                        vars_sim = region$var,
+                        month = region$month %||% 1:12,
+                        depth_range = region$depth_range %||% c(0, 0))[[1]]
 }
 
 #' Warn that a variable's model output could not be read.
@@ -372,15 +549,44 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   }
   out <- out[[v]]
 
-  # A plain vector back is a single-depth (surface) variable; a matrix is
-  # depth x time. Either way, trim `dates` if the run stopped short.
+  # A plain vector back can mean two different things, and they must not be
+  # scored the same way:
+  #   1. A genuinely depth-less (whole-lake scalar) variable, e.g. LKE_vol/
+  #      LKE_lvlwtr - it has no depth axis in the netCDF at all, so `depth
+  #      = NA` is correct.
+  #   2. A genuinely depth-resolved variable that was simply asked for at
+  #      ONE depth - e.g. get_var_indices() narrows a region's requested
+  #      depths to real observation depths within depth_range (see that
+  #      function's "Prefer real observation depths..." comment), and when
+  #      every one of a variable's own observations sits at the same depth
+  #      (confirmed: PHY_cyano - every Rototoa observation is recorded at
+  #      depth 0), that narrowing legitimately produces a single, KNOWN
+  #      depth, not a placeholder. R's default array-dim-dropping then
+  #      collapses the depth x time matrix to a plain vector exactly as it
+  #      would for case 1, even though the variable IS depth-resolved
+  #      (confirmed directly against the raw netCDF: PHY_cyano is written
+  #      [lon, lat, z=300, time], identical in shape to PHY_tchla, which
+  #      already extracts correctly because its own observations are not
+  #      all at one depth). Discarding depths to NA here for case 2 broke
+  #      run_and_fit()'s "calib" mode: it joins model output onto
+  #      observations on an EXACT (Date, depth, var_aeme) key, and NA can
+  #      never match a real observation depth like 0 - every row silently
+  #      failed to join, "calib" mode reported the variable as never
+  #      produced at all, and "sa" mode (which never joins to observations)
+  #      never surfaced the problem. Distinguish the two cases from the
+  #      netCDF variable's own dimensions, the one source of truth that
+  #      does not depend on how many depths happened to be requested.
+  # Either way, trim `dates` if the run stopped short.
   if (is.null(nrow(out))) {
     if (length(out) < length(dates)) {
       AEME::cli_safe(paste0("Fewer timesteps than requested for variable ", v,
                             "; trimming dates."), FUN = cli::cli_alert_warning)
       dates <- dates[seq_along(out)]
     }
-    depths <- NA_real_
+    has_depth_axis <- !is.null(nc$var[[extract_var]]) &&
+      "z" %in% vapply(nc$var[[extract_var]]$dim, `[[`, character(1), "name")
+    single_known_depth <- length(depths) == 1 && is.finite(depths)
+    depths <- if (has_depth_axis && single_known_depth) depths else NA_real_
     each <- 1L
   } else {
     if (ncol(out) != length(dates)) {

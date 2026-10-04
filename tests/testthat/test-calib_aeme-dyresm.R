@@ -2,6 +2,7 @@
 options(ncore = 2L)
 
 test_that("can calibrate temperature for AEME-DYRESM in parallel", {
+  skip_if_slow()
   model <- c("dy_cd")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -28,7 +29,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
   ctrl <- create_calib_control(VTR = -Inf, NP = 10, itermax = 20,
                                reltol = 0.07, cutoff = 0.5, mutate = 0.1,
                                parallel = TRUE, file_type = "csv",
-                               na_value = 999, ncore = getOption("ncore"))
+                               na_value = 999, ncore = getOption("ncore"), file_dir = file.path(path, "calib_sa"))
 
   testthat::expect_true(is.list(ctrl))
 
@@ -54,6 +55,7 @@ test_that("can calibrate temperature for AEME-DYRESM in parallel", {
 })
 
 test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
+  skip_if_slow()
   model <- c("dy_cd")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -80,7 +82,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
   ctrl <- create_calib_control(VTR = -Inf, NP = 10, itermax = 20,
                                reltol = 0.07, cutoff = 0.25, mutate = 0.1,
                                parallel = TRUE, file_type = "csv",
-                               na_value = 999, ncore = getOption("ncore"))
+                               na_value = 999, ncore = getOption("ncore"), file_dir = file.path(path, "calib_sa"))
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)
@@ -103,6 +105,7 @@ test_that("can calibrate lake level only for AEME-DYRESM in parallel", {
 })
 
 test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in parallel", {
+  skip_if_slow()
   # Not using get_cached_aeme_run(): observations() is mutated before
   # build_aeme() here, and build_aeme()'s behaviour could depend on what
   # observations are present at build time - reusing a cached build made
@@ -143,7 +146,7 @@ test_that("can calibrate lake level w/ scaling outflow only for AEME-DYRESM in p
   ctrl <- create_calib_control(VTR = -Inf, NP = 10, itermax = 20,
                                reltol = 0.07, cutoff = 0.25, mutate = 0.1,
                                parallel = TRUE, file_type = "csv",
-                               na_value = 999, ncore = getOption("ncore"))
+                               na_value = 999, ncore = getOption("ncore"), file_dir = file.path(path, "calib_sa"))
 
   vars_sim <- c("LKE_lvlwtr")
   weights <- c("LKE_lvlwtr" = 1)

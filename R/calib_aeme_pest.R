@@ -17,13 +17,37 @@
 #' @noRd
 calib_aeme_pest <- function(aeme, param, m, path, lake_dir, vars_sim,
                             FUN_list, weights, model_controls, ctrl,
-                            include_wlev = FALSE) {
+                            include_wlev = FALSE, regions = NULL) {
 
   t0 <- Sys.time()
   exe <- pest_exe_path(ctrl$exe)
 
-  # Resolve pest_dir against the lake directory so runs for different lakes
-  # cannot collide, then give each model its own subdirectory.
+  # A calibration with sub-regions (surf_temp/bot_temp, ...) is scored, run
+  # and logged per region-or-remaining-flat-variable, exactly as the
+  # built-in (non-PEST) calibration path does via run_and_fit()/
+  # eval_param_chunk().
+  region_vars <- if (!is.null(regions)) {
+    unique(vapply(regions, function(r) r$var, character(1)))
+  } else {
+    character(0)
+  }
+  score_names <- if (!is.null(regions)) {
+    c(names(regions), setdiff(vars_sim, region_vars))
+  } else {
+    vars_sim
+  }
+
+  # A relative pest_dir resolves against the working directory - not
+  # lake_dir, which may be a scratch/temp build location (e.g. AEME::
+  # build_aeme(path = tempdir())) that will not outlive the session. That
+  # would silently undo the point of keeping pest_dir around at all (warm
+  # starts, crash recovery). file_dir (the results database) already
+  # resolves against the working directory this same way, so this matches.
+  #
+  # Namespaced by the lake (basename(lake_dir), the same identifier
+  # .pest_stage_model() uses) then given each model its own subdirectory,
+  # so runs for different lakes or models sharing a working directory
+  # cannot collide.
   #
   # calib_aeme() passes one control to every model in turn, so without the
   # model suffix a two-model call would run both in the same directory and,
@@ -32,7 +56,7 @@ calib_aeme_pest <- function(aeme, param, m, path, lake_dir, vars_sim,
   # recorded pest_dir would point at the second model's ensembles - so
   # reading its posterior afterwards would silently return the wrong ones.
   if (!.pest_is_abs(ctrl$pest_dir)) {
-    ctrl$pest_dir <- file.path(lake_dir, ctrl$pest_dir)
+    ctrl$pest_dir <- file.path(ctrl$pest_dir, basename(lake_dir))
   }
   ctrl$pest_dir <- file.path(ctrl$pest_dir, m)
   if (ctrl$overwrite) unlink(ctrl$pest_dir, recursive = TRUE, force = TRUE)
@@ -51,7 +75,8 @@ calib_aeme_pest <- function(aeme, param, m, path, lake_dir, vars_sim,
                                  model_controls = model_controls,
                                  vars_sim = vars_sim, weights = weights,
                                  return_indices = TRUE,
-                                 include_wlev = include_wlev, fit = FALSE)
+                                 include_wlev = include_wlev, fit = FALSE,
+                                 regions = regions)
     )
   }
 
@@ -76,7 +101,7 @@ calib_aeme_pest <- function(aeme, param, m, path, lake_dir, vars_sim,
   par_tbl <- pest_param_table(param)
   obs_tbl <- pest_obs_table(aeme = aeme, vars_sim = vars_sim,
                             weights = weights, obj_mode = ctrl$obj_mode,
-                            var_indices = var_indices)
+                            var_indices = var_indices, regions = regions)
 
   # Optionally generate the prior parameter ensemble and the observation
   # (noise) ensemble in R, adding the matching `++ies_*` options to `ctrl`
@@ -85,9 +110,11 @@ calib_aeme_pest <- function(aeme, param, m, path, lake_dir, vars_sim,
                                 param = param)
 
   # Turn the parameter/variable declaration into an ies_localizer, now that
-  # the parameter and observation groups it maps between are known.
+  # the parameter and observation groups it maps between are known. Declared
+  # against `score_names` (region names plus any remaining flat variable),
+  # not the flat `vars_sim`, so a region can be linked to its own parameters.
   ctrl <- .pest_setup_localizer(ctrl, par_tbl = par_tbl, obs_tbl = obs_tbl,
-                                param = param, vars_sim = vars_sim)
+                                param = param, vars_sim = score_names)
 
   tpl <- write_pest_tpl(par_tbl, ctrl)
   ins <- write_pest_ins(obs_tbl, ctrl)
@@ -96,7 +123,7 @@ calib_aeme_pest <- function(aeme, param, m, path, lake_dir, vars_sim,
                          FUN_list = FUN_list, weights = weights, ctrl = ctrl,
                          model_controls = model_controls,
                          var_indices = var_indices,
-                         include_wlev = include_wlev)
+                         include_wlev = include_wlev, regions = regions)
 
   # PEST invokes this through the shell, so quote the interpreter path -
   # R is installed under "Program Files" on most Windows machines.
@@ -121,11 +148,19 @@ calib_aeme_pest <- function(aeme, param, m, path, lake_dir, vars_sim,
   # cleanup registered before launching, so it covers every exit path.
   procs <- .pest_procs()
   on.exit(.pest_cleanup(procs), add = TRUE)
+  # Every agent is a full copy of the model, and each forward run overwrites
+  # its own output in place - so by the time the solver stops, `ncore`
+  # copies of the model's output are sitting on disk having only ever been
+  # needed transiently (the objective values they produced are already in
+  # `runlog`). Prune them on every exit path, success or not, so a crashed
+  # or cancelled run does not strand a full-size copy per agent either.
+  on.exit(try(.pest_prune_output(ctrl = ctrl, lake_dir = lake_dir, m = m),
+              silent = TRUE), add = TRUE)
   .pest_launch(pst = pst, exe = exe, ctrl = ctrl, lake_dir = lake_dir, m = m,
                procs = procs)
 
   # Import ----
-  res <- read_pest_results(ctrl = ctrl, param = param, vars_sim = vars_sim)
+  res <- read_pest_results(ctrl = ctrl, param = param, vars_sim = score_names)
   if (nrow(res) == 0) {
     cli::cli_abort(c(
       "PEST++ produced no completed model runs.",
@@ -155,7 +190,8 @@ calib_aeme_pest <- function(aeme, param, m, path, lake_dir, vars_sim,
     # `pest_dir` was resolved against the lake directory above, so the
     # control the caller still holds does not know where the files went.
     # Say where they are, and it is also recorded in calibration_metadata
-    # for the reading functions to pick up.
+    # for the reading functions to pick up. The model output itself (the
+    # large part) is stripped by the `on.exit(.pest_prune_output())` above.
     AEME::cli_inform_safe(c("i" = paste0("PEST++ files kept in {.file ",
                                          ctrl$pest_dir, "}")))
   } else {
@@ -575,19 +611,26 @@ read_pest_results <- function(ctrl, param, vars_sim) {
 
 #' Resolve where a PEST++ run's files actually are.
 #'
-#' `pest_dir` is relative by default and is resolved against the lake
-#' directory when the run starts, so the control object the caller still
-#' holds points at `"pest"` while the files are under
-#' `<lake_dir>/pest`. The resolved path is recorded in
-#' `calibration_metadata$pest_dir`, so the reading functions accept
-#' whichever of these the caller has to hand:
+#' `pest_dir` is relative by default and is resolved against the working
+#' directory and namespaced by lake and model when the run starts (see
+#' `calib_aeme_pest()`), so the control object the caller still holds
+#' points at `"pest"` while the files are under `pest/<lake>/<model>`. The
+#' resolved path is recorded in `calibration_metadata$pest_dir`, so the
+#' reading functions accept whichever of these the caller has to hand:
 #'
 #' * the object from \code{\link{read_calib}} - the resolved path is read
 #'   straight out of its metadata, which is the intended route;
 #' * a directory path;
 #' * a control from \code{\link{create_pest_control}}, which works when
-#'   `pest_dir` was given as an absolute path or the working directory is
-#'   the run directory.
+#'   `pest_dir` was given as an absolute path or was already the resolved
+#'   `pest/<lake>/<model>` leaf directory.
+#'
+#' A raw control's unresolved `pest_dir` (e.g. `"pest"`) commonly exists as
+#' a real directory in its own right now - it is the parent of every
+#' lake/model subdirectory ever run from this working directory - so
+#' `dir.exists()` alone cannot tell an unresolved path from the real run
+#' directory. Requiring a `.pst` file directly inside it is what actually
+#' distinguishes them.
 #'
 #' @param x a calib list, a directory path, or a control object.
 #' @param case Character; overrides the case name, otherwise taken from the
@@ -623,14 +666,27 @@ read_pest_results <- function(ctrl, param, vars_sim) {
                    {.fn create_pest_control} object.")
   }
 
-  if (!dir.exists(dir)) {
+  # An *unresolved relative* control path is the only case that needs the
+  # stricter (has-a-.pst) check: it can now genuinely coincide with a real
+  # directory (the shared parent of every lake/model this pest_dir default
+  # has ever been used for). An absolute path, or a plain directory path
+  # not from a control, is trusted at face value - including a
+  # legitimately empty run directory before any solver has written a
+  # `.pst` into it (e.g. read_pest_results() on a not-yet-run control).
+  ok <- if (from_ctrl && !.pest_is_abs(dir)) {
+    dir.exists(dir) && length(list.files(dir, pattern = "[.]pst$")) > 0
+  } else {
+    dir.exists(dir)
+  }
+  if (!ok) {
     hint <- if (from_ctrl) {
-      "{.arg pest_dir} is resolved against the lake directory when the run
-       starts, so the control still says {.file {dir}} while the files are
-       under {.file <lake_dir>/{dir}}. Pass the object from
+      "{.arg pest_dir} is resolved against the working directory and
+       namespaced by lake and model when the run starts, so the control
+       still says {.file {dir}} while the files are under
+       {.file {dir}/<lake>/<model>}. Pass the object from
        {.fn read_calib} instead, or the full path."
     } else {
-      "No such directory."
+      "No such directory, or it holds no {.val .pst} control file."
     }
     cli::cli_abort(c("Cannot find the PEST++ run directory {.file {dir}}.",
                      "i" = hint))
@@ -820,6 +876,38 @@ pest_posterior_runs <- function(ctrl, param, res) {
   file.copy(fils[keep], dest, recursive = TRUE)
   dir.create(file.path(dest, "output"), showWarnings = FALSE)
   invisible(dest)
+}
+
+#' Strip the bulky model output from a finished (or aborted) PEST run,
+#' leaving every PEST++ control and ensemble file untouched.
+#'
+#' In a PANTHER run each `agent_NN` directory is a full copy of the model
+#' that forward runs write their output into; nothing under it is unique
+#' once the run log (`runlog`) has captured the objective values, so the
+#' whole directory is disposable. A serial run instead writes output
+#' directly into `pest_dir`'s own staged model copy, so only its `output/`
+#' contents are cleared, not the directory that has to exist for the next
+#' forward run to write into.
+#'
+#' Called from `on.exit()` in `calib_aeme_pest()`, so it must never error
+#' out of that path - the caller wraps it in `try()`, and this is a no-op
+#' if `pest_dir` is already gone (e.g. `keep_files = FALSE` already deleted
+#' it).
+#' @noRd
+.pest_prune_output <- function(ctrl, lake_dir, m) {
+  wd <- ctrl$pest_dir
+  if (!dir.exists(wd)) return(invisible(NULL))
+
+  if (isTRUE(ctrl$parallel)) {
+    agents <- list.dirs(wd, recursive = FALSE, full.names = TRUE)
+    agents <- agents[grepl("^agent_", basename(agents))]
+    unlink(agents, recursive = TRUE, force = TRUE)
+  } else {
+    out_dir <- file.path(wd, basename(lake_dir), m, "output")
+    unlink(list.files(out_dir, full.names = TRUE, recursive = TRUE),
+          recursive = TRUE, force = TRUE)
+  }
+  invisible(NULL)
 }
 
 #' A mutable holder for the processes a PANTHER run spawns.
