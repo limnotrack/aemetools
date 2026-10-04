@@ -30,11 +30,11 @@ sa_aeme_pest <- function(aeme, param, m, path, lake_dir, vars_sim,
   t0 <- Sys.time()
   exe <- pest_exe_path(ctrl$exe)
 
-  # Resolve pest_dir against the lake directory (so runs for different lakes
-  # cannot collide) then give each model its own subdirectory - mirrors
-  # calib_aeme_pest().
+  # A relative pest_dir resolves against the working directory, namespaced
+  # by the lake then given each model its own subdirectory - mirrors
+  # calib_aeme_pest(); see its comment for why not lake_dir.
   if (!.pest_is_abs(ctrl$pest_dir)) {
-    ctrl$pest_dir <- file.path(lake_dir, ctrl$pest_dir)
+    ctrl$pest_dir <- file.path(ctrl$pest_dir, basename(lake_dir))
   }
   ctrl$pest_dir <- file.path(ctrl$pest_dir, m)
   if (ctrl$overwrite) unlink(ctrl$pest_dir, recursive = TRUE, force = TRUE)
