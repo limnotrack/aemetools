@@ -55,7 +55,7 @@ get_cached_aeme_run <- function(model, ext_elev = 5, use_bgc = FALSE,
     }
   }
   key <- paste(c(model, ext_elev, use_bgc, run,
-                rlang::`%||%`(paste(vars_sim, collapse = ","), "default")),
+                `%||%`(paste(vars_sim, collapse = ","), "default")),
               collapse = "_")
 
   if (is.null(.aeme_run_cache[[key]])) {

@@ -12,12 +12,14 @@
 # slow for a test, so the fixtures below shorten it. Anything that depends
 # on the shipped window reads it from the object rather than hard-coding it.
 
-#' Cores to give a local PEST run: 85% of what the machine has.
+#' Cores to give a local PEST run: 85% of what the machine has, capped so a
+#' big dev/CI box doesn't spin up dozens of agent processes for a tiny test
+#' calibration - that's resource contention, not extra coverage.
 #'
 #' PANTHER agents are separate processes, so this is a real core count, not
 #' a thread count. Floored at 1 so a 2-core CI runner still works.
-pest_ncore <- function(frac = 0.85) {
-  max(1L, floor(frac * parallel::detectCores()))
+pest_ncore <- function(frac = 0.85, max_cores = 3L) {
+  min(max_cores, max(1L, floor(frac * parallel::detectCores())))
 }
 
 #' The shipped Rototoa object, output stripped, unmodified otherwise.
