@@ -213,7 +213,8 @@ pest_forward_run <- function(payload, par_file = NULL, out_file = NULL,
                       FUN_list = p$FUN_list, weights = p$weights,
                       na_value = p$na_value, var_indices = p$var_indices,
                       include_wlev = p$include_wlev, return_df = TRUE,
-                      method = "calib", timeout = p$timeout)
+                      method = "calib", regions = p$regions,
+                      timeout = p$timeout)
 
   # run_and_fit() returns its na_value list rather than a dataframe when the
   # run failed, the netCDF could not be opened, or no observations overlap.
@@ -232,11 +233,42 @@ pest_forward_run <- function(payload, par_file = NULL, out_file = NULL,
   # PEST minimises weighted SSR over the residuals, but the run log records
   # the FUN_list value so that a PEST run and a CMAES run of the same setup
   # are directly comparable in the results database.
-  fits <- lapply(stats::setNames(p$vars_sim, p$vars_sim), \(v) {
-    sub <- comp[comp$var_aeme == v, ]
-    if (nrow(sub) == 0) return(p$na_value)
-    p$FUN_list[[v]](sub) * p$weights[[v]]
-  })
+  #
+  # Region-aware: mirrors run_and_fit()'s own scoring section (method =
+  # "calib", return_df = FALSE) rather than pooling every row sharing a
+  # flat var_aeme into one figure. Before this fix, three regions sharing
+  # one AEME variable (e.g. surf_temp/meta_temp/bot_temp, all HYD_temp)
+  # were scored as a single "HYD_temp" column - which both threw away the
+  # per-region breakdown and, more importantly, meant the run log never
+  # had the region-named columns read_pest_results() is told to expect
+  # for a region-covered calibration, aborting with "Run log is missing
+  # column(s)" only once the whole pestpp-ies solve had already finished.
+  # comp$name is populated (by run_and_fit()'s .raf_extract_var(), via
+  # `name = n`) for exactly the rows extracted through a sub-region; every
+  # other row scores through the flat, pooled-by-variable path unchanged.
+  is_region_row <- if ("name" %in% names(comp)) !is.na(comp$name) else rep(FALSE, nrow(comp))
+  region_vars <- if (!is.null(p$regions)) {
+    vapply(p$regions, `[[`, "", "var")
+  } else {
+    character(0)
+  }
+  flat_vars <- setdiff(p$vars_sim, region_vars)
+  fits <- list()
+  for (v in flat_vars) {
+    sub <- comp[!is_region_row & comp$var_aeme == v, ]
+    fits[[v]] <- if (nrow(sub) == 0) p$na_value else p$FUN_list[[v]](sub) * p$weights[[v]]
+  }
+  if (!is.null(p$regions)) {
+    for (n in names(p$regions)) {
+      r <- p$regions[[n]]
+      sub <- comp[is_region_row & comp$name == n, ]
+      fits[[n]] <- if (nrow(sub) == 0) {
+        p$na_value
+      } else {
+        p$FUN_list[[r$var]](sub) * p$weights[[r$var]] * (r$weight %||% 1)
+      }
+    }
+  }
 
   # Depth is a computed midpoint on both sides, so join on a rounded copy
   # rather than trusting exact floating-point equality.
@@ -275,11 +307,17 @@ pest_forward_run <- function(payload, par_file = NULL, out_file = NULL,
                      FUN_list = p$FUN_list, weights = p$weights,
                      na_value = p$na_value, var_indices = p$var_indices,
                      include_wlev = p$include_wlev, return_df = FALSE,
-                     method = "calib", timeout = p$timeout)
+                     method = "calib", regions = p$regions, timeout = p$timeout)
 
-  vals <- unlist(fit[p$obs_map$var_aeme])
+  # With sub-regions, each PEST "observation" is a region (or a remaining
+  # flat variable), not an AEME variable - `obs_map$region` carries that
+  # exact key (see pest_obs_table()); without regions it falls back to
+  # var_aeme, unchanged from before.
+  key_col <- if ("region" %in% names(p$obs_map)) p$obs_map$region else p$obs_map$var_aeme
+  vals <- unlist(fit[key_col])
   vals[is.na(vals)] <- p$na_value
-  structure(unname(vals), fits = fit[p$vars_sim])
+  fit_names <- p$fit_names %||% p$vars_sim
+  structure(unname(vals), fits = fit[fit_names])
 }
 
 #' Sensitivity mode: one simulated value per `names(sa_ctrl$vars_sim)`

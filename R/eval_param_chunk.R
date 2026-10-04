@@ -22,10 +22,22 @@
 #' @noRd
 eval_param_chunk <- function(pars_i, path, aeme, param, model, vars_sim,
                              FUN_list, model_controls, ctrl, var_indices,
-                             weights, include_wlev, parallel = FALSE) {
+                             weights, include_wlev, regions = NULL,
+                             parallel = FALSE) {
+
+  region_vars <- if (!is.null(regions)) {
+    unique(vapply(regions, function(v) v$var, character(1)))
+  } else {
+    character(0)
+  }
+  score_names <- if (!is.null(regions)) {
+    c(names(regions), setdiff(vars_sim, region_vars))
+  } else {
+    vars_sim
+  }
 
   pars_i[["fit"]] <- NA
-  for (v in vars_sim) {
+  for (v in score_names) {
     pars_i[[v]] <- NA
   }
 
@@ -47,9 +59,10 @@ eval_param_chunk <- function(pars_i, path, aeme, param, model, vars_sim,
                    var_indices = var_indices,
                    return_indices = FALSE,
                    include_wlev = include_wlev, fit = TRUE,
-                   weights = weights, timeout = ctrl$timeout)
+                   weights = weights, regions = regions,
+                   timeout = ctrl$timeout)
 
-    for (v in vars_sim) {
+    for (v in score_names) {
       pars_i[[v]][p] <- res[[v]]
     }
 

@@ -41,6 +41,15 @@ The two axes come for free from the tables aemetools already writes.
 PEST parameter group, and \code{\link{pest_obs_table}} gives each AEME
 variable its own observation group, so "which parameters inform which
 variables" is exactly an observation-group by parameter incidence matrix.
+
+When \code{calib_aeme()}'s \code{vars_sim} declares sub-regions (e.g. \code{surf_temp}/
+\code{bot_temp} splitting \code{HYD_temp}), each region is its own observation
+group, and \code{param_var_matrix} may link a region to its own parameters -
+\code{list(surf_temp = "light", bot_temp = "sediment")} - rather than only its
+whole underlying variable. A region the matrix has no column for falls
+back to whatever column its underlying variable has (or is unrestricted,
+if that has none either), exactly as an unmentioned variable is
+unrestricted without regions.
 }
 \section{What the entries mean}{
 

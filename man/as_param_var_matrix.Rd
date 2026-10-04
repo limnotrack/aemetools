@@ -14,7 +14,12 @@ as_param_var_matrix(x, param, vars_sim)
 the columns \code{model}, \code{file}, \code{name} and (optionally) \code{group}, \code{index},
 \code{name_full}.}
 
-\item{vars_sim}{Character vector of the variables being calibrated.}
+\item{vars_sim}{Character vector of the variables being calibrated. When
+\code{\link{calib_aeme}} is calibrating sub-regions (its named-list
+\code{vars_sim} form), pass its region names plus any remaining flat
+variable - the same set \code{pest_localizer()} builds observation groups
+from - so \code{x} may declare a region's own parameters instead of only its
+underlying variable's.}
 }
 \value{
 A dataframe with columns \code{model}, \code{file}, \code{name_full} and one
