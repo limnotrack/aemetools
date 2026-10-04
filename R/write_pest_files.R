@@ -132,7 +132,7 @@ write_pest_ins <- function(obs_tbl, ctrl) {
 write_pest_forward_run <- function(aeme, param, par_tbl, obs_tbl, model,
                                    vars_sim, FUN_list, weights, ctrl,
                                    model_controls = NULL, var_indices = list(),
-                                   include_wlev = FALSE) {
+                                   include_wlev = FALSE, regions = NULL) {
 
   dir.create(ctrl$pest_dir, recursive = TRUE, showWarnings = FALSE)
   script <- file.path(ctrl$pest_dir, "forward_run.R")
@@ -145,14 +145,29 @@ write_pest_forward_run <- function(aeme, param, par_tbl, obs_tbl, model,
   # partial matching in run_and_fit) is needed from the control.
   is_sa <- identical(ctrl$obj_mode, "sa")
 
+  # A calibration with sub-regions (surf_temp/bot_temp, ...) logs one column
+  # per region plus one per remaining flat variable, exactly like the
+  # built-in (non-PEST) calibration path.
+  region_vars <- if (!is.null(regions)) {
+    unique(vapply(regions, function(r) r$var, character(1)))
+  } else {
+    character(0)
+  }
+  calib_fit_names <- if (!is.null(regions)) {
+    c(names(regions), setdiff(vars_sim, region_vars))
+  } else {
+    NULL
+  }
+
   saveRDS(list(
     aeme = aeme, param = param, model = model, vars_sim = vars_sim,
     FUN_list = FUN_list, weights = weights, model_controls = model_controls,
     var_indices = var_indices, include_wlev = include_wlev,
+    regions = regions,
     par_map = attr(par_tbl, "map"), obs_map = attr(obs_tbl, "map"),
     obsnme = obs_tbl$obsnme, obj_mode = ctrl$obj_mode,
     sa_ctrl = if (is_sa) ctrl["vars_sim"] else NULL,
-    fit_names = if (is_sa) names(ctrl$vars_sim) else NULL,
+    fit_names = if (is_sa) names(ctrl$vars_sim) else calib_fit_names,
     na_value = ctrl$na_value, timeout = ctrl$timeout, case = ctrl$case,
     # Absolute, so that PANTHER agents running in their own subdirectories
     # all append to the same run-log directory.

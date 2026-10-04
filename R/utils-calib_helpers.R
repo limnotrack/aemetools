@@ -184,7 +184,6 @@ print.calib_sa_control <- function(x, ...) {
 #' @param calib The calibration object containing metadata with the default NA value.
 #' @return The resolved NA value to use for calibration results.
 #' @noRd
-#' @importFrom rlang `%||%`
 resolve_na_value <- function(na_value, calib) {
   na_value %||% calib$calibration_metadata$na_value[1]
 }
@@ -435,7 +434,8 @@ apply_trim_output <- function(aeme, model, vars_sim, path) {
 #' @noRd
 calib_preflight <- function(aeme, param, m, path, vars_sim, FUN_list, weights,
                             model_controls, ctrl, include_wlev,
-                            method = "calib", sa_ctrl = NULL) {
+                            method = "calib", sa_ctrl = NULL,
+                            regions = NULL) {
 
   AEME::cli_inform_safe(c("i" = paste0("Pre-flight check for {.val ", m,
                                        "}: one model run at the initial ",
@@ -448,11 +448,18 @@ calib_preflight <- function(aeme, param, m, path, vars_sim, FUN_list, weights,
       vars_sim = vars_sim, FUN_list = FUN_list, weights = weights,
       model_controls = model_controls, na_value = ctrl$na_value,
       include_wlev = include_wlev, method = method, sa_ctrl = sa_ctrl,
-      fit = TRUE, timeout = ctrl$timeout %||% Inf)),
+      regions = regions, fit = TRUE, timeout = ctrl$timeout %||% Inf)),
     error = function(e) e)
 
+  region_vars <- if (!is.null(regions)) {
+    unique(vapply(regions, function(v) v$var, character(1)))
+  } else {
+    character(0)
+  }
   score_names <- if (identical(method, "sa")) {
     names(sa_ctrl$vars_sim)
+  } else if (!is.null(regions)) {
+    c(names(regions), setdiff(vars_sim, region_vars))
   } else {
     vars_sim
   }

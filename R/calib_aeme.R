@@ -11,7 +11,18 @@
 #' @param param dataframe; of parameters read in from a csv file. Requires the
 #' columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")
 #' @param vars_sim vector; of variables names to be used in the calculation of
-#' model fit.
+#' model fit. Alternatively, a fully-named list of sub-regions, exactly as
+#' \code{\link{create_sen_control}} accepts: each element
+#' `list(var = <AEME var>, month = <ints>, depth_range = c(lo, hi), weight =
+#' <numeric>)` restricts that AEME variable to a depth/month window and
+#' calibrates it as its own weighted target - e.g. `list(surf_temp =
+#' list(var = "HYD_temp", month = c(12, 1, 2), depth_range = c(0, 2)),
+#' bot_temp = list(var = "HYD_temp", depth_range = c(z - 4, z)))` calibrates
+#' surface and bottom temperature independently instead of pooling every
+#' depth into one `HYD_temp` objective. A region's `weight` (default `1`)
+#' multiplies its underlying variable's entry in `weights`, so the two
+#' compose: `weights` sets HYD_temp's importance relative to other
+#' variables, the region `weight` splits that between sub-regions.
 #' @param FUN_list list of functions; named according to the variables in the
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If nor provided, uses mean absolute error (MAE).
@@ -26,7 +37,14 @@
 #' response variables as logical columns - or the shorthand list keyed by
 #' variable, e.g. `list(HYD_temp = c("light", "mixing"), CHM_oxy =
 #' "sediment")`; see \code{\link{as_param_var_matrix}} for every accepted
-#' form and for how unmentioned variables and parameters are treated.
+#' form and for how unmentioned variables and parameters are treated. When
+#' `vars_sim` is given as sub-regions, its columns may be keyed by region
+#' name instead of (or as well as) the underlying variable - e.g.
+#' `list(surf_temp = c("light", "mixing"), bot_temp = "sediment")` links the
+#' surface-temperature region to different parameters than the
+#' bottom-temperature region. A region not mentioned falls back to being
+#' linked by its underlying variable's column, if any, exactly as an
+#' unmentioned variable is unrestricted in the flat case.
 #'
 #' How it is used depends on the engine. With `ctrl$c_method = "MOEDA"` it
 #' decides which parameters are resampled together in each generation, and
@@ -86,6 +104,34 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
                        param_var_matrix = NULL, param_df = NULL) {
   
   aeme <- AEME::check_aeme(aeme)
+
+  # Accept the sa_aeme()-style named-list form of vars_sim (a set of
+  # depth/month sub-regions, e.g. surf_temp/bot_temp splitting HYD_temp),
+  # alongside the existing flat character vector. Everything below this
+  # point sees the flat variable set exactly as before; `regions`, when
+  # non-NULL, is threaded through separately to whichever branch scores it.
+  vs <- .as_calib_regions(vars_sim)
+  vars_sim <- vs$flat
+  regions <- vs$regions
+  if (!is.null(regions)) .check_region_overlap(regions)
+
+  # The objective structure that param_var_matrix/the localizer must be
+  # declared against: one entry per region plus one per remaining flat
+  # variable, exactly like every other per-target result (eval_param_chunk()
+  # columns, run_and_fit()'s return_list, calib_aeme_pest()'s run log) -
+  # so a region can be linked to its own parameters instead of only its
+  # whole underlying variable.
+  region_vars <- if (!is.null(regions)) {
+    unique(vapply(regions, function(r) r$var, character(1)))
+  } else {
+    character(0)
+  }
+  score_names <- if (!is.null(regions)) {
+    c(names(regions), setdiff(vars_sim, region_vars))
+  } else {
+    vars_sim
+  }
+
   if (missing(model)) {
     model <- AEME::list_models(aeme)
   } else {
@@ -208,20 +254,20 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
   # as well as the canonical dataframe; everything downstream sees the
   # dataframe.
   param_var_matrix <- as_param_var_matrix(param_var_matrix, param = param,
-                                          vars_sim = vars_sim)
+                                          vars_sim = score_names)
 
   if (!is.null(param_var_matrix)) {
-    # Check all variables have parameters
-    for (v in vars_sim) {
+    # Check all variables (or regions) have parameters
+    for (v in score_names) {
       sel_param <- param_var_matrix[["name_full"]][param_var_matrix[[v]]]
       if (length(sel_param) == 0) {
-        cli::cli_abort("No parameters associated with variable {.val {v}} in param_var_matrix.")
+        cli::cli_abort("No parameters associated with {.val {v}} in param_var_matrix.")
       }
     }
-    
+
     # Select logical columnms
     mat <- param_var_matrix |>
-      dplyr::select(dplyr::all_of(vars_sim))
+      dplyr::select(dplyr::all_of(score_names))
     # A fixed parameter is deliberately linked to nothing; keep it so
     # pest_param_table() can still emit it as `partrans = fixed`.
     rem_pars <- setdiff(param$name_full,
@@ -273,7 +319,7 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
                       lake_dir = lake_dir, vars_sim = vars_sim,
                       FUN_list = FUN_list, weights = weights,
                       model_controls = model_controls, ctrl = ctrl,
-                      include_wlev = include_wlev)
+                      include_wlev = include_wlev, regions = regions)
     }))
   }
 
@@ -290,7 +336,7 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
                       vars_sim = vars_sim, FUN_list = FUN_list,
                       weights = weights, model_controls = model_controls,
                       ctrl = ctrl, include_wlev = include_wlev,
-                      method = "calib")
+                      method = "calib", regions = regions)
     }
 
     if (!is.null(param_var_matrix)) {
@@ -310,7 +356,8 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
                                    model_controls = model_controls,
                                    vars_sim = vars_sim, weights = weights,
                                    return_indices = TRUE,
-                                   include_wlev = include_wlev, fit = FALSE)
+                                   include_wlev = include_wlev, fit = FALSE,
+                                   regions = regions)
       )
       AEME::cli_inform_safe(c("v" = paste0("Indices extracted for {.val ", m,
                                            "} modelled variables [",
@@ -391,7 +438,7 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
       on.exit(parallel::stopCluster(cl))
       varlist <- list("param", "aeme", "paths", "m", "vars_sim", "FUN_list",
                       "model_controls", "var_indices", "ctrl", "weights",
-                      "include_wlev")
+                      "include_wlev", "regions")
       parallel::clusterExport(cl, varlist = varlist,
                               envir = environment())
     } else {
@@ -411,6 +458,7 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
                                      ctrl = ctrl, var_indices = var_indices,
                                      weights = weights,
                                      include_wlev = include_wlev,
+                                     regions = regions,
                                      parallel = ctrl$parallel)
       }
       model_out <- if (is.null(cl)) {

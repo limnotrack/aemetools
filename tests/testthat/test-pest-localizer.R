@@ -247,6 +247,70 @@ test_that("pest_localizer refuses a parameter it has no row for", {
                "no row for")
 })
 
+# Region-aware localization -----------------------------------------------
+
+# Two regions splitting HYD_temp (surf_temp/bot_temp) plus CHM_oxy unsplit -
+# obgnme is the region name, and map$region carries it (var_aeme still
+# names the underlying variable, unchanged, so the flat fallback keeps
+# working).
+loc_region_obs_tbl <- function() {
+  ot <- data.frame(
+    obsnme = sprintf("o%06d", 1:5),
+    obsval = c(12.1, 13.4, 9.8, 8.2, 7.1),
+    weight = 0.4,
+    obgnme = c("surf_temp", "surf_temp", "bot_temp", "chm_oxy", "chm_oxy"),
+    stringsAsFactors = FALSE
+  )
+  attr(ot, "map") <- data.frame(
+    obsnme = ot$obsnme,
+    region = c("surf_temp", "surf_temp", "bot_temp", "CHM_oxy", "CHM_oxy"),
+    var_aeme = c("HYD_temp", "HYD_temp", "HYD_temp", "CHM_oxy", "CHM_oxy"),
+    Date = as.Date("2020-01-01"),
+    depth = c(0.5, 1.5, 11, 0.5, 5.0),
+    stringsAsFactors = FALSE
+  )
+  ot
+}
+
+test_that("a region links to its own parameter column when one is declared", {
+  p <- loc_param()
+  pt <- pest_param_table(p)
+  ot <- loc_region_obs_tbl()
+  pvm <- suppressMessages(
+    as_param_var_matrix(list(surf_temp = c("light", "MET_tmpair"),
+                             bot_temp = "sediment",
+                             CHM_oxy = c("sediment", "Kw")),
+                        param = p, vars_sim = c("surf_temp", "bot_temp",
+                                                "CHM_oxy"))
+  )
+
+  loc <- suppressMessages(pest_localizer(pvm, pt, ot))
+
+  expect_equal(rownames(loc), c("surf_temp", "bot_temp", "chm_oxy"))
+  # light = p001 (Kw[1]), p002 (ce); sediment = p003 (Fsed_oxy); MET_tmpair = p004
+  expect_equal(unname(loc["surf_temp", ]), c(1, 1, 0, 1))
+  expect_equal(unname(loc["bot_temp", ]), c(0, 0, 1, 0))
+  expect_equal(unname(loc["chm_oxy", ]), c(1, 0, 1, 0))
+})
+
+test_that("a region with no column falls back to its underlying variable", {
+  p <- loc_param()
+  pt <- pest_param_table(p)
+  ot <- loc_region_obs_tbl()
+  # Declared by variable, not by region - surf_temp/bot_temp both resolve
+  # back to HYD_temp's column, exactly as before regions existed.
+  pvm <- suppressMessages(
+    as_param_var_matrix(list(HYD_temp = c("light", "MET_tmpair"),
+                             CHM_oxy = "sediment"),
+                        param = p, vars_sim = c("HYD_temp", "CHM_oxy"))
+  )
+
+  loc <- suppressMessages(pest_localizer(pvm, pt, ot))
+
+  expect_equal(unname(loc["surf_temp", ]), unname(loc["bot_temp", ]))
+  expect_equal(unname(loc["surf_temp", ]), c(1, 1, 0, 1))
+})
+
 test_that("the written localizer round-trips through the PEST matrix format", {
   d <- withr::local_tempdir()
   p <- loc_param()

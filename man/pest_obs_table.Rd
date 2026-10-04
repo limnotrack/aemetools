@@ -10,14 +10,23 @@ pest_obs_table(
   weights,
   obj_mode = "residual",
   weight_method = "balanced",
-  var_indices = NULL
+  var_indices = NULL,
+  regions = NULL
 )
 }
 \arguments{
 \item{aeme}{Aeme object.}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
-model fit.}
+model fit. Alternatively, a fully-named list of sub-regions, exactly as
+\code{\link{create_sen_control}} accepts: each element
+\verb{list(var = <AEME var>, month = <ints>, depth_range = c(lo, hi), weight = <numeric>)} restricts that AEME variable to a depth/month window and
+calibrates it as its own weighted target - e.g. \code{list(surf_temp = list(var = "HYD_temp", month = c(12, 1, 2), depth_range = c(0, 2)), bot_temp = list(var = "HYD_temp", depth_range = c(z - 4, z)))} calibrates
+surface and bottom temperature independently instead of pooling every
+depth into one \code{HYD_temp} objective. A region's \code{weight} (default \code{1})
+multiplies its underlying variable's entry in \code{weights}, so the two
+compose: \code{weights} sets HYD_temp's importance relative to other
+variables, the region \code{weight} splits that between sub-regions.}
 
 \item{weights}{a named vector; of weights for each variable in vars_sim. If not
 provided, defaults to 1 for each variable.}
@@ -41,6 +50,15 @@ wrote. Otherwise the simulation window from \code{AEME::time()} is used.
 Observations the model cannot simulate must not become PEST
 observations: they carry weight, so they would contribute to phi while
 never being reproducible.}
+
+\item{regions}{named list; calibration sub-regions, exactly as
+\code{\link{calib_aeme}} accepts as its named-list \code{vars_sim} form
+(\code{list(surf_temp = list(var = "HYD_temp", month = ..., depth_range = ..., weight = ...), ...)}). When supplied, each region becomes its own
+PEST observation group - in \code{"residual"} mode, one group per region
+restricted to that region's month/depth window; in \code{"fit"} mode, one
+pooled observation per region - instead of every observation of that
+region's variable being pooled into one group. A region's weight is
+\code{weights[[region$var]] * region$weight}.}
 }
 \value{
 A dataframe with columns \code{obsnme}, \code{obsval}, \code{weight}, \code{obgnme},

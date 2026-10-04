@@ -24,7 +24,15 @@ columns c("model", "file", "group", "name", "index", "value", "min", "max", "log
 to calculate model fit. If nor provided, uses mean absolute error (MAE).}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
-model fit.}
+model fit. Alternatively, a fully-named list of sub-regions, exactly as
+\code{\link{create_sen_control}} accepts: each element
+\verb{list(var = <AEME var>, month = <ints>, depth_range = c(lo, hi), weight = <numeric>)} restricts that AEME variable to a depth/month window and
+calibrates it as its own weighted target - e.g. \code{list(surf_temp = list(var = "HYD_temp", month = c(12, 1, 2), depth_range = c(0, 2)), bot_temp = list(var = "HYD_temp", depth_range = c(z - 4, z)))} calibrates
+surface and bottom temperature independently instead of pooling every
+depth into one \code{HYD_temp} objective. A region's \code{weight} (default \code{1})
+multiplies its underlying variable's entry in \code{weights}, so the two
+compose: \code{weights} sets HYD_temp's importance relative to other
+variables, the region \code{weight} splits that between sub-regions.}
 
 \item{weights}{a named vector; of weights for each variable in vars_sim. If not
 provided, defaults to 1 for each variable.}
