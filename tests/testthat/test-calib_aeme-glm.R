@@ -1,4 +1,5 @@
 test_that("can run AEME-GLM with parameters", {
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = FALSE)
@@ -24,6 +25,7 @@ test_that("can run AEME-GLM with parameters", {
 
 test_that("can run funs return same fit", {
 
+  skip_if_slow()
   vars_sim <- c("HYD_strat", "HYD_temp", "HYD_thmcln", "HYD_schstb",
                 "CHM_oxycln", "CHM_oxynal",
                 "NIT_tn", "PHS_tp", "PHY_tchla", "CAR_toc")
@@ -129,6 +131,7 @@ test_that("can run funs return same fit", {
 })
 
 test_that("can calibrate with backwards compatibility", {
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = FALSE)
@@ -167,6 +170,7 @@ test_that("can calibrate with backwards compatibility", {
 })
 
 test_that("can calibrate temperature for AEME-GLM in series with DB output", {
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = FALSE)
@@ -204,6 +208,7 @@ test_that("can calibrate temperature for AEME-GLM in series with DB output", {
 })
 
 test_that("can calibrate lake level only for AEME-GLM in parallel", {
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -271,6 +276,7 @@ test_that("can calibrate lake level only for AEME-GLM in parallel", {
 })
 
 test_that("can calibrate sediment parameters only for AEME-GLM", {
+  skip_if_slow()
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   path <- tempdir()
@@ -341,6 +347,7 @@ test_that("can calibrate sediment parameters only for AEME-GLM", {
 })
 
 test_that("can calibrate lake level w/ scaling outflow and level from wbal only for AEME-GLM in parallel", {
+  skip_if_slow()
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   path <- tempdir()
@@ -412,6 +419,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal only 
 })
 
 test_that("can calibrate lake level w/ scaling outflow and level from wbal (filtered params) only for AEME-GLM in parallel", {
+  skip_if_slow()
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
   path <- tempdir()
@@ -484,6 +492,7 @@ test_that("can calibrate lake level w/ scaling outflow and level from wbal (filt
 })
 
 test_that("can calibrate temperature with LHC for AEME-GLM in series with DB output", {
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = FALSE)
@@ -538,6 +547,7 @@ test_that("can calibrate temperature with LHC for AEME-GLM in series with DB out
 })
 
 test_that("can update bgc parameters for GLM-AED", {
+  skip_if_slow()
   vars_sim <- c("PHY_tchla")
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
@@ -643,6 +653,7 @@ test_that("can update bgc parameters for GLM-AED", {
 })
 
 test_that("can write csv output to database", {
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)

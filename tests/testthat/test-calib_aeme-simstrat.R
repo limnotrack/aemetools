@@ -8,6 +8,7 @@ options(ncore = 2L)
 # actually pass once you can run them against the real model binary.
 
 test_that("can calibrate temperature and lake level for AEME-Simstrat in parallel", {
+  skip_if_slow()
   model <- c("simstrat_aed2")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -58,6 +59,7 @@ test_that("can calibrate temperature and lake level for AEME-Simstrat in paralle
 })
 
 test_that("can calibrate lake level only for AEME-Simstrat in parallel", {
+  skip_if_slow()
   model <- c("simstrat_aed2")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)

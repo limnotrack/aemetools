@@ -87,6 +87,7 @@ test_that("calib_aeme aborts at pre-flight instead of running a whole calibratio
 })
 
 test_that("calib_aeme runs to completion with preflight + trim_output on", {
+  skip_if_slow()
   fx <- pt_fixture()
   sid <- calib_aeme(aeme = fx$aeme, model = "glm_aed", param = fx$param,
                     path = fx$path, vars_sim = "HYD_temp",

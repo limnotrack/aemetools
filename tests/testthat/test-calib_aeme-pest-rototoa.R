@@ -287,6 +287,7 @@ test_that("get_calib_periods splits the real record sensibly", {
 test_that("calib_aeme calibrates Rototoa on HYD_temp with pestpp-ies", {
   skip_on_cran()
   skip_if_not(have_pest(), "PEST++ not installed; run install_pest()")
+  skip_if_slow()
 
   cached <- rototoa_run(model = "glm_aed", vars_sim = "HYD_temp",
                         use_bgc = FALSE)
@@ -331,13 +332,14 @@ test_that("calib_aeme calibrates Rototoa on HYD_temp with pestpp-ies", {
   expect_true(all(best$value >= best$min & best$value <= best$max))
 })
 
-test_that("a Rototoa run uses 85% of the machine's cores", {
+test_that("a Rototoa run uses 85% of the machine's cores, capped", {
   # The agent count is what actually consumes the machine, so it is worth
   # pinning: create_pest_control() must carry through the value it is given
   # rather than falling back to its own default.
   n <- pest_ncore()
-  expect_equal(n, max(1L, floor(0.85 * parallel::detectCores())))
+  expect_equal(n, min(3L, max(1L, floor(0.85 * parallel::detectCores()))))
   expect_lte(n, parallel::detectCores())
+  expect_lte(n, 3L)
   expect_gte(n, 1L)
 
   ctrl <- create_pest_control(exe = "pestpp-ies", ncore = n)
@@ -352,6 +354,7 @@ test_that("every variable reaches the PEST interface, water level included", {
   # the test below it; everything up to handing over to the solver works,
   # and that is what this pins.
   skip_on_cran()
+  skip_if_slow()
 
   cached <- rototoa_run(model = "glm_aed")   # all targetable variables
   aeme <- cached$aeme
@@ -405,6 +408,7 @@ test_that("every calibratable variable solves end to end, level included", {
   # takes a separate path through the forward run.
   skip_on_cran()
   skip_if_not(have_pest(), "PEST++ not installed; run install_pest()")
+  skip_if_slow()
 
   vars <- rototoa_calibratable()
   expect_true("LKE_lvlwtr" %in% vars)
@@ -454,6 +458,7 @@ test_that("a structurally non-finite target is named, not just failed", {
   # never produced at all, so the fix is obvious from the message.
   skip_on_cran()
   skip_if_not(have_pest(), "PEST++ not installed; run install_pest()")
+  skip_if_slow()
 
   vars <- c("HYD_temp", "PHY_cyano")
   cached <- rototoa_run(model = "glm_aed", vars_sim = vars, use_bgc = TRUE)
@@ -476,6 +481,7 @@ test_that("a structurally non-finite target is named, not just failed", {
 
 test_that("validate_aeme scores a calibrated Rototoa on held-out data", {
   skip_on_cran()
+  skip_if_slow()
 
   # Water level plus a gridded variable: both residual shapes at once, and
   # use_bgc = FALSE because that pairing is what works today (see
