@@ -1,5 +1,6 @@
 test_that("can get DEM value", {
 
+  skip_if_offline()
   lon <- 176.4376
   lat <- -38.04
   # lon <- 176.2717
@@ -15,6 +16,7 @@ test_that("can get DEM value", {
 
 test_that("can get layer value", {
 
+  skip_if_offline()
   lon <- 175.337788
   lat <- -37.860736
 
@@ -26,6 +28,7 @@ test_that("can get layer value", {
 
 test_that("can get DEM raster tile", {
 
+  skip_if_offline()
   coords <-  nz_dem_metadata[2, ] |>
     sf::st_transform(crs = 4326) |>
     sf::st_centroid() |>
@@ -48,6 +51,7 @@ test_that("can get DEM raster tile", {
 
 test_that("can get aerial image raster tile", {
 
+  skip_if_offline()
   coords <- nz_aerial_imagery_metadata[2, ] |>
     sf::st_transform(crs = 4326) |>
     sf::st_centroid() |>
@@ -72,6 +76,7 @@ test_that("can get aerial image raster tile", {
 
 test_that("can get LINZ basemap raster tile", {
 
+  skip_if_offline()
   lon <- 175.337788
   lat <- -37.860736
 
@@ -89,6 +94,7 @@ test_that("can get LINZ basemap raster tile", {
 
 test_that("can get LINZ sf object", {
 
+  skip_if_offline()
   key <- Sys.getenv("STATS_NZ_KEY")
   reg_council <- read_web_sf(url = "https://datafinder.stats.govt.nz/",
                              key = key,
@@ -101,6 +107,7 @@ test_that("can get LINZ sf object", {
 
 test_that("can get LINZ lakes sf object", {
 
+  skip_if_offline()
   lakes <- read_web_sf(url = "https://data.linz.govt.nz",
                        layer_id = 50293)
 
@@ -119,6 +126,7 @@ test_that("can get LINZ lakes sf object", {
 
 test_that("can get layer ids for a lake sf object", {
 
+  skip_if_offline()
   lakes <- read_web_sf(url = "https://data.linz.govt.nz",
                        layer_id = 50293)
 
@@ -133,6 +141,7 @@ test_that("can get layer ids for a lake sf object", {
 
 test_that("can get LINZ lakes sf object", {
 
+  skip_if_offline()
   lakes <- read_web_sf(url = "https://data.linz.govt.nz",
                        layer_id = 50293)
 
@@ -151,6 +160,7 @@ test_that("can get LINZ lakes sf object", {
 
 test_that("can get tables from MfE", {
 
+  skip_if_offline()
   lake_wq_status <- read_web_table(url = "https://data.mfe.govt.nz/",
                                    layer_id = 109652,
                                    key = Sys.getenv("MFE_KEY"))

@@ -332,11 +332,11 @@ test_that("iteration ensembles are ordered numerically, not lexically", {
 })
 
 test_that("readers find the run directory the calibration actually used", {
-  # `pest_dir` defaults to a relative path and is resolved against the lake
-  # directory when the run starts, so the control the caller still holds
-  # points at "pest" while the files are under <lake_dir>/pest. The
-  # resolved path is recorded in calibration_metadata, which is how the
-  # readers are meant to find it.
+  # `pest_dir` defaults to a relative path and is resolved against the
+  # working directory when the run starts, namespaced by lake and model,
+  # so the control the caller still holds points at "pest" while the files
+  # are under pest/<lake>/<model>. The resolved path is recorded in
+  # calibration_metadata, which is how the readers are meant to find it.
   s <- make_pest_dir()
 
   # A plain path works.
@@ -356,7 +356,7 @@ test_that("readers find the run directory the calibration actually used", {
   # ...but an unresolved relative one must say why it cannot find them,
   # rather than reporting a missing file.
   bad <- create_pest_control(pest_dir = "pest", case = "aeme", ncore = 1)
-  expect_error(read_pest_phi(bad), "lake directory")
+  expect_error(read_pest_phi(bad), "working directory")
   expect_error(read_pest_phi(bad), "read_calib")
 
   # The case name is inferred from the .pst when only a path is given.

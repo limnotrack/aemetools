@@ -1,5 +1,6 @@
 test_that("can download ERA5 point data", {
 
+  skip_if_offline()
   lon <- 176.2717
   lat <- -38.079
   data("era5_ref_table", package = "aemetools")
@@ -19,6 +20,7 @@ test_that("can download ERA5 point data", {
 
 test_that("can download ERA5 point data outside of grid", {
 
+  skip_if_offline()
   lon <- 179
   lat <- -38.079
   data("era5_ref_table", package = "aemetools")
@@ -34,6 +36,7 @@ test_that("can download ERA5 point data outside of grid", {
 
 test_that("can download from CDS", {
 
+  skip_if_offline()
   testthat::skip("Skip test as it requires CDS key")
 
   lat <- -38.07782
@@ -55,6 +58,7 @@ test_that("can download from CDS", {
 
 test_that("can download ERA5-ISIMIP3a point data", {
 
+  skip_if_offline()
   lon <- 175.27
   lat <- -37.80
   vars <- c("MET_tmpair", "MET_humrel", "MET_pprain", "MET_radswd", "MET_wndspd")
