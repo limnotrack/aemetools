@@ -40,9 +40,12 @@
 #'   `50`. Unlike the built-in methods, run count scales with this rather
 #'   than with the number of parameters.
 #' @param pest_dir Character. Working directory for the generated `.pst`,
-#'   `.tpl`, `.ins` and forward-run files. Defaults to `"pest"` under the
-#'   lake directory. This directory is created and, if `overwrite = TRUE`,
-#'   cleared on each run.
+#'   `.tpl`, `.ins` and forward-run files. A relative path (the default,
+#'   `"pest"`) resolves against the current working directory - not the
+#'   lake directory, which may be a scratch/temp location that will not
+#'   outlive the session - namespaced by the lake and then given each
+#'   model its own subdirectory, e.g. `pest/<lake>/<model>`. This directory
+#'   is created and, if `overwrite = TRUE`, cleared on each run.
 #' @param case Character. Basename for the generated files, so the control
 #'   file is `<case>.pst`. Default `"aeme"`.
 #' @param parallel Logical. Run the model evaluations in parallel? Default
