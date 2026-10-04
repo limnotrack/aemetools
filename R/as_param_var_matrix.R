@@ -52,7 +52,12 @@
 #' @param param dataframe; as passed to \code{\link{calib_aeme}}, requiring
 #'   the columns `model`, `file`, `name` and (optionally) `group`, `index`,
 #'   `name_full`.
-#' @param vars_sim Character vector of the variables being calibrated.
+#' @param vars_sim Character vector of the variables being calibrated. When
+#'   \code{\link{calib_aeme}} is calibrating sub-regions (its named-list
+#'   `vars_sim` form), pass its region names plus any remaining flat
+#'   variable - the same set `pest_localizer()` builds observation groups
+#'   from - so `x` may declare a region's own parameters instead of only its
+#'   underlying variable's.
 #'
 #' @return A dataframe with columns `model`, `file`, `name_full` and one
 #'   logical column per entry of `vars_sim`, or `NULL` when `x` is `NULL`.
