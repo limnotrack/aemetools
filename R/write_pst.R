@@ -136,6 +136,15 @@ pest_param_table <- function(param, transform = TRUE) {
 #'   in - the closest PEST analogue of the per-variable `weights` used by
 #'   \code{\link{run_and_fit}}. `"unit"` uses `weights[v]` directly for every
 #'   observation of that variable.
+#' @param regions named list; calibration sub-regions, exactly as
+#'   \code{\link{calib_aeme}} accepts as its named-list `vars_sim` form
+#'   (`list(surf_temp = list(var = "HYD_temp", month = ..., depth_range =
+#'   ..., weight = ...), ...)`). When supplied, each region becomes its own
+#'   PEST observation group - in `"residual"` mode, one group per region
+#'   restricted to that region's month/depth window; in `"fit"` mode, one
+#'   pooled observation per region - instead of every observation of that
+#'   region's variable being pooled into one group. A region's weight is
+#'   `weights[[region$var]] * region$weight`.
 #'
 #' @importFrom stats sd
 #' @importFrom AEME observations
@@ -145,13 +154,54 @@ pest_param_table <- function(param, transform = TRUE) {
 #'   `Date`/`depth`/`var_aeme`.
 #' @export
 pest_obs_table <- function(aeme, vars_sim, weights, obj_mode = "residual",
-                           weight_method = "balanced", var_indices = NULL) {
+                           weight_method = "balanced", var_indices = NULL,
+                           regions = NULL) {
 
   obj_mode <- rlang::arg_match(obj_mode, c("residual", "fit"))
   weight_method <- rlang::arg_match(weight_method, c("balanced", "unit"))
   if (missing(weights)) weights <- set_weights(vars_sim = vars_sim)
 
+  region_vars <- if (!is.null(regions)) {
+    unique(vapply(regions, function(r) r$var, character(1)))
+  } else {
+    character(0)
+  }
+  # A region's effective weight composes the variable's own `weights` entry
+  # (its importance relative to other variables) with the region's own
+  # `weight` (how that importance splits between its sub-regions).
+  .region_weight <- function(nm) {
+    r <- regions[[nm]]
+    as.numeric(weights[[r$var]]) * (r$weight %||% 1)
+  }
+
   if (obj_mode == "fit") {
+    if (!is.null(regions)) {
+      # One pooled "observation" per region, plus one per remaining flat
+      # variable not covered by any region - mirrors pest_sa_obs_table()'s
+      # shape, but for calibration rather than Morris screening.
+      flat_vars <- setdiff(vars_sim, region_vars)
+      nmes <- c(names(regions), flat_vars)
+      w <- vapply(nmes, function(n) {
+        if (n %in% names(regions)) .region_weight(n) else as.numeric(weights[[n]])
+      }, numeric(1))
+      var_aeme_col <- c(vapply(names(regions), function(n) regions[[n]]$var,
+                               character(1)), flat_vars)
+      obsnme <- .pest_safe_name(nmes)
+      tbl <- data.frame(
+        obsnme = obsnme,
+        obsval = 0,
+        weight = w,
+        obgnme = obsnme,
+        stringsAsFactors = FALSE
+      )
+      # `region` (not just var_aeme) so pest_localizer() can link a region to
+      # its own parameters instead of only its whole underlying variable.
+      attr(tbl, "map") <- data.frame(obsnme = obsnme, region = nmes,
+                                     var_aeme = unname(var_aeme_col),
+                                     Date = as.Date(NA), depth = NA_real_,
+                                     stringsAsFactors = FALSE)
+      return(tbl)
+    }
     # One "observation" per variable: the forward run reports the FUN_list
     # value and PEST drives it towards zero. Weights apply directly.
     tbl <- data.frame(
@@ -224,6 +274,47 @@ pest_obs_table <- function(aeme, vars_sim, weights, obj_mode = "residual",
     df <- dplyr::bind_rows(df, lvl)
   }
 
+  # Assign each observation to a calibration sub-region (surf_temp,
+  # bot_temp, ...) when `regions` is supplied; every other observation keeps
+  # its own variable as its "region" so the grouping/weighting below is
+  # unchanged for the flat (no-region) case. A region-covered variable's
+  # observation that falls in no region's month/depth window belongs to no
+  # calibration target and is dropped.
+  df$region <- df$var_aeme
+  if (!is.null(regions)) {
+    mon <- as.integer(format(df$Date, "%m"))
+    matched <- rep(FALSE, nrow(df))
+    # Whole-lake scalars (e.g. HYD_schstb, LKE_nrgtot) carry no depth on any
+    # observation. A region's depth_range cannot restrict them, so they match
+    # on month alone - otherwise a whole-column depth_range such as c(0, z),
+    # which the forward run needs for these derived variables, would drop
+    # every one of their observations. Depth-resolved variables are matched
+    # on depth exactly as before.
+    no_depth_vars <- names(which(tapply(is.na(df$depth), df$var_aeme, all)))
+    for (nm in names(regions)) {
+      r <- regions[[nm]]
+      month_hit <- if (is.null(r$month)) TRUE else mon %in% r$month
+      depth_hit <- if (is.null(r$depth_range) || r$var %in% no_depth_vars) {
+        TRUE
+      } else {
+        !is.na(df$depth) & df$depth >= min(r$depth_range) &
+          df$depth <= max(r$depth_range)
+      }
+      hit <- df$var_aeme == r$var & month_hit & depth_hit
+      df$region[hit] <- nm
+      matched <- matched | hit
+    }
+    drop <- df$var_aeme %in% region_vars & !matched
+    if (any(drop)) {
+      AEME::cli_safe(
+        paste0("Excluded {.val ", sum(drop), "} observation",
+               if (sum(drop) == 1) "" else "s",
+               " outside every region's month/depth window."),
+        FUN = cli::cli_alert_info)
+      df <- df[!drop, , drop = FALSE]
+    }
+  }
+
   # Keep only observations the model can actually produce a value for.
   #
   # An observation outside the simulation period still carries a non-zero
@@ -255,7 +346,9 @@ pest_obs_table <- function(aeme, vars_sim, weights, obj_mode = "residual",
       # variable - LKE_lvlwtr is compared against the modelled surface, not
       # read off the output grid - and `NULL[["dates"]]` is a subscript
       # error rather than NULL, so the is.null() guard below never ran.
-      vi <- var_indices[[df$var_aeme[i]]]
+      # A region-covered row is indexed under its region name (var_indices
+      # carries one entry per region, not per underlying variable).
+      vi <- var_indices[[df$region[i]]]
       d <- if (is.null(vi)) NULL else vi[["dates"]]
       is.null(d) || df$Date[i] %in% as.Date(d)
     }, logical(1))
@@ -279,40 +372,53 @@ pest_obs_table <- function(aeme, vars_sim, weights, obj_mode = "residual",
     ))
   }
 
-  missing_vars <- setdiff(vars_sim, unique(df$var_aeme))
-  if (length(missing_vars) > 0) {
-    cli::cli_abort("No observations for {.val {missing_vars}} within the
+  expected_names <- if (!is.null(regions)) {
+    unique(c(names(regions), setdiff(vars_sim, region_vars)))
+  } else {
+    vars_sim
+  }
+  missing_names <- setdiff(expected_names, unique(df$region))
+  if (length(missing_names) > 0) {
+    cli::cli_abort("No observations for {.val {missing_names}} within the
                    simulation period.")
   }
 
-  df <- df |> dplyr::arrange(var_aeme, Date, depth)
+  df <- df |> dplyr::arrange(region, Date, depth)
 
   scal <- df |>
-    dplyr::group_by(var_aeme) |>
+    dplyr::group_by(region) |>
     dplyr::summarise(n = dplyr::n(), s = stats::sd(value, na.rm = TRUE),
                      .groups = "drop") |>
     dplyr::mutate(
       # Guard against a zero/NA spread (a single observation, or a constant
       # series) collapsing every weight in the group to Inf.
       s = ifelse(!is.finite(s) | s <= 0, 1, s),
+      grp_weight = vapply(region, function(g) {
+        if (!is.null(regions) && g %in% names(regions)) {
+          .region_weight(g)
+        } else {
+          as.numeric(weights[[g]])
+        }
+      }, numeric(1)),
       w = if (weight_method == "balanced") {
-        sqrt(as.numeric(weights[var_aeme]) / n) / s
+        sqrt(grp_weight / n) / s
       } else {
-        as.numeric(weights[var_aeme])
+        grp_weight
       }
     )
 
-  df <- dplyr::left_join(df, scal[, c("var_aeme", "w")], by = "var_aeme")
+  df <- dplyr::left_join(df, scal[, c("region", "w")], by = "region")
   obsnme <- sprintf("o%06d", seq_len(nrow(df)))
 
   tbl <- data.frame(
     obsnme = obsnme,
     obsval = df$value,
     weight = df$w,
-    obgnme = .pest_safe_name(df$var_aeme),
+    obgnme = .pest_safe_name(df$region),
     stringsAsFactors = FALSE
   )
   attr(tbl, "map") <- data.frame(obsnme = obsnme, var_aeme = df$var_aeme,
+                                 region = df$region,
                                  Date = df$Date, depth = df$depth,
                                  stringsAsFactors = FALSE)
   tbl

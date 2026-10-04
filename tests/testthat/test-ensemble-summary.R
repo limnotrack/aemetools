@@ -17,6 +17,7 @@ es_ensemble <- function(n = 6) {
 
 test_that("ensemble_summary summarises a depth-resolved variable", {
   skip_on_cran()
+  skip_if_slow()
   e <- es_ensemble()
 
   s <- ensemble_summary(e$aeme, "gotm_wet", vars_sim = "HYD_temp",
@@ -40,6 +41,7 @@ test_that("ensemble_summary summarises a depth-resolved variable", {
 
 test_that("ensemble_summary handles a 1-D variable", {
   skip_on_cran()
+  skip_if_slow()
   e <- es_ensemble()
 
   s <- ensemble_summary(e$aeme, "gotm_wet", vars_sim = "LKE_lvlwtr")
@@ -52,6 +54,7 @@ test_that("ensemble_summary handles a 1-D variable", {
 
 test_that("plot_ensemble renders from a summary without re-extracting", {
   skip_on_cran()
+  skip_if_slow()
   e <- es_ensemble()
   s <- ensemble_summary(e$aeme, "gotm_wet", vars_sim = "HYD_temp",
                         depths = c(1, 5))
@@ -64,6 +67,7 @@ test_that("plot_ensemble renders from a summary without re-extracting", {
 
 test_that("plot_ensemble(aeme) and plot_ensemble(summary) agree", {
   skip_on_cran()
+  skip_if_slow()
   e <- es_ensemble()
 
   from_aeme <- plot_ensemble(e$aeme, model = "gotm_wet", var_sim = "HYD_temp",
@@ -79,6 +83,7 @@ test_that("plot_ensemble(aeme) and plot_ensemble(summary) agree", {
 
 test_that("a summary without the requested interval errors informatively", {
   skip_on_cran()
+  skip_if_slow()
   e <- es_ensemble()
   s <- ensemble_summary(e$aeme, "gotm_wet", vars_sim = "HYD_temp",
                         depths = 3, probs = c(0.25, 0.75))
@@ -89,6 +94,7 @@ test_that("a summary without the requested interval errors informatively", {
 
 test_that("keep_members = FALSE drops the frame and blocks type = line", {
   skip_on_cran()
+  skip_if_slow()
   e <- es_ensemble()
   s <- ensemble_summary(e$aeme, "gotm_wet", vars_sim = "HYD_temp", depths = 4,
                         keep_members = FALSE)

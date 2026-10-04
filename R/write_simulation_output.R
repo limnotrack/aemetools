@@ -124,10 +124,15 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
     # Sensitivity analysis metadata
     if (ctrl$method == "sa") {
       sa_meta <- lapply(names(ctrl$vars_sim), \(n) {
-        data.frame(sim_id = sim_id, variable = n, var = ctrl$vars_sim[[n]]$var,
-                   depth_from = min(ctrl$vars_sim[[n]]$depth_range),
-                   depth_to = max(ctrl$vars_sim[[n]]$depth_range),
-                   month = ctrl$vars_sim[[n]]$month,
+        r <- ctrl$vars_sim[[n]]
+        # A region with no depth axis (depth_range = NULL) or no month
+        # restriction (month = NULL) is recorded as NA rather than giving
+        # data.frame() a zero-length column.
+        dr <- r$depth_range
+        data.frame(sim_id = sim_id, variable = n, var = r$var,
+                   depth_from = if (is.null(dr)) NA_real_ else min(dr),
+                   depth_to = if (is.null(dr)) NA_real_ else max(dr),
+                   month = if (is.null(r$month)) NA_integer_ else r$month,
                    na_value = ctrl$na_value)
       }) |>
         dplyr::bind_rows()

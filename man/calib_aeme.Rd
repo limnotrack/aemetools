@@ -32,7 +32,15 @@ columns c("model", "file", "group", "name", "index", "value", "min", "max", "log
 the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
-model fit.}
+model fit. Alternatively, a fully-named list of sub-regions, exactly as
+\code{\link{create_sen_control}} accepts: each element
+\verb{list(var = <AEME var>, month = <ints>, depth_range = c(lo, hi), weight = <numeric>)} restricts that AEME variable to a depth/month window and
+calibrates it as its own weighted target - e.g. \code{list(surf_temp = list(var = "HYD_temp", month = c(12, 1, 2), depth_range = c(0, 2)), bot_temp = list(var = "HYD_temp", depth_range = c(z - 4, z)))} calibrates
+surface and bottom temperature independently instead of pooling every
+depth into one \code{HYD_temp} objective. A region's \code{weight} (default \code{1})
+multiplies its underlying variable's entry in \code{weights}, so the two
+compose: \code{weights} sets HYD_temp's importance relative to other
+variables, the region \code{weight} splits that between sub-regions.}
 
 \item{FUN_list}{list of functions; named according to the variables in the
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
@@ -53,7 +61,14 @@ with which response variables. Either the dataframe
 \code{\link{create_param_var_matrix}} returns - parameters as rows,
 response variables as logical columns - or the shorthand list keyed by
 variable, e.g. \code{list(HYD_temp = c("light", "mixing"), CHM_oxy = "sediment")}; see \code{\link{as_param_var_matrix}} for every accepted
-form and for how unmentioned variables and parameters are treated.
+form and for how unmentioned variables and parameters are treated. When
+\code{vars_sim} is given as sub-regions, its columns may be keyed by region
+name instead of (or as well as) the underlying variable - e.g.
+\code{list(surf_temp = c("light", "mixing"), bot_temp = "sediment")} links the
+surface-temperature region to different parameters than the
+bottom-temperature region. A region not mentioned falls back to being
+linked by its underlying variable's column, if any, exactly as an
+unmentioned variable is unrestricted in the flat case.
 
 How it is used depends on the engine. With \code{ctrl$c_method = "MOEDA"} it
 decides which parameters are resampled together in each generation, and

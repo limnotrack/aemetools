@@ -1,4 +1,5 @@
 test_that("running GLM & GOTM works with params", {
+  skip_if_slow()
   model <- c("glm_aed", "gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 vars_sim = "ZOO_zoo1", run = FALSE)
@@ -87,6 +88,7 @@ test_that("running GLM & GOTM works with params", {
 })
 
 test_that("running GOTM with different grid", {
+  skip_if_slow()
   model <- c("gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 vars_sim = "ZOO_zoo1", run = FALSE)
@@ -112,6 +114,7 @@ test_that("running GOTM with different grid", {
 })
 
 test_that("running DYRESM works with params", {
+  skip_if_slow()
   model <- c("dy_cd")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 vars_sim = "ZOO_zoo1", run = FALSE)
@@ -176,6 +179,7 @@ test_that("running DYRESM works with params", {
 })
 
 test_that("running GLM-AED works with bgc_params", {
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
                                 vars_sim = "ZOO_zoo1", run = FALSE)
@@ -204,6 +208,7 @@ test_that("running GLM-AED works with bgc_params", {
 })
 
 test_that("running GOTM-WET works with bgc_params", {
+  skip_if_slow()
   model <- c("gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
                                 vars_sim = "ZOO_zoo1", run = FALSE)
@@ -229,6 +234,7 @@ test_that("running GOTM-WET works with bgc_params", {
 })
 
 test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
+  skip_if_slow()
   model <- c("gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
                                 run = FALSE)

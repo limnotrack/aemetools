@@ -1,5 +1,6 @@
 test_that("can run_and_fit sensitivity analysis for AEME-GLM", {
 
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -62,6 +63,7 @@ test_that("can run_and_fit sensitivity analysis for AEME-GLM", {
 
 test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 
+  skip_if_slow()
   model <- c("dy_cd")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -108,6 +110,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 
 test_that("can execute sensitivity analysis with old fun", {
 
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -172,6 +175,7 @@ test_that("can execute sensitivity analysis with old fun", {
 
 test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
 
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -253,6 +257,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel", {
 
 test_that("can execute sensitivity analysis for AEME-GLM in parallel for just LKE_lvlwtr", {
 
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -308,6 +313,7 @@ test_that("can execute sensitivity analysis for AEME-GLM in parallel for just LK
 
 test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
 
+  skip_if_slow()
   model <- c("gotm_wet")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
                                 run = TRUE)
@@ -372,6 +378,7 @@ test_that("can execute sensitivity analysis for AEME-GOTM in parallel", {
 
 test_that("can execute sensitivity analysis for derived variables", {
 
+  skip_if_slow()
   model <- c("glm_aed")
   cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
                                 run = TRUE)

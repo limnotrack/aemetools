@@ -17,6 +17,15 @@
 #' variable its own observation group, so "which parameters inform which
 #' variables" is exactly an observation-group by parameter incidence matrix.
 #'
+#' When `calib_aeme()`'s `vars_sim` declares sub-regions (e.g. `surf_temp`/
+#' `bot_temp` splitting `HYD_temp`), each region is its own observation
+#' group, and `param_var_matrix` may link a region to its own parameters -
+#' `list(surf_temp = "light", bot_temp = "sediment")` - rather than only its
+#' whole underlying variable. A region the matrix has no column for falls
+#' back to whatever column its underlying variable has (or is unrestricted,
+#' if that has none either), exactly as an unmentioned variable is
+#' unrestricted without regions.
+#'
 #' @section What the entries mean:
 #'
 #' Localization in `pestpp-ies` is binary in effect: the Hadamard application
@@ -115,17 +124,35 @@ pest_localizer <- function(param_var_matrix, par_tbl, obs_tbl, file = NULL) {
     ))
   }
 
-  # Rows: one per observation group. In both obj_modes an observation group
-  # is one AEME variable, but take the union rather than assuming it.
+  # Rows: one per observation group. Without sub-regions, an observation
+  # group is one AEME variable. With them, it is a region - and `omap$region`
+  # (present whenever obs_tbl came from a residual-mode call, defaulting to
+  # var_aeme when no regions were used) lets a region be linked to its own
+  # parameter column, e.g. `list(surf_temp = ..., bot_temp = ...)`, when the
+  # caller declared one. A region the param_var_matrix has no column for
+  # falls back to linking by its underlying variable's column instead,
+  # exactly as an unmentioned variable is unrestricted in the flat case.
   obg <- unique(obs_tbl$obgnme)
-  var_of_obs <- omap$var_aeme[match(obs_tbl$obsnme, omap$obsnme)]
+  var_of_obs    <- omap$var_aeme[match(obs_tbl$obsnme, omap$obsnme)]
+  region_of_obs <- if ("region" %in% names(omap)) {
+    omap$region[match(obs_tbl$obsnme, omap$obsnme)]
+  } else {
+    NA_character_
+  }
 
   loc <- matrix(0, nrow = length(obg), ncol = nrow(pmap),
                 dimnames = list(obg, pmap$parnme))
   unrestricted <- character()
 
   for (i in seq_along(obg)) {
-    v <- intersect(unique(var_of_obs[obs_tbl$obgnme == obg[i]]), vars)
+    is_i <- obs_tbl$obgnme == obg[i]
+    r <- unique(region_of_obs[is_i])
+    r <- r[!is.na(r)]
+    v <- if (length(r) == 1 && r %in% vars) {
+      r
+    } else {
+      intersect(unique(var_of_obs[is_i]), vars)
+    }
     if (length(v) == 0) {
       # No opinion was expressed about this variable, so do not restrict it.
       loc[i, ] <- 1

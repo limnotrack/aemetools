@@ -237,6 +237,7 @@ test_that("read_sa sends a pest-engine run to read_sen", {
 test_that("sa_aeme dispatches to pestpp-sen and stores Morris indices", {
   skip_on_cran()
   skip_if_not(have_pest(), "PEST++ not installed; run install_pest()")
+  skip_if_slow()
   install_pest()
 
   cached <- get_cached_aeme_run(model = "glm_aed", vars_sim = "HYD_temp")
