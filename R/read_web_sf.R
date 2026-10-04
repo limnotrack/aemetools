@@ -12,7 +12,6 @@
 #' @importFrom httr2 resp_status resp_status_desc
 #' @importFrom xml2 read_xml xml_find_all xml_find_first xml_text xml_attr
 #' @importFrom xml2 xml_ns
-#' @importFrom rlang `%||%`
 #' @importFrom sf read_sf st_union st_cast st_as_sf st_zm st_write gdal_utils
 #'
 #' @return sf object
