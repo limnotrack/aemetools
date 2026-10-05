@@ -119,3 +119,24 @@ test_that("preflight = FALSE skips the check", {
 
   expect_false(got_preflight_error)
 })
+
+test_that("calib_aeme keeps held-fixed parameters when trim_output is on", {
+  skip_if_slow()
+  fx <- pt_fixture()
+  # A parameter with value == min == max is held fixed: calib_aeme() writes it
+  # once rather than searching it. The output trim rewrites the model
+  # configuration, so that write has to come after the trim or it is reverted.
+  param <- fx$param
+  kw <- param$name == "light/Kw"
+  param$value[kw] <- 0.9
+  param$min[kw] <- 0.9
+  param$max[kw] <- 0.9
+  suppressWarnings(calib_aeme(
+    aeme = fx$aeme, model = "glm_aed", param = param, path = fx$path,
+    vars_sim = "HYD_temp", FUN_list = list(HYD_temp = mae),
+    weights = c(HYD_temp = 1), ctrl = pt_ctrl()))
+
+  md <- file.path(AEME::get_lake_dir(fx$aeme, path = fx$path), "glm_aed")
+  nml <- AEME::read_nml(file.path(md, "glm4.nml"))
+  expect_equal(nml$light$Kw, 0.9)
+})

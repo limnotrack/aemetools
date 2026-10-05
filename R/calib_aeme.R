@@ -240,8 +240,6 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
                           "max and will ", verb, ": {.val ",
                           paste(eq_pars$name, collapse = ", "), "}"),
                    FUN = cli::cli_alert_warning)
-    AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars,
-                                 path = path)
 
     if (!is_pest) {
       param <- param |>
@@ -294,6 +292,14 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
   if (isTRUE(ctrl$trim_output)) {
     aeme <- apply_trim_output(aeme = aeme, model = model, vars_sim = vars_sim,
                               path = path)
+  }
+
+  # Write the held-fixed parameters now, after the trim: apply_trim_output()
+  # rewrites each model's configuration files from the aeme object, which
+  # would revert any fixed parameter written before it.
+  if (nrow(eq_pars) > 0) {
+    AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars,
+                                 path = path)
   }
 
   names(model) <- model
