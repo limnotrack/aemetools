@@ -139,8 +139,6 @@ sa_aeme <- function(aeme, model, param, FUN_list, path,
                           "sensitivity analysis: ",
                           "{.val ", paste(eq_pars$name, collapse = ", "), "}"),
                    FUN = cli::cli_alert_warning)
-    AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars,
-                                 path = path)
 
     param <- param |>
       dplyr::filter(!name_full %in% eq_pars$name_full)
@@ -155,6 +153,14 @@ sa_aeme <- function(aeme, model, param, FUN_list, path,
   if (isTRUE(ctrl$trim_output)) {
     aeme <- apply_trim_output(aeme = aeme, model = model, vars_sim = vars_sim,
                               path = path)
+  }
+
+  # Write the held-fixed parameters now, after the trim: apply_trim_output()
+  # rewrites each model's configuration files from the aeme object, which
+  # would revert any fixed parameter written before it.
+  if (nrow(eq_pars) > 0) {
+    AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars,
+                                 path = path)
   }
 
   # PEST++ owns the sampling design, the parallelism and the run history, so
