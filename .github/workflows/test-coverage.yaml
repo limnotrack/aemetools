@@ -19,6 +19,10 @@ jobs:
       STATS_NZ_KEY: ${{ secrets.STATS_NZ_KEY }}
       MFE_KEY: ${{ secrets.MFE_KEY }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      # Full model-run/calibration tests are skipped by default (see
+      # tests/testthat/helper-slow.R) so PR/push coverage stays fast; the
+      # full suite runs on its own schedule in test-full.yaml.
+      AEMETOOLS_RUN_SLOW_TESTS: "false"
 
     steps:
       - uses: actions/checkout@v4
