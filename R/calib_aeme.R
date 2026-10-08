@@ -230,6 +230,20 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
   # stay in the .pst, the parameter map, the pestpp-ies ensembles and the
   # sensitivity output. Keep them in `param` for that path.
   eq_pars <- param[param$value == param$min & param$value == param$max, ]
+  # A zone-ratio/offset group (anchor + steps) is only expanded when all of its rows
+  # are present, so it has to be held fixed as a whole
+  if (any(is_zone_ratio(param))) {
+    grp_name <- zone_base_name(param$name)
+    zr_grp <- unique(grp_name[is_zone_ratio(param)])
+    for (g in zr_grp) {
+      in_grp <- grp_name == g & (is_zone_ratio(param) | param$index %in% 1L)
+      n_fixed <- sum(param$name_full[in_grp] %in% eq_pars$name_full)
+      if (n_fixed > 0 && n_fixed < sum(in_grp)) {
+        cli::cli_abort("Zone-ratio parameter {.val {g}} is only partly held
+                       fixed. Fix the anchor and all ratios together or none.")
+      }
+    }
+  }
   if (nrow(eq_pars) > 0) {
     verb <- if (is_pest) {
       "held fixed (partrans = fixed) and reported in the calibration output"
@@ -298,7 +312,8 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
   # rewrites each model's configuration files from the aeme object, which
   # would revert any fixed parameter written before it.
   if (nrow(eq_pars) > 0) {
-    AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars,
+    AEME::input_model_parameters(aeme = aeme, model = model,
+                                 param = expand_zone_ratios(eq_pars),
                                  path = path)
   }
 

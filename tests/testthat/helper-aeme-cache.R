@@ -49,7 +49,7 @@ get_cached_aeme_run <- function(model, ext_elev = 5, use_bgc = FALSE,
                                 vars_sim = NULL, model_controls = NULL,
                                 run = TRUE) {
   if (is.null(model_controls)) {
-    model_controls <- AEME::get_model_controls()
+    model_controls <- AEME::get_model_controls(use_bgc = use_bgc)
     if (!is.null(vars_sim)) {
       model_controls <- AEME::set_vars_sim(model_controls, vars_sim = vars_sim)
     }

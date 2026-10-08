@@ -68,6 +68,8 @@ check_param_targets <- function(param, aeme, model = NULL, error = FALSE) {
 
   tok <- tolower(sub("^.*/", "", param$name))   # drop any block/ qualifier
   tok <- sub("^phyto/", "", tok)
+  # zone-ratio/offset rows target the same field as their anchor
+  tok <- zone_base_name(tok)
   bad <- !tok %in% keys
   out <- param[bad, , drop = FALSE]
 

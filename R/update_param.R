@@ -128,6 +128,12 @@ update_param <- function(calib, param, aeme, replace = FALSE,
   
   param <- dplyr::rows_upsert(param, best_pars_final, by = key_cols)
 
+  # Store real per-zone values rather than the anchor + ratio parameterisation
+  # (see `zone_ratio_param()`)
+  if (any(is_zone_ratio(param))) {
+    param <- expand_zone_ratios(param) |>
+      dplyr::mutate(name_full = encode_param(group, name, index))
+  }
   
   # for (i in seq_len(nrow(best_pars))) {
   #   idx <- best_pars$name_full[i] == param$name_full &
