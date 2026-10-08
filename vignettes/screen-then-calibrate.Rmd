@@ -1,0 +1,431 @@
+---
+title: "Screen, Localise, Calibrate"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Screen, Localise, Calibrate}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  markdown:
+    wrap: 80
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE
+)
+```
+
+Calibrating twenty-odd parameters at once is usually a waste of model runs.
+Most of them turn out not to move the variables you care about, and every one
+you carry costs ensemble size, run time and - because an unconstrained
+parameter still drifts - credibility.
+
+This vignette walks the workflow that avoids that, end to end on a real
+monitoring record:
+
+1.  assemble a deliberately **wide** parameter set - heat, mixing, sediment
+    heat and sediment nutrient fluxes;
+2.  **screen** it with a Morris sensitivity analysis (`pestpp-sen`);
+3.  **select** the parameters worth keeping from the screening result;
+4.  build a **localizer** from the same numbers, so each variable is only
+    updated by the parameters it is actually sensitive to;
+5.  **calibrate** the reduced, localised problem with `pestpp-ies`.
+
+Steps 3 and 4 come from one calculation. The screening tells you both *which*
+parameters matter and *what they matter to*, and those are exactly the two
+things you need.
+
+```{r setup, message = FALSE, warning = FALSE}
+library(AEME)
+library(aemetools)
+```
+
+The PEST++ steps need the solver. Everything below is skipped if it is not
+installed - run `install_pest()` once to get it.
+
+```{r have-pest}
+run_pest <- have_pest()
+run_pest
+```
+
+## The lake
+
+Lake Rototoa (LID50270) ships with the package: a 26 m deep dune lake with
+GLM-AED configured, roughly 40,000 lake observations spanning 1988-2025, and
+daily water level. Its own simulation window is nine years, which is more than
+a vignette needs, so we take a single year with a year of spin-up.
+
+```{r lake}
+aeme <- readRDS(system.file("extdata/LID50270_Rototoa.rds",
+                            package = "aemetools"))
+aeme <- AEME::set_time(aeme, start = "2020-07-01", stop = "2021-06-30",
+                       spin_up = 365)
+
+vars_sim <- c("HYD_temp", "CHM_oxy", "NIT_amm", "PHS_frp")
+```
+
+Four targets: temperature, dissolved oxygen, ammonium and filterable reactive
+phosphorus. Oxygen and the nutrients are what give the sediment flux
+parameters something to bite on.
+
+## Build and run once
+
+```{r build, eval = run_pest, message = FALSE, results = "hide"}
+path <- file.path(tempdir(), "rototoa-screen")
+dir.create(path, showWarnings = FALSE, recursive = TRUE)
+
+model_controls <- AEME::set_vars_sim(AEME::get_model_controls(),
+                                     vars_sim = vars_sim)
+aeme <- AEME::build_aeme(path = path, aeme = aeme, model = "glm_aed",
+                         model_controls = model_controls, ext_elev = 5,
+                         use_bgc = TRUE)
+aeme <- AEME::run_aeme(aeme = aeme, model = "glm_aed", path = path)
+```
+
+Both PEST++ steps run their model evaluations in parallel, one process per
+core. Take 85% of the machine and leave the rest for everything else:
+
+```{r ncore}
+ncore <- max(1L, floor(0.85 * parallel::detectCores()))
+ncore
+```
+
+## A wide parameter set
+
+The shipped parameter tables are the starting pool. Hydrodynamic parameters
+live in `aeme_parameters`, biogeochemical ones in `aeme_parameters_bgc`, and
+the two overlap, so combine and de-duplicate.
+
+```{r pool}
+utils::data("aeme_parameters", package = "AEME")
+utils::data("aeme_parameters_bgc", package = "AEME")
+
+cols <- c("model", "file", "name", "value", "min", "max", "group", "index")
+pool <- unique(rbind(
+  aeme_parameters[aeme_parameters$model == "glm_aed", cols],
+  aeme_parameters_bgc[aeme_parameters_bgc$model == "glm_aed", cols]
+))
+pick <- function(nms) as.data.frame(pool[pool$name %in% nms, ])
+```
+
+### The index column, and why it is not optional
+
+Sediment parameters are **zoned**. The bed is divided into zones and each
+zoned parameter is an array with one value per zone, not a scalar. The `index`
+column is how a parameter table says which zone a row refers to.
+
+Getting this wrong does not produce a warning - it produces a model that dies
+about 200 days in, because GLM reads a one-element array where it wanted
+three.
+
+The catch is that GLM's sediment-heat block and AED's sediment-flux block
+declare their zones **separately**, and they need not agree. Read both off the
+built configuration rather than assuming:
+
+```{r n-zones, eval = run_pest}
+cfg <- AEME::configuration(aeme)$glm_aed
+
+n_glm_zones <- cfg$hydrodynamic$sediment$n_zones
+n_aed_zones <- cfg$bgc$aed$aed_sed_const2d$n_zones
+
+c(glm = n_glm_zones, aed = n_aed_zones)
+```
+
+Three and two. So the GLM sediment-heat parameters get indices 1:3 and the AED
+sediment-flux parameters 1:2. Writing a row for a zone that does not exist is
+not fatal here - it is simply ignored, and then shows up in the screening as a
+parameter with no effect whatsoever, which is a useful cross-check to have for
+free.
+
+```{r per-zone}
+per_zone <- function(df, n) {
+  do.call(rbind, lapply(seq_len(n), function(i) {
+    d <- df
+    d$index <- i
+    d
+  }))
+}
+```
+
+Independent zone values have a second problem: nothing stops calibration
+returning an order that makes no physical sense, such as a zone 1 oxygen flux
+larger than zone 2. Shallower zones should not exceed deeper ones, so for the
+AED fluxes we use `zone_ratio_param()` instead. Zone 1 (the deepest) is
+calibrated directly, and each shallower zone is a ratio between 0.1 and 1 of
+the next one down. The ratios are turned back into real per-zone values just
+before the model files are written, so the ordering holds by construction and
+three weakly constrained values become one value plus two ratios. Sediment
+temperature gets the additive version, `zone_offset_param()`: a ratio of
+degrees Celsius is arbitrary, and shallower sediment is warmer, so each
+shallower zone is the one below plus an offset of 0 to 4 degC.
+
+```{r zone-ratio}
+zone_ratios <- function(df, n, start = 0.7) {
+  do.call(rbind, lapply(seq_len(nrow(df)), function(i) {
+    zone_ratio_param(df[i, ], n_zones = n, start = start)
+  }))
+}
+
+# Sediment temperature is additive rather than a ratio: shallower zones are
+# warmer than deeper ones, so each is the zone below plus an offset
+zone_offsets <- function(df, n, upper = 4, start = 0.5) {
+  do.call(rbind, lapply(seq_len(nrow(df)), function(i) {
+    zone_offset_param(df[i, ], n_zones = n, lower = 0, upper = upper,
+                      start = start)
+  }))
+}
+
+# A ratio/offset row (`<name>_zratio`, `<name>_zoffset`) belongs to the same
+# group as its anchor
+zgrp <- function(x) sub("_z(ratio|offset)$", "", x)
+```
+
+Now the set itself: light and meteorological scaling, the five mixing
+coefficients, sediment heat (zoned), the 2-D sediment nutrient fluxes (zoned)
+and the bulk sediment flux and half-saturation terms.
+
+```{r param-set, eval = run_pest}
+param <- rbind(
+  # light, meteorological scaling and mixing
+  pick(c("light/Kw", "MET_radswd", "MET_wndspd",
+         "mixing/coef_mix_conv", "mixing/coef_mix_hyp",
+         "mixing/coef_mix_shear", "mixing/coef_mix_turb",
+         "mixing/coef_wind_stir")),
+  # sediment heat - zoned by GLM's &sediment block
+  zone_offsets(pick("sediment/sed_temp_mean"), n_glm_zones),
+  per_zone(pick("sediment/sed_temp_peak_doy"), n_glm_zones),
+  # 2-D sediment nutrient/oxygen fluxes - zoned by AED's block
+  zone_ratios(pick(c("aed_sed_const2d/fsed_oxy", "aed_sed_const2d/fsed_amm",
+                     "aed_sed_const2d/fsed_frp")), n_aed_zones),
+  # bulk sediment flux and half-saturation terms
+  pick(c("aed_oxygen/fsed_oxy", "aed_oxygen/ksed_oxy",
+         "aed_nitrogen/fsed_amm", "aed_nitrogen/ksed_amm",
+         "aed_phosphorus/ksed_frp"))
+)
+
+# Start the sediment temperature parameters at the observed state: each zone's
+# depth band gives an annual mean, amplitude and peak day from the observed
+# water temperature. Water temperature is only a proxy for the sediment, so
+# these are starting values and the bounds are left as they were.
+param <- estimate_zone_start(aeme, param)
+zone_start <- attr(param, "zone_estimates")
+attr(param, "zone_estimates") <- NULL
+
+param$name_full <- encode_param(param$group, param$name, param$index)
+
+c(parameters = nrow(param), zoned = sum(!is.na(param$index)))
+```
+
+`encode_param()` gives each row a unique `name_full` carrying its zone, which
+is what everything downstream - the screening output, the localizer, the
+results database - keys on:
+
+```{r name-full, eval = run_pest}
+head(param$name_full[!is.na(param$index)], 6)
+```
+
+## Screen with Morris
+
+`create_sen_control()` defines the *sub-regions* the sensitivity is measured
+over - a variable, a set of months and a depth band. This is where the design
+work is. Bottom oxygen and bottom ammonium in summer are where a sediment flux
+parameter shows up; surface temperature is where the heat parameters do. Ask
+the wrong question and everything looks insensitive.
+
+```{r sen-control, eval = run_pest}
+z <- AEME::input(aeme)$init_depth
+
+sen_ctrl <- create_sen_control(
+  file_dir = file.path(path, "calib_sa"),
+  morris_r = 4,
+  ncore = ncore,
+  vars_sim = list(
+    surf_temp = list(var = "HYD_temp", month = c(12, 1, 2),
+                     depth_range = c(0, 2)),
+    bot_temp  = list(var = "HYD_temp", month = c(12, 1, 2),
+                     depth_range = c(z - 4, z)),
+    bot_oxy   = list(var = "CHM_oxy",  month = c(12, 1, 2),
+                     depth_range = c(z - 4, z)),
+    bot_amm   = list(var = "NIT_amm",  month = c(12, 1, 2),
+                     depth_range = c(z - 4, z)),
+    surf_frp  = list(var = "PHS_frp",  month = c(12, 1, 2),
+                     depth_range = c(0, 2))
+  )
+)
+```
+
+Morris costs `morris_r * (k + 1)` model runs, so it scales with the parameter
+count rather than exploding with it. The objective is just the mean of the
+simulated values in each window: screening asks whether a parameter *moves*
+the variable, not whether it improves a fit.
+
+```{r sa-run, eval = run_pest, message = FALSE, results = "hide"}
+mean_fit <- function(df) mean(df$model, na.rm = TRUE)
+FUN_sa <- stats::setNames(lapply(vars_sim, function(v) mean_fit), vars_sim)
+
+sa_id <- sa_aeme(aeme = aeme, model = "glm_aed", param = param,
+                 FUN_list = FUN_sa, path = path, ctrl = sen_ctrl)
+sa_id <- unname(sa_id[[1]])
+```
+
+`read_sen()` returns the Morris indices per sub-region and parameter.
+`mu_star` is the mean absolute elementary effect - overall influence - and
+`sigma` measures interaction and non-linearity.
+
+```{r sa-read, eval = run_pest, message = FALSE}
+sen <- read_sen(ctrl = sen_ctrl, sim_id = sa_id)
+idx <- sen[[sa_id]]$indices
+mu <- idx[idx$index_type == "mu_star", ]
+
+plot_sen(sen)
+```
+
+## Select what to keep
+
+`mu_star` is in the units of each sub-region's own objective, so the values
+are not comparable across sub-regions. Scale each to its own maximum first,
+then keep any parameter that reaches `thr` for at least one sub-region.
+
+```{r select, eval = run_pest}
+thr <- 0.10
+
+mu$rel <- stats::ave(mu$value, mu$variable, FUN = function(v) {
+  if (max(v, na.rm = TRUE) > 0) v / max(v, na.rm = TRUE) else v * 0
+})
+
+# Which AEME variable does each sub-region belong to?
+sub_var <- vapply(sen_ctrl$vars_sim, function(x) x$var, character(1))
+mu$var_aeme <- sub_var[mu$variable]
+
+influential <- mu[mu$rel >= thr, ]
+keep <- unique(influential$parameter)
+
+# An anchor and its ratios only make sense together: keep the whole group if
+# any member is influential.
+zr_grp <- unique(zgrp(param$name[grepl("_z(ratio|offset)$", param$name)]))
+in_zr <- zgrp(param$name) %in% zr_grp
+keep_zr <- unique(zgrp(param$name[param$name_full %in% keep]))
+keep <- unique(c(keep, param$name_full[in_zr & zgrp(param$name) %in% keep_zr]))
+
+param_keep <- param[param$name_full %in% keep, ]
+c(kept = nrow(param_keep), dropped = nrow(param) - nrow(param_keep))
+```
+
+A parameter that reaches 10% of the leading effect for nothing at all is not
+worth an ensemble slot. What gets dropped is worth reading rather than taking
+on trust - here it is several mixing coefficients and the sediment
+peak-day terms:
+
+```{r dropped, eval = run_pest}
+setdiff(param$name_full, keep)
+```
+
+Note that the zones separate: a zoned parameter can matter in one sediment zone
+and not another. That is the cross-check mentioned earlier - had the GLM
+sediment parameters been given four zones instead of three, every `[4]` row
+would appear in this list, because a parameter written to a zone the model
+does not have cannot move anything.
+
+Dropping individual zones is not safe in general. GLM's `&sediment` block does
+not tolerate a partial set: writing `sed_temp_mean` for one zone out of three
+produces a short array and the model dies a couple of hundred days in. The
+zone-ratio parameters are stricter still, because a ratio is meaningless
+without its anchor, so the selection above keeps each anchor and its ratios as
+one group.
+
+So the rule to carry away is that a zoned parameter is kept or dropped as a
+whole set, on the strength of its most influential zone, unless you know the
+block tolerates otherwise. `vignette("staged-calibration")` does that, and
+shows what it costs.
+
+## Build the localizer
+
+The same table says *what* each parameter influences. A localizer is that
+statement in the form `pestpp-ies` wants: a matrix of observation groups by
+parameters, where a zero severs the link so an oxygen residual can never move
+a parameter that only affects temperature.
+
+```{r localizer, eval = run_pest}
+# A zone-ratio group has no sensitivity of its own for the members that were
+# re-added to complete it, and pestpp-ies treats an unlinked parameter as
+# fixed, so link the whole group to the variables its influential member moves.
+pvm_list <- lapply(split(influential$parameter, influential$var_aeme), function(z) {
+  z <- unique(z)
+  gz <- intersect(zgrp(param$name[param$name_full %in% z]), zr_grp)
+  param_keep$name_full[param_keep$name_full %in% z |
+                         zgrp(param_keep$name) %in% gz]
+})
+pvm <- as_param_var_matrix(pvm_list, param = param_keep, vars_sim = vars_sim)
+
+colSums(pvm[, vars_sim, drop = FALSE])
+```
+
+Without this, every residual updates every parameter, and with a modest
+ensemble that is how spurious correlations creep into the posterior.
+
+## Calibrate
+
+Pass the reduced parameter set and the localizer. `calib_aeme()` writes the
+localizer, the template, the instruction file and the control file, checks the
+forward run once, then hands over to the solver.
+
+```{r calibrate, eval = run_pest, message = FALSE, results = "hide"}
+cal_ctrl <- create_pest_control(
+  exe = "pestpp-ies",
+  noptmax = 2,
+  ies_num_reals = 20,
+  ncore = ncore,
+  file_dir = file.path(path, "calib_sa"),
+  pest_dir = "pest_calib",
+  localizer = pvm,
+  pestpp_options = list(ies_lambda_mults = 1, lambda_scale_fac = 1)
+)
+
+FUN_cal <- stats::setNames(lapply(vars_sim, function(v) kge_loss), vars_sim)
+
+cal_id <- calib_aeme(aeme = aeme, path = path, param = param_keep,
+                     model = "glm_aed", vars_sim = vars_sim,
+                     FUN_list = FUN_cal, weights = set_weights(vars_sim),
+                     ctrl = cal_ctrl)
+cal_id <- unname(cal_id[[1]])
+```
+
+The run history comes back through the ordinary readers, so everything that
+works for the built-in methods works here too.
+
+```{r results, eval = run_pest}
+calib <- read_calib(ctrl = cal_ctrl, sim_id = cal_id)
+
+# Objective function per iteration.
+read_pest_phi(calib)[, c("iteration", "total_runs", "mean", "min")]
+
+# Best parameter set.
+best <- get_best_params(calib = calib)
+head(best[, c("name", "index", "value", "min", "max")])
+```
+
+Per-group phi is the thing to look at next: it shows whether one variable is
+dominating the objective, which is what `pest_adjust_weights()` is for.
+
+```{r phi-group, eval = run_pest}
+pg <- read_pest_phi_group(calib)
+aggregate(phi ~ obgnme, data = pg[pg$iteration == max(pg$iteration), ],
+          FUN = mean)
+```
+
+And `pest_prior_data_conflict()` flags observations the prior ensemble cannot
+reproduce at all - a model-structure signal rather than a parameter one, and
+worth checking before you believe any of the above.
+
+## Where to go next
+
+-   `get_calib_periods()` splits the observation record into calibration and
+    validation periods, or takes the whole record with `split = FALSE`; see
+    `vignette("calibrate-aeme")` for the split-sample argument.
+-   `pest_adjust_weights()` rebalances the observation groups after a first
+    run so no one variable dominates.
+-   Raise `morris_r` for a screening you intend to act on. Four trajectories
+    is enough to demonstrate the workflow; it is thin for a real decision.
