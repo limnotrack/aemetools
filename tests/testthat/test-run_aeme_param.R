@@ -284,3 +284,111 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
   p1 <- plot_uncertainty(sa = sa_res)
   testthat::expect_true(ggplot2::is_ggplot(p1))
 })
+
+test_that("run_aeme_param passes the correct sediment temperature and flux values", {
+  model <- "glm_aed"
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+
+  row <- function(file, name, value, min, max) {
+    data.frame(model = "glm_aed", file = file, name = name, value = value,
+               min = min, max = max, group = NA_character_, index = 1L,
+               stringsAsFactors = FALSE)
+  }
+  # GLM sediment temperature (3 zones), AED fluxes (2 zones) and an
+  # ordinary scalar parameter
+  n_zones <- AEME::get_glm_sed_zones(aeme)
+  temp <- zone_ratio_param(row("glm4.nml", "sediment/sed_temp_mean", 20, 5, 30),
+                           n_zones = n_zones)
+  oxy <- zone_ratio_param(row("aed.nml", "aed_sed_const2d/fsed_oxy",
+                              -40, -80, -10), n_zones = n_zones)
+  amm <- zone_ratio_param(row("aed.nml", "aed_sed_const2d/fsed_amm", 8, 1, 16),
+                          n_zones = n_zones)
+  kw <- row("glm4.nml", "light/Kw", 0.4, 0.1, 1)
+  kw$index <- NA_integer_
+  param <- dplyr::bind_rows(temp, oxy, amm, kw)
+  param$value[param$name == "sediment/sed_temp_mean_zratio"] <- 0.75
+  param$value[param$name == "aed_sed_const2d/fsed_oxy_zratio"] <- 0.25
+  param$value[param$name == "aed_sed_const2d/fsed_amm_zratio"] <- 0.5
+  
+  e <- expand_zone_ratios(param)
+  
+  a <- run_aeme_param(aeme = aeme, param = param, model = "glm_aed", 
+                      path = path, return_aeme = TRUE)
+  
+  cfg_files <- AEME::get_model_config_files(a)
+  glm <- AEME::read_nml(cfg_files$glm_aed["glm4"])
+  testthat::expect_equal(glm$light$Kw, 0.4)
+  testthat::expect_equal(glm$sediment$sed_temp_mean, e$value[e$name == "sediment/sed_temp_mean"])
+  aed <- AEME::read_nml(cfg_files$glm_aed["aed"])
+  testthat::expect_equal(aed$aed_sed_const2d$fsed_oxy, e$value[e$name == "aed_sed_const2d/fsed_oxy"])
+  testthat::expect_equal(aed$aed_sed_const2d$fsed_amm, e$value[e$name == "aed_sed_const2d/fsed_amm"])
+
+})
+
+test_that("run_aeme_param passes independent zone values through unchanged", {
+  model <- "glm_aed"
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+
+  n_zones <- AEME::get_glm_sed_zones(aeme)
+  temp_vals <- seq(12, by = 2, length.out = n_zones)
+  oxy_vals <- seq(-40, by = 10, length.out = n_zones)
+  param <- rbind(
+    data.frame(model = "glm_aed", file = "glm4.nml",
+               name = "sediment/sed_temp_mean", value = temp_vals,
+               min = 5, max = 30, group = NA_character_,
+               index = seq_len(n_zones), stringsAsFactors = FALSE),
+    data.frame(model = "glm_aed", file = "aed.nml",
+               name = "aed_sed_const2d/fsed_oxy", value = oxy_vals,
+               min = -80, max = 0, group = NA_character_,
+               index = seq_len(n_zones), stringsAsFactors = FALSE)
+  )
+
+  # No zone-ratio rows, so expansion must leave the table as it is
+  expect_identical(expand_zone_ratios(param), param)
+
+  a <- run_aeme_param(aeme = aeme, param = param, model = model,
+                      path = path, return_aeme = TRUE)
+
+  cfg_files <- AEME::get_model_config_files(a)
+  glm <- AEME::read_nml(cfg_files$glm_aed["glm4"])
+  testthat::expect_equal(glm$sediment$sed_temp_mean, temp_vals)
+  aed <- AEME::read_nml(cfg_files$glm_aed["aed"])
+  testthat::expect_equal(aed$aed_sed_const2d$fsed_oxy, oxy_vals)
+})
+
+test_that("run_aeme_param passes the correct sediment temperature offsets", {
+  model <- "glm_aed"
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+
+  n_zones <- AEME::get_glm_sed_zones(aeme)
+  temp <- zone_offset_param(
+    data.frame(model = "glm_aed", file = "glm4.nml",
+               name = "sediment/sed_temp_mean", value = 10, min = 5,
+               max = 25, group = NA_character_, index = 1L,
+               stringsAsFactors = FALSE),
+    n_zones = n_zones, lower = 0, upper = 5
+  )
+  # zone 1 = 10, each shallower zone 1.5 degC warmer than the one below
+  temp$value[temp$name == "sediment/sed_temp_mean_zoffset"] <- 1.5
+
+  e <- expand_zone_ratios(temp)
+  testthat::expect_equal(e$value, 10 + 1.5 * (seq_len(n_zones) - 1))
+
+  a <- run_aeme_param(aeme = aeme, param = temp, model = model,
+                      path = path, return_aeme = TRUE)
+
+  cfg_files <- AEME::get_model_config_files(a)
+  glm <- AEME::read_nml(cfg_files$glm_aed["glm4"])
+  testthat::expect_equal(glm$sediment$sed_temp_mean, e$value)
+  # shallower zones are never cooler than deeper ones
+  testthat::expect_true(all(diff(glm$sediment$sed_temp_mean) >= 0))
+})

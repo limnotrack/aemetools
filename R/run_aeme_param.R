@@ -61,6 +61,8 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   inp <- AEME::input(aeme)
 
   # Update parameter values ----
+  # Zone ratios (see `zone_ratio_param()`) become real per-zone values here
+  param <- expand_zone_ratios(param)
   AEME::input_model_parameters(aeme = aeme, model = model, param = param,
                                path = path)
   
