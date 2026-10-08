@@ -159,7 +159,7 @@ sa_aeme <- function(aeme, model, param, FUN_list, path,
   # rewrites each model's configuration files from the aeme object, which
   # would revert any fixed parameter written before it.
   if (nrow(eq_pars) > 0) {
-    AEME::input_model_parameters(aeme = aeme, model = model, param = eq_pars,
+    AEME::input_model_parameters(aeme = aeme, model = model, param = expand_zone_ratios(eq_pars),
                                  path = path)
   }
 
