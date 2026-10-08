@@ -120,7 +120,7 @@ test_that("other parameters are untouched and inputs are validated", {
                                    max_depth = 13), "zone_heights")
   aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
   aeme <- readRDS(aeme_file)
-  path <- withr::with_tempdir()
+  path <- withr::local_tempdir()
   aeme <- AEME::build_aeme(aeme, "glm_aed", path = path, ext_elev = 3)
   est <- estimate_zone_start(aeme, p)
   testthat::expect_true(inherits(est, "data.frame"))
