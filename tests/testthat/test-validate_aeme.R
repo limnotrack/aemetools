@@ -36,6 +36,8 @@ va_fake_run <- function(err = c(calib = 1, valid = 1)) {
   function(aeme, ...) {
     tme <- AEME::time(aeme)
     obs <- AEME::observations(aeme)$lake
+    # AEME may hand back POSIXct (noon) dates; compare on the calendar day.
+    obs$Date <- as.Date(obs$Date)
     keep <- obs$Date >= as.Date(tme$start) & obs$Date <= as.Date(tme$stop)
     d <- obs[keep, , drop = FALSE]
     # Which period this is, inferred from the window the caller set.
