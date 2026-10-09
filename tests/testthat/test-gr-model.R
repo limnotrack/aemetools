@@ -1,4 +1,5 @@
 test_that("can create GR model inputs", {
+  testthat::skip_if_not_installed("airGR")
 
   data_dir <- system.file("extdata/hydro/", package = "aemetools")
   lake <- readRDS(file.path(data_dir, "lake.rds"))
@@ -28,6 +29,7 @@ test_that("can create GR model inputs", {
 })
 
 test_that("can calibrate GR model", {
+  testthat::skip_if_not_installed("airGR")
 
   data_dir <- system.file("extdata/hydro/", package = "aemetools")
   lake <- readRDS(file.path(data_dir, "lake.rds"))
@@ -61,6 +63,7 @@ test_that("can calibrate GR model", {
 })
 
 test_that("can run GR model", {
+  testthat::skip_if_not_installed("airGR")
 
   data_dir <- system.file("extdata/hydro/", package = "aemetools")
   lake <- readRDS(file.path(data_dir, "lake.rds"))
@@ -98,6 +101,7 @@ test_that("can run GR model", {
 })
 
 test_that("can calibrate and run GR model", {
+  testthat::skip_if_not_installed("airGR")
 
   data_dir <- system.file("extdata/hydro/", package = "aemetools")
   lake <- readRDS(file.path(data_dir, "lake.rds"))

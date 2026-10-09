@@ -5,6 +5,7 @@ test_that("can check API status", {
 })
 
 test_that("can get lake shape from API", {
+  testthat::skip_if_not_installed("geojsonsf")
   skip_if_offline()
   lake <- get_lake_shape(id = 1)
   testthat::expect_true(inherits(lake, "sf"))
@@ -15,6 +16,7 @@ test_that("can get lake shape from API", {
 })
 
 test_that("can get lake depth contours from API", {
+  testthat::skip_if_not_installed("geojsonsf")
   skip_if_offline()
   lake <- get_depth_contours(id = 1)
   testthat::expect_true(all(lake$depth <= 0))
@@ -24,6 +26,7 @@ test_that("can get lake depth contours from API", {
 
 
 test_that("can get lake catchment from API", {
+  testthat::skip_if_not_installed("geojsonsf")
   skip_if_offline()
   catch <- get_catchment_data(id = 3)
   testthat::expect_true(inherits(catch, "list"))
