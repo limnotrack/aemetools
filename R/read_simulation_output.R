@@ -126,6 +126,7 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
       return(df)
     })
   } else if (file_type == "db") {
+    rlang::check_installed("dbplyr", reason = "to query the results database.")
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
 

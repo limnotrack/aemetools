@@ -82,10 +82,7 @@ estimate_zone_start <- function(aeme, param, n_zones = NULL,
     cli::cli_abort("{.arg param} must be a data frame with a {.field name}
                    column.")
 
-  if (!"index" %in% names(param)) param$index <- NA_integer_
-  for (col in c("value", "min", "max")) {
-    if (!col %in% names(param)) param[[col]] <- NA_real_
-  }
+  param <- complete_param_cols(param)
 
   # Zone geometry ----
   if (is.null(zone_heights)) {
@@ -127,30 +124,146 @@ estimate_zone_start <- function(aeme, param, n_zones = NULL,
                             min_months = min_months)
 
   # Apply to param ----
-  targets <- c(sed_temp_mean = "mean", sed_temp_amplitude = "amplitude",
-               sed_temp_peak_doy = "peak_doy")
+  targets <- list(
+    "sediment/sed_temp_mean" = list(values = est$mean, bare = TRUE),
+    "sediment/sed_temp_amplitude" = list(values = est$amplitude, bare = TRUE),
+    "sediment/sed_temp_peak_doy" = list(values = est$peak_doy, bare = TRUE,
+                                        circular = TRUE)
+  )
+  # width is named by the bare parameter name
+  if (!is.null(width)) names(width) <- paste0("sediment/", names(width))
+  res <- apply_zone_estimates(param, targets, width = width)
+  param <- res$param
+  warn_clipped(res$clipped)
+  attr(param, "zone_estimates") <- est
+  param
+}
+
+#' Estimate starting values for sediment zone fluxes with AEME
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' Sets the starting `value` of the AED sediment zone fluxes
+#' (`aed_sed_const2d/fsed_oxy`, `fsed_amm`, `fsed_nit` and `fsed_frp`) in
+#' `param` from [AEME::estimate_zone_fluxes()]. That function scales literature
+#' baseline fluxes by each zone's depth and bed area (so the lake-wide
+#' area-weighted total matches the baseline) and, when observations are
+#' available, adjusts how the flux is shared between zones. This function only
+#' places its per-zone values into the calibration parameter table, in the same
+#' way as [estimate_zone_start()] does for temperature:
+#' * independent per-zone rows (`index` 1..n) take the estimate for their
+#'   zone, and a row with no `index` takes the mean over zones;
+#' * an anchor + ratio set from [zone_ratio_param()] takes the zone 1
+#'   estimate and the ratio between neighbouring zones;
+#' * an anchor + offset set from [zone_offset_param()] takes the zone 1
+#'   estimate and the difference between neighbouring zones.
+#'
+#' Only the zoned `aed_sed_const2d/` fluxes are changed, not the bulk
+#' `aed_oxygen/fsed_oxy` style parameters. The zones are the GLM sediment zones,
+#' so rows with an `index` beyond the number of GLM zones are left alone.
+#'
+#' A ratio between zones is only meaningful when the fluxes have the same sign.
+#' If a flux changes sign between zones (for example nitrate, or ammonium
+#' released at depth and taken up in the shallows), the ratio is negative and
+#' is clipped to its bounds with a warning. Use independent per-zone rows
+#' or a signed [zone_offset_param()] for those fluxes.
+#'
+#' @inheritParams estimate_zone_start
+#' @param path Path to the AEME build directory. Passed to
+#' [AEME::estimate_zone_fluxes()]; the default is the path stored on `aeme`.
+#' @param fluxes optional list with per-zone vectors named `fsed_oxy`,
+#' `fsed_amm`, `fsed_nit` and `fsed_frp` (the return value of
+#' [AEME::estimate_zone_fluxes()] works). When `NULL` the estimate is computed
+#' from `aeme`, which must have been built.
+#' @param ... further arguments passed to [AEME::estimate_zone_fluxes()] when
+#' `fluxes` is `NULL`, such as `ref_depth` or `baseline`.
+#' @param width named numeric; optional half-width for re-centring the bounds
+#' on the estimate, named by flux (e.g. `c(fsed_oxy = 10)`). Applies to the
+#' independent and anchor rows only.
+#'
+#' @return `param` with updated `value` (and `min`/`max` if `width` is given).
+#' The flux estimates are attached as the `"zone_fluxes"` attribute.
+#' @seealso [estimate_zone_start()], [zone_ratio_param()],
+#' [zone_offset_param()], [AEME::estimate_zone_fluxes()]
+#' @export
+#'
+#' @examples
+#' fl <- list(fsed_oxy = c(-39, -19), fsed_amm = c(5.7, 0.5),
+#'            fsed_nit = c(-0.4, 0.1), fsed_frp = c(0.107, 0.027))
+#' p <- data.frame(model = "glm_aed", file = "aed.nml",
+#'                 name = "aed_sed_const2d/fsed_oxy", value = -25,
+#'                 min = -60, max = -5, group = NA_character_, index = 1L)
+#' p <- zone_ratio_param(p, n_zones = 2)
+#' estimate_zone_flux_start(aeme = NULL, p, fluxes = fl)
+estimate_zone_flux_start <- function(aeme, param, path, fluxes = NULL,
+                                     width = NULL, ...) {
+  if (!is.data.frame(param) || !"name" %in% names(param))
+    cli::cli_abort("{.arg param} must be a data frame with a {.field name}
+                   column.")
+  param <- complete_param_cols(param)
+
+  if (is.null(fluxes)) {
+    if (is.null(aeme))
+      cli::cli_abort("Supply {.arg fluxes} or a built {.arg aeme}.")
+    args <- list(aeme = aeme, verbose = FALSE, ...)
+    if (!missing(path)) args$path <- path
+    fluxes <- do.call(AEME::estimate_zone_fluxes, args)
+  }
+  keys <- c("fsed_oxy", "fsed_amm", "fsed_nit", "fsed_frp")
+  if (!all(keys %in% names(fluxes)))
+    cli::cli_abort("{.arg fluxes} must contain {.field {keys}}.")
+
+  targets <- stats::setNames(
+    lapply(keys, function(k) list(values = as.numeric(fluxes[[k]]),
+                                  bare = FALSE)),
+    paste0("aed_sed_const2d/", keys))
+  # width is named by the bare flux name
+  if (!is.null(width)) names(width) <- paste0("aed_sed_const2d/", names(width))
+
+  res <- apply_zone_estimates(param, targets, width = width)
+  warn_clipped(res$clipped)
+  out <- res$param
+  attr(out, "zone_fluxes") <- fluxes[keys]
+  out
+}
+
+#' Fill zone parameters from per-zone estimates
+#'
+#' @param param parameter data.frame (`name`, `index`, `value`, `min`, `max`).
+#' @param targets named list keyed by the full parameter name
+#' (`block/name`). Each element is a list with `values` (one estimate per
+#' zone), `bare` (also match the name without its `block/` prefix) and
+#' optionally `circular` (day-of-year scalar mean).
+#' @param width optional named numeric of bound half-widths, named like
+#' `targets`.
+#' @return list with `param` and `clipped` (labels of rows that were clipped).
+#' @noRd
+apply_zone_estimates <- function(param, targets, width = NULL) {
   base <- zone_base_name(param$name)
-  key <- sub("^.*/", "", base)
+  bare_name <- sub("^.*/", "", base)
+  is_off <- grepl("_zoffset$", param$name)
+  is_rat <- grepl("_zratio$", param$name)
+  is_step <- is_off | is_rat
   clipped <- character()
 
   for (tn in names(targets)) {
-    e <- est[[targets[[tn]]]]
-    if (all(is.na(e))) next
-    rows <- which(key == tn)
+    e <- targets[[tn]]$values
+    if (length(e) == 0 || all(is.na(e))) next
+    rows <- which(base == tn |
+                    (isTRUE(targets[[tn]]$bare) & bare_name == sub("^.*/", "", tn)))
     if (length(rows) == 0) next
 
-    is_off <- grepl("_zoffset$", param$name)
-    is_rat <- grepl("_zratio$", param$name)
-    is_step <- is_off | is_rat
     anchor <- rows[!is_step[rows] & param$index[rows] %in% 1L]
     steps <- rows[is_step[rows]]
+    w <- if (!is.null(width) && tn %in% names(width)) width[[tn]] else NA_real_
 
     set_val <- function(i, v) {
       if (is.na(v)) return(invisible())
       lo <- param$min[i]; hi <- param$max[i]
-      if (!is.null(width) && !is.na(width[tn]) && !is_step[i]) {
-        param$min[i] <<- lo <- v - width[[tn]]
-        param$max[i] <<- hi <- v + width[[tn]]
+      if (!is.na(w) && !is_step[i]) {
+        param$min[i] <<- lo <- v - w
+        param$max[i] <<- hi <- v + w
       }
       if (!is.na(lo) && !is.na(hi) && (v < lo || v > hi)) {
         clipped <<- c(clipped, paste0(param$name[i], "[", param$index[i], "]"))
@@ -169,21 +282,35 @@ estimate_zone_start <- function(aeme, param, n_zones = NULL,
         set_val(i, if (is_off[i]) e[z] - e[z - 1] else e[z] / e[z - 1])
       }
     }
-    for (i in setdiff(rows, c(steps))) {
+    for (i in setdiff(rows, steps)) {
       if (is.na(param$index[i])) {
-        set_val(i, if (tn == "sed_temp_peak_doy") circ_mean_doy(e) else
+        set_val(i, if (isTRUE(targets[[tn]]$circular)) circ_mean_doy(e) else
           mean(e, na.rm = TRUE))
       } else if (param$index[i] >= 1 && param$index[i] <= length(e)) {
         set_val(i, e[param$index[i]])
       }
     }
   }
+  list(param = param, clipped = clipped)
+}
 
+#' Warn about estimates that were clipped to the parameter bounds
+#' @noRd
+warn_clipped <- function(clipped) {
   if (length(clipped) > 0) {
     cli::cli_warn(c("Estimates outside the parameter bounds were clipped:",
                     stats::setNames(clipped, rep("*", length(clipped)))))
   }
-  attr(param, "zone_estimates") <- est
+  invisible(clipped)
+}
+
+#' Make sure `index`, `value`, `min` and `max` columns exist
+#' @noRd
+complete_param_cols <- function(param) {
+  if (!"index" %in% names(param)) param$index <- NA_integer_
+  for (col in c("value", "min", "max")) {
+    if (!col %in% names(param)) param[[col]] <- NA_real_
+  }
   param
 }
 

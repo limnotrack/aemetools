@@ -12,6 +12,7 @@
 #'
 
 get_linz_basemap_tile <- function(x, zoom = 16, key = NULL, verbose = FALSE) {
+  rlang::check_installed("maptiles", reason = "to download basemap tiles.")
 
   if (is.null(key)) {
     key <- Sys.getenv("LINZ_BASEMAP_KEY")

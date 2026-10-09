@@ -8,13 +8,13 @@
 #' GR model.
 #' @inheritParams airGR::CreateRunOptions
 #'
-#' @import airGR
 #'
 #' @return list of GR model output.
 #' @export
 
 run_GR <- function(inputs, param, warmup = NULL, run_index,
                    IniStates = NULL, IniResLevels = NULL) {
+  rlang::check_installed("airGR", reason = "to run GR models.")
 
   RunOptions <- make_RunOptions(inputs = inputs, warmup = warmup,
                                 run_index = run_index,

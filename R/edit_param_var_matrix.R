@@ -10,10 +10,6 @@
 #' input. If the user cancels the editing, the original input is returned.
 #' @export
 #' 
-#' @importFrom miniUI miniPage gadgetTitleBar miniContentPanel
-#' @importFrom shiny radioButtons observeEvent stopApp req isolate
-#' @importFrom shiny selectInput uiOutput renderUI updateSelectInput
-#' @importFrom rhandsontable rHandsontableOutput renderRHandsontable hot_to_r
 #' @importFrom dplyr mutate pull
 #'
 #' @examples
@@ -25,6 +21,7 @@
 #' }
 
 edit_param_var_matrix <- function(param_var_matrix) {
+  rlang::check_installed(c("shiny", "miniUI", "rhandsontable"), reason = "to run the interactive matrix editor.")
   
   # add temporary row ID for safe updating
   param_var_matrix$.row_id <- seq_len(nrow(param_var_matrix))
@@ -71,7 +68,7 @@ edit_param_var_matrix <- function(param_var_matrix) {
     })
     
     # update file choices when model changes
-    observeEvent(input$model_filter, {
+    shiny::observeEvent(input$model_filter, {
       
       files <- rv() |>
         dplyr::filter(model == input$model_filter) |>

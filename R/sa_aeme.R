@@ -19,7 +19,6 @@
 #' @importFrom parallel makeCluster
 #' @importFrom utils write.csv write.table
 #' @importFrom stats runif
-#' @importFrom FME Latinhyper
 #' @importFrom dplyr bind_rows mutate filter
 #' @importFrom sensobol sobol_matrices
 #'

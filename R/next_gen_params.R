@@ -10,7 +10,6 @@
 #'
 #' @importFrom MASS mvrnorm
 #' @importFrom stats cov rnorm sd quantile
-#' @importFrom FME Latinhyper
 #' @importFrom cli cli_alert_info
 #' @importFrom corpcor cov.shrink
 #'
@@ -98,7 +97,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
     survivors2 <- survivors1[survivors1$fit <= stats::quantile(survivors1$fit,
                                                                qt),
                              keep_cols]
-    g <- FME::Latinhyper(param[, c("min", "max")],
+    g <- latin_hypercube(param[, c("min", "max")],
                          ctrl$NP)
     colnames(g) <- param$name_full
     g <- as.data.frame(g)

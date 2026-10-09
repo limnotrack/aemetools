@@ -34,6 +34,7 @@
 #' }
 
 read_grib_point <- function(file, shape = NULL, lat, lon, method = "bilinear") {
+  rlang::check_installed("terra", reason = "to read GRIB files.")
   lifecycle::deprecate_soft("0.3.0.9000", "read_grib_point()",
                             "metscale::read_era5_grib_point()")
 
