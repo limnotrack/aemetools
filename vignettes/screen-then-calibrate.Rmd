@@ -89,7 +89,7 @@ Both PEST++ steps run their model evaluations in parallel, one process per
 core. Take 85% of the machine and leave the rest for everything else:
 
 ```{r ncore}
-ncore <- max(1L, floor(0.85 * parallel::detectCores()))
+ncore <- max(1L, 2L)
 ncore
 ```
 
