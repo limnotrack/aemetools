@@ -129,3 +129,84 @@ test_that("other parameters are untouched and inputs are validated", {
   testthat::expect_true(bt < st)
 })
 
+
+# ---- estimate_zone_flux_start ------------------------------------------------
+flux_est <- list(fsed_oxy = c(-39, -19.5), fsed_amm = c(5.7, 0.5),
+                 fsed_nit = c(-0.4, 0.1), fsed_frp = c(0.107, 0.027))
+
+flux_param <- function(key = "fsed_oxy", value = -25, min = -60, max = -5,
+                       index = 1L, block = "aed_sed_const2d") {
+  data.frame(model = "glm_aed", file = "aed.nml",
+             name = paste0(block, "/", key), value = value, min = min,
+             max = max, group = NA_character_, index = index,
+             stringsAsFactors = FALSE)
+}
+
+test_that("flux estimates fill independent per-zone rows", {
+  p <- flux_param(index = 1:2)
+  r <- estimate_zone_flux_start(NULL, p, fluxes = flux_est)
+  expect_equal(r$value, c(-39, -19.5))
+  expect_equal(attr(r, "zone_fluxes")$fsed_amm, c(5.7, 0.5))
+})
+
+test_that("flux estimates fill an anchor + ratio set", {
+  p <- zone_ratio_param(flux_param(), n_zones = 2)
+  r <- estimate_zone_flux_start(NULL, p, fluxes = flux_est)
+  expect_equal(r$value, c(-39, 0.5))
+})
+
+test_that("flux estimates fill an anchor + signed offset set", {
+  p <- zone_offset_param(flux_param("fsed_amm", 2, 0, 10), n_zones = 2,
+                         lower = -8, upper = 0)
+  r <- estimate_zone_flux_start(NULL, p, fluxes = flux_est)
+  expect_equal(r$value, c(5.7, -5.2))
+  # signed offset takes the value through zone 1 to zone 2
+  expect_equal(expand_zone_ratios(r)$value, c(5.7, 0.5))
+})
+
+test_that("a ratio across a sign change is clipped with a warning", {
+  p <- zone_ratio_param(flux_param("fsed_nit", -0.2, -1, 0), n_zones = 2)
+  expect_warning(r <- estimate_zone_flux_start(NULL, p, fluxes = flux_est),
+                 "clipped")
+  expect_equal(r$value[2], 0.1)  # ratio 0.1/-0.4 < 0 clipped to 0.1
+})
+
+test_that("only the zoned aed_sed_const2d rows are changed", {
+  p <- rbind(flux_param(index = 1:2),
+             flux_param("fsed_oxy", -25, -60, -5, index = NA_integer_,
+                        block = "aed_oxygen"))
+  r <- estimate_zone_flux_start(NULL, p, fluxes = flux_est)
+  expect_equal(r$value, c(-39, -19.5, -25))
+})
+
+test_that("flux width re-centres bounds and indices past the zones are skipped", {
+  p <- flux_param(index = 1:3)
+  r <- estimate_zone_flux_start(NULL, p, fluxes = flux_est,
+                                width = c(fsed_oxy = 5))
+  expect_equal(r$value[1:2], c(-39, -19.5))
+  expect_equal(r$min[1:2], c(-44, -24.5))
+  expect_equal(r$value[3], -25)
+})
+
+test_that("flux estimation validates its inputs", {
+  expect_error(estimate_zone_flux_start(NULL, flux_param()), "fluxes")
+  expect_error(estimate_zone_flux_start(NULL, flux_param(),
+                                        fluxes = list(fsed_oxy = 1)),
+               "must contain")
+})
+
+test_that("flux estimation calls AEME::estimate_zone_fluxes when not supplied", {
+  called <- NULL
+  testthat::local_mocked_bindings(
+    estimate_zone_fluxes = function(...) {
+      called <<- list(...)
+      c(flux_est, list(zone_summary = NULL, method = "baseline_scaled"))
+    },
+    .package = "AEME"
+  )
+  r <- estimate_zone_flux_start("fake", flux_param(index = 1:2),
+                                ref_depth = 4)
+  expect_false(called$verbose)
+  expect_equal(called$ref_depth, 4)
+  expect_equal(r$value, c(-39, -19.5))
+})
