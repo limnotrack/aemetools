@@ -3,12 +3,6 @@
 #' @inheritParams AEME::build_aeme
 #' @inheritParams calib_aeme
 #'
-#' @importFrom shiny shinyApp fluidPage sidebarLayout sidebarPanel mainPanel
-#' @importFrom shiny plotOutput actionButton radioButtons h1 h3 tableOutput 
-#' @importFrom shiny renderUI observeEvent reactiveValues renderPlot renderTable
-#' @importFrom shiny sliderInput req validate need withProgress incProgress 
-#' @importFrom shiny tabPanel tabsetPanel uiOutput checkboxInput 
-#' @importFrom shiny checkboxGroupInput selectInput
 #' @importFrom AEME configuration lake
 #' @importFrom dplyr filter mutate n
 #'
@@ -16,6 +10,7 @@
 #' @export
 
 run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
+  rlang::check_installed("shiny", reason = "to run the interactive app.")
 
   # data("aeme_parameters")
   if (is.null(model_controls)) {

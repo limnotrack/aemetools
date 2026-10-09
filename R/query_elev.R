@@ -21,6 +21,7 @@
 #'
 
 query_elev <- function(x, dem, lat, lon, layer_id = NULL) {
+  rlang::check_installed("terra", reason = "to read DEM elevations.")
 
   if (is.null(layer_id)) {
     meta_tags <- terra::metags(dem)

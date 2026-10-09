@@ -14,6 +14,7 @@
 
 get_raster_tile <- function(x, layer_id, zoom = 15, key = NULL,
                             verbose = FALSE) {
+  rlang::check_installed("maptiles", reason = "to download raster tiles.")
 
 
   if (is.null(key)) {

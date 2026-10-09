@@ -62,7 +62,6 @@
 #' @importFrom parallel detectCores
 #' @importFrom utils write.csv write.table
 #' @importFrom stats runif
-#' @importFrom FME Latinhyper
 #' @importFrom dplyr mutate bind_rows
 #' @importFrom AEME check_aeme check_model check_path get_lake_dir observations
 #' @importFrom AEME set_vars_sim get_aeme_path configuration
@@ -401,7 +400,7 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
         ctrl$NP <- ctrl$itermax
         ctrl$ngen <- 1
       }
-      start_param <- FME::Latinhyper(param[, c("min", "max")], ctrl$NP)
+      start_param <- latin_hypercube(param[, c("min", "max")], ctrl$NP)
       colnames(start_param) <- param$name_full
       start_param <- as.data.frame(start_param)
       
@@ -456,7 +455,9 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
                                            "for {.val ", m, "}.")))
       unlink("parallel.log")
       cl <- aeme_make_cluster(ctrl$ncore)
-      on.exit(parallel::stopCluster(cl))
+      # try(): if a worker has already died, stopCluster() errors and would
+      # mask the error that killed it.
+      on.exit(try(parallel::stopCluster(cl), silent = TRUE), add = TRUE)
       varlist <- list("param", "aeme", "paths", "m", "vars_sim", "FUN_list",
                       "model_controls", "var_indices", "ctrl", "weights",
                       "include_wlev", "regions")

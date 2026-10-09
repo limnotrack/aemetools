@@ -36,6 +36,7 @@ read_simulation_meta <- function(ctrl = NULL, file_name, file_dir, type) {
 
   # Read the file
   if (file_type == "db") {
+    rlang::check_installed("dbplyr", reason = "to query the results database.")
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
     n_sim <- dplyr::tbl(con, "simulation_data") |>

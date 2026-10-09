@@ -21,6 +21,7 @@
 
 get_depth_contours <- function(id = 1, api_url = "https://api.limnotrack.com", 
                                api_key = NULL) {
+  rlang::check_installed("geojsonsf", reason = "to parse GeoJSON returned by the limnotrack API.")
   query <- list(id = id)
   
   res <- api_request(api_url = api_url, endpoint = "get_lake_shape", 

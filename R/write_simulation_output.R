@@ -53,6 +53,7 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
   add_lake_meta <- TRUE
   if (file.exists(file_to_check)) {
     if (type == "db") {
+      rlang::check_installed("dbplyr", reason = "to query the results database.")
       con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file_to_check)
       db_tabs <- DBI::dbListTables(con)
       if ("lake_metadata" %in% db_tabs) {

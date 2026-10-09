@@ -34,7 +34,6 @@
 #' @param era5_dataset string; of which ERA5 dataset to use. Can be 'reanalysis-era5-single-levels' or 'reanalysis-era5-land'
 #' @param path filepath to store downloaded file
 #'
-#' @importFrom ecmwfr wf_check_request wf_request_batch
 #' @importFrom lifecycle deprecate_soft
 #'
 #' @examples
@@ -72,6 +71,7 @@ download_era5_grib <- function(shape = NULL,
                                user = NULL,
                                era5_dataset = "reanalysis-era5-land",
                                path = ".") {
+  rlang::check_installed("ecmwfr", reason = "to submit ERA5 requests to the CDS.")
 
   lifecycle::deprecate_soft("0.3.0.9000", "download_era5_grib()",
                             "metscale::download_era5_cds()")

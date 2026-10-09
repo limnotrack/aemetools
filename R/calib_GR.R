@@ -5,7 +5,7 @@
 #' @inheritParams airGR::CreateInputsCrit
 #' @inheritParams airGR::CreateCalibOptions
 #'
-#' @import airGR
+#' @importFrom rlang check_installed
 #'
 #' @return list of airGR calibration outputs.
 #'
@@ -16,6 +16,7 @@ calib_GR <- function(inputs, warmup = NULL, run_index,
                      FUN_CALIB = airGR::Calibration_Michel,
                      IniStates = NULL,
                      IniResLevels = NULL) {
+  rlang::check_installed("airGR", reason = "to calibrate GR models.")
 
   RunOptions <- make_RunOptions(inputs = inputs, warmup = warmup,
                                 run_index = run_index,

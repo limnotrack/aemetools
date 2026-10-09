@@ -10,8 +10,6 @@
 #'
 #' @importFrom httr2 request req_url_path_append req_url_query req_perform
 #' @importFrom httr2 resp_status resp_status_desc
-#' @importFrom xml2 read_xml xml_find_all xml_find_first xml_text xml_attr
-#' @importFrom xml2 xml_ns
 #' @importFrom sf read_sf st_union st_cast st_as_sf st_zm st_write gdal_utils
 #'
 #' @return sf object
@@ -20,6 +18,7 @@
 
 read_web_sf <- function(url, layer_id, key = NULL, filter_col = NULL,
                         filter_val = NULL) {
+  rlang::check_installed("xml2", reason = "to read the WFS capabilities document.")
 
   if (is.null(key)) {
     key <- Sys.getenv("LINZ_KEY")

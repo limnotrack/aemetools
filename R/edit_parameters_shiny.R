@@ -16,9 +16,6 @@
 #' 
 #' @export
 #' 
-#' @importFrom miniUI miniPage gadgetTitleBar miniContentPanel
-#' @importFrom shiny selectInput uiOutput renderUI observeEvent stopApp req
-#' @importFrom rhandsontable rHandsontableOutput renderRHandsontable
 #' @importFrom dplyr filter pull mutate
 #' 
 #' @examples
@@ -29,6 +26,7 @@
 #' }
 
 edit_parameters_shiny <- function(param) {
+  rlang::check_installed(c("shiny", "miniUI", "rhandsontable"), reason = "to run the interactive parameter editor.")
   
   # UI ----
   ui <- miniUI::miniPage(

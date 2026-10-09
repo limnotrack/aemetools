@@ -15,60 +15,59 @@ BugReports: https://github.com/limnotrack/aemetools/issues
 Depends: 
     R (>= 4.2.0)
 Imports: 
-    airGR,
     AEME (>= 0.4.0),
     cli,
     corpcor,
     DBI,
-    dbplyr,
     dplyr,
     duckdb,
-    ecmwfr,
-    FME,
-    geojsonsf,
     ggplot2,
-    glue,
     httr2,
     jsonlite,
     lifecycle,
-    logger,
-    lubridate,
-    maptiles,
     MASS,
     methods,
-    miniUI,
     ncdf4,
     parallel,
     patchwork,
     processx,
-    rhandsontable,
-    rLakeAnalyzer,
     rlang,
     scales,
     sensobol,
     sf,
-    shiny,
-    stars,
     stats,
     stringr,
-    terra,
     tidyr,
+    tools,
     units,
     utils,
-    withr,
-    xml2
+    withr
 Suggests: 
+    airGR,
+    dbplyr,
     DT,
+    ecmwfr,
+    geojsonsf,
     knitr,
+    maptiles,
+    metscale (>= 0.1.0),
+    miniUI,
     osmdata,
+    pkgload,
     printr,
+    rhandsontable,
     rmarkdown,
+    shiny,
+    stars,
+    terra,
     testthat (>= 3.0.0),
-    tmap
+    tmap,
+    xml2
 VignetteBuilder: 
     knitr
-Remotes: 
-    github::limnotrack/AEME@dev
+Remotes:  
+    github::limnotrack/AEME@dev,
+    limnotrack/metscale
 Config/roxygen2/version: 8.1.0
 Config/testthat/edition: 3
 Encoding: UTF-8

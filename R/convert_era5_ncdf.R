@@ -41,6 +41,7 @@ convert_era5_ncdf <- function(lat,
                               site  = "test",
                               path = ".",
                               format = "AEME") {
+  rlang::check_installed("stars", reason = "to read ERA5 netCDF files.")
 
   lifecycle::deprecate_soft("0.3.0.9000", "convert_era5_ncdf()",
                             "metscale::convert_era5_netcdf()")

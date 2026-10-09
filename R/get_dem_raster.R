@@ -19,6 +19,7 @@
 
 get_dem_raster <- function(x, lake = NULL, zoom = 14, verbose = FALSE,
                            prompt = FALSE) {
+  rlang::check_installed(c("maptiles", "terra"), reason = "to download and read DEM tiles.")
   buff_shape <- sf::st_buffer(x, 150)
   dem_df <- get_layer_ids(buff_shape, type = "dem") |>
     dplyr::arrange(res)
