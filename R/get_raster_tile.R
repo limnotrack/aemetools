@@ -7,8 +7,6 @@
 #'  LINZ_KEY environment variable. If that is not set, will throw an error.
 #'  Use the \code{add_linz_key} function to set the key.
 #'
-#'  @importFrom maptiles create_provider get_tiles
-#'  @importFrom terra subset
 #'
 #' @return a raster object
 #' @export
@@ -16,6 +14,7 @@
 
 get_raster_tile <- function(x, layer_id, zoom = 15, key = NULL,
                             verbose = FALSE) {
+  rlang::check_installed("maptiles", reason = "to download raster tiles.")
 
 
   if (is.null(key)) {

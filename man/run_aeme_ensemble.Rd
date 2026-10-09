@@ -2,46 +2,70 @@
 % Please edit documentation in R/run_aeme_ensemble.R
 \name{run_aeme_ensemble}
 \alias{run_aeme_ensemble}
-\title{Run AEME ensemble}
+\title{Run an AEME parameter ensemble}
 \usage{
 run_aeme_ensemble(
   aeme,
   model,
   n = 10,
-  dist = "norm",
+  dist = c("norm", "unif"),
   path = ".",
   parallel = FALSE,
   ncore = NULL,
   param = NULL,
+  param_sets = NULL,
   na_value = 999
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model}{string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
-\item{n}{numeric; number of ensemble members to generate.}
+\item{n}{numeric; number of ensemble members to sample. Ignored when
+\code{param_sets} is supplied.}
 
-\item{dist}{character; distribution to sample from. Default is "norm". Other
-options are "unif".}
+\item{dist}{character; distribution to sample from, \code{"norm"} (default) or
+\code{"unif"}. Ignored when \code{param_sets} is supplied.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
-\item{parallel}{logical; whether to run in parallel. Default is FALSE.}
+\item{parallel}{logical; run members in parallel. Default \code{FALSE}.}
 
-\item{ncore}{numeric; number of cores to use for parallel processing. Default
-is NULL. If NULL, the function will use the number of cores minus 1.}
+\item{ncore}{numeric; cores for parallel processing. \code{NULL} (default) uses
+one fewer than are available.}
 
-\item{param}{data.frame; parameter values to use. Default is NULL. If NULL,
-the function will use the parameters from the aeme object.}
+\item{param}{data.frame; parameter template supplying \code{min}/\code{max} for the
+sampling path. \code{NULL} (default) takes it from the \code{aeme} object. Ignored
+when \code{param_sets} is supplied.}
 
-\item{na_value}{numeric; value to use for NA values. Default is 999.}
+\item{param_sets}{a supplied ensemble to run instead of sampling. Either a
+list of long \code{param} dataframes (one per member, \code{value} set) - such as
+an \code{\link[=pest_posterior_params]{pest_posterior_params()}} result - or a single long data.frame with
+an \code{ensemble} id column plus the \code{param} columns.}
+
+\item{na_value}{numeric; value a failed member run returns. Default 999;
+such members are dropped from the ensemble.}
 }
 \value{
-an `aeme` object with model output loaded.
+The \code{aeme} object with \verb{AEME::output()$ens_001 .. ens_00k} and
+\verb{$n_members} populated. \code{attr(AEME::output(aeme), "realisation")} carries
+the surviving realisation ids when \code{param_sets} was named.
 }
 \description{
-Run a parameter ensemble
+Runs a model once per parameter set and stores every member's output on
+the returned \code{aeme} object under \verb{AEME::output()$ens_*}, ready for
+\code{\link[=plot_ensemble]{plot_ensemble()}}.
+
+By default the members are \strong{sampled}: \code{n} parameter vectors are drawn
+from each parameter's \verb{[min, max]} (normally or uniformly, per \code{dist}).
+Pass \code{param_sets} to run a \strong{supplied} ensemble instead - for example the
+posterior from a \code{pestpp-ies} calibration via \code{\link[=pest_posterior_params]{pest_posterior_params()}} -
+in which case \code{n}, \code{dist} and \code{param} are ignored.
+}
+\seealso{
+\code{\link[=pest_posterior_params]{pest_posterior_params()}}, \code{\link[=plot_ensemble]{plot_ensemble()}}
 }

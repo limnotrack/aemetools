@@ -6,44 +6,78 @@
 \usage{
 calib_aeme(
   aeme,
-  path = ".",
-  param,
   model,
-  model_controls = NULL,
+  param,
+  path,
   vars_sim = "HYD_temp",
-  FUN_list = NULL,
+  FUN_list,
+  weights,
+  model_controls = NULL,
   ctrl = NULL,
-  weights = c(1),
+  param_var_matrix = NULL,
   param_df = NULL
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")}
+columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")}
 
-\item{model}{string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
-
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
-model fit. Currently only supports using one variable.}
+model fit. Alternatively, a fully-named list of sub-regions, exactly as
+\code{\link{create_sen_control}} accepts: each element
+\verb{list(var = <AEME var>, month = <ints>, depth_range = c(lo, hi), weight = <numeric>)} restricts that AEME variable to a depth/month window and
+calibrates it as its own weighted target - e.g. \code{list(surf_temp = list(var = "HYD_temp", month = c(12, 1, 2), depth_range = c(0, 2)), bot_temp = list(var = "HYD_temp", depth_range = c(z - 4, z)))} calibrates
+surface and bottom temperature independently instead of pooling every
+depth into one \code{HYD_temp} objective. A region's \code{weight} (default \code{1})
+multiplies its underlying variable's entry in \code{weights}, so the two
+compose: \code{weights} sets HYD_temp's importance relative to other
+variables, the region \code{weight} splits that between sub-regions.}
 
 \item{FUN_list}{list of functions; named according to the variables in the
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
-to calculate model fit. If NULL, uses mean absolute error (MAE).}
+to calculate model fit. If nor provided, uses mean absolute error (MAE).}
+
+\item{weights}{a named vector; of weights for each variable in vars_sim. If not
+provided, defaults to 1 for each variable.}
+
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[AEME:get_model_controls]{get_model_controls()}}.}
 
 \item{ctrl}{list; of controls for sensitivity analysis function created using
 the \code{\link{create_control}} function. See \link{create_control} for
 more details.}
 
-\item{weights}{vector; of weights for each variable in vars_sim. Default to
-c(1).}
+\item{param_var_matrix}{a declaration of which parameters are associated
+with which response variables. Either the dataframe
+\code{\link{create_param_var_matrix}} returns - parameters as rows,
+response variables as logical columns - or the shorthand list keyed by
+variable, e.g. \code{list(HYD_temp = c("light", "mixing"), CHM_oxy = "sediment")}; see \code{\link{as_param_var_matrix}} for every accepted
+form and for how unmentioned variables and parameters are treated. When
+\code{vars_sim} is given as sub-regions, its columns may be keyed by region
+name instead of (or as well as) the underlying variable - e.g.
+\code{list(surf_temp = c("light", "mixing"), bot_temp = "sediment")} links the
+surface-temperature region to different parameters than the
+bottom-temperature region. A region not mentioned falls back to being
+linked by its underlying variable's column, if any, exactly as an
+unmentioned variable is unrestricted in the flat case.
+
+How it is used depends on the engine. With \code{ctrl$c_method = "MOEDA"} it
+decides which parameters are resampled together in each generation, and
+the two are mutually required. With \code{ctrl$engine = "pest"} and
+\code{exe = "pestpp-ies"} it becomes the solver's localizer (see
+\code{\link{pest_localizer}}); it is equivalent to, and takes the place
+of, \code{localizer} in \code{\link{create_pest_control}}. Any parameter it
+associates with no variable at all is dropped from the calibration, with
+a warning.}
 
 \item{param_df}{dataframe; of parameters to be used in the calibration.
 Requires the columns c("model", "file", "name", "value", "min", "max"). This
@@ -53,7 +87,36 @@ is used to restart from a previous calibration.}
 string of simulation id to be used to read the simulation output.
 }
 \description{
-\code{calib_model()} runs the model and compares it against observations provided.
-It can run in parallel by using multiple cores availlable on your computer
+\code{calib_aeme()} runs the model and compares it against observations provided.
+It can run in parallel by using multiple cores available on your computer
 to run quicker.
+}
+\examples{
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme <- readRDS(aeme_file)
+model_controls <- AEME::get_model_controls()
+model <- c("glm_aed", "gotm_wet")
+path <- "aeme"
+aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path,
+                         model_controls = model_controls, ext_elev = 5) |>
+  AEME::run_aeme()
+
+data("aeme_parameters", package = "AEME")
+param <- aeme_parameters
+
+# Function to calculate fitness (nse_loss = -1 * NSE, minimised by calib_aeme)
+FUN_list <- list(HYD_temp = nse_loss, LKE_lvlwtr = nse_loss)
+
+ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
+                       parallel = TRUE, file_type = "db",
+                       file_name = "results.db")
+
+vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
+
+# Calibrate AEME model
+sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
+                     param = param, FUN_list = FUN_list, ctrl = ctrl,
+                     vars_sim = vars_sim, weights = weights)
+
 }

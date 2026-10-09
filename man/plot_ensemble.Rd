@@ -17,23 +17,22 @@ plot_ensemble(
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{an \code{aeme} object with ensemble output, or an
+\code{\link[=ensemble_summary]{ensemble_summary()}}.}
 
-\item{model}{character vector; model(s) to plot. If missing, all models
-in the Aeme object will be plotted.}
+\item{model}{character; model(s) to plot. Optional when \code{aeme} is an
+\code{\link[=ensemble_summary]{ensemble_summary()}}.}
 
 \item{var_sim}{string; of variable to plot}
 
 \item{depth}{numeric; depth of the variable to extract. Default is NULL. If
 NULL, the variable profiles are extracted.}
 
-\item{conf_int}{numeric; confidence interval to plot when \code{type = "ribbon"}.
-Default is 0.95.}
+\item{conf_int}{numeric; central interval for the ribbon. Default 0.95.
+When \code{aeme} is a summary the interval's quantiles must have been included
+in its \code{probs}.}
 
-\item{type}{character; type of plot to create. Can be \code{"ribbon"}, where it
-plots a geom_ribbon to represent the confidence intervals specified in
-\code{conf_int} or \verb{"line}, where it plots all the ensemble members as lines.
-Default is "ribbon".}
+\item{type}{character; \code{"ribbon"} (default) or \code{"line"}.}
 
 \item{remove_spin_up}{logical; remove spin-up period from plot. Default is
 TRUE.}
@@ -47,5 +46,15 @@ Defaults to NULL and will generate common limits for all variables.}
 ggplot object
 }
 \description{
-Plot AEME ensemble output
+Plots an ensemble produced by \code{\link[=run_aeme_ensemble]{run_aeme_ensemble()}} as a quantile ribbon
+(\code{type = "ribbon"}) or as one line per member (\code{type = "line"}), with the
+matching lake observations overlaid.
+
+\code{aeme} may be either an \code{aeme} object carrying \verb{AEME::output()$ens_*} or an
+\code{\link[=ensemble_summary]{ensemble_summary()}} result. Passing a summary skips the per-member
+extraction, so building one summary and plotting several variables, depths
+or intervals from it is cheap.
+}
+\seealso{
+\code{\link[=ensemble_summary]{ensemble_summary()}}, \code{\link[=run_aeme_ensemble]{run_aeme_ensemble()}}
 }

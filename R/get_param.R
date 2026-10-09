@@ -1,122 +1,53 @@
 #' Get parameter values from calibration results
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' `get_param()` is deprecated. Please use either \link{get_sim_params()} or
+#' \link{get_best_params()} instead, depending on whether you want to retrieve 
+#' all parameter values or just the best parameter values based on a specified 
+#' fit column and quantile threshold.
+#' 
 #' @param calib A list with the calibration results loaded using
 #' \code{\link{read_calib}}.
-#' @param na_value A numeric value which corresponds to the NA value used in
-#' the calibration.
 #' @param best A logical value indicating whether to return the best parameter
 #' values or all parameter values.
+#' @param na_value `r lifecycle::badge("deprecated")` Numeric. Penalty value 
+#' substituted for \code{NA} fit values, this is no longer needed as NA values 
+#' are now written to simulation_data in output of calib_aeme() and sa_aeme(). 
+#' The argument will be removed in a future version.
 #' @inheritParams plot_calib
+#' @inheritParams update_param
 #'
 #' @importFrom dplyr case_when filter group_by mutate summarise
 #' @importFrom stringr str_split_i
+#' @importFrom tidyr pivot_wider
+#' @importFrom lifecycle deprecate_soft
 #'
 #' @return A data frame with the parameter values.
 #' @export
 
-get_param <- function(calib, na_value, fit_col = "fit", best = FALSE) {
+get_param <- function(calib, na_value, fit_col = "fit", best = FALSE, 
+                      quantile = 0.1) {
   
-  # lapply(calib, \(x) {
-  if (!all(fit_col %in% calib$simulation_data$fit_type)) {
-    stop("fit_col not in calib")
-  }
-  # })
-  
-  sim_ids <- calib$simulation_metadata$sim_id
-  
-  all_pars <- lapply(sim_ids, \(x) {
-    # calib$fit <- calib[[fit_col]]
-    model <- calib$simulation_metadata |>
-      dplyr::filter(sim_id == x) |>
-      dplyr::pull(model)
-    
-    df_idx <- calib$simulation_data |>
-      dplyr::filter(sim_id == x) |>
-      dplyr::filter(fit_type == calib$simulation_data$fit_type[1]) |>
-      tidyr::pivot_wider(id_cols = c("gen", "run"), names_from = parameter_name,
-                         values_from = parameter_value) |>
-      dplyr::mutate(index = 1:dplyr::n()) |>
-      as.data.frame() |>
-      dplyr::select(gen, run, index)
-    
-    
-    calib$simulation_data |>
-      dplyr::filter(sim_id == x) |>
-      dplyr::left_join(df_idx, by = c("gen", "run")) |>
-      dplyr::filter(
-        fit_type %in% fit_col
-      ) |>
-      dplyr::mutate(
-        model = model,
-        fit2 = dplyr::case_when(
-          fit_value == na_value ~ NA,
-          .default = fit_value
-        )) |>
-      dplyr::mutate(
-        label = abbrev_pars(parameter_name, model),
-        gen = factor(gen),
-        name = stringr::str_split_i(parameter_name, "^[^/]*/", 2),
-        group = stringr::str_split_i(parameter_name, "/", 1),
-        par = stringr::str_split_i(label, "%", 2)
-      ) |>
-      dplyr::mutate(group = dplyr::case_when(
-        group == "NA" ~ NA,
-        .default = group
-      ))
-  }) |>
-    dplyr::bind_rows() |>
-    dplyr::select(sim_id, model, gen, run, index, dplyr::everything())
-  
-  
-  
-  if (!best) return(all_pars)
-  
-  uniq_pars <- unique(all_pars$name)
-  # Remove "outflow", "inflow" and ones that contain "MET"
-  uniq_pars <- uniq_pars[!uniq_pars %in% c("outflow", "inflow")]
-  uniq_pars <- uniq_pars[!grepl("MET", uniq_pars)]
-  if (length(uniq_pars) > 0) {
-    aeme_pars <- AEME::get_aeme_parameters(name = uniq_pars) |> 
-      dplyr::select(model, file, name)
+  lifecycle::deprecate_soft("0.2.0", "get_param()", 
+                            details = "Use either `get_sim_params()` or
+                            `get_best_params()` instead.)`")
+
+  if (missing(na_value)) {
+    na_value <- calib$calibration_metadata$na_value[1]
   }
   
   
-  
-  pars_df <- all_pars |>
-    dplyr::filter(fit_value != na_value) |>
-    dplyr::group_by(sim_id, model, label, fit_type) |>
-    dplyr::summarise(parameter_value = parameter_value[which.min(fit_value)],
-                     fit_value = min(fit_value),
-                     gen = gen[which.min(fit_value)],
-                     name = name[which.min(fit_value)],
-                     group = group[which.min(fit_value)],
-                     par = par[which.min(fit_value)],
-                     .groups = "drop") |>
-    as.data.frame()
-  
-  if (length(uniq_pars) > 0) {
-    pars_df <- pars_df |> 
-      dplyr::left_join(aeme_pars, by = c("model", "name"))
+  if (best) {
+    param_df <- get_best_params(calib = calib, na_value = na_value,
+                                fit_col = fit_col)
+  } else {
+    param_df <- get_sim_params(calib = calib, na_value = na_value, 
+                               fit_col = fit_col, 
+                               quantile_threshold = quantile)
   }
-  if (!"file" %in% colnames(pars_df)) {
-    pars_df <- pars_df |> 
-      dplyr::mutate(file = NA)
-  }
-  
-  pars_df <- pars_df |> 
-    dplyr::mutate(
-      value = parameter_value,
-      min = value, max = value,
-      file = dplyr::case_when(
-        grepl("MET", name) ~ "met",
-        grepl("outflow", name) ~ "wdr",
-        grepl("inflow", name) ~ "inf",
-        .default = .data$file
-      )
-    ) |> 
-    dplyr::select(sim_id, model, file, name, value, min, max, 
-                  dplyr::everything()) 
-  return(pars_df)
+  return(param_df)
 }
 
 
@@ -145,6 +76,7 @@ abbrev_pars <- function(par, model) {
         return(string)
       }
     }
+    par1 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
     par2 <- sub("\\/.*", "", par1)
     par2 <- sapply(par2, \(x) {
       if (!grepl("MET_", x)) {
@@ -154,13 +86,16 @@ abbrev_pars <- function(par, model) {
       }
     })
   } else if (all(model == "glm_aed")) {
-    # par2 <- sub(".*\\.", "", par1)
-    par2 <- sub(".*/", "", par1)
+    par1 <- sub("^NA/", "", par)
+    par2 <- sub("\\[NA\\]", "", par1)
+    # par2 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
   } else if (all(model == "gotm_wet")) {
-    par2 <- sub(".*/", "", par1)
+    par2 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
     if ("constant_value" %in% par2) {
       par2[par2 == "constant_value"] <- sub(".*/([^/]+)/.*", "\\1",par1[par2 == "constant_value"])
     }
+  } else {
+    par2 <- sub("\\[NA\\]", "", sub(".*/([^/]+)$", "\\1", par))
   }
   if (any(grepl("MET_", par2))) {
     par2 <- sub("MET_", "", par2)

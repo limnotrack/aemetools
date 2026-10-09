@@ -7,15 +7,16 @@
 run_aeme_shiny(aeme, param, path = ".", model_controls = NULL)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")}
+columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[AEME:get_model_controls]{get_model_controls()}}.}
 }
 \value{
 Launches shiny app

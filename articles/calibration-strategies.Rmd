@@ -129,7 +129,7 @@ ggplot2::update_geom_defaults("point", list(size = 1))
 ```
 
 ```{r}
-utils::data("aeme_parameters", package = "AEME")
+data("aeme_parameters", package = "AEME")
 
 param <- aeme_parameters[aeme_parameters$model == model, ]
 param
@@ -187,8 +187,7 @@ Extract the calibrated parameters and run the model again.
 #| results: hide
 
 # Extract the calibrated parameters
-best_pars <- get_param(calib = calib_res, model = model, 
-                       na_value = ctrl$na_value, best = TRUE)
+best_pars <- get_best_params(calib = calib_res)
 
 param <- update_param(param = param, best_pars = best_pars)
 

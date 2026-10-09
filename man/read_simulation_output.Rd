@@ -34,6 +34,9 @@ argument is ignored.}
 \item{file_dir}{The directory of the output file. If \code{ctrl} is provided, this
 argument is ignored.}
 
+\item{file_type}{string; file type to write the output to. Options are
+\code{c("csv", "db")}. Defaults to "db".}
+
 \item{sim_id}{A vector of simulation IDs to read. If NULL, all simulations
 are read.}
 
@@ -46,4 +49,35 @@ A list with the metadata and simulation data frames.
 }
 \description{
 Read calibration output
+}
+\examples{
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme <- readRDS(aeme_file)
+model_controls <- AEME::get_model_controls()
+model <- c("glm_aed", "gotm_wet")
+path <- "aeme"
+aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path,
+                         model_controls = model_controls, ext_elev = 5) |>
+  AEME::run_aeme()
+
+data("aeme_parameters", package = "AEME")
+param <- aeme_parameters
+
+# Function to calculate fitness (nse_loss = -1 * NSE, minimised by calib_aeme)
+FUN_list <- list(HYD_temp = nse_loss, LKE_lvlwtr = nse_loss)
+
+ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
+                       parallel = TRUE, file_type = "db",
+                       file_name = "results.db")
+
+vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
+
+# Calibrate AEME model
+sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
+                     param = param, FUN_list = FUN_list, ctrl = ctrl,
+                     vars_sim = vars_sim, weights = weights)
+                     
+# Read calibration output                      
+calib <- read_calib(sim_id = sim_id, ctrl = ctrl)
 }

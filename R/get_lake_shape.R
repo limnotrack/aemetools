@@ -11,7 +11,6 @@
 #' @export
 #' 
 #' @importFrom httr2 resp_body_string
-#' @importFrom geojsonsf geojson_sf
 #' @importFrom sf st_set_crs
 #'
 #' @examples
@@ -19,6 +18,7 @@
 
 get_lake_shape <- function(id, api_url = "https://api.limnotrack.com",  
                            api_key = NULL) {
+  rlang::check_installed("geojsonsf", reason = "to parse GeoJSON returned by the limnotrack API.")
   query <- list()
   for (x in id) query <- c(query, list(id = x))
   

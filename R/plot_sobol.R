@@ -48,12 +48,17 @@ plot_sobol <- function(sa, order = "first", add_errorbars = TRUE,
 
   dummy <- lapply(sim_ids, \(sid) {
     lapply(names(sa[[sid]]$sobol_indices), \(v) {
-      dummy <- if (use_dummy) {
-        sa[[sid]]$sobol_dummy_indices[[v]] |>
-          dplyr::mutate(fit_type = v, sim_id = sid)
-      } else {
-        NULL
+      if (!use_dummy) {
+        return(NULL)
       }
+      # read_sa() returns NULL for a variable with ~zero variance (e.g. a
+      # "run_failed" indicator when nothing failed) - nothing to plot there.
+      di <- sa[[sid]]$sobol_dummy_indices[[v]]
+      if (is.null(di)) {
+        return(NULL)
+      }
+      di |>
+        dplyr::mutate(fit_type = v, sim_id = sid)
     }) |>
       dplyr::bind_rows()
   }) |>

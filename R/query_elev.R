@@ -13,7 +13,6 @@
 #' @param lon numeric; longitude to query
 #' @param layer_id integer; layer id of the DEM raster
 #'
-#' @importFrom terra metags
 #' @importFrom sf st_point_on_surface st_transform st_coordinates
 #' @importFrom dplyr rename filter pull
 #'
@@ -22,6 +21,7 @@
 #'
 
 query_elev <- function(x, dem, lat, lon, layer_id = NULL) {
+  rlang::check_installed("terra", reason = "to read DEM elevations.")
 
   if (is.null(layer_id)) {
     meta_tags <- terra::metags(dem)

@@ -1,72 +1,75 @@
 Package: aemetools
 Title: Tools to expand the Aquatic Ecosystem Model Ensemble Package
-Version: 0.0.0.9000
-Authors@R: 
-    c(person("Tadhg", "Moore", role = c("aut","cre"),
-    email = "tadhg@limnotrack.com", comment = c(ORCID = "0000-0002-3834-8868")),
-    person("Chris", "McBride", role = "aut",
-    email = "chris@limnotrack.com"))
-Description: Calibrate the AEME model ensemble, download ERA5-Land data for any 
-    point in New Zealand, and run simple hydrological models to generate inflow 
-    inputs for the AEME model ensemble.
+Version: 0.3.0.9000
+Authors@R: c(
+    person("Tadhg", "Moore", , "tadhg@limnotrack.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-3834-8868")),
+    person("Chris", "McBride", , "chris@limnotrack.com", role = "aut")
+  )
+Description: Calibrate the AEME model ensemble, download ERA5-Land data
+    for any point in New Zealand, and run simple hydrological models to
+    generate inflow inputs for the AEME model ensemble.
 License: GPL (>= 2)
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
+URL: https://limnotrack.com/aemetools/
+BugReports: https://github.com/limnotrack/aemetools/issues
+Depends: 
+    R (>= 4.2.0)
 Imports: 
-    AEME (>= 0.1.0),
-    airGR,
+    AEME (>= 0.4.0),
+    cli,
+    corpcor,
     DBI,
-    dbplyr,
     dplyr,
     duckdb,
-    ecmwfr,
-    FME,
-    forcats,
-    geojsonsf,
     ggplot2,
     httr2,
     jsonlite,
-    logger,
-    lubridate,
-    maptiles,
+    lifecycle,
     MASS,
+    methods,
     ncdf4,
     parallel,
     patchwork,
-    plyr,
-    reshape2,
-    rLakeAnalyzer,
+    processx,
     rlang,
     scales,
     sensobol,
     sf,
-    shiny,
-    stars,
     stats,
     stringr,
-    terra,
     tidyr,
+    tools,
     units,
     utils,
-    withr,
-    xml2,
-    yaml,
-    zip
+    withr
 Suggests: 
+    airGR,
+    dbplyr,
     DT,
+    ecmwfr,
+    geojsonsf,
     knitr,
+    maptiles,
+    metscale (>= 0.1.0),
+    miniUI,
     osmdata,
+    pkgload,
     printr,
+    rhandsontable,
     rmarkdown,
+    shiny,
+    stars,
+    terra,
     testthat (>= 3.0.0),
-    tmap
+    tmap,
+    xml2
+VignetteBuilder: 
+    knitr
+Remotes:  
+    github::limnotrack/AEME@dev,
+    limnotrack/metscale
+Config/roxygen2/version: 8.1.0
 Config/testthat/edition: 3
-Remotes: 
-    github::limnotrack/AEME
-URL: https://limnotrack.github.io/aemetools/
-BugReports: https://github.com/limnotrack/aemetools/issues
-VignetteBuilder: knitr
-Depends: 
-    R (>= 4.2.0)
+Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)

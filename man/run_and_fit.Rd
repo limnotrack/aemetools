@@ -20,36 +20,39 @@ run_and_fit(
   return_df = FALSE,
   method = "calib",
   sa_ctrl = NULL,
+  regions = NULL,
   fit = TRUE,
   timeout = Inf
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
 
-\item{model}{string; for which model. Options are c("dy_cd", "glm_aed" and
-"gotm_wet")}
+\item{model}{string; for which model. Options are c("dy_cd", "glm_aed",
+"gotm_wet", "simstrat_aed", "simstrat_aed2").}
 
-\item{vars_sim}{vector; of variables names to be used in the calculation of
-model fit. Currently only supports using one variable.}
+\item{vars_sim}{vector; of variable names used in the calculation of model
+fit.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[AEME:get_model_controls]{get_model_controls()}}.}
 
-\item{FUN_list}{function; of the form \verb{function(O, P)} which will be used in
-to calculate model fit. If NULL, uses mean absolute error (MAE).}
+\item{FUN_list}{function; of the form \verb{function(df)} using \code{df$model} and
+\code{df$obs}, used to calculate model fit. If NULL, uses mean absolute error
+(MAE).}
 
 \item{weights}{vector; of weights to be used in the calculation of model fit.}
 
-\item{na_value}{numeric; value to be returned if model fails to run.}
+\item{na_value}{numeric; value to be returned if the model fails to run.}
 
 \item{var_indices}{list; generated from running \code{run_and_fit()} with
-\verb{return indices = TRUE} on the first simulation.}
+\code{return_indices = TRUE} on the first simulation.}
 
 \item{return_indices}{boolean; return the indices (depths, time and dates)
 of each variable. Used when running calibration and the time period does not
@@ -60,20 +63,60 @@ fit.}
 
 \item{return_df}{boolean; return dataframe of modelled and observed.}
 
-\item{method}{string; of the method of the model run. Options are c("sa",
-"calib").}
+\item{method}{string; the method of the model run. One of c("sa", "calib").}
 
-\item{sa_ctrl}{list; of control parameters for the sensitivity analysis.
-Only required if \code{method = "sa"}.}
+\item{sa_ctrl}{list; control parameters for the sensitivity analysis. Only
+required if \code{method = "sa"}.}
 
-\item{fit}{boolean; fit model or not. If FALSE, only return netCDF file
-connection.}
+\item{regions}{named list; calibration sub-regions, exactly as
+\code{\link{calib_aeme}} accepts as its named-list \code{vars_sim} form. Only
+meaningful when \code{method = "calib"}. Each named entry's variable is scored
+separately over its own \code{month}/\code{depth_range} window and weighted by
+\code{weights[[var]] * region$weight}, instead of being pooled with the rest
+of that variable's observations.}
+
+\item{fit}{boolean; calculate fit. When \code{FALSE} it is only ever paired with
+\code{return_indices = TRUE}, i.e. "run the model and hand back the indices".}
 
 \item{timeout}{numeric; time in seconds to run each simulation. Default is
 Inf.}
 }
 \value{
-A single value of model fit, calculated by \code{FUN_list}.
+For \code{method = "calib"}, a named list with one weighted fit value per
+entry of \code{vars_sim} (plus \code{LKE_lvlwtr} when \code{include_wlev = TRUE}). For
+\code{method = "sa"}, one value per \code{names(sa_ctrl$vars_sim)} sub-region, plus a
+\code{failed} flag. \code{return_df = TRUE} instead returns the modelled/observed
+comparison dataframe - one row per gridded observation and, when
+\code{include_wlev = TRUE}, one row per water-level observation with
+\code{var_aeme = "LKE_lvlwtr"} and \code{depth = NA}; \code{return_indices = TRUE}
+returns the date/depth indices.
+
+This is the calibration objective itself - \code{calib_aeme()} (via
+\code{eval_param_chunk()}) sums this function's per-\code{vars_sim} components into
+the single \code{fit} value it records - so it is \strong{not} expected to
+numerically match \code{AEME::assess_aeme()} / \code{AEME::assess_model()} on the
+same parameter set, even for the exact best-fit run. The two answer
+different questions: \code{assess_aeme()} reports a fixed set of per-variable,
+unweighted, conventionally-oriented statistics (\code{nse}, \code{kge}, \code{mae}, ...)
+read via \code{AEME::get_var()}, for general model diagnostics; \code{run_and_fit()}
+reports whatever \code{FUN_list} returns, weighted and (for \code{method = "calib"})
+later summed across variables, read via \code{AEME::read_model_outputs()}, as
+the quantity calibration actually minimises.
+
+To reproduce a recorded \code{fit_value} for verification, call this function
+again with the same \code{param}, \code{FUN_list}, \code{vars_sim} and \code{weights} used for
+the original \code{calib_aeme()} call, then reduce it the same way
+\code{eval_param_chunk()} does - summed, with \code{na_value} substituted whenever
+any component is \code{NA} (a component can come back as the \code{na_value}
+sentinel rather than \code{NA} on a failed run, so guard on that rather than
+summing directly):
+\preformatted{
+res <- run_and_fit(aeme, param, model, vars_sim, path, FUN_list, weights,
+                   include_wlev = TRUE, method = "calib", fit = TRUE)
+fit <- if (any(is.na(unlist(res)))) na_value else sum(unlist(res))
+}
+Use \code{assess_aeme()}/\code{assess_model()} separately for interpretable,
+per-variable fit statistics - it is not a substitute for the above.
 }
 \description{
 Run a model and calculate model fit.
