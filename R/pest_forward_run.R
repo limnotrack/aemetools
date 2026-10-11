@@ -328,16 +328,31 @@ pest_forward_run <- function(payload, par_file = NULL, out_file = NULL,
 #' @noRd
 .pest_run_sa <- function(p, param, path) {
 
-  fit <- run_and_fit(aeme = p$aeme, param = param, model = p$model,
-                     vars_sim = p$vars_sim, path = path,
-                     model_controls = p$model_controls,
-                     FUN_list = p$FUN_list, weights = p$weights,
-                     na_value = p$na_value, var_indices = p$var_indices,
-                     include_wlev = p$include_wlev, return_df = FALSE,
-                     method = "sa", sa_ctrl = p$sa_ctrl, timeout = p$timeout)
-
   nm <- p$fit_names
-  vals <- unlist(fit[nm])
+  # GLM-AED aborts intermittently (a run that ends after a few seconds with no output). In a sensitivity analysis a missing result is replaced
+  # by `na_value`, and one such sentinel in a Morris trajectory dominates mu* for every parameter in it, so retry a run that gave no result at all.
+  for (attempt in 1:3) {
+    fit <- tryCatch(
+      run_and_fit(aeme = p$aeme, param = param, model = p$model,
+                  vars_sim = p$vars_sim, path = path,
+                  model_controls = p$model_controls,
+                  FUN_list = p$FUN_list, weights = p$weights,
+                  na_value = p$na_value, var_indices = p$var_indices,
+                  include_wlev = p$include_wlev, return_df = FALSE,
+                  method = "sa", sa_ctrl = p$sa_ctrl, timeout = p$timeout),
+      error = function(e) {
+        message("aemetools sensitivity run failed: ", conditionMessage(e))
+        NULL
+      })
+    vals <- if (is.null(fit)) NA_real_ else unlist(fit[nm])
+    if (!all(is.na(vals))) break
+    message("aemetools sensitivity run gave no result (attempt ", attempt, "/3)",
+            if (attempt < 3) "; retrying" else "; using na_value")
+  }
+  if (is.null(fit)) {
+    fit <- stats::setNames(as.list(rep(NA_real_, length(nm))), nm)
+    vals <- unlist(fit[nm])
+  }
   vals[is.na(vals)] <- p$na_value
   structure(unname(vals), fits = fit[nm])
 }
