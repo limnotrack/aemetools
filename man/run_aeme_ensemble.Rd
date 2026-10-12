@@ -6,15 +6,15 @@
 \usage{
 run_aeme_ensemble(
   aeme,
-  model,
+  model = NULL,
+  path = NULL,
   n = 10,
   dist = c("norm", "unif"),
-  path = ".",
-  parallel = FALSE,
-  ncore = NULL,
   param = NULL,
   param_sets = NULL,
-  na_value = 999
+  parallel = FALSE,
+  ncore = NULL,
+  na_value = lifecycle::deprecated()
 )
 }
 \arguments{
@@ -24,48 +24,43 @@ run_aeme_ensemble(
 \code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
 not found in \code{aeme}.}
 
-\item{n}{numeric; number of ensemble members to sample. Ignored when
-\code{param_sets} is supplied.}
-
-\item{dist}{character; distribution to sample from, \code{"norm"} (default) or
-\code{"unif"}. Ignored when \code{param_sets} is supplied.}
-
 \item{path}{character; directory where input files are located. Defaults to
 the path stored in \code{aeme}, or the current working directory if not set.}
+
+\item{n}{numeric; number of ensemble members to sample.}
+
+\item{dist}{character; distribution to sample from, \code{"norm"} (default) or
+\code{"unif"}.}
+
+\item{param}{data.frame; parameter template supplying \code{min}/\code{max}. \code{NULL}
+(default) takes it from the \code{aeme} object.}
+
+\item{param_sets}{a supplied ensemble to run instead of sampling. Either a
+list of long \code{param} dataframes (one per member, \code{value} set) - such as
+an \code{\link[=pest_posterior_params]{pest_posterior_params()}} result - or a single long data.frame with
+an \code{ensemble} id column plus the \code{param} columns. When supplied, \code{n},
+\code{dist} and \code{param} are ignored.}
 
 \item{parallel}{logical; run members in parallel. Default \code{FALSE}.}
 
 \item{ncore}{numeric; cores for parallel processing. \code{NULL} (default) uses
 one fewer than are available.}
 
-\item{param}{data.frame; parameter template supplying \code{min}/\code{max} for the
-sampling path. \code{NULL} (default) takes it from the \code{aeme} object. Ignored
-when \code{param_sets} is supplied.}
-
-\item{param_sets}{a supplied ensemble to run instead of sampling. Either a
-list of long \code{param} dataframes (one per member, \code{value} set) - such as
-an \code{\link[=pest_posterior_params]{pest_posterior_params()}} result - or a single long data.frame with
-an \code{ensemble} id column plus the \code{param} columns.}
-
-\item{na_value}{numeric; value a failed member run returns. Default 999;
-such members are dropped from the ensemble.}
+\item{na_value}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} no longer used; members
+that fail to run are dropped.}
 }
 \value{
 The \code{aeme} object with \verb{AEME::output()$ens_001 .. ens_00k} and
-\verb{$n_members} populated. \code{attr(AEME::output(aeme), "realisation")} carries
-the surviving realisation ids when \code{param_sets} was named.
+\verb{$n_members} populated.
 }
 \description{
-Runs a model once per parameter set and stores every member's output on
-the returned \code{aeme} object under \verb{AEME::output()$ens_*}, ready for
-\code{\link[=plot_ensemble]{plot_ensemble()}}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
-By default the members are \strong{sampled}: \code{n} parameter vectors are drawn
-from each parameter's \verb{[min, max]} (normally or uniformly, per \code{dist}).
-Pass \code{param_sets} to run a \strong{supplied} ensemble instead - for example the
-posterior from a \code{pestpp-ies} calibration via \code{\link[=pest_posterior_params]{pest_posterior_params()}} -
-in which case \code{n}, \code{dist} and \code{param} are ignored.
+\code{run_aeme_ensemble()} is deprecated. Use \code{\link[=sample_aeme_ensemble]{sample_aeme_ensemble()}} to sample
+members from the parameter bounds, or \code{\link[AEME:run_aeme_ensemble]{AEME::run_aeme_ensemble()}} to run
+supplied parameter sets (note that zone-ratio parameters must then be
+expanded with \code{\link[=expand_zone_ratios]{expand_zone_ratios()}} first).
 }
 \seealso{
-\code{\link[=pest_posterior_params]{pest_posterior_params()}}, \code{\link[=plot_ensemble]{plot_ensemble()}}
+\code{\link[=sample_aeme_ensemble]{sample_aeme_ensemble()}}, \code{\link[AEME:run_aeme_ensemble]{AEME::run_aeme_ensemble()}}
 }

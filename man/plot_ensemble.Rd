@@ -46,7 +46,7 @@ Defaults to NULL and will generate common limits for all variables.}
 ggplot object
 }
 \description{
-Plots an ensemble produced by \code{\link[=run_aeme_ensemble]{run_aeme_ensemble()}} as a quantile ribbon
+Plots an ensemble produced by \code{\link[=sample_aeme_ensemble]{sample_aeme_ensemble()}} as a quantile ribbon
 (\code{type = "ribbon"}) or as one line per member (\code{type = "line"}), with the
 matching lake observations overlaid.
 
@@ -56,5 +56,5 @@ extraction, so building one summary and plotting several variables, depths
 or intervals from it is cheap.
 }
 \seealso{
-\code{\link[=ensemble_summary]{ensemble_summary()}}, \code{\link[=run_aeme_ensemble]{run_aeme_ensemble()}}
+\code{\link[=ensemble_summary]{ensemble_summary()}}, \code{\link[=sample_aeme_ensemble]{sample_aeme_ensemble()}}
 }

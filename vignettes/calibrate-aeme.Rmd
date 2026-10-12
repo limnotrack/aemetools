@@ -411,11 +411,13 @@ fit
 min(best_params$fit_value)
 ```
 
-`fit` matches `best_params$fit_value`; `res` holds the weighted value for each
-entry of `vars_sim` before summation. Use this pattern to check a recorded fit
-value is reproducible, and `assess_model()` separately for interpretable,
-per-variable model performance - they answer different questions and are not
-interchangeable.
+`fit` matches `best_params$fit_value`, to the six significant digits the fit is
+saved with. `calib_aeme()` rounds each candidate's parameters to six significant
+digits before scoring it, so the saved parameters are exactly the ones that were
+run. `res` holds the weighted value for each entry of `vars_sim` before
+summation. Use this pattern to check a recorded fit value is reproducible, and
+`assess_model()` separately for interpretable, per-variable model performance -
+they answer different questions and are not interchangeable.
 
 (One caveat if a model runs sub-daily: `run_and_fit()` and
 `assess_aeme()`/`assess_model()` extract modelled values through different
@@ -457,6 +459,199 @@ pl$HYD_temp
 pl$LKE_lvlwtr
 
 ```
+
+## Calibrating sub-regions of a variable
+
+So far each variable has been scored as a single objective: every observation of
+`HYD_temp`, at every depth and in every month, is pooled into one fitness value.
+That can hide a trade-off. A parameter set can fit the surface temperature well
+and the bottom temperature poorly, and the pooled number will not tell you.
+
+Instead of a character vector, `vars_sim` can be a **named list of regions**.
+Each region is a depth and/or month window on one AEME variable, and it is scored
+as its own target. This is the same format that `create_sen_control()` uses for
+sensitivity analysis, so a set of regions can be reused between the two.
+
+Each element of the list is itself a list with these fields:
+
+| Field         | Required | Meaning                                                                                        |
+|---------------|----------|------------------------------------------------------------------------------------------------|
+| `var`         | yes      | The AEME variable to score, e.g. `"HYD_temp"`. `"LKE_lvlwtr"` cannot be used (see below).      |
+| `month`       | no       | Months to include, as integers 1-12, e.g. `c(12, 1, 2)`. Defaults to every month.              |
+| `depth_range` | no       | `c(top, bottom)`, in metres below the surface. Defaults to every depth.                        |
+| `weight`      | no       | Multiplies the variable's entry in `weights`. Defaults to `1`.                                 |
+
+The name of each list element is the name of the region. It must contain an
+underscore (e.g. `surf_temp`), because the results writer uses it to separate the
+region from its variable.
+
+### Surface and bottom temperature
+
+Here the temperature is split into the top 2 m and the bottom 4 m of the water
+column. The depths are measured from the surface, so the bottom region ends at
+the initial lake depth.
+
+```{r define-regions}
+z <- AEME::input(aeme)$init_depth
+
+regions <- list(
+  surf_temp = list(var = "HYD_temp", depth_range = c(0, 2)),
+  bot_temp  = list(var = "HYD_temp", depth_range = c(z - 4, z))
+)
+```
+
+Observations outside every region are not used, and an observation can only
+belong to one region. Before running, it is worth checking that each region
+contains enough observations to be meaningful:
+
+```{r count-region-obs}
+obs <- AEME::observations(aeme)$lake
+obs <- obs[obs$var_aeme == "HYD_temp", ]
+obs$month <- as.integer(format(as.Date(obs$Date), "%m"))
+
+count_obs <- function(r) {
+  keep <- rep(TRUE, nrow(obs))
+  if (!is.null(r$month)) keep <- keep & obs$month %in% r$month
+  if (!is.null(r$depth_range)) {
+    keep <- keep & obs$depth >= min(r$depth_range) &
+      obs$depth <= max(r$depth_range)
+  }
+  sum(keep)
+}
+vapply(regions, count_obs, numeric(1))
+```
+
+The list is passed to `calib_aeme()` as `vars_sim`. `FUN_list` and `weights` are
+still named by the **underlying variable** (`HYD_temp`), not by the region, and
+the same fitness function is applied to each region's own observations. Only the
+`weight` inside a region differs between regions.
+
+```{r define-region-inputs}
+FUN_list_reg <- list(HYD_temp = mae)
+weights_reg <- c("HYD_temp" = 1)
+
+ctrl_reg <- create_calib_control(VTR = 0, NP = 20, itermax = 80, reltol = 0.07,
+                                 cutoff = 0.25, mutate = 0.1, parallel = TRUE,
+                                 file_type = "csv", na_value = 999, ncore = 2,
+                                 file_dir = file.path(tmpdir, "calib_regions"))
+```
+
+```{r run-region-calibration, cache=FALSE, results='hide'}
+sim_id_reg <- calib_aeme(aeme = aeme, path = path,
+                         param = aeme_parameters, model = model,
+                         FUN_list = FUN_list_reg, ctrl = ctrl_reg,
+                         vars_sim = regions, weights = weights_reg)
+```
+
+The results are read in and the best parameter set is extracted exactly as
+before:
+
+```{r extract-region-best-parameters}
+calib_reg <- read_calib(ctrl = ctrl_reg, sim_id = sim_id_reg)
+best_reg <- get_best_params(calib_reg)
+```
+
+The recorded `fit_value` is the sum of the weighted fit of every region. To see
+what each region contributes, run `run_and_fit()` with the same inputs plus the
+`regions`. It returns one weighted value per region, named after it:
+
+```{r region-fit-contributions}
+res_reg <- run_and_fit(aeme = aeme, param = best_reg, model = model,
+                       vars_sim = "HYD_temp", path = path,
+                       FUN_list = FUN_list_reg, weights = weights_reg,
+                       include_wlev = FALSE, method = "calib", fit = TRUE,
+                       regions = regions)
+unlist(res_reg)
+sum(unlist(res_reg))
+min(best_reg$fit_value)
+```
+
+The sum equals the recorded fit, to the six significant digits it is saved with.
+If one region dominates the total, that is the part of the water
+column the model struggles with, and it is the one to look at first.
+
+### Seasonal windows and region weights
+
+Regions can also be split by season. Two regions on the same variable may use the
+same depths as long as their months do not overlap. Here the surface is scored
+separately in summer (December to February) and winter (June to August), and the
+summer surface is given twice the importance through its `weight`:
+
+```{r seasonal-regions, eval = FALSE}
+regions_season <- list(
+  surf_summer = list(var = "HYD_temp", month = c(12, 1, 2),
+                     depth_range = c(0, 2), weight = 2),
+  surf_winter = list(var = "HYD_temp", month = c(6, 7, 8),
+                     depth_range = c(0, 2))
+)
+```
+
+A region's `weight` is multiplied by its variable's entry in `weights`. So
+`weights` sets how important temperature is relative to other variables, and the
+region `weight` divides that importance between the temperature regions. With
+`weights = c(HYD_temp = 1)`, `surf_summer` above is scored with a weight of 2 and
+`surf_winter` with a weight of 1.
+
+Regions can also be placed on different variables, in which case every variable
+needs an entry in `FUN_list` and `weights`. This example needs a model built with
+the biogeochemistry (`use_bgc = TRUE`) and observations of dissolved oxygen:
+
+```{r multi-variable-regions, eval = FALSE}
+regions_multi <- list(
+  surf_temp = list(var = "HYD_temp", depth_range = c(0, 2)),
+  bot_temp  = list(var = "HYD_temp", depth_range = c(z - 4, z)),
+  bot_oxy   = list(var = "CHM_oxy",  depth_range = c(z - 4, z))
+)
+
+# `param_bgc` is `aeme_parameters` plus the biogeochemical parameters.
+calib_aeme(aeme = aeme, path = path, param = param_bgc, model = model,
+           FUN_list = list(HYD_temp = mae, CHM_oxy = mae),
+           weights = c(HYD_temp = 1, CHM_oxy = 0.5),
+           vars_sim = regions_multi, ctrl = ctrl_reg)
+```
+
+### Linking parameters to regions
+
+When calibrating with the `"MOEDA"` method, or with PEST++ and a localizer,
+`param_var_matrix` declares which parameters are linked to which target. With
+regions, its columns can be named after the **regions** rather than the variable,
+so the surface and bottom temperature can be tied to different parameters. Each
+entry is a vector of full parameter names, parameter groups or bare names:
+
+```{r region-param-var-matrix, eval = FALSE}
+param_sub <- aeme_parameters[aeme_parameters$name %in% c(
+  "light/Kw", "mixing/coef_mix_conv", "mixing/coef_wind_stir",
+  "mixing/coef_mix_hyp", "mixing/coef_mix_shear"), ]
+
+ctrl_moeda <- create_calib_control(c_method = "MOEDA", NP = 40, itermax = 200,
+                                   parallel = TRUE, ncore = 2)
+
+calib_aeme(aeme = aeme, path = path, param = param_sub, model = model,
+           FUN_list = FUN_list_reg, weights = weights_reg,
+           vars_sim = regions, ctrl = ctrl_moeda,
+           param_var_matrix = list(
+             surf_temp = c("light/Kw", "mixing/coef_mix_conv",
+                           "mixing/coef_wind_stir"),
+             bot_temp  = c("mixing/coef_mix_hyp", "mixing/coef_mix_shear")))
+```
+
+MOEDA needs every parameter in `param` to be linked to at least one target, which
+is why `param_sub` holds only the five parameters linked above. A region that is
+not mentioned falls back to being linked through its variable's column, if there
+is one. See `?as_param_var_matrix` for every accepted form.
+
+### Things to be aware of
+
+-   **Regions on the same variable must not overlap** in both months and depths.
+    `calib_aeme()` stops with an error if they do, rather than counting an
+    observation twice.
+-   **Lake level cannot be a region.** `LKE_lvlwtr` has no depth axis, and the
+    region form cannot be mixed with plain variable names in the same `vars_sim`.
+    To calibrate the water level as well, calibrate it in its own stage; see
+    `vignette("staged-calibration")`.
+-   **Choose regions that contain observations.** A region with no observations
+    inside its window contributes the `na_value` (999 by default) to every fit,
+    which swamps the real objective. Check the counts as above.
 
 ## Other calibration approaches
 

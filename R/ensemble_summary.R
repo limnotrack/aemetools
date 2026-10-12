@@ -1,7 +1,7 @@
 #' Summarise an AEME ensemble across members
 #'
 #' @description
-#' [run_aeme_ensemble()] stores every member's full model output on the
+#' [sample_aeme_ensemble()] stores every member's full model output on the
 #' `aeme` object. Turning that into a plot or a skill score means, each time,
 #' looping over the members and pulling the variable out with
 #' [AEME::get_var()] - the expensive step. `ensemble_summary()` does that
@@ -39,7 +39,7 @@
 #'   (or `NULL`) and `obs` (or `NULL`), with `probs`, `depths`, `depth_ref`,
 #'   `vars_sim`, `vars_2d`, `n_members` and `period` attributes.
 #'
-#' @seealso [plot_ensemble()], [score_ensemble()], [run_aeme_ensemble()]
+#' @seealso [plot_ensemble()], [score_ensemble()], [sample_aeme_ensemble()]
 #'
 #' @importFrom AEME check_aeme check_model get_var observations output check_aeme_vars
 #' @importFrom dplyr bind_rows group_by reframe across all_of mutate
@@ -68,7 +68,7 @@ ensemble_summary <- function(aeme, model, vars_sim = "HYD_temp", depths = NULL,
   n_members <- outp$n_members
   if (is.null(n_members) || n_members < 1L) {
     cli::cli_abort(c("No ensemble output found on {.arg aeme}.",
-                     "i" = "Run {.fn run_aeme_ensemble} first."))
+                     "i" = "Run {.fn sample_aeme_ensemble} first."))
   }
   ens1 <- paste0("ens_", sprintf("%03d", 1L))
 

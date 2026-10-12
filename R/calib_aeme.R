@@ -11,18 +11,34 @@
 #' @param param dataframe; of parameters read in from a csv file. Requires the
 #' columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")
 #' @param vars_sim vector; of variables names to be used in the calculation of
-#' model fit. Alternatively, a fully-named list of sub-regions, exactly as
-#' \code{\link{create_sen_control}} accepts: each element
-#' `list(var = <AEME var>, month = <ints>, depth_range = c(lo, hi), weight =
-#' <numeric>)` restricts that AEME variable to a depth/month window and
-#' calibrates it as its own weighted target - e.g. `list(surf_temp =
+#' model fit. Alternatively, a fully-named list of sub-regions, in the same
+#' format that \code{\link{create_sen_control}} accepts. Each element is a list
+#' with the fields:
+#'
+#' * `var` (required): the AEME variable to score, e.g. `"HYD_temp"`.
+#'   `"LKE_lvlwtr"` is not allowed because it has no depth axis.
+#' * `month`: integers from 1 to 12 to include. Defaults to every month.
+#' * `depth_range`: `c(top, bottom)`, in metres below the surface. Defaults to
+#'   every depth.
+#' * `weight`: multiplies the underlying variable's entry in `weights`.
+#'   Defaults to `1`.
+#'
+#' Each region is calibrated as its own weighted target, e.g. `list(surf_temp =
 #' list(var = "HYD_temp", month = c(12, 1, 2), depth_range = c(0, 2)),
 #' bot_temp = list(var = "HYD_temp", depth_range = c(z - 4, z)))` calibrates
 #' surface and bottom temperature independently instead of pooling every
-#' depth into one `HYD_temp` objective. A region's `weight` (default `1`)
-#' multiplies its underlying variable's entry in `weights`, so the two
-#' compose: `weights` sets HYD_temp's importance relative to other
-#' variables, the region `weight` splits that between sub-regions.
+#' depth into one `HYD_temp` objective. Region names must contain an underscore.
+#' `FUN_list` and `weights` are named by the underlying variable, not by the
+#' region, and the same function scores each region's own observations. A
+#' region's `weight` and the variable's entry in `weights` compose:
+#' `weights` sets HYD_temp's importance relative to other variables, the region
+#' `weight` splits that between sub-regions.
+#'
+#' Regions on the same variable must not overlap in both `month` and
+#' `depth_range`, and observations outside every region are not used. A region
+#' with no observations in its window adds `ctrl$na_value` to every fit. The
+#' list form cannot be mixed with plain variable names, so `LKE_lvlwtr` has to
+#' be calibrated in its own run.
 #' @param FUN_list list of functions; named according to the variables in the
 #'  `vars_sim`. Funtions are of the form `function(df)` which will be used
 #'  to calculate model fit. If nor provided, uses mean absolute error (MAE).
@@ -35,16 +51,18 @@
 #' with which response variables. Either the dataframe
 #' \code{\link{create_param_var_matrix}} returns - parameters as rows,
 #' response variables as logical columns - or the shorthand list keyed by
-#' variable, e.g. `list(HYD_temp = c("light", "mixing"), CHM_oxy =
-#' "sediment")`; see \code{\link{as_param_var_matrix}} for every accepted
-#' form and for how unmentioned variables and parameters are treated. When
-#' `vars_sim` is given as sub-regions, its columns may be keyed by region
-#' name instead of (or as well as) the underlying variable - e.g.
-#' `list(surf_temp = c("light", "mixing"), bot_temp = "sediment")` links the
-#' surface-temperature region to different parameters than the
-#' bottom-temperature region. A region not mentioned falls back to being
-#' linked by its underlying variable's column, if any, exactly as an
-#' unmentioned variable is unrestricted in the flat case.
+#' variable, e.g. `list(HYD_temp = c("light/Kw", "mixing/coef_mix_conv"),
+#' CHM_oxy = "sediment")`. Each selector matches a full parameter name, a
+#' parameter group or a bare parameter name; see
+#' \code{\link{as_param_var_matrix}} for every accepted form and for how
+#' unmentioned variables and parameters are treated. When `vars_sim` is given
+#' as sub-regions, its columns may be keyed by region name instead of (or as
+#' well as) the underlying variable - e.g. `list(surf_temp = c("light/Kw",
+#' "mixing/coef_wind_stir"), bot_temp = c("mixing/coef_mix_hyp",
+#' "mixing/coef_mix_shear"))` links the surface-temperature region to
+#' different parameters than the bottom-temperature region. A region not
+#' mentioned falls back to being linked by its underlying variable's column,
+#' if any, exactly as an unmentioned variable is unrestricted in the flat case.
 #'
 #' How it is used depends on the engine. With `ctrl$c_method = "MOEDA"` it
 #' decides which parameters are resampled together in each generation, and
@@ -57,6 +75,14 @@
 #' @param param_df dataframe; of parameters to be used in the calibration.
 #' Requires the columns c("model", "file", "name", "value", "min", "max"). This
 #' is used to restart from a previous calibration.
+#'
+#' @details
+#' With the built-in engines, each candidate's parameter values are rounded to
+#' six significant digits before they are scored, and the results written to
+#' `ctrl$file_dir` store those same values. Re-running the model from a saved
+#' parameter set (for example one returned by \code{\link{get_best_params}})
+#' therefore reproduces the fit that was recorded for it. The recorded fit is
+#' itself saved to six significant digits.
 #'
 #' @importFrom parallel stopCluster clusterExport parLapply makeCluster
 #' @importFrom parallel detectCores
@@ -95,6 +121,60 @@
 #' sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
 #'                      param = param, FUN_list = FUN_list, ctrl = ctrl,
 #'                      vars_sim = vars_sim, weights = weights)
+#'
+#' \dontrun{
+#' # Sub-regions: score surface and bottom temperature as separate targets.
+#' # `FUN_list` and `weights` stay named by the variable, not by the region.
+#' z <- AEME::input(aeme)$init_depth
+#' regions <- list(
+#'   surf_temp = list(var = "HYD_temp", depth_range = c(0, 2)),
+#'   bot_temp  = list(var = "HYD_temp", depth_range = c(z - 4, z))
+#' )
+#' sim_id <- calib_aeme(aeme = aeme, model = "glm_aed", path = path,
+#'                      param = param, FUN_list = list(HYD_temp = nse_loss),
+#'                      ctrl = ctrl, vars_sim = regions,
+#'                      weights = c("HYD_temp" = 1))
+#'
+#' # Seasonal windows. Regions on one variable may share depths as long as
+#' # their months differ. Here the summer surface counts twice as much.
+#' regions_season <- list(
+#'   surf_summer = list(var = "HYD_temp", month = c(12, 1, 2),
+#'                      depth_range = c(0, 2), weight = 2),
+#'   surf_winter = list(var = "HYD_temp", month = c(6, 7, 8),
+#'                      depth_range = c(0, 2))
+#' )
+#'
+#' # Regions on different variables. This assumes the model was built with
+#' # `use_bgc = TRUE` and that `param` includes the biogeochemical parameters.
+#' regions_multi <- list(
+#'   surf_temp = list(var = "HYD_temp", depth_range = c(0, 2)),
+#'   bot_temp  = list(var = "HYD_temp", depth_range = c(z - 4, z)),
+#'   bot_oxy   = list(var = "CHM_oxy",  depth_range = c(z - 4, z))
+#' )
+#' sim_id <- calib_aeme(aeme = aeme, model = "glm_aed", path = path,
+#'                      param = param,
+#'                      FUN_list = list(HYD_temp = nse_loss, CHM_oxy = nse_loss),
+#'                      ctrl = ctrl, vars_sim = regions_multi,
+#'                      weights = c("HYD_temp" = 1, "CHM_oxy" = 0.5))
+#'
+#' # Link each region to its own parameters. The "MOEDA" method needs a
+#' # param_var_matrix, so link every parameter in `param` to a region.
+#' param_sub <- param[param$name %in% c(
+#'   "light/Kw", "mixing/coef_mix_conv", "mixing/coef_wind_stir",
+#'   "mixing/coef_mix_hyp", "mixing/coef_mix_shear"), ]
+#' ctrl_moeda <- create_calib_control(c_method = "MOEDA", NP = 20,
+#'                                    itermax = 100, parallel = TRUE,
+#'                                    ncore = 2)
+#' sim_id <- calib_aeme(aeme = aeme, model = "glm_aed", path = path,
+#'                      param = param_sub, FUN_list = list(HYD_temp = nse_loss),
+#'                      ctrl = ctrl_moeda, vars_sim = regions,
+#'                      weights = c("HYD_temp" = 1),
+#'                      param_var_matrix = list(
+#'                        surf_temp = c("light/Kw", "mixing/coef_mix_conv",
+#'                                      "mixing/coef_wind_stir"),
+#'                        bot_temp  = c("mixing/coef_mix_hyp",
+#'                                      "mixing/coef_mix_shear")))
+#' }
 #'
 #' @export
 
@@ -293,6 +373,13 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
       param <- param |>
         dplyr::filter(!name_full %in% rem_pars)
     }
+    # The built-in engines (MOEDA in particular) subset the survivors by every
+    # name_full in the matrix, so it may only list parameters that are still
+    # being calibrated. Drop those removed above, or earlier as fixed.
+    if (!is_pest) {
+      param_var_matrix <- param_var_matrix[
+        param_var_matrix$name_full %in% param$name_full, , drop = FALSE]
+    }
   }
 
   include_wlev <- ifelse("LKE_lvlwtr" %in% vars_sim, TRUE, FALSE)
@@ -441,6 +528,7 @@ calib_aeme <- function(aeme, model, param, path, vars_sim = "HYD_temp", FUN_list
     splts <- ctrl$ncore
 
     start_param <- adj_index_params(start_param, param = param)
+    start_param <- round_candidates(start_param, param)
 
     suppressWarnings({
       param_list <- split(start_param, 1:splts)
