@@ -24,10 +24,12 @@
   finished `pestpp-ies` run as a list of runnable `param` dataframes (one per
   realisation), with frozen parameters carried through unchanged.
   `iteration = 0` returns the prior instead.
-* `run_aeme_ensemble()` gains a `param_sets` argument: given a list of `param`
-  dataframes, or a long data.frame with an `ensemble` id column, it runs that
-  supplied ensemble instead of sampling from the parameter bounds. The
-  sampling and supplied paths now share one internal parallel engine.
+* `sample_aeme_ensemble()` replaces `run_aeme_ensemble()`: it samples members
+  from the parameter bounds (zone ratios expanded) and runs them with
+  `AEME::run_aeme_ensemble()`, which now owns running, parallelisation and
+  ensemble assembly. `run_aeme_ensemble()` is deprecated and forwards to the
+  sampler, or - when given `param_sets` - to `AEME::run_aeme_ensemble()`; its
+  `na_value` argument is no longer used.
 * `ensemble_summary()` extracts an ensemble once into a tidy object holding
   the per-date (and per-depth, per-model, per-variable) `mean`, `sd`, `n` and
   quantile bands, the underlying per-member frame, and the depth-aligned

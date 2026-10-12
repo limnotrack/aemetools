@@ -6,8 +6,8 @@
 #' A finished `pestpp-ies` run leaves a **posterior parameter ensemble** -
 #' one parameter vector per realisation, the product of an iterative ensemble
 #' smoother. This turns that ensemble into a list of `param` dataframes, each
-#' one directly runnable by \code{\link{run_aeme_ensemble}} (via its
-#' `param_sets` argument) or \code{\link{run_aeme_param}}.
+#' one directly runnable by [AEME::run_aeme_ensemble()] (via its
+#' `param_sets` argument, after [expand_zone_ratios()]) or \code{\link{run_aeme_param}}.
 #'
 #' Every set is *complete*: parameters that were held fixed during the run -
 #' frozen earlier stages of a staged calibration, or anything with
@@ -38,9 +38,9 @@
 #'   realisation ids), each element a long `param` dataframe with columns
 #'   `model`, `file`, `name`, `group`, `index`, `value`, `min`, `max`,
 #'   `name_full`. `as.data.frame()` stacks it into one long frame with an
-#'   `ensemble` id column - the other form \code{\link{run_aeme_ensemble}}
+#'   `ensemble` id column - the other form [AEME::run_aeme_ensemble()]
 #'   accepts.
-#' @seealso \code{\link{run_aeme_ensemble}}, \code{\link{read_pest_ensemble}},
+#' @seealso [AEME::run_aeme_ensemble()], \code{\link{read_pest_ensemble}},
 #'   \code{\link{pest_param_summary}}
 #' @export
 #'
@@ -51,8 +51,9 @@
 #' post <- pest_posterior_params(calib)          # runnable posterior sets
 #' post
 #'
-#' aeme_ens <- run_aeme_ensemble(aeme = aeme, model = "glm_aed", path = path,
-#'                               param_sets = post, parallel = TRUE)
+#' aeme_ens <- AEME::run_aeme_ensemble(
+#'   aeme = aeme, model = "glm_aed", path = path,
+#'   param_sets = lapply(post, expand_zone_ratios), parallel = TRUE)
 #' plot_ensemble(aeme_ens, model = "glm_aed", var_sim = "HYD_temp")
 #'
 #' prior <- pest_posterior_params(calib, iteration = 0)   # prior band

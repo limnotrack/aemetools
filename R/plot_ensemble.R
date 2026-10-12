@@ -1,7 +1,7 @@
 #' Plot AEME ensemble output
 #'
 #' @description
-#' Plots an ensemble produced by [run_aeme_ensemble()] as a quantile ribbon
+#' Plots an ensemble produced by [sample_aeme_ensemble()] as a quantile ribbon
 #' (`type = "ribbon"`) or as one line per member (`type = "line"`), with the
 #' matching lake observations overlaid.
 #'
@@ -26,7 +26,7 @@
 #'
 #' @importFrom ggplot2 ggplot geom_line geom_ribbon geom_point labs ylab theme_bw aes
 #' @importFrom AEME observations input
-#' @seealso [ensemble_summary()], [run_aeme_ensemble()]
+#' @seealso [ensemble_summary()], [sample_aeme_ensemble()]
 plot_ensemble <- function(aeme, model, var_sim = "HYD_temp", depth = NULL,
                           conf_int = 0.95, type = "ribbon",
                           remove_spin_up = TRUE, add_obs = TRUE,

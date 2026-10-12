@@ -164,5 +164,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
       dplyr::bind_rows(best_pars)
   }
 
+  # Score exactly what will be saved (see round_candidates()).
+  g <- round_candidates(g, param)
   return(g)
 }

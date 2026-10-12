@@ -10,7 +10,7 @@ es_ensemble <- function(n = 6) {
   pp$min <- pp$value - 0.1 * abs(pp$value)
   pp$max <- pp$value + 0.1 * abs(pp$value)
   AEME::parameters(cached$aeme) <- pp
-  aeme <- run_aeme_ensemble(aeme = cached$aeme, model = "gotm_wet", n = n,
+  aeme <- sample_aeme_ensemble(aeme = cached$aeme, model = "gotm_wet", n = n,
                             path = cached$path, parallel = FALSE)
   list(aeme = aeme, path = cached$path, n = n)
 }

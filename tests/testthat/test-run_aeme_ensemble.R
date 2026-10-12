@@ -11,7 +11,7 @@ test_that("can run an ensemble of AEME-GLM & GOTM in parallel", {
   AEME::parameters(aeme) <- aeme_parameters
 
   # Run ensemble
-  aeme <- run_aeme_ensemble(aeme = aeme, model = model, n = 5, path = path,
+  aeme <- sample_aeme_ensemble(aeme = aeme, model = model, n = 5, path = path,
                             parallel = TRUE, ncore = 2)
 
   outp <- AEME::output(aeme)
@@ -62,7 +62,7 @@ test_that("can run an ensemble of AEME-GLM in series", {
   aeme <- update_param(calib = calib, aeme = aeme)
 
   # Run ensemble
-  aeme <- run_aeme_ensemble(aeme = aeme, model = model, n = 5, path = path,
+  aeme <- sample_aeme_ensemble(aeme = aeme, model = model, n = 5, path = path,
                             parallel = FALSE)
 
   outp <- AEME::output(aeme)
@@ -85,7 +85,7 @@ test_that("can run an ensemble of AEME-GOTM-WET in parallel and plot", {
   AEME::parameters(aeme) <- aeme_parameters
 
   # Run ensemble
-  aeme <- run_aeme_ensemble(aeme = aeme, model = model, n = 5, path = path,
+  aeme <- sample_aeme_ensemble(aeme = aeme, model = model, n = 5, path = path,
                             parallel = TRUE, ncore = 2)
 
   outp <- AEME::output(aeme)

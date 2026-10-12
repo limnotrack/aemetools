@@ -125,6 +125,7 @@ export(run_aeme_param)
 export(run_aeme_shiny)
 export(run_and_fit)
 export(sa_aeme)
+export(sample_aeme_ensemble)
 export(score_ensemble)
 export(set_calib_period)
 export(set_param_log)
@@ -145,10 +146,15 @@ importFrom(AEME,
   check_model,
   check_path,
   configuration,
+  decode_param,
+  decode_param_full,
+  encode_param,
+  expand_zone_ratios,
   get_aeme_path,
   get_lake_dir,
   get_var,
   input,
+  is_zone_ratio,
   lake,
   list_models,
   observations,
@@ -160,7 +166,10 @@ importFrom(AEME,
   set_nml,
   set_vars_sim,
   write_nml,
-  write_yaml
+  write_yaml,
+  zone_base_name,
+  zone_offset_param,
+  zone_ratio_param
 )
 importFrom(DBI,
   dbConnect,
@@ -259,7 +268,6 @@ importFrom(lifecycle,
   is_present,
   signal_stage
 )
-importFrom(methods,is)
 importFrom(ncdf4,
   nc_close,
   nc_open,
