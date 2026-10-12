@@ -472,15 +472,17 @@ s3_calib  <- read_calib(ctrl = s3$cal_ctrl, sim_id = s3$cal_id)
 post_sets <- pest_posterior_params(s3_calib)
 
 b3_post  <- fresh_build("s3post", vars_bgc, use_bgc = TRUE)
-aeme_ens <- run_aeme_ensemble(aeme = b3_post$aeme, model = MODEL,
-                              path = b3_post$path, param_sets = post_sets,
-                              parallel = TRUE, ncore = NCORE)
+aeme_ens <- AEME::run_aeme_ensemble(
+  aeme = b3_post$aeme, model = MODEL, path = b3_post$path,
+  param_sets = lapply(post_sets, expand_zone_ratios),
+  parallel = TRUE, ncore = NCORE)
 ```
 
-`run_aeme_ensemble()` gains a `param_sets` argument: given a list of `param`
-dataframes (or a long data.frame with an `ensemble` id column) it runs those
-instead of sampling from the bounds, and reuses the same parallel engine. The
-result is the ordinary `AEME::output()$ens_*` structure.
+`AEME::run_aeme_ensemble()` takes a list of `param` dataframes (or a long
+data.frame with an `ensemble` id column) and runs them, in parallel if asked.
+Zone-ratio parameters are expanded with `expand_zone_ratios()` first. The
+result is the ordinary `AEME::output()$ens_*` structure. To sample members from
+the parameter bounds instead, use `sample_aeme_ensemble()`.
 
 `ensemble_summary()` collapses that structure once - looping the members
 through `AEME::get_var()` a single time - into the per-date `mean`, `sd` and
@@ -522,16 +524,15 @@ session only needs the ensemble, re-enter with
 ```r
 s3_calib  <- read_calib(ctrl = s3$cal_ctrl, sim_id = s3$cal_id)
 post_sets <- pest_posterior_params(s3_calib)
-run_aeme_ensemble(aeme = fresh_build("s3post", vars_bgc, TRUE)$aeme,
-                  model = MODEL, path = ..., param_sets = post_sets)
+AEME::run_aeme_ensemble(aeme = fresh_build("s3post", vars_bgc, TRUE)$aeme,
+                        model = MODEL, path = ...,
+                        param_sets = lapply(post_sets, expand_zone_ratios))
 ```
 
 `inst/scripts/staged-calibration.R` checkpoints each stage to
 `<ROOT>/sN.rds`, so `s3` comes back with `readRDS()`; if even that is gone,
 `inst/scripts/staged-calibration-resume.R` rebuilds `s3$cal_ctrl` from the
-results directory and reads `sim_id` out of the database. Run
-`run_aeme_ensemble(parallel = FALSE)` if the installed package predates the
-`make_temp_dir()` output-directory fix.
+results directory and reads `sim_id` out of the database.
 
 ## Where to go next
 
