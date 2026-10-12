@@ -37,7 +37,7 @@ An object of class \code{aeme_param_sets}: a named list (names are the
 realisation ids), each element a long \code{param} dataframe with columns
 \code{model}, \code{file}, \code{name}, \code{group}, \code{index}, \code{value}, \code{min}, \code{max},
 \code{name_full}. \code{as.data.frame()} stacks it into one long frame with an
-\code{ensemble} id column - the other form \code{\link{run_aeme_ensemble}}
+\code{ensemble} id column - the other form \code{\link[AEME:run_aeme_ensemble]{AEME::run_aeme_ensemble()}}
 accepts.
 }
 \description{
@@ -46,8 +46,8 @@ accepts.
 A finished \code{pestpp-ies} run leaves a \strong{posterior parameter ensemble} -
 one parameter vector per realisation, the product of an iterative ensemble
 smoother. This turns that ensemble into a list of \code{param} dataframes, each
-one directly runnable by \code{\link{run_aeme_ensemble}} (via its
-\code{param_sets} argument) or \code{\link{run_aeme_param}}.
+one directly runnable by \code{\link[AEME:run_aeme_ensemble]{AEME::run_aeme_ensemble()}} (via its
+\code{param_sets} argument, after \code{\link[=expand_zone_ratios]{expand_zone_ratios()}}) or \code{\link{run_aeme_param}}.
 
 Every set is \emph{complete}: parameters that were held fixed during the run -
 frozen earlier stages of a staged calibration, or anything with
@@ -64,14 +64,15 @@ calib <- read_calib(ctrl = cal_ctrl, sim_id = cal_id)
 post <- pest_posterior_params(calib)          # runnable posterior sets
 post
 
-aeme_ens <- run_aeme_ensemble(aeme = aeme, model = "glm_aed", path = path,
-                              param_sets = post, parallel = TRUE)
+aeme_ens <- AEME::run_aeme_ensemble(
+  aeme = aeme, model = "glm_aed", path = path,
+  param_sets = lapply(post, expand_zone_ratios), parallel = TRUE)
 plot_ensemble(aeme_ens, model = "glm_aed", var_sim = "HYD_temp")
 
 prior <- pest_posterior_params(calib, iteration = 0)   # prior band
 }
 }
 \seealso{
-\code{\link{run_aeme_ensemble}}, \code{\link{read_pest_ensemble}},
+\code{\link[AEME:run_aeme_ensemble]{AEME::run_aeme_ensemble()}}, \code{\link{read_pest_ensemble}},
 \code{\link{pest_param_summary}}
 }

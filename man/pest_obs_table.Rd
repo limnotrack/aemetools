@@ -18,15 +18,33 @@ pest_obs_table(
 \item{aeme}{Aeme object.}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
-model fit. Alternatively, a fully-named list of sub-regions, exactly as
-\code{\link{create_sen_control}} accepts: each element
-\verb{list(var = <AEME var>, month = <ints>, depth_range = c(lo, hi), weight = <numeric>)} restricts that AEME variable to a depth/month window and
-calibrates it as its own weighted target - e.g. \code{list(surf_temp = list(var = "HYD_temp", month = c(12, 1, 2), depth_range = c(0, 2)), bot_temp = list(var = "HYD_temp", depth_range = c(z - 4, z)))} calibrates
+model fit. Alternatively, a fully-named list of sub-regions, in the same
+format that \code{\link{create_sen_control}} accepts. Each element is a list
+with the fields:
+\itemize{
+\item \code{var} (required): the AEME variable to score, e.g. \code{"HYD_temp"}.
+\code{"LKE_lvlwtr"} is not allowed because it has no depth axis.
+\item \code{month}: integers from 1 to 12 to include. Defaults to every month.
+\item \code{depth_range}: \code{c(top, bottom)}, in metres below the surface. Defaults to
+every depth.
+\item \code{weight}: multiplies the underlying variable's entry in \code{weights}.
+Defaults to \code{1}.
+}
+
+Each region is calibrated as its own weighted target, e.g. \code{list(surf_temp = list(var = "HYD_temp", month = c(12, 1, 2), depth_range = c(0, 2)), bot_temp = list(var = "HYD_temp", depth_range = c(z - 4, z)))} calibrates
 surface and bottom temperature independently instead of pooling every
-depth into one \code{HYD_temp} objective. A region's \code{weight} (default \code{1})
-multiplies its underlying variable's entry in \code{weights}, so the two
-compose: \code{weights} sets HYD_temp's importance relative to other
-variables, the region \code{weight} splits that between sub-regions.}
+depth into one \code{HYD_temp} objective. Region names must contain an underscore.
+\code{FUN_list} and \code{weights} are named by the underlying variable, not by the
+region, and the same function scores each region's own observations. A
+region's \code{weight} and the variable's entry in \code{weights} compose:
+\code{weights} sets HYD_temp's importance relative to other variables, the region
+\code{weight} splits that between sub-regions.
+
+Regions on the same variable must not overlap in both \code{month} and
+\code{depth_range}, and observations outside every region are not used. A region
+with no observations in its window adds \code{ctrl$na_value} to every fit. The
+list form cannot be mixed with plain variable names, so \code{LKE_lvlwtr} has to
+be calibrated in its own run.}
 
 \item{weights}{a named vector; of weights for each variable in vars_sim. If not
 provided, defaults to 1 for each variable.}

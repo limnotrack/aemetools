@@ -66,7 +66,7 @@ An \code{aeme_ensemble_summary} object: a list of \code{stats}, \code{members}
 \code{vars_sim}, \code{vars_2d}, \code{n_members} and \code{period} attributes.
 }
 \description{
-\code{\link[=run_aeme_ensemble]{run_aeme_ensemble()}} stores every member's full model output on the
+\code{\link[=sample_aeme_ensemble]{sample_aeme_ensemble()}} stores every member's full model output on the
 \code{aeme} object. Turning that into a plot or a skill score means, each time,
 looping over the members and pulling the variable out with
 \code{\link[AEME:get_var]{AEME::get_var()}} - the expensive step. \code{ensemble_summary()} does that
@@ -87,5 +87,5 @@ be replotted for several variables, depths and intervals for free.
 ready to write out or join to something else.
 }
 \seealso{
-\code{\link[=plot_ensemble]{plot_ensemble()}}, \code{\link[=score_ensemble]{score_ensemble()}}, \code{\link[=run_aeme_ensemble]{run_aeme_ensemble()}}
+\code{\link[=plot_ensemble]{plot_ensemble()}}, \code{\link[=score_ensemble]{score_ensemble()}}, \code{\link[=sample_aeme_ensemble]{sample_aeme_ensemble()}}
 }
