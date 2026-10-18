@@ -9,6 +9,11 @@
 \alias{encode_param}
 \alias{decode_param}
 \alias{decode_param_full}
+\alias{is_zone_ratio}
+\alias{zone_base_name}
+\alias{ensemble_summary}
+\alias{plot_ensemble}
+\alias{score_ensemble}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -16,6 +21,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{AEME}{\code{\link[AEME:decode_param]{decode_param()}}, \code{\link[AEME:decode_param_full]{decode_param_full()}}, \code{\link[AEME:encode_param]{encode_param()}}, \code{\link[AEME:expand_zone_ratios]{expand_zone_ratios()}}, \code{\link[AEME:zone_offset_param]{zone_offset_param()}}, \code{\link[AEME:zone_ratio_param]{zone_ratio_param()}}}
+  \item{AEME}{\code{\link[AEME:decode_param]{decode_param()}}, \code{\link[AEME:decode_param_full]{decode_param_full()}}, \code{\link[AEME:encode_param]{encode_param()}}, \code{\link[AEME:ensemble_summary]{ensemble_summary()}}, \code{\link[AEME:expand_zone_ratios]{expand_zone_ratios()}}, \code{\link[AEME:is_zone_ratio]{is_zone_ratio()}}, \code{\link[AEME:plot_ensemble]{plot_ensemble()}}, \code{\link[AEME:score_ensemble]{score_ensemble()}}, \code{\link[AEME:zone_base_name]{zone_base_name()}}, \code{\link[AEME:zone_offset_param]{zone_offset_param()}}, \code{\link[AEME:zone_ratio_param]{zone_ratio_param()}}}
 }}
 

@@ -175,6 +175,12 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
     if (ctrl$method == "sa") {
       output$sensitivity_metadata <- sa_meta
     }
+    # Sediment zone / layer of any zone-specific response. Only written when
+    # a run has one, so runs without sediment variables are unchanged.
+    zone_meta <- simulation_zone_table(sim_id = sim_id, vars_sim = ctrl$vars_sim)
+    if (nrow(zone_meta) > 0) {
+      output$simulation_zone <- zone_meta
+    }
   }
   
   if ("gen" %in% colnames(sim_data)) {
@@ -197,6 +203,39 @@ write_simulation_output <- function(x, ctrl, aeme, model, param, FUN_list,
   sim_id
 }
 
+
+#' Build the `simulation_zone` table for a run.
+#'
+#' One row per named region (`vars_sim` element) that targets a specific
+#' sediment zone and/or sediment layer, e.g. a sensitivity response
+#' `list(var = "SED_Fsed_oxy", zone = 2)`. Kept as its own table, rather than
+#' as columns on `sensitivity_metadata`, so existing results files need no
+#' schema change and calibration can record a zone per target in the same
+#' place. Regions with neither field set (all the ordinary variables) have no
+#' row.
+#'
+#' @param sim_id string; the simulation ID.
+#' @param vars_sim named list of regions, as in `ctrl$vars_sim`.
+#' @return dataframe with columns `sim_id`, `variable` (the region name),
+#'   `var` (the AEME variable), `zone` and `sed_layer` (integer, `NA` where
+#'   not set). Zero rows if no region has a zone or layer.
+#' @noRd
+simulation_zone_table <- function(sim_id, vars_sim) {
+  rows <- lapply(names(vars_sim), \(n) {
+    r <- vars_sim[[n]]
+    if (is.null(r$zone) && is.null(r$sed_layer)) return(NULL)
+    data.frame(sim_id = sim_id, variable = n, var = r$var,
+               zone = as.integer(r$zone %||% NA_integer_),
+               sed_layer = as.integer(r$sed_layer %||% NA_integer_))
+  })
+  out <- dplyr::bind_rows(rows)
+  if (nrow(out) == 0) {
+    out <- data.frame(sim_id = character(), variable = character(),
+                      var = character(), zone = integer(),
+                      sed_layer = integer())
+  }
+  out
+}
 
 #' Reconcile a data frame about to be appended to an existing CSV file.
 #'
@@ -366,12 +405,15 @@ write_to_db <- function(file, path, output, add_lake_meta = FALSE) {
     }
 
     # --- Write or append table ---
+    # A table new to an existing file (e.g. `simulation_zone` in a results
+    # database made before it existed) is created rather than appended to.
+    tbl_chk <- file_chk && tbl_name %in% DBI::dbListTables(con)
     DBI::dbWriteTable(
       con,
       tbl_name,
       df,
-      overwrite = !file_chk,
-      append = file_chk
+      overwrite = !tbl_chk,
+      append = tbl_chk
     )
   }
 }

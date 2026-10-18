@@ -355,6 +355,11 @@ apply_trim_output <- function(aeme, model, vars_sim, path) {
                    output untrimmed.", FUN = cli::cli_alert_warning)
     return(aeme)
   }
+  # GLM-AED sediment / diagnostic variables are not selectable here (GLM
+  # always writes the full netCDF, which already holds them) and have no
+  # `key_naming` entry to map, so leave them out of the list.
+  vars_sim <- vars_sim[!is_glm_extra_var(vars_sim)]
+  if (length(vars_sim) == 0) vars_sim <- "HYD_temp"
   for (m in model) {
     aeme <- AEME::set_output_vars(aeme = aeme, model = m, vars = vars_sim,
                                   mass_balance = FALSE)

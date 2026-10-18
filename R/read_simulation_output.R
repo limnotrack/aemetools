@@ -86,6 +86,11 @@ read_simulation_output <- function(ctrl = NULL, file_name, file_dir,
     meta_tables <- c(meta_tables, "sensitivity_metadata",
                      "calibration_metadata")
   }
+  # Optional: only runs with a zone-specific (sediment) response write it
+  if (type %in% c("sa", "all", "calib") &&
+      .has_table("simulation_zone", file_dir, file_name, file_type)) {
+    meta_tables <- c(meta_tables, "simulation_zone")
+  }
   names(meta_tables) <- meta_tables
   
   if (file_type == "db") {
