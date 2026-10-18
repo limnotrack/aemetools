@@ -130,7 +130,10 @@ agent directories.}
 \item{vars_sim}{Named list describing the output variables, exactly as for
 \code{\link[=create_sa_control]{create_sa_control()}}. Each element is
 \verb{list(var = <AEME var>, month = <ints>, depth_range = <c(lo, hi)>)}; one
-Morris response is produced per named element.}
+Morris response is produced per named element. GLM-AED sediment
+variables (\code{AEME::glm_extra_vars}, e.g. \code{"SEDL_Fsed_oxy"}, or
+\code{"SED_Fsed_oxy"} with \code{zone = 1}) are allowed too; see
+\code{\link[=create_sa_control]{create_sa_control()}}.}
 
 \item{...}{Must be empty. Additional arguments are not allowed.}
 }

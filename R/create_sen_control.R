@@ -32,7 +32,10 @@
 #' @param vars_sim Named list describing the output variables, exactly as for
 #'   [create_sa_control()]. Each element is
 #'   `list(var = <AEME var>, month = <ints>, depth_range = <c(lo, hi)>)`; one
-#'   Morris response is produced per named element.
+#'   Morris response is produced per named element. GLM-AED sediment
+#'   variables (`AEME::glm_extra_vars`, e.g. `"SEDL_Fsed_oxy"`, or
+#'   `"SED_Fsed_oxy"` with `zone = 1`) are allowed too; see
+#'   [create_sa_control()].
 #'
 #' @param ... Must be empty. Additional arguments are not allowed.
 #'
@@ -96,6 +99,7 @@ create_sen_control <- function(
              on it."
     ))
   }
+  check_sa_extra_vars(vars_sim = vars_sim)
   if (!is.list(pestpp_options) ||
       (length(pestpp_options) > 0 && is.null(names(pestpp_options)))) {
     cli::cli_abort("{.arg pestpp_options} must be a named list.")

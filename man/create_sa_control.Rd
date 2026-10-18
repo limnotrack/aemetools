@@ -53,7 +53,23 @@ directory.}
 
 \item{N}{Integer. Base sample size.}
 
-\item{vars_sim}{Named list describing output variables.}
+\item{vars_sim}{Named list describing output variables. Each element is
+\verb{list(var = <AEME var>, month = <ints>, depth_range = <c(lo, hi)>)}.
+
+\code{var} can also be one of GLM-AED's sediment / diagnostic outputs in
+\code{AEME::glm_extra_vars} (needs AEME >= 0.4.1 and \code{model = "glm_aed"}).
+These have no depth axis, so \code{depth_range} is ignored (\code{month} still
+applies):
+\itemize{
+\item lake-wide series such as \code{"SEDL_Fsed_oxy"} or \code{"SEDL_frp_dsf"} need
+nothing more;
+\item per-zone variables such as \code{"SED_Fsed_oxy"} need \code{zone} (an integer
+sediment zone), e.g. \code{list(var = "SED_Fsed_oxy", zone = 2)}, or use the
+area-weighted lake-wide series \code{"SED_Fsed_oxy_lake"};
+\item \code{"SED_temp"} also takes \code{sed_layer} (default 1).
+}
+
+Name each element with an underscore, e.g. \code{sed_oxy}.}
 
 \item{...}{Must be empty. Additional arguments are not allowed.}
 }
