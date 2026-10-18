@@ -119,6 +119,9 @@ sa_aeme <- function(aeme, model, param, FUN_list, path,
   if (!all(vars_sim %in% names(FUN_list)))
     cli::cli_abort("FUN_list must have names that match vars_sim")
 
+  # GLM-AED sediment responses: GLM-AED only, with a zone where per-zone
+  check_sa_extra_vars(vars_sim = ctrl$vars_sim, model = model)
+
   if (is.null(ctrl$na_value)) {
     ctrl$na_value <- 999
   }
