@@ -132,7 +132,6 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
   # below (this function runs once per model evaluation, hundreds of times
   # per calibration).
   deriv_lookup <- stats::setNames(key_naming$derived, key_naming$var_aeme)
-  conv_lookup  <- stats::setNames(key_naming$conversion_aed, key_naming$var_aeme)
 
   # --- Run the model ---------------------------------------------------------
   nc <- run_aeme_param(aeme = aeme, param = param, model = model, path = path,
@@ -263,7 +262,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
         key <- if (isTRUE(deriv_lookup[[v]])) AEME::get_deriv_inputs(v)[1] else v
         .raf_extract_var(v = v, idx = var_indices[[key]], nc = nc,
                          lake_dir = lake_dir, model = model,
-                         deriv_lookup = deriv_lookup, conv_lookup = conv_lookup,
+                         deriv_lookup = deriv_lookup,
                          hyps = hyps)
       })
     }
@@ -288,7 +287,9 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
         }
         .raf_extract_var(v = v, idx = idx, nc = nc, lake_dir = lake_dir,
                          model = model, deriv_lookup = deriv_lookup,
-                         conv_lookup = conv_lookup, hyps = hyps, name = n)
+                         hyps = hyps, name = n,
+                         zone = sa_ctrl$vars_sim[[n]]$zone,
+                         sed_layer = sa_ctrl$vars_sim[[n]]$sed_layer)
       })
     } else if (length(region_vars) > 0) {
       region_pieces <- lapply(stats::setNames(names(regions), names(regions)),
@@ -296,7 +297,7 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
         v <- regions[[n]]$var
         .raf_extract_var(v = v, idx = var_indices[[n]], nc = nc,
                          lake_dir = lake_dir, model = model,
-                         deriv_lookup = deriv_lookup, conv_lookup = conv_lookup,
+                         deriv_lookup = deriv_lookup,
                          hyps = hyps, name = n)
       })
       c(region_pieces, if (length(vars_sim) > 0) flat_pieces_fun() else list())
@@ -527,7 +528,17 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
 #' attached.
 #' @noRd
 .raf_extract_var <- function(v, idx, nc, lake_dir, model, deriv_lookup,
-                             conv_lookup, hyps, name = NULL) {
+                             hyps, name = NULL, zone = NULL,
+                             sed_layer = NULL) {
+
+  # GLM-AED sediment / diagnostic output has no `key_naming` entry and a
+  # different shape, so it is read by its own extractor.
+  if (is_glm_extra_var(v)) {
+    return(.raf_extract_extra_var(v = v, idx = idx, nc = nc,
+                                  lake_dir = lake_dir, model = model,
+                                  name = name, zone = zone,
+                                  sed_layer = sed_layer))
+  }
 
   depths     <- idx[["depths"]]
   date_index <- idx[["date_index"]]
@@ -597,15 +608,10 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
     each <- length(depths)
   }
 
-  # AED variables are stored in different units in the netCDF; convert to the
-  # AEME unit. A missing entry means "no conversion", not NA.
-  conv_fact <- 1
-  if (identical(model, "glm_aed")) {
-    cf <- conv_lookup[[v]]
-    if (!is.null(cf) && !is.na(cf)) conv_fact <- cf
-  }
+  # No unit conversion here: AEME::read_model_outputs() already applies the
+  # key_naming$conversion_aed factor for glm_aed (e.g. CHM_oxy mmol -> g), so
+  # converting again would double-convert.
   if (!is.matrix(out)) out <- matrix(out, nrow = 1L, ncol = length(out))
-  out <- out * conv_fact
 
   df <- data.frame(Date = rep(dates, each = each),
                    depth = as.vector(depths),
