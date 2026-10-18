@@ -492,3 +492,46 @@ test_that("run_and_fit()'s summed fit differs from assess_model()'s diagnostics"
                              var_sim = "HYD_temp")
   expect_false(isTRUE(all.equal(fit, diag$mae)))
 })
+
+# --- Unit conversion ---------------------------------------------------------
+# AEME::read_model_outputs() already applies key_naming$conversion_aed for
+# glm_aed (e.g. CHM_oxy mmol -> g, factor 0.032). .raf_extract_var() once
+# multiplied by the same factor again, scaling modelled oxygen by 0.032^2.
+
+test_that(".raf_extract_var does not convert units a second time (glm_aed)", {
+  kn <- AEME::key_naming
+  oxy_factor <- kn$conversion_aed[match("CHM_oxy", kn$var_aeme)]
+  # Guard: the test is only meaningful for a variable with a real factor.
+  expect_false(isTRUE(all.equal(oxy_factor, 1)))
+
+  # What read_model_outputs() hands back is already in AEME units.
+  already_converted <- matrix(c(8, 7.5, 7, 6.5, 6, 5.5), nrow = 2, ncol = 3)
+  local_mocked_bindings(
+    read_model_outputs = function(...) list(CHM_oxy = already_converted),
+    .package = "AEME")
+
+  dates <- as.Date("2020-01-01") + 0:2
+  idx <- list(depths = c(0, 1), date_index = 1:3, dates = dates)
+  out <- aemetools:::.raf_extract_var(
+    v = "CHM_oxy", idx = idx, nc = NULL, lake_dir = NULL, model = "glm_aed",
+    deriv_lookup = c(CHM_oxy = FALSE), hyps = NULL)
+
+  expect_equal(out$model, as.vector(already_converted))
+  expect_equal(out$depth, rep(c(0, 1), times = 3))
+  expect_equal(out$Date, rep(dates, each = 2))
+})
+
+test_that(".raf_extract_var passes values through unchanged for every model", {
+  vals <- matrix(c(1, 2, 3, 4), nrow = 2, ncol = 2)
+  local_mocked_bindings(
+    read_model_outputs = function(...) list(CHM_oxy = vals),
+    .package = "AEME")
+  idx <- list(depths = c(0, 1), date_index = 1:2,
+              dates = as.Date("2020-01-01") + 0:1)
+  for (m in c("glm_aed", "gotm_pclake", "simstrat_aed2")) {
+    out <- aemetools:::.raf_extract_var(
+      v = "CHM_oxy", idx = idx, nc = NULL, lake_dir = NULL, model = m,
+      deriv_lookup = c(CHM_oxy = FALSE), hyps = NULL)
+    expect_equal(out$model, as.vector(vals), info = m)
+  }
+})
