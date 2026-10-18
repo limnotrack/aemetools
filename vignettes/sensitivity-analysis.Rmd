@@ -54,11 +54,13 @@ aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 model_controls <- AEME::get_model_controls()
 inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-model <- c("gotm_wet")
+model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme,
                    model = model, model_controls = model_controls,
                    inf_factor = inf_factor, ext_elev = 5,
-                   use_bgc = TRUE)
+                   use_bgc = TRUE) |> 
+  set_glm_aed_models(aed_models =c("aed_sedflux", "aed_noncohesive", "aed_oxygen", "aed_silica",
+    "aed_nitrogen", "aed_phosphorus", "aed_organic_matter", "aed_phytoplankton","aed_totals") )
 
 ```
 
@@ -140,7 +142,7 @@ to the `sa_aeme` function. They are named according to the target variable.
 ```{r define-function-list}
 
 # Create list of functions
-FUN_list <- list(HYD_temp = fit, PHY_tchla = fit2)
+FUN_list <- list(HYD_temp = fit, PHY_tchla = fit2, SED_Fsed_oxy = fit)
 
 ```
 
@@ -175,6 +177,10 @@ ctrl <- create_sa_control(N = 2^4, ncore = 2, na_value = 999,
                             surf_chla = list(var = "PHY_tchla",
                                              month = c(12, 1:2),
                                              depth_range = c(0, 2)
+                            ),
+                            bot_sedoxy = list(var = "SED_Fsed_oxy",
+                                             month = c(12, 1:2),
+                                             zone = 1
                             )
                           )
 )
