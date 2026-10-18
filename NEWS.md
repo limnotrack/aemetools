@@ -2,6 +2,23 @@
 
 ## New features
 
+* Sensitivity analysis ([sa_aeme()], built-in Sobol' and PEST++ Morris) can
+  now use GLM-AED's sediment and diagnostic output as responses, e.g. sediment
+  oxygen / phosphorus fluxes. Any AEME name in `AEME::glm_extra_vars` works as
+  a `vars_sim` `var`: lake-wide series (`"SEDL_Fsed_oxy"`), a single sediment
+  zone (`list(var = "SED_Fsed_oxy", zone = 2)`, plus `sed_layer` for
+  `"SED_temp"`), or AEME's area-weighted lake-wide summary
+  (`"SED_Fsed_oxy_lake"`). These have no depth axis, so `depth_range` is
+  ignored. GLM-AED only, and needs AEME >= 0.4.1; a mis-specified region is
+  rejected up front by `create_sa_control()` / `create_sen_control()` /
+  `sa_aeme()`. Sediment variables are skipped when trimming model output
+  (`trim_output`) since GLM always writes them to `output.nc`.
+  The zone and layer of each such response are stored in a new optional
+  `simulation_zone` table (`sim_id`, `variable`, `var`, `zone`, `sed_layer`),
+  written only for runs that have one and returned by `read_simulation_output()`
+  / `read_calib()` / `read_sa()` inputs when present. Existing results files
+  need no migration.
+
 * Three helpers for assembling a `param` dataframe ahead of a (staged)
   calibration, factored out of the `staged-calibration` script:
   * `set_param_log()` populates the logical `log` column that
@@ -30,16 +47,14 @@
   ensemble assembly. `run_aeme_ensemble()` is deprecated and forwards to the
   sampler, or - when given `param_sets` - to `AEME::run_aeme_ensemble()`; its
   `na_value` argument is no longer used.
-* `ensemble_summary()` extracts an ensemble once into a tidy object holding
-  the per-date (and per-depth, per-model, per-variable) `mean`, `sd`, `n` and
-  quantile bands, the underlying per-member frame, and the depth-aligned
-  observations. `plot_ensemble()` now accepts that object directly, so one
-  extraction can back many plots (variables, depths, intervals) instead of
-  re-running `AEME::get_var()` over every member on each call. `plot_ensemble()`
-  on an `aeme` is unchanged in behaviour and just routes through it.
-* `score_ensemble()` is added as a documented stub for forthcoming ensemble
-  verification scores (coverage, ensemble-mean bias/RMSE, spread-skill ratio,
-  CRPS).
+* `ensemble_summary()`, `plot_ensemble()` and `score_ensemble()` now live in
+  AEME, next to `AEME::run_aeme_ensemble()` and `AEME::write_aeme_parquet()`, and
+  are re-exported here so existing code is unaffected. `score_ensemble()` is no
+  longer a stub: it returns coverage, ensemble-mean bias and RMSE, spread,
+  the spread-skill ratio and mean CRPS per model, variable and depth.
+  The parameter helpers `zone_ratio_param()`, `zone_offset_param()`,
+  `expand_zone_ratios()`, `encode_param()`, `decode_param()` and
+  `decode_param_full()` have moved to AEME in the same way.
 * A frozen parameter (`value == min == max`) in a PEST calibration is now
   written to the control file as `partrans = "fixed"` instead of being baked
   into the model configuration and dropped. It stays visible in the parameter
