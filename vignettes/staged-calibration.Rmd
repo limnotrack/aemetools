@@ -501,10 +501,15 @@ post_summary <- ensemble_summary(
 plot_ensemble(post_summary, var_sim = "CHM_oxy", depth = 20)
 plot_ensemble(post_summary, var_sim = "NIT_amm", depth = 20, type = "line")
 head(as.data.frame(post_summary))
+score_ensemble(post_summary)
 ```
 
-`score_ensemble()` - coverage, ensemble-mean bias/RMSE, spread-skill ratio,
-CRPS from the same object - is stubbed for a later release.
+`score_ensemble()` verifies the same object against the observations -
+coverage of the central interval, ensemble-mean bias and RMSE, the
+spread-skill ratio and mean CRPS, per variable and depth and pooled. Read
+`coverage` against what an `n`-member ensemble can deliver, about
+`(n - 1) * conf_int / (n + 1)`, not against `conf_int` alone. (`ensemble_summary()`,
+`plot_ensemble()` and `score_ensemble()` live in AEME and are re-exported here.)
 
 Two companions worth a look:
 
