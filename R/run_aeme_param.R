@@ -5,6 +5,11 @@
 #' @param na_value numeric; value to return if model run is unsuccessful
 #' @param return_nc boolean; return netCDF file connection
 #' @param return_aeme boolean; return AEME object
+#' @param derive_totals boolean; re-derive the `aed_totals` block of the GLM-AED
+#'   `aed.nml` from the phytoplankton parameters when `aed.nml` or
+#'   `aed_phyto_pars.csv` parameters are applied. Set `FALSE` to keep a
+#'   hand-edited `aed_totals` block. Passed to
+#'   [AEME::input_model_parameters()].
 #'
 #' @importFrom AEME run_aeme lake input observations outflows
 #' @importFrom AEME read_nml write_nml set_nml
@@ -16,7 +21,8 @@
 run_aeme_param <- function(aeme, param, model, path = ".",
                            model_controls = NULL, na_value = 999, 
                            return_nc = FALSE, return_aeme = FALSE, 
-                           parallel = FALSE, verbose = FALSE, timeout = Inf) {
+                           parallel = FALSE, verbose = FALSE, timeout = Inf,
+                           derive_totals = TRUE) {
   
   # Function checks ----
   if (!is.data.frame(param))
@@ -64,7 +70,7 @@ run_aeme_param <- function(aeme, param, model, path = ".",
   # Zone ratios (see `zone_ratio_param()`) become real per-zone values here
   param <- expand_zone_ratios(param)
   AEME::input_model_parameters(aeme = aeme, model = model, param = param,
-                               path = path)
+                               path = path, derive_totals = derive_totals)
   
   # Run model ----
   mod_out <- tryCatch({

@@ -15,7 +15,8 @@ run_aeme_param(
   return_aeme = FALSE,
   parallel = FALSE,
   verbose = FALSE,
-  timeout = Inf
+  timeout = Inf,
+  derive_totals = TRUE
 )
 }
 \arguments{
@@ -47,6 +48,12 @@ the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{timeout}{Timeout for the process, in seconds, or as a \code{difftime}
 object. If it is not finished before this, it will be killed.}
+
+\item{derive_totals}{boolean; re-derive the \code{aed_totals} block of the GLM-AED
+\code{aed.nml} from the phytoplankton parameters when \code{aed.nml} or
+\code{aed_phyto_pars.csv} parameters are applied. Set \code{FALSE} to keep a
+hand-edited \code{aed_totals} block. Passed to
+\code{\link[AEME:input_model_parameters]{AEME::input_model_parameters()}}.}
 }
 \value{
 \code{na_value} if model run is unsuccessful
