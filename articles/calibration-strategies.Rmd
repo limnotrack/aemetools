@@ -204,3 +204,30 @@ library(patchwork)
 p1 + p2
 ```
 
+
+### Calibrating inflow concentrations
+
+Scaling the inflow (`file = "inf"`, `name = "inflow"`) scales the flow, and
+therefore the load of every variable, but leaves concentrations unchanged. To
+calibrate a variable such as DOC separately, add parameters for it with
+`AEME::inflow_param()`. A multiplier scales the DOC in every inflow, while a
+constant replaces it (in the units of the inflow data, g/m3 for DOC).
+
+```{r}
+#| label: inflow-doc-param
+#| eval: false
+
+# Multiply inflow DOC by 0.5 to 2
+doc_mult <- AEME::inflow_param("CAR_doc", value = 1, min = 0.5, max = 2,
+                               model = model)
+
+# Or try a constant inflow DOC between 1 and 15 g/m3
+doc_const <- AEME::inflow_param("CAR_doc", value = 5, min = 1, max = 15,
+                                model = model, constant = TRUE)
+
+# Use one or the other, not both
+param <- dplyr::bind_rows(param, doc_const)
+```
+
+The new rows are calibrated like any other parameter, for example by
+`calib_aeme()`.
