@@ -594,7 +594,9 @@ run_and_fit <- function(aeme, param, model, vars_sim, path,
                             "; trimming dates."), FUN = cli::cli_alert_warning)
       dates <- dates[seq_along(out)]
     }
-    has_depth_axis <- !is.null(nc$var[[extract_var]]) &&
+    # Derived variables (e.g. LKE_tli4) are whole-lake scalars built from
+    # several inputs, so `extract_var` can be a vector and has no single axis.
+    has_depth_axis <- !is_deriv && !is.null(nc$var[[extract_var]]) &&
       "z" %in% vapply(nc$var[[extract_var]]$dim, `[[`, character(1), "name")
     single_known_depth <- length(depths) == 1 && is.finite(depths)
     depths <- if (has_depth_axis && single_known_depth) depths else NA_real_
