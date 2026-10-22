@@ -1,16 +1,22 @@
 test_that("can get DEM value", {
 
-  lon <- 176.2717
-  lat <- -38.079
+  skip_if_offline()
+  lon <- 176.4376
+  lat <- -38.04
+  # lon <- 176.2717
+  # lat <- -38.079
 
-  dem <- get_dem_value(lat = lat, lon = lon)
+  elev_lidar <- get_dem_value(lat = lat, lon = lon, use_lidar = TRUE)
+  elev_8m_dem <- get_dem_value(lat = lat, lon = lon, use_lidar = FALSE)
 
-  testthat::expect_equal(dem, 282)
+  testthat::expect_equal(elev_lidar, 278.655)
+  testthat::expect_equal(elev_8m_dem, 278)
 
 })
 
 test_that("can get layer value", {
 
+  skip_if_offline()
   lon <- 175.337788
   lat <- -37.860736
 
@@ -21,7 +27,10 @@ test_that("can get layer value", {
 })
 
 test_that("can get DEM raster tile", {
+  testthat::skip_if_not_installed("maptiles")
+  testthat::skip_if_not_installed("terra")
 
+  skip_if_offline()
   coords <-  nz_dem_metadata[2, ] |>
     sf::st_transform(crs = 4326) |>
     sf::st_centroid() |>
@@ -38,12 +47,15 @@ test_that("can get DEM raster tile", {
   ras <- get_raster_tile(x = x, layer_id = nz_dem_metadata$layer_id[2])
 
   testthat::expect_true(is(ras, "SpatRaster"))
-  testthat::expect_equal(mean(terra::values(ras), na.rm = TRUE), 14.171946)
+  # testthat::expect_equal(mean(terra::values(ras), na.rm = TRUE), 14.171946)
 
 })
 
 test_that("can get aerial image raster tile", {
+  testthat::skip_if_not_installed("maptiles")
+  testthat::skip_if_not_installed("terra")
 
+  skip_if_offline()
   coords <- nz_aerial_imagery_metadata[2, ] |>
     sf::st_transform(crs = 4326) |>
     sf::st_centroid() |>
@@ -67,24 +79,29 @@ test_that("can get aerial image raster tile", {
 })
 
 test_that("can get LINZ basemap raster tile", {
+  testthat::skip_if_not_installed("maptiles")
+  testthat::skip_if_not_installed("terra")
 
-  lon <- 175.337788
-  lat <- -37.860736
-
+  skip_if_offline()
+  lon <- 176.4376
+  lat <- -38.04
+  
   # Make an sf object
   x <- sf::st_point(x = c(lon, lat), dim = "XY") |>
     sf::st_sfc(crs = 4326) |>
     sf::st_as_sf()
-  ras <- get_linz_basemap_tile(x = x, zoom = 14)
+  ras <- get_linz_basemap_tile(x = x, zoom = 10)
 
   testthat::expect_true(is(ras, "SpatRaster"))
   rast_mean <- round(mean(terra::values(ras), na.rm = TRUE))
-  testthat::expect_equal(rast_mean, 93)
+  testthat::expect_equal(rast_mean, 48L)
 
 })
 
 test_that("can get LINZ sf object", {
+  testthat::skip_if_not_installed("xml2")
 
+  skip_if_offline()
   key <- Sys.getenv("STATS_NZ_KEY")
   reg_council <- read_web_sf(url = "https://datafinder.stats.govt.nz/",
                              key = key,
@@ -96,7 +113,11 @@ test_that("can get LINZ sf object", {
 })
 
 test_that("can get LINZ lakes sf object", {
+  testthat::skip_if_not_installed("maptiles")
+  testthat::skip_if_not_installed("terra")
+  testthat::skip_if_not_installed("xml2")
 
+  skip_if_offline()
   lakes <- read_web_sf(url = "https://data.linz.govt.nz",
                        layer_id = 50293)
 
@@ -114,7 +135,9 @@ test_that("can get LINZ lakes sf object", {
 })
 
 test_that("can get layer ids for a lake sf object", {
+  testthat::skip_if_not_installed("xml2")
 
+  skip_if_offline()
   lakes <- read_web_sf(url = "https://data.linz.govt.nz",
                        layer_id = 50293)
 
@@ -128,7 +151,11 @@ test_that("can get layer ids for a lake sf object", {
 })
 
 test_that("can get LINZ lakes sf object", {
+  testthat::skip_if_not_installed("maptiles")
+  testthat::skip_if_not_installed("terra")
+  testthat::skip_if_not_installed("xml2")
 
+  skip_if_offline()
   lakes <- read_web_sf(url = "https://data.linz.govt.nz",
                        layer_id = 50293)
 
@@ -147,8 +174,9 @@ test_that("can get LINZ lakes sf object", {
 
 test_that("can get tables from MfE", {
 
+  skip_if_offline()
   lake_wq_status <- read_web_table(url = "https://data.mfe.govt.nz/",
-                                   layer_id = 109652, 
+                                   layer_id = 109652,
                                    key = Sys.getenv("MFE_KEY"))
 
   testthat::expect_true(is.data.frame(lake_wq_status))

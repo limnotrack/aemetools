@@ -33,5 +33,13 @@ convert_era5_ncdf(
 \item{format}{string; Either "AEME" or "LER". Default is "AEME".}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\code{convert_era5_ncdf()} is superseded by
+\code{metscale::convert_era5_netcdf()}. ERA5 extraction, conversion and
+bias-correction have moved to the
+\href{https://github.com/limnotrack/metscale}{metscale} package; install it
+with \code{remotes::install_github("limnotrack/metscale")}.
+
 Convert ERA5 netCDF files to AEME or LakeEnsemblR formats.
 }

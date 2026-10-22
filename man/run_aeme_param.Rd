@@ -13,22 +13,27 @@ run_aeme_param(
   na_value = 999,
   return_nc = FALSE,
   return_aeme = FALSE,
-  parallel = FALSE
+  parallel = FALSE,
+  verbose = FALSE,
+  timeout = Inf,
+  derive_totals = TRUE
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
 columns c("model", "file", "name", "value", "min", "max", "log")}
 
-\item{model}{vector; of models to be used. Can be `dy_cd`, `glm_aed`,
-`gotm_wet`.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[AEME:get_model_controls]{get_model_controls()}}.}
 
 \item{na_value}{numeric; value to return if model run is unsuccessful}
 
@@ -37,6 +42,18 @@ columns c("model", "file", "name", "value", "min", "max", "log")}
 \item{return_aeme}{boolean; return AEME object}
 
 \item{parallel}{logical; run models in parallel. Defaults to FALSE.}
+
+\item{verbose}{logical; print model output to console. Defaults to
+\code{getOption("AEME.inform", FALSE)}.}
+
+\item{timeout}{Timeout for the process, in seconds, or as a \code{difftime}
+object. If it is not finished before this, it will be killed.}
+
+\item{derive_totals}{boolean; re-derive the \code{aed_totals} block of the GLM-AED
+\code{aed.nml} from the phytoplankton parameters when \code{aed.nml} or
+\code{aed_phyto_pars.csv} parameters are applied. Set \code{FALSE} to keep a
+hand-edited \code{aed_totals} block. Passed to
+\code{\link[AEME:input_model_parameters]{AEME::input_model_parameters()}}.}
 }
 \value{
 \code{na_value} if model run is unsuccessful

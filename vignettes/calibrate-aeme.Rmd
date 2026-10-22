@@ -47,33 +47,31 @@ list.files(path, recursive = TRUE)
 ## Build AEME ensemble
 
 Using the `AEME` functions, we will build the AEME model setup. For this
-example, we will use the `glm_aed` model. The `build_aeme` function will
+example, we will use the `glm_aed` model. The `build_aeme` function will build the model setup and the `run_aeme` function will run the model. The model output is stored in the lake folder.
+
+Note that `AEME` functions can be used in pipelines to allow for more efficient code. For example, the `build_aeme` function can be used in a pipeline with the `run_aeme` function to build and run the model in one step.
 
 ```{r build-aeme-example, warning=FALSE, message=FALSE}
 
 aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 model_controls <- AEME::get_model_controls()
-inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
 model <- c("glm_aed")
 aeme <- build_aeme(path = path, aeme = aeme, model = model, 
-                   model_controls = model_controls, inf_factor = inf_factor, 
-                   ext_elev = 5, use_bgc = FALSE)
+                   model_controls = model_controls, ext_elev = 5,
+                   use_bgc = FALSE) |> 
+  run_aeme()
 
 ```
 
-Run the model ensemble using the `run_aeme` function to make sure the current
-model setup is working.
+
 
 ```{r}
-#| label: run-aeme-example
+#| label: plot-aeme-example
 #| fig.height: 4
 #| fig.width: 8
 #| cache: false
 #| fig.cap: Water temperature contour plotfor the model output.
 
-aeme <- run_aeme(aeme = aeme, model = model, verbose = FALSE, 
-                 path = path)
 plot(aeme)
 ```
 
@@ -204,12 +202,13 @@ FUN_list <- list(HYD_temp = mae, LKE_lvlwtr = rmse)
 ### Define control parameters
 
 Next, we will define the control parameters for the calibration. The control
-parameters are generated using the `create_control` funtion and are then passed
-to the `calib_aeme` function. The control parameters for calibration are as
-follows:
+parameters are generated using `create_calib_control()` and are then passed to
+`calib_aeme()`. (`create_control()` still exists but is deprecated in favour of
+the dedicated `create_calib_control()` and `create_sa_control()` constructors.)
+The control parameters for calibration are as follows:
 
 ```{r create-control-args, tidy=FALSE, printr.help.sections=c('arguments'), comment=''}
-?create_control
+?create_calib_control
 ```
 
 Here is an example of the control parameters for calibration, with a
@@ -222,10 +221,9 @@ parallel processing. The control parameters are stored in the `ctrl` object
 which is then passed to the `calib_aeme` function.
 
 ```{r define-control-parameters}
-ctrl <- create_control(method = "calib", VTR = 0, NP = 40, itermax = 400, 
-                       reltol = 0.07, cutoff = 0.25, mutate = 0.1, 
-                       parallel = TRUE, file_type = "csv", 
-                       na_value = 999, ncore = 2)
+ctrl <- create_calib_control(VTR = 0, NP = 40, itermax = 400, reltol = 0.07, 
+                             cutoff = 0.25, mutate = 0.1, parallel = TRUE,
+                             file_type = "csv", na_value = 999, ncore = 2)
 ```
 
 ### Define variable weights
@@ -294,7 +292,7 @@ plot.
 ```{r visualise-calibration-results, cache = FALSE}
 
 calib <- read_calib(ctrl = ctrl, sim_id = sim_id)
-plist <- plot_calib(calib = calib, na_value = ctrl$na_value)
+plist <- plot_calib(calib = calib)
 ```
 
 ### Dotty plot
@@ -322,7 +320,7 @@ around that value. If a parameter is not converging on a value, then the
 histogram will show a flat distribution.
 
 ```{r histogram-plot, fig.width = 8, fig.height = 6}
-plist$hist
+plist$histogram
 ```
 
 ### Convergence plot
@@ -339,21 +337,21 @@ plist$convergence
 
 ## Assess calibrated values
 
-The best parameter values can be extracted using the `get_param` function. This
-function takes the following arguments:
+The single best parameter set is extracted with `get_best_params()`, which takes:
 
--   `calib`: The calibration results as read in using the `read_calib` function.
--   `na_value`: The value to use for missing values in the observed and
-    predicted data. This is used to indicate when the model crashes and then can
-    be easily removed from the calibration results.
--   `fit_col`: The name of the column in the calibration results that contains
-    the fitness value. Defaults to `fit`.
--   `best`: A logical indicating whether to return the best parameter values or
-    the entire calibration dataset. Defaults to `FALSE`.
+-   `calib`: the calibration results as read in with `read_calib()`.
+-   `fit_col`: the name of the column holding the fitness value. Defaults to
+    `"fit"`.
+-   `na_value`: the sentinel used for crashed runs, dropped before ranking.
+    Defaults to the value stored on the control.
+
+Use `get_sim_params(calib, quantile_threshold = )` for every evaluated set below
+a fitness quantile rather than just the best one, and `update_param()` to fold a
+calibrated set back into a `param` dataframe. (`get_param()` is retained as a
+thin wrapper over these two.)
 
 ```{r extract-best-parameters}
-best_params <- get_param(calib, na_value = ctrl$na_value, fit_col = "fit", 
-                         best = TRUE)
+best_params <- get_best_params(calib)
 best_params
 
 ```
@@ -388,6 +386,45 @@ assess_model(aeme = aeme, model = model, var_sim = vars_sim)
 
 ```
 
+### Reproducing the calibration fit value
+
+`assess_model()`'s table above is a general-purpose diagnostic: a fixed set of
+per-variable, unweighted statistics (`nse`, `kge`, `mae`, ...) computed however
+`var_sim` happens to be assessed right now. It is **not** the number
+`calib_aeme()` recorded as `best_params$fit_value` for this parameter set, and
+is not expected to match it - even run on the exact best parameters. That
+number is the calibration objective itself: whatever `FUN_list` returned,
+weighted per variable and summed across `vars_sim` (this is what
+`eval_param_chunk()` does internally on every candidate). To reproduce it for
+verification, call `run_and_fit()` again with the *same* `param`, `FUN_list`,
+`vars_sim` and `weights` used for the original `calib_aeme()` call, then
+reduce it the same way `eval_param_chunk()` does:
+
+```{r verify-calib-fit}
+res <- run_and_fit(aeme = aeme, param = best_params, model = model,
+                   vars_sim = vars_sim, path = path, FUN_list = FUN_list,
+                   weights = weights,
+                   include_wlev = "LKE_lvlwtr" %in% vars_sim,
+                   method = "calib", fit = TRUE)
+fit <- if (any(is.na(unlist(res)))) ctrl$na_value else sum(unlist(res))
+fit
+min(best_params$fit_value)
+```
+
+`fit` matches `best_params$fit_value`, to the six significant digits the fit is
+saved with. `calib_aeme()` rounds each candidate's parameters to six significant
+digits before scoring it, so the saved parameters are exactly the ones that were
+run. `res` holds the weighted value for each entry of `vars_sim` before
+summation. Use this pattern to check a recorded fit value is reproducible, and
+`assess_model()` separately for interpretable, per-variable model performance -
+they answer different questions and are not interchangeable.
+
+(One caveat if a model runs sub-daily: `run_and_fit()` and
+`assess_aeme()`/`assess_model()` extract modelled values through different
+`AEME` code paths and can pick a different output timestep for the same
+observation day, which can shift the comparison slightly even beyond the
+differences described above. Daily-output runs, as here, are unaffected.)
+
 ### Visualise model performance
 
 The model performance can be visualised using the `plot_resid` function within
@@ -400,7 +437,10 @@ each variable. This is a multi-panel plot displaying residuals for:
 -   Residuals vs. quantiles of the observed values
 
 ```{r plot-residuals}
-pl <- plot_resid(aeme = aeme, model = model, var_sim = vars_sim)
+pl <- lapply(vars_sim, \(v) {
+  plot_resid(aeme = aeme, model = model, var_sim = v)
+})
+names(pl) <- vars_sim
 
 ```
 
@@ -419,3 +459,218 @@ pl$HYD_temp
 pl$LKE_lvlwtr
 
 ```
+
+## Calibrating sub-regions of a variable
+
+So far each variable has been scored as a single objective: every observation of
+`HYD_temp`, at every depth and in every month, is pooled into one fitness value.
+That can hide a trade-off. A parameter set can fit the surface temperature well
+and the bottom temperature poorly, and the pooled number will not tell you.
+
+Instead of a character vector, `vars_sim` can be a **named list of regions**.
+Each region is a depth and/or month window on one AEME variable, and it is scored
+as its own target. This is the same format that `create_sen_control()` uses for
+sensitivity analysis, so a set of regions can be reused between the two.
+
+Each element of the list is itself a list with these fields:
+
+| Field         | Required | Meaning                                                                                        |
+|---------------|----------|------------------------------------------------------------------------------------------------|
+| `var`         | yes      | The AEME variable to score, e.g. `"HYD_temp"`. `"LKE_lvlwtr"` cannot be used (see below).      |
+| `month`       | no       | Months to include, as integers 1-12, e.g. `c(12, 1, 2)`. Defaults to every month.              |
+| `depth_range` | no       | `c(top, bottom)`, in metres below the surface. Defaults to every depth.                        |
+| `weight`      | no       | Multiplies the variable's entry in `weights`. Defaults to `1`.                                 |
+
+The name of each list element is the name of the region. It must contain an
+underscore (e.g. `surf_temp`), because the results writer uses it to separate the
+region from its variable.
+
+### Surface and bottom temperature
+
+Here the temperature is split into the top 2 m and the bottom 4 m of the water
+column. The depths are measured from the surface, so the bottom region ends at
+the initial lake depth.
+
+```{r define-regions}
+z <- AEME::input(aeme)$init_depth
+
+regions <- list(
+  surf_temp = list(var = "HYD_temp", depth_range = c(0, 2)),
+  bot_temp  = list(var = "HYD_temp", depth_range = c(z - 4, z))
+)
+```
+
+Observations outside every region are not used, and an observation can only
+belong to one region. Before running, it is worth checking that each region
+contains enough observations to be meaningful:
+
+```{r count-region-obs}
+obs <- AEME::observations(aeme)$lake
+obs <- obs[obs$var_aeme == "HYD_temp", ]
+obs$month <- as.integer(format(as.Date(obs$Date), "%m"))
+
+count_obs <- function(r) {
+  keep <- rep(TRUE, nrow(obs))
+  if (!is.null(r$month)) keep <- keep & obs$month %in% r$month
+  if (!is.null(r$depth_range)) {
+    keep <- keep & obs$depth >= min(r$depth_range) &
+      obs$depth <= max(r$depth_range)
+  }
+  sum(keep)
+}
+vapply(regions, count_obs, numeric(1))
+```
+
+The list is passed to `calib_aeme()` as `vars_sim`. `FUN_list` and `weights` are
+still named by the **underlying variable** (`HYD_temp`), not by the region, and
+the same fitness function is applied to each region's own observations. Only the
+`weight` inside a region differs between regions.
+
+```{r define-region-inputs}
+FUN_list_reg <- list(HYD_temp = mae)
+weights_reg <- c("HYD_temp" = 1)
+
+ctrl_reg <- create_calib_control(VTR = 0, NP = 20, itermax = 80, reltol = 0.07,
+                                 cutoff = 0.25, mutate = 0.1, parallel = TRUE,
+                                 file_type = "csv", na_value = 999, ncore = 2,
+                                 file_dir = file.path(tmpdir, "calib_regions"))
+```
+
+```{r run-region-calibration, cache=FALSE, results='hide'}
+sim_id_reg <- calib_aeme(aeme = aeme, path = path,
+                         param = aeme_parameters, model = model,
+                         FUN_list = FUN_list_reg, ctrl = ctrl_reg,
+                         vars_sim = regions, weights = weights_reg)
+```
+
+The results are read in and the best parameter set is extracted exactly as
+before:
+
+```{r extract-region-best-parameters}
+calib_reg <- read_calib(ctrl = ctrl_reg, sim_id = sim_id_reg)
+best_reg <- get_best_params(calib_reg)
+```
+
+The recorded `fit_value` is the sum of the weighted fit of every region. To see
+what each region contributes, run `run_and_fit()` with the same inputs plus the
+`regions`. It returns one weighted value per region, named after it:
+
+```{r region-fit-contributions}
+res_reg <- run_and_fit(aeme = aeme, param = best_reg, model = model,
+                       vars_sim = "HYD_temp", path = path,
+                       FUN_list = FUN_list_reg, weights = weights_reg,
+                       include_wlev = FALSE, method = "calib", fit = TRUE,
+                       regions = regions)
+unlist(res_reg)
+sum(unlist(res_reg))
+min(best_reg$fit_value)
+```
+
+The sum equals the recorded fit, to the six significant digits it is saved with.
+If one region dominates the total, that is the part of the water
+column the model struggles with, and it is the one to look at first.
+
+### Seasonal windows and region weights
+
+Regions can also be split by season. Two regions on the same variable may use the
+same depths as long as their months do not overlap. Here the surface is scored
+separately in summer (December to February) and winter (June to August), and the
+summer surface is given twice the importance through its `weight`:
+
+```{r seasonal-regions, eval = FALSE}
+regions_season <- list(
+  surf_summer = list(var = "HYD_temp", month = c(12, 1, 2),
+                     depth_range = c(0, 2), weight = 2),
+  surf_winter = list(var = "HYD_temp", month = c(6, 7, 8),
+                     depth_range = c(0, 2))
+)
+```
+
+A region's `weight` is multiplied by its variable's entry in `weights`. So
+`weights` sets how important temperature is relative to other variables, and the
+region `weight` divides that importance between the temperature regions. With
+`weights = c(HYD_temp = 1)`, `surf_summer` above is scored with a weight of 2 and
+`surf_winter` with a weight of 1.
+
+Regions can also be placed on different variables, in which case every variable
+needs an entry in `FUN_list` and `weights`. This example needs a model built with
+the biogeochemistry (`use_bgc = TRUE`) and observations of dissolved oxygen:
+
+```{r multi-variable-regions, eval = FALSE}
+regions_multi <- list(
+  surf_temp = list(var = "HYD_temp", depth_range = c(0, 2)),
+  bot_temp  = list(var = "HYD_temp", depth_range = c(z - 4, z)),
+  bot_oxy   = list(var = "CHM_oxy",  depth_range = c(z - 4, z))
+)
+
+# `param_bgc` is `aeme_parameters` plus the biogeochemical parameters.
+calib_aeme(aeme = aeme, path = path, param = param_bgc, model = model,
+           FUN_list = list(HYD_temp = mae, CHM_oxy = mae),
+           weights = c(HYD_temp = 1, CHM_oxy = 0.5),
+           vars_sim = regions_multi, ctrl = ctrl_reg)
+```
+
+### Linking parameters to regions
+
+When calibrating with the `"MOEDA"` method, or with PEST++ and a localizer,
+`param_var_matrix` declares which parameters are linked to which target. With
+regions, its columns can be named after the **regions** rather than the variable,
+so the surface and bottom temperature can be tied to different parameters. Each
+entry is a vector of full parameter names, parameter groups or bare names:
+
+```{r region-param-var-matrix, eval = FALSE}
+param_sub <- aeme_parameters[aeme_parameters$name %in% c(
+  "light/Kw", "mixing/coef_mix_conv", "mixing/coef_wind_stir",
+  "mixing/coef_mix_hyp", "mixing/coef_mix_shear"), ]
+
+ctrl_moeda <- create_calib_control(c_method = "MOEDA", NP = 40, itermax = 200,
+                                   parallel = TRUE, ncore = 2)
+
+calib_aeme(aeme = aeme, path = path, param = param_sub, model = model,
+           FUN_list = FUN_list_reg, weights = weights_reg,
+           vars_sim = regions, ctrl = ctrl_moeda,
+           param_var_matrix = list(
+             surf_temp = c("light/Kw", "mixing/coef_mix_conv",
+                           "mixing/coef_wind_stir"),
+             bot_temp  = c("mixing/coef_mix_hyp", "mixing/coef_mix_shear")))
+```
+
+MOEDA needs every parameter in `param` to be linked to at least one target, which
+is why `param_sub` holds only the five parameters linked above. A region that is
+not mentioned falls back to being linked through its variable's column, if there
+is one. See `?as_param_var_matrix` for every accepted form.
+
+### Things to be aware of
+
+-   **Regions on the same variable must not overlap** in both months and depths.
+    `calib_aeme()` stops with an error if they do, rather than counting an
+    observation twice.
+-   **Lake level cannot be a region.** `LKE_lvlwtr` has no depth axis, and the
+    region form cannot be mixed with plain variable names in the same `vars_sim`.
+    To calibrate the water level as well, calibrate it in its own stage; see
+    `vignette("staged-calibration")`.
+-   **Choose regions that contain observations.** A region with no observations
+    inside its window contributes the `na_value` (999 by default) to every fit,
+    which swamps the real objective. Check the counts as above.
+
+## Other calibration approaches
+
+The workflow above uses the built-in differential-evolution engine. `aemetools`
+also provides:
+
+-   **Multi-objective (Pareto) calibration** with the `"MOEDA"` method. Set
+    `create_calib_control(c_method = "MOEDA")` and pass a parameter covariance
+    matrix built with `create_param_var_matrix()` to
+    `calib_aeme(param_var_matrix = )` (the two are mutually required). Extract
+    the non-dominated sets with `get_pareto_front()` and inspect them across
+    generations with `plot_pareto_generations()`.
+-   **PEST++ calibration** using the `pestpp-ies` iterative ensemble smoother,
+    with Morris screening and localisation. Install the solver once with
+    `install_pest()`, then see `vignette("screen-then-calibrate")` and
+    `vignette("staged-calibration")`.
+-   **Split-sample validation**: `get_calib_periods()` proposes calibration and
+    validation windows from the observation record (or returns the whole record
+    with `split = FALSE`), and `validate_aeme()` scores a parameter set over the
+    held-out period.
+-   A `timeout` argument on `create_calib_control()` returns the best set found
+    so far if a wall-clock limit is reached.

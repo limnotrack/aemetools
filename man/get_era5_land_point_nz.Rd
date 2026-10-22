@@ -38,6 +38,17 @@ environment variable using \code{Sys.setenv(LERNZMP_KEY = "your_api_key")}.}
 dataframe of daily ERA5 data.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\code{get_era5_land_point_nz()} is superseded by
+\code{metscale::extract_era5_hourly_met()} (and, for a lake looked up by
+id or name, \code{metscale::extract_era5_lake_met()}). ERA5 extraction,
+conversion and bias-correction have moved to the
+\href{https://github.com/limnotrack/metscale}{metscale} package; install it
+with \code{remotes::install_github("limnotrack/metscale")}. Note the mechanism
+differs: this function calls the limnotrack LERNZmp API, while its
+metscale replacements read local ERA5-Land netCDF files directly.
+
 Extract \href{https://www.ecmwf.int/en/era5-land}{ERA5-Land} meteorological data
 for the closest grid to a particular latitude and longitude for a selected
 number of years (1980-2023).

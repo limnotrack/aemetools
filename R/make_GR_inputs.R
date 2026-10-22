@@ -13,7 +13,6 @@
 #' @param plot logical; plot the reaches, lake and catchment? Defaults to
 #' FALSE.
 #'
-#' @import airGR
 #' @importFrom sf st_crs st_difference st_union st_area
 #' @importFrom dplyr filter mutate select rename
 #' @importFrom units drop_units
@@ -24,6 +23,7 @@
 make_GR_inputs <- function(id, reaches, lake, catchments, obs_flow = NULL,
                            met, lat = NULL, FUN_MOD = airGR::RunModel_GR6J,
                            plot = FALSE) {
+  rlang::check_installed("airGR", reason = "to build GR model inputs.")
 
   if (!(sf::st_crs(reaches) == sf::st_crs(lake) &
         sf::st_crs(reaches) == sf::st_crs(catchments))) {

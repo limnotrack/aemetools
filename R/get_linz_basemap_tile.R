@@ -5,12 +5,14 @@
 #'
 #' @inheritParams maptiles::get_tiles
 #' @inheritParams get_raster_tile
+#' 
 #'
 #' @return A SpatRaster is returned.
 #' @export
 #'
 
 get_linz_basemap_tile <- function(x, zoom = 16, key = NULL, verbose = FALSE) {
+  rlang::check_installed("maptiles", reason = "to download basemap tiles.")
 
   if (is.null(key)) {
     key <- Sys.getenv("LINZ_BASEMAP_KEY")

@@ -1,7 +1,6 @@
 #' @inheritParams run_GR
 #' @inheritParams airGR::CreateRunOptions
 #'
-#' @importFrom airGR CreateRunOptions
 #'
 #' @noRd
 
