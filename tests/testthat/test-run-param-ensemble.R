@@ -12,7 +12,11 @@ rpe_sets <- function(model = "gotm_wet", n = 4, seed = 1) {
   set.seed(seed)
   lapply(seq_len(n), function(i) {
     d <- pp
-    d$value <- stats::runif(nrow(d), d$min, d$max)
+    # Stay within +/-10% of the defaults (clipped to bounds): draws across the
+    # full bounds can drain the lake, and AEME drops runs that end early.
+    lo <- pmax(d$min, d$value - 0.1 * abs(d$value))
+    hi <- pmin(d$max, d$value + 0.1 * abs(d$value))
+    d$value <- stats::runif(nrow(d), lo, hi)
     d
   })
 }
