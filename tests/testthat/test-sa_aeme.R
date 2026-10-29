@@ -65,7 +65,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
 
   skip_if_slow()
   model <- c("dy_cd")
-  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+  cached <- get_cached_aeme_run(model = model, ext_elev = 4, use_bgc = FALSE,
                                 run = TRUE)
   aeme <- cached$aeme
   path <- cached$path
@@ -76,7 +76,7 @@ test_that("can execute sensitivity analysis for AEME-DYRESM in parallel", {
   
   utils::data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
-    dplyr::filter(file != "wdr")
+    dplyr::filter(file != "wdr", model == "dy_cd")
   
   # Function to calculate fitness
   fit <- function(df) {
