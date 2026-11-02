@@ -2,46 +2,65 @@
 % Please edit documentation in R/run_aeme_ensemble.R
 \name{run_aeme_ensemble}
 \alias{run_aeme_ensemble}
-\title{Run AEME ensemble}
+\title{Run an AEME parameter ensemble}
 \usage{
 run_aeme_ensemble(
   aeme,
-  model,
+  model = NULL,
+  path = NULL,
   n = 10,
-  dist = "norm",
-  path = ".",
+  dist = c("norm", "unif"),
+  param = NULL,
+  param_sets = NULL,
   parallel = FALSE,
   ncore = NULL,
-  param = NULL,
-  na_value = 999
+  na_value = lifecycle::deprecated()
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model}{string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
-\item{n}{numeric; number of ensemble members to generate.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
-\item{dist}{character; distribution to sample from. Default is "norm". Other
-options are "unif".}
+\item{n}{numeric; number of ensemble members to sample.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{dist}{character; distribution to sample from, \code{"norm"} (default) or
+\code{"unif"}.}
 
-\item{parallel}{logical; whether to run in parallel. Default is FALSE.}
+\item{param}{data.frame; parameter template supplying \code{min}/\code{max}. \code{NULL}
+(default) takes it from the \code{aeme} object.}
 
-\item{ncore}{numeric; number of cores to use for parallel processing. Default
-is NULL. If NULL, the function will use the number of cores minus 1.}
+\item{param_sets}{a supplied ensemble to run instead of sampling. Either a
+list of long \code{param} dataframes (one per member, \code{value} set) - such as
+an \code{\link[=pest_posterior_params]{pest_posterior_params()}} result - or a single long data.frame with
+an \code{ensemble} id column plus the \code{param} columns. When supplied, \code{n},
+\code{dist} and \code{param} are ignored.}
 
-\item{param}{data.frame; parameter values to use. Default is NULL. If NULL,
-the function will use the parameters from the aeme object.}
+\item{parallel}{logical; run members in parallel. Default \code{FALSE}.}
 
-\item{na_value}{numeric; value to use for NA values. Default is 999.}
+\item{ncore}{numeric; cores for parallel processing. \code{NULL} (default) uses
+one fewer than are available.}
+
+\item{na_value}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} no longer used; members
+that fail to run are dropped.}
 }
 \value{
-an `aeme` object with model output loaded.
+The \code{aeme} object with \verb{AEME::output()$ens_001 .. ens_00k} and
+\verb{$n_members} populated.
 }
 \description{
-Run a parameter ensemble
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\code{run_aeme_ensemble()} is deprecated. Use \code{\link[=sample_aeme_ensemble]{sample_aeme_ensemble()}} to sample
+members from the parameter bounds, or \code{\link[AEME:run_aeme_ensemble]{AEME::run_aeme_ensemble()}} to run
+supplied parameter sets (note that zone-ratio parameters must then be
+expanded with \code{\link[=expand_zone_ratios]{expand_zone_ratios()}} first).
+}
+\seealso{
+\code{\link[=sample_aeme_ensemble]{sample_aeme_ensemble()}}, \code{\link[AEME:run_aeme_ensemble]{AEME::run_aeme_ensemble()}}
 }

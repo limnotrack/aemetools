@@ -21,7 +21,13 @@ read_grib_point(file, shape = NULL, lat, lon, method = "bilinear")
 A data frame with the extracted data.
 }
 \description{
-Read a point from a grib file
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\code{read_grib_point()} is superseded by
+\code{metscale::read_era5_grib_point()}. ERA5 extraction, conversion and
+bias-correction have moved to the
+\href{https://github.com/limnotrack/metscale}{metscale} package; install it
+with \code{remotes::install_github("limnotrack/metscale")}.
 }
 \examples{
 \dontrun{

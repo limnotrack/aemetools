@@ -24,6 +24,7 @@ read_calib_meta <- function(file, file_dir = "calib_sa") {
   type <- tools::file_ext(file)
   # Read the file
   if (type == "db") {
+    rlang::check_installed("dbplyr", reason = "to query the results database.")
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = file)
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
     sim_meta <- dplyr::tbl(con, "calibration_metadata") |>

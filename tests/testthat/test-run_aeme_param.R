@@ -1,21 +1,12 @@
 test_that("running GLM & GOTM works with params", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  # unlink(tmpdir, recursive = TRUE)
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
+  skip_if_slow()
   model <- c("glm_aed", "gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                               model = model, model_controls = model_controls,
-                               ext_elev = 5, use_bgc = FALSE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                vars_sim = "ZOO_zoo1", run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls()
+  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = "ZOO_zoo1")
 
   lke <- AEME::lake(aeme)
 
@@ -91,31 +82,20 @@ test_that("running GLM & GOTM works with params", {
   testthat::expect_true(all(gotm_outf2[, 3] == 0))
 
   # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "output", "output.nc"))
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
   testthat::expect_true(all(file_chk))
 })
 
 test_that("running GOTM with different grid", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  # unlink(tmpdir, recursive = TRUE)
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
+  skip_if_slow()
   model <- c("gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = FALSE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                vars_sim = "ZOO_zoo1", run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls()
+  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = "ZOO_zoo1")
   lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
 
   cfg <- AEME::configuration(aeme)
@@ -134,23 +114,14 @@ test_that("running GOTM with different grid", {
 })
 
 test_that("running DYRESM works with params", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  # unlink(tmpdir, recursive = TRUE)
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls()
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
+  skip_if_slow()
   model <- c("dy_cd")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = FALSE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = FALSE,
+                                vars_sim = "ZOO_zoo1", run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls()
+  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = "ZOO_zoo1")
 
   lke <- AEME::lake(aeme)
 
@@ -202,36 +173,28 @@ test_that("running DYRESM works with params", {
   testthat::expect_true(all(dy_outf2$flow == 0))
 
   # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
-  lke <- AEME::lake(aeme)
-  file_chk <- file.exists(file.path(path, paste0(lke$id, "_",
-                                                 tolower(lke$name)),
-                                    model, "DYsim.nc"))
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
   testthat::expect_true(all(file_chk))
 })
 
 test_that("running GLM-AED works with bgc_params", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  # unlink(tmpdir, recursive = TRUE)
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
+  skip_if_slow()
   model <- c("glm_aed")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                           model = model, model_controls = model_controls,
-                           ext_elev = 5, use_bgc = TRUE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                vars_sim = "ZOO_zoo1", run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
+  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = "ZOO_zoo1")
 
   utils::data("glm_aed_parameters", package = "AEME")
   param <- glm_aed_parameters
   param <- param |>
-    dplyr::filter(grepl("aed2_carbon|aed2_oxygen|aed2_phytoplankton|aed2_nitrogen|aed2_organic_matter|aed2_phosphorus|phyto_data|zoop_params", name))
+    dplyr::filter(
+      grepl("aed_carbon|aed_oxygen|aed_phytoplankton|aed_nitrogen|aed_organic_matter|aed_phosphorus|phyto_data|zoop_params", name),
+      !grepl("aed2", file), !grepl("the_phytos", name)
+      )
 
   aeme <- run_aeme_param(aeme = aeme, model = model,
                          param = param, path = path,
@@ -239,30 +202,20 @@ test_that("running GLM-AED works with bgc_params", {
                          na_value = 999, return_aeme = TRUE)
 
   # AEME::plot_output(aeme, model = "glm_aed", var_sim = "PHY_tchla")
-  lke <- AEME::lake(aeme)
-  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(lake_dir, model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
 })
 
 test_that("running GOTM-WET works with bgc_params", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  # unlink(tmpdir, recursive = TRUE)
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
-  model_controls <- model_controls |>
-    dplyr::mutate(simulate = dplyr::case_when(
-      var_aeme == "ZOO_zoo1" ~ TRUE,
-      .default = simulate
-    ))
+  skip_if_slow()
   model <- c("gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme, model = model,
-                           model_controls = model_controls,
-                           ext_elev = 5, use_bgc = TRUE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                vars_sim = "ZOO_zoo1", run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
+  model_controls <- AEME::set_vars_sim(model_controls, vars_sim = "ZOO_zoo1")
 
   utils::data("gotm_wet_parameters", package = "AEME")
   param <- gotm_wet_parameters |>
@@ -275,27 +228,19 @@ test_that("running GOTM-WET works with bgc_params", {
                          na_value = 999, return_aeme = TRUE)
 
   # AEME::plot_output(aeme, model = "gotm_wet")
-  lake_dir <- AEME::get_lake_dir(aeme = aeme, path = path)
-  file_chk <- file.exists(file.path(lake_dir,
-                                    model, "output", "output.nc"))
-  testthat::expect_true(file_chk)
+  outfile <- AEME::get_model_outfile(aeme, model)
+  file_chk <- sapply(outfile, file.exists)
+  testthat::expect_true(all(file_chk))
 })
 
 test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
-  tmpdir <- tempdir()
-  aeme_dir <- system.file("extdata/lake/", package = "AEME")
-  # Copy files from package into tempdir
-  file.copy(aeme_dir, tmpdir, recursive = TRUE)
-  path <- file.path(tmpdir, "lake")
-  aeme <- AEME::yaml_to_aeme(path = path, "aeme.yaml")
-  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
-  inf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
-  outf_factor = c("dy_cd" = 1, "glm_aed" = 1, "gotm_wet" = 1)
+  skip_if_slow()
   model <- c("gotm_wet")
-  aeme <- AEME::build_aeme(path = path, aeme = aeme,
-                               model = model, model_controls = model_controls,
-                               inf_factor = inf_factor, ext_elev = 5,
-                               use_bgc = TRUE)
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+  model_controls <- AEME::get_model_controls(use_bgc = TRUE)
 
   utils::data("gotm_wet_parameters", package = "AEME")
   param <- gotm_wet_parameters |>
@@ -338,4 +283,112 @@ test_that("sensitivity analysis for GOTM-WET works with bgc_params", {
 
   p1 <- plot_uncertainty(sa = sa_res)
   testthat::expect_true(ggplot2::is_ggplot(p1))
+})
+
+test_that("run_aeme_param passes the correct sediment temperature and flux values", {
+  model <- "glm_aed"
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+
+  row <- function(file, name, value, min, max) {
+    data.frame(model = "glm_aed", file = file, name = name, value = value,
+               min = min, max = max, group = NA_character_, index = 1L,
+               stringsAsFactors = FALSE)
+  }
+  # GLM sediment temperature (3 zones), AED fluxes (2 zones) and an
+  # ordinary scalar parameter
+  n_zones <- AEME::get_glm_sed_zones(aeme)
+  temp <- zone_ratio_param(row("glm4.nml", "sediment/sed_temp_mean", 20, 5, 30),
+                           n_zones = n_zones)
+  oxy <- zone_ratio_param(row("aed.nml", "aed_sed_const2d/fsed_oxy",
+                              -40, -80, -10), n_zones = n_zones)
+  amm <- zone_ratio_param(row("aed.nml", "aed_sed_const2d/fsed_amm", 8, 1, 16),
+                          n_zones = n_zones)
+  kw <- row("glm4.nml", "light/Kw", 0.4, 0.1, 1)
+  kw$index <- NA_integer_
+  param <- dplyr::bind_rows(temp, oxy, amm, kw)
+  param$value[param$name == "sediment/sed_temp_mean_zratio"] <- 0.75
+  param$value[param$name == "aed_sed_const2d/fsed_oxy_zratio"] <- 0.25
+  param$value[param$name == "aed_sed_const2d/fsed_amm_zratio"] <- 0.5
+  
+  e <- expand_zone_ratios(param)
+  
+  a <- run_aeme_param(aeme = aeme, param = param, model = "glm_aed", 
+                      path = path, return_aeme = TRUE)
+  
+  cfg_files <- AEME::get_model_config_files(a)
+  glm <- AEME::read_nml(cfg_files$glm_aed["glm4"])
+  testthat::expect_equal(glm$light$Kw, 0.4)
+  testthat::expect_equal(glm$sediment$sed_temp_mean, e$value[e$name == "sediment/sed_temp_mean"])
+  aed <- AEME::read_nml(cfg_files$glm_aed["aed"])
+  testthat::expect_equal(aed$aed_sed_const2d$fsed_oxy, e$value[e$name == "aed_sed_const2d/fsed_oxy"])
+  testthat::expect_equal(aed$aed_sed_const2d$fsed_amm, e$value[e$name == "aed_sed_const2d/fsed_amm"])
+
+})
+
+test_that("run_aeme_param passes independent zone values through unchanged", {
+  model <- "glm_aed"
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+
+  n_zones <- AEME::get_glm_sed_zones(aeme)
+  temp_vals <- seq(12, by = 2, length.out = n_zones)
+  oxy_vals <- seq(-40, by = 10, length.out = n_zones)
+  param <- rbind(
+    data.frame(model = "glm_aed", file = "glm4.nml",
+               name = "sediment/sed_temp_mean", value = temp_vals,
+               min = 5, max = 30, group = NA_character_,
+               index = seq_len(n_zones), stringsAsFactors = FALSE),
+    data.frame(model = "glm_aed", file = "aed.nml",
+               name = "aed_sed_const2d/fsed_oxy", value = oxy_vals,
+               min = -80, max = 0, group = NA_character_,
+               index = seq_len(n_zones), stringsAsFactors = FALSE)
+  )
+
+  # No zone-ratio rows, so expansion must leave the table as it is
+  expect_identical(expand_zone_ratios(param), param)
+
+  a <- run_aeme_param(aeme = aeme, param = param, model = model,
+                      path = path, return_aeme = TRUE)
+
+  cfg_files <- AEME::get_model_config_files(a)
+  glm <- AEME::read_nml(cfg_files$glm_aed["glm4"])
+  testthat::expect_equal(glm$sediment$sed_temp_mean, temp_vals)
+  aed <- AEME::read_nml(cfg_files$glm_aed["aed"])
+  testthat::expect_equal(aed$aed_sed_const2d$fsed_oxy, oxy_vals)
+})
+
+test_that("run_aeme_param passes the correct sediment temperature offsets", {
+  model <- "glm_aed"
+  cached <- get_cached_aeme_run(model = model, ext_elev = 5, use_bgc = TRUE,
+                                run = FALSE)
+  aeme <- cached$aeme
+  path <- cached$path
+
+  n_zones <- AEME::get_glm_sed_zones(aeme)
+  temp <- zone_offset_param(
+    data.frame(model = "glm_aed", file = "glm4.nml",
+               name = "sediment/sed_temp_mean", value = 10, min = 5,
+               max = 25, group = NA_character_, index = 1L,
+               stringsAsFactors = FALSE),
+    n_zones = n_zones, lower = 0, upper = 5
+  )
+  # zone 1 = 10, each shallower zone 1.5 degC warmer than the one below
+  temp$value[temp$name == "sediment/sed_temp_mean_zoffset"] <- 1.5
+
+  e <- expand_zone_ratios(temp)
+  testthat::expect_equal(e$value, 10 + 1.5 * (seq_len(n_zones) - 1))
+
+  a <- run_aeme_param(aeme = aeme, param = temp, model = model,
+                      path = path, return_aeme = TRUE)
+
+  cfg_files <- AEME::get_model_config_files(a)
+  glm <- AEME::read_nml(cfg_files$glm_aed["glm4"])
+  testthat::expect_equal(glm$sediment$sed_temp_mean, e$value)
+  # shallower zones are never cooler than deeper ones
+  testthat::expect_true(all(diff(glm$sediment$sed_temp_mean) >= 0))
 })

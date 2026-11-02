@@ -4,7 +4,7 @@
 \alias{get_dem_value}
 \title{Get DEM value for a given latitude and longitude}
 \usage{
-get_dem_value(lat, lon, key = NULL)
+get_dem_value(lat, lon, key = NULL, use_lidar = TRUE)
 }
 \arguments{
 \item{lat}{numeric; Latitude}
@@ -14,6 +14,10 @@ get_dem_value(lat, lon, key = NULL)
 \item{key}{character; LINZ API key. This can be set as an environment variable
 using the \code{add_linz_key()} function or passed as a character.
 See \code{?add_linz_key} for more information with setting up the API key.}
+
+\item{use_lidar}{logical; if TRUE, uses the LIDAR DEM layer (https://data.linz.govt.nz/layer/121859-new-zealand-lidar-1m-dem/) which
+provides higher resolution elevation data. If FALSE, uses the 8m National
+DEM (https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/).}
 }
 \value{
 numeric value or NA if outside extent
@@ -21,5 +25,7 @@ numeric value or NA if outside extent
 \description{
 This function uses the LINZ data service to obtain the elevation value for a
 given latitude and longitude. The function \code{get_raster_layer_value()} is
-used to obtain the value for the DEM layer (ID: 51768).
+used to obtain the value for the LiDAR DEM layer (ID: 121859) or the 8m
+National DEM (ID: 51768). The user can choose which layer to use by setting
+the \code{use_lidar} argument.
 }

@@ -6,8 +6,8 @@
 #' @export
 #'
 #' @importFrom ggplot2 ggplot aes geom_point facet_wrap labs theme_bw
-#' scale_colour_gradientn theme scale_x_continuous scale_y_continuous
-#' labs
+#' @importFrom ggplot2 scale_colour_gradientn theme scale_x_continuous 
+#' @importFrom ggplot2 scale_y_continuous labs
 #' @importFrom dplyr filter
 #' @importFrom tidyr pivot_wider
 #' @importFrom utils combn
@@ -31,7 +31,7 @@ plot_multiscatter <- function(sa) {
 
       params <- unique(df$label)
       dt <- df # data.table::data.table(df)
-      out <- t(utils::combn(params, 2))
+      out <- t(combn(params, 2))
       N <- nrow(t)
       Y <- dt$fit_value
       fit <- df |>

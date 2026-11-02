@@ -51,6 +51,14 @@ if only a single user is needed it defaults to ("ecmwfr").}
 \item{path}{filepath to store downloaded file}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\code{download_era5_grib()} is superseded by
+\code{metscale::download_era5_cds()}. ERA5 extraction, conversion and
+bias-correction have moved to the
+\href{https://github.com/limnotrack/metscale}{metscale} package; install it
+with \code{remotes::install_github("limnotrack/metscale")}.
+
 Download ERA5 meteorological data from the Copernicus Data Store (CDS).
 Create a free CDS user account by \href{https://cds.climate.copernicus.eu/user/register}{self
 registering}.

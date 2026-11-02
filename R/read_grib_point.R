@@ -1,10 +1,19 @@
 #' Read a point from a grib file
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `read_grib_point()` is superseded by
+#' \code{metscale::read_era5_grib_point()}. ERA5 extraction, conversion and
+#' bias-correction have moved to the
+#' \href{https://github.com/limnotrack/metscale}{metscale} package; install it
+#' with `remotes::install_github("limnotrack/metscale")`.
+#'
 #' @param file character; path to the grib file. Can be a vector of paths.
 #' @inheritParams download_era5_grib
 #' @inheritParams terra::extract
-#' 
-#' @importFrom terra rast extract vect project units describe
+#'
+#' @importFrom lifecycle deprecate_soft
 #'
 #' @return A data frame with the extracted data.
 #' @export
@@ -25,6 +34,10 @@
 #' }
 
 read_grib_point <- function(file, shape = NULL, lat, lon, method = "bilinear") {
+  rlang::check_installed("terra", reason = "to read GRIB files.")
+  lifecycle::deprecate_soft("0.3.0.9000", "read_grib_point()",
+                            "metscale::read_era5_grib_point()")
+
   out <- lapply(file, \(f) {
 
     if (!file.exists(f)) {

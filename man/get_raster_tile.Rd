@@ -18,10 +18,7 @@ data service. See \url{https://data.linz.govt.nz/}}
 
 \item{key}{character; LINZ API key. If NULL, will look for the key in the
 LINZ_KEY environment variable. If that is not set, will throw an error.
-Use the \code{add_linz_key} function to set the key.
-
-@importFrom maptiles create_provider get_tiles
-@importFrom terra subset}
+Use the \code{add_linz_key} function to set the key.}
 
 \item{verbose}{if TRUE, tiles filepaths, zoom level and
 attribution are displayed.}

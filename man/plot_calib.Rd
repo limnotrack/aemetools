@@ -6,18 +6,17 @@
 \usage{
 plot_calib(
   calib,
-  na_value,
   fit_col = "fit",
   nrow = 2,
   base_size = 8,
   return_pars = FALSE,
-  log_y = TRUE
+  log_y = TRUE,
+  na_value = deprecated()
 )
 }
 \arguments{
-\item{calib}{dataframe; output from \code{\link{read_calib}}}
-
-\item{na_value}{numeric; value to replace NA values with}
+\item{calib}{A list with the calibration results loaded using
+\code{\link{read_calib}}.}
 
 \item{fit_col}{character; name of column containing fit values. Default is
 \code{"fit"}.}
@@ -29,10 +28,58 @@ plot_calib(
 \item{return_pars}{logical; return parameter values}
 
 \item{log_y}{logical; use log scale on y-axis. Default is \code{TRUE}.}
+
+\item{na_value}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Numeric. Penalty value
+substituted for \code{NA} fit values, this is no longer needed as NA values
+are now written to simulation_data in output of calib_aeme() and sa_aeme().
+The argument will be removed in a future version.}
 }
 \value{
 list of plots
 }
 \description{
-Plot calibration results
+Convenience wrapper that runs \code{\link[=plot_calib_dotty]{plot_calib_dotty()}}, \code{\link[=plot_calib_histogram]{plot_calib_histogram()}}
+and \code{\link[=plot_calib_convergence]{plot_calib_convergence()}} and returns all three. Call the individual
+\verb{plot_calib_*()} functions directly if you only need one of them.
+}
+\examples{
+aeme_file <- system.file("extdata/aeme.rds", package = "AEME")
+aeme <- readRDS(aeme_file)
+model_controls <- AEME::get_model_controls()
+model <- c("glm_aed", "gotm_wet")
+path <- "aeme"
+aeme <- AEME::build_aeme(aeme = aeme, model = model, path = path,
+                         model_controls = model_controls, ext_elev = 5) |>
+  AEME::run_aeme()
+
+data("aeme_parameters", package = "AEME")
+param <- aeme_parameters
+
+# Function to calculate fitness (nse_loss = -1 * NSE, minimised by calib_aeme)
+FUN_list <- list(HYD_temp = nse_loss, LKE_lvlwtr = nse_loss)
+
+ctrl <- create_control(method = "calib", NP = 10, itermax = 20, ncore = 2,
+                       parallel = TRUE, file_type = "db",
+                       file_name = "results.db")
+
+vars_sim <- c("HYD_temp", "LKE_lvlwtr")
+weights <- c("HYD_temp" = 1, "LKE_lvlwtr" = 1)
+
+# Calibrate AEME model
+sim_id <- calib_aeme(aeme = aeme, model = model, path = path,
+                     param = param, FUN_list = FUN_list, ctrl = ctrl,
+                     vars_sim = vars_sim, weights = weights)
+
+# Read calibration output
+calib <- read_calib(sim_id = sim_id, ctrl = ctrl)
+plist <- plot_calib(calib = calib)
+
+# Dotty plot
+plist$dotty
+
+# Convergence plot
+plist$convergence
+
+# Histogram plot
+plist$histogram
 }

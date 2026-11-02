@@ -4,7 +4,7 @@
 \alias{read_sa}
 \title{Read sensitivity analysis output}
 \usage{
-read_sa(ctrl = NULL, file_name, file_dir, sim_id, R = NULL, boot = TRUE)
+read_sa(ctrl = NULL, file_name, file_dir, sim_id, R = 1000, boot = TRUE)
 }
 \arguments{
 \item{ctrl}{list; of controls for sensitivity analysis function created using
@@ -20,7 +20,14 @@ argument is ignored.}
 \item{sim_id}{A vector of simulation IDs to read. If NULL, all simulations
 are read.}
 
-\item{R}{Positive integer, number of bootstrap replicas. Default is NULL.}
+\item{R}{positive integer; number of bootstrap replicas passed to
+\code{sensobol::sobol_indices()}/\code{sobol_dummy()}. Only used when \code{boot = TRUE}
+(the default here). Defaults to \code{1000}, a common choice for bootstrap
+confidence intervals - unlike \code{sensobol}'s own functions, which default to
+\code{R = NULL} because they default to \code{boot = FALSE}. If you pass
+\code{boot = TRUE} explicitly with \code{R = NULL}, this errors immediately with a
+clear message rather than letting the failure surface deep inside
+\code{boot::boot()}.}
 
 \item{boot}{Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
 estimates. Default is \code{boot = FALSE}.}

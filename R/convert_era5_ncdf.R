@@ -1,6 +1,14 @@
 #' Convert ERA5 netCDF files to AEME or LER
 #'
 #' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `convert_era5_ncdf()` is superseded by
+#' \code{metscale::convert_era5_netcdf()}. ERA5 extraction, conversion and
+#' bias-correction have moved to the
+#' \href{https://github.com/limnotrack/metscale}{metscale} package; install it
+#' with `remotes::install_github("limnotrack/metscale")`.
+#'
 #' Convert ERA5 netCDF files to AEME or LakeEnsemblR formats.
 #'
 #' @param lat numeric; latitude
@@ -11,10 +19,10 @@
 #' @param path filepath to where the downloaded ERA5 ncdf files are stored.
 #' @param format string; Either "AEME" or "LER". Default is "AEME".
 #'
-#' @importFrom stars read_ncdf st_extract
 #' @importFrom sf st_as_sf
 #' @importFrom stats aggregate
 #' @importFrom utils data
+#' @importFrom lifecycle deprecate_soft
 #'
 #' @export
 #'
@@ -33,9 +41,13 @@ convert_era5_ncdf <- function(lat,
                               site  = "test",
                               path = ".",
                               format = "AEME") {
+  rlang::check_installed("stars", reason = "to read ERA5 netCDF files.")
+
+  lifecycle::deprecate_soft("0.3.0.9000", "convert_era5_ncdf()",
+                            "metscale::convert_era5_netcdf()")
 
   # Load Rdata
-  utils::data("era5_ref_table", package = "aemetools", envir = environment())
+  data("era5_ref_table", package = "aemetools", envir = environment())
 
   coords <- data.frame(lat = lat, lon = lon)
   coords_sf <- sf::st_as_sf(coords, coords = c("lon", "lat"), crs = 4326)
