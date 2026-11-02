@@ -85,7 +85,7 @@ pest_prior_cov <- function(param, sigma_range = 4, file = NULL) {
 #'   \code{\link{pest_prior_cov}} (or a path to one). Only used when
 #'   `dist = "normal"`: its diagonal sets the per-parameter spread, and a
 #'   non-diagonal matrix draws correlated realisations via
-#'   \code{\link[MASS]{mvrnorm}}.
+#'   a multivariate normal sampler.
 #' @param seed Integer or `NULL`. Seed for the draw, for reproducibility.
 #' @param include_base Logical. Replace the last realisation with the initial
 #'   parameter values and name it `base`, mirroring `pestpp-ies`'
@@ -98,7 +98,6 @@ pest_prior_cov <- function(param, sigma_range = 4, file = NULL) {
 #'   `real_name, <par>, <par>, ...` layout `pestpp-ies` expects.
 #'
 #' @importFrom stats runif rnorm setNames
-#' @importFrom MASS mvrnorm
 #'
 #' @return Invisibly, a dataframe with a `real_name` column and one column
 #'   per `parnme`, values in native (untransformed) units.
@@ -146,7 +145,7 @@ pest_prior_ensemble <- function(param, n = 100, dist = "uniform", cov = NULL,
       sd <- sqrt(diag(covm))
       for (j in seq_len(np)) M[, j] <- stats::rnorm(n, mid[j], sd[j])
     } else {
-      M[] <- MASS::mvrnorm(n, mu = mid, Sigma = covm)
+      M[] <- mvrnorm(n, mu = mid, Sigma = covm)
     }
   }
 

@@ -1,4 +1,4 @@
-# aemetools 0.3.0.9000
+# aemetools 0.3.1
 
 ## New features
 
@@ -174,6 +174,15 @@
   `log == FALSE` as well as `log == TRUE`, only filling rows where `log`
   is `NA` (or the column is absent) from the range rule. It previously
   kept `TRUE` values but overwrote deliberate `FALSE` ones.
+
+## Dependencies
+
+* Dropped the `MASS` and `corpcor` dependencies. The two functions used from
+  them are now small internal re-implementations: `mvrnorm()` (eigen
+  decomposition sampler, as in `MASS::mvrnorm()`) and `cov_shrink()` (the
+  Schafer-Strimmer shrinkage covariance estimator, matching
+  `corpcor::cov.shrink()`). Used when sampling new generations in
+  `calib_aeme()` and in `pest_prior_ensemble()`.
 
 # aemetools 0.3.0
 

@@ -177,7 +177,6 @@ importFrom(DBI,
   dbReadTable,
   dbWriteTable
 )
-importFrom(MASS,mvrnorm)
 importFrom(cli,
   cli_abort,
   cli_alert_info,
@@ -186,7 +185,6 @@ importFrom(cli,
   cli_inform,
   cli_warn
 )
-importFrom(corpcor,cov.shrink)
 importFrom(dplyr,
   all_of,
   anti_join,
