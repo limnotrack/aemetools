@@ -51,8 +51,10 @@ example, we will use the `glm_aed` model. The `build_aeme` function will build t
 
 Note that `AEME` functions can be used in pipelines to allow for more efficient code. For example, the `build_aeme` function can be used in a pipeline with the `run_aeme` function to build and run the model in one step.
 
-```{r build-aeme-example, warning=FALSE, message=FALSE}
+```{r build-aeme-example, warning=FALSE, message=FALSE, eval = identical(Sys.getenv("AEMETOOLS_RUN_SLOW_TESTS"), "true")}
 
+# This example requires a GLM-AED binary and is skipped by default in PR CI,
+# matching the slow-test gating used elsewhere in the project.
 aeme <- yaml_to_aeme(path = path, "aeme.yaml")
 model_controls <- AEME::get_model_controls()
 model <- c("glm_aed")
