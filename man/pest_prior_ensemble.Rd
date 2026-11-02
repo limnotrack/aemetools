@@ -31,7 +31,7 @@ and back-transformed.}
 \code{\link{pest_prior_cov}} (or a path to one). Only used when
 \code{dist = "normal"}: its diagonal sets the per-parameter spread, and a
 non-diagonal matrix draws correlated realisations via
-\code{\link[MASS]{mvrnorm}}.}
+a multivariate normal sampler.}
 
 \item{sigma_range}{Numeric. Number of standard deviations spanned by the
 \verb{[min, max]} range. Default \code{4}, the \code{pyemu} default (so \code{sd} is a

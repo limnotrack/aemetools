@@ -8,10 +8,8 @@
 #' @param keep_best_pars logical; keep best parameters. Default is TRUE.
 #' @inheritParams calib_aeme
 #'
-#' @importFrom MASS mvrnorm
 #' @importFrom stats cov rnorm sd quantile
 #' @importFrom cli cli_alert_info
-#' @importFrom corpcor cov.shrink
 #'
 #' @return dataframe; with new parameters.
 #' @noRd
@@ -37,7 +35,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
     # same elite rows - there is no statistical reason to estimate a
     # separate covariance matrix per variable. Instead, sample all linked
     # parameters jointly from one shrinkage-estimated covariance matrix
-    # (corpcor::cov.shrink()): this captures correlation between parameters
+    # (cov_shrink()): this captures correlation between parameters
     # that are genuinely linked to more than one variable directly from the
     # data, while shrinkage keeps the estimate well-conditioned even when
     # there are more parameters than Pareto-front survivors. Parameter
@@ -56,7 +54,7 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
     Sigma <- mask_unlinked_cov(Sigma, param_var_matrix, vars_sim)
 
     survivors2 <- as.data.frame(
-      MASS::mvrnorm(n = ctrl$NP, mu = apply(pf, 2, mean), Sigma = Sigma,
+      mvrnorm(n = ctrl$NP, mu = apply(pf, 2, mean), Sigma = Sigma,
                     tol = 1)
     )
   } else  if ((nrow(survivors1) / nrow(param_df)) > 0.3) {
@@ -129,9 +127,9 @@ next_gen_params <- function(param_df, param, ctrl, best_pars = NULL,
     g <- as.data.frame(survivors2)
   } else {
     Sigma <- estimate_shrunk_cov(survivors2, param)
-    g <- as.data.frame(MASS::mvrnorm(n = ctrl$NP,
-                                     mu = apply(survivors2, 2, mean),
-                                     Sigma = Sigma, tol = 1))
+    g <- as.data.frame(mvrnorm(n = ctrl$NP,
+                          mu = apply(survivors2, 2, mean),
+                          Sigma = Sigma, tol = 1))
   }
 
   # Correct parameters outside ranges ----

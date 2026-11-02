@@ -17,7 +17,6 @@ Depends:
 Imports: 
     AEME (>= 0.4.0),
     cli,
-    corpcor,
     DBI,
     dplyr,
     duckdb,
@@ -25,7 +24,6 @@ Imports:
     httr2,
     jsonlite,
     lifecycle,
-    MASS,
     methods,
     ncdf4,
     parallel,
@@ -65,7 +63,7 @@ Suggests:
     xml2
 VignetteBuilder: 
     knitr
-Remotes:  
+Remotes: 
     github::limnotrack/AEME@dev,
     limnotrack/metscale
 Config/roxygen2/version: 8.1.0

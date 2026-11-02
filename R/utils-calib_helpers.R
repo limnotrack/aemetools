@@ -171,8 +171,40 @@ reflect_bounds <- function(x, lo, hi) {
   pmin(pmax(x, lo), hi)
 }
 
+#' Sample from a multivariate normal distribution
+#'
+#' Minimal re-implementation of `MASS::mvrnorm()` (eigen-decomposition
+#' method) to avoid a dependency on MASS.
+#'
+#' @param n integer; number of samples.
+#' @param mu numeric vector; means.
+#' @param Sigma covariance matrix.
+#' @param tol numeric; tolerance for checking positive definiteness.
+#' @return matrix with `n` rows (or a vector if `n == 1`).
+#' @importFrom stats rnorm
+#' @noRd
+mvrnorm <- function(n = 1, mu, Sigma, tol = 1e-06) {
+  p <- length(mu)
+  if (!all(dim(Sigma) == c(p, p))) {
+    stop("incompatible arguments")
+  }
+  eS <- eigen(Sigma, symmetric = TRUE)
+  ev <- eS$values
+  if (!all(ev >= -tol * abs(ev[1L]))) {
+    stop("'Sigma' is not positive definite")
+  }
+  X <- matrix(stats::rnorm(p * n), n)
+  X <- drop(mu) + eS$vectors %*% diag(sqrt(pmax(ev, 0)), p) %*% t(X)
+  nm <- names(mu)
+  if (is.null(nm) && !is.null(dn <- dimnames(Sigma))) {
+    nm <- dn[[1L]]
+  }
+  dimnames(X) <- list(nm, NULL)
+  if (n == 1) drop(X) else t(X)
+}
+
 #' Enforce a minimum-variance floor on a covariance matrix before it is
-#' used to sample a new generation with `MASS::mvrnorm()`.
+#' used to sample a new generation with `mvrnorm()`.
 #'
 #' Repeated boundary clipping (or a survivor set that happens to agree on a
 #' parameter value) can drive a parameter's sample variance towards zero
@@ -193,11 +225,64 @@ regularize_cov <- function(Sigma, param, min_frac = 0.01) {
   Sigma
 }
 
+#' Shrinkage covariance estimate (Schafer & Strimmer, 2005)
+#'
+#' Minimal re-implementation of `corpcor::cov.shrink()` (unweighted) to avoid
+#' a dependency on corpcor. Correlations are shrunk towards the identity
+#' matrix and variances towards their median, each with an analytically
+#' estimated shrinkage intensity.
+#'
+#' @param x matrix; rows = observations, columns = variables (n >= 3).
+#' @return shrunk covariance matrix.
+#' @noRd
+cov_shrink <- function(x) {
+  x <- as.matrix(x)
+  n <- nrow(x)
+  p <- ncol(x)
+  if (n < 3) stop("Sample size too small!")
+
+  xc <- sweep(x, 2, colMeans(x))
+  v <- colSums(xc^2) / (n - 1)
+  sdv <- sqrt(v)
+
+  # Variances: shrink towards the median
+  w2 <- xc^2
+  v_hat <- n / (n - 1)^3 * colSums(sweep(w2, 2, colMeans(w2))^2)
+  denom_v <- sum((v - stats::median(v))^2)
+  lambda_var <- if (denom_v == 0) 1 else min(1, max(0, sum(v_hat) / denom_v))
+  v_s <- lambda_var * stats::median(v) + (1 - lambda_var) * v
+
+  # Correlations: shrink towards the identity
+  if (p == 1) {
+    S <- matrix(v_s, 1, 1, dimnames = list(colnames(x), colnames(x)))
+    return(S)
+  }
+  xs <- sweep(xc, 2, ifelse(sdv == 0, 1, sdv), "/")
+  R <- crossprod(xs) / (n - 1)
+  num <- 0
+  for (i in seq_len(p - 1)) {
+    for (j in (i + 1):p) {
+      wk <- xs[, i] * xs[, j]
+      num <- num + n / (n - 1)^3 * sum((wk - mean(wk))^2)
+    }
+  }
+  off <- R[upper.tri(R)]
+  denom_r <- sum(off^2)
+  lambda <- if (denom_r == 0) 1 else min(1, max(0, num / denom_r))
+  R_s <- (1 - lambda) * R
+  diag(R_s) <- 1
+
+  sd_s <- sqrt(v_s)
+  S <- R_s * outer(sd_s, sd_s)
+  dimnames(S) <- list(colnames(x), colnames(x))
+  S
+}
+
 #' Estimate a covariance matrix for sampling the next generation, using
 #' shrinkage when there are enough points to support it and falling back
 #' gracefully when there aren't.
 #'
-#' `corpcor::cov.shrink()` errors outright ("Sample size too small!") with
+#' `cov_shrink()` errors outright ("Sample size too small!") with
 #' fewer than 3 rows, since it can't estimate the variance-shrinkage
 #' intensity from so little data. With only 1-2 points there also isn't
 #' enough information to estimate any correlation at all, so this falls
@@ -213,7 +298,7 @@ regularize_cov <- function(Sigma, param, min_frac = 0.01) {
 estimate_shrunk_cov <- function(pf, param) {
   n <- nrow(pf)
   Sigma <- if (n >= 3) {
-    corpcor::cov.shrink(as.matrix(pf), verbose = FALSE)
+    cov_shrink(as.matrix(pf))
   } else if (n == 2) {
     stats::cov(pf)
   } else {
