@@ -11,10 +11,12 @@ editor_options:
 ---
 
 ```{r, include = FALSE}
+run_slow <- identical(Sys.getenv("AEMETOOLS_RUN_SLOW_TESTS"), "true")
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  warning = FALSE
+  warning = FALSE,
+  eval = run_slow
 )
 library(printr)
 unlink("calib-test", recursive = TRUE, force = TRUE)
@@ -73,8 +75,13 @@ aeme <- build_aeme(path = path, aeme = aeme, model = model,
 #| fig.width: 8
 #| cache: false
 #| fig.cap: Water temperature contour plotfor the model output.
+#| eval: !expr run_slow
 
-plot(aeme)
+if (exists("aeme")) {
+  plot(aeme)
+} else {
+  message("GLM-AED example skipped in default CI; set AEMETOOLS_RUN_SLOW_TESTS=true to run it.")
+}
 ```
 
 ## Load parameters to be used for the calibration

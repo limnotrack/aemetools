@@ -7,6 +7,10 @@
 # output, the common path) and simstrat_aed (writes *_out.dat text which AEME
 # converts to netCDF - exercised here through the same netCDF path).
 
+# Real-model integration checks are intentionally skipped by default in PR CI;
+# only the scheduled full-suite workflow sets AEMETOOLS_RUN_SLOW_TESTS=true.
+skip_if_slow()
+
 .raf_test_cache <- new.env(parent = emptyenv())
 
 # Build (and run once) an AEME object for `model`, memoised per file run.
