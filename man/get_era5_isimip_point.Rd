@@ -33,7 +33,13 @@ the temporary directory.}
 A data frame with the requested variables
 }
 \description{
-Get ERA5 data from ISIMIP3a for a point location
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\code{get_era5_isimip_point()} is superseded by
+\code{metscale::download_era5_isimip_point()}, which this function now
+calls. ERA5 extraction, conversion and bias-correction have moved to the
+\href{https://github.com/limnotrack/metscale}{metscale} package; install it
+with \code{remotes::install_github("limnotrack/metscale")}.
 }
 \examples{
 \dontrun{

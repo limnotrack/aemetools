@@ -3,11 +3,6 @@
 #' @inheritParams AEME::build_aeme
 #' @inheritParams calib_aeme
 #'
-#' @importFrom shiny shinyApp fluidPage sidebarLayout sidebarPanel mainPanel
-#'  plotOutput actionButton radioButtons h1 h3 tableOutput renderUI observeEvent
-#'  reactiveValues renderPlot renderTable sliderInput req validate
-#'  need withProgress incProgress tabPanel tabsetPanel uiOutput checkboxInput
-#'  checkboxGroupInput selectInput
 #' @importFrom AEME configuration lake
 #' @importFrom dplyr filter mutate n
 #'
@@ -15,21 +10,21 @@
 #' @export
 
 run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
+  rlang::check_installed("shiny", reason = "to run the interactive app.")
 
   # data("aeme_parameters")
   if (is.null(model_controls)) {
     config <- AEME::configuration(aeme = aeme)
     model_controls <- config$model_controls
   }
-  data("key_naming", package = "AEME", envir = environment())
-  out_vars <- key_naming$name
+  out_vars <- key_naming$var_aeme
   names(out_vars) <- key_naming$name_full
   out_vars <- out_vars[-1]
   out_vars <- grep("HYD|LKE|PHY|CHM|PHS|NIT", out_vars, value = TRUE)
   out_vars_aeme <- model_controls |>
     dplyr::filter(simulate) |>
     dplyr::select(var_aeme) |>
-    dplyr::left_join(key_naming, by = c("var_aeme" = "name"))
+    dplyr::left_join(key_naming, by = "var_aeme")
   out_vars <- out_vars_aeme$var_aeme
   names(out_vars) <- out_vars_aeme$name_text
 
@@ -48,7 +43,7 @@ run_aeme_shiny <- function(aeme, param, path = ".", model_controls = NULL) {
   cfg <- AEME::configuration(aeme)
   # Which models are not NULL in cfg
   models <- names(cfg)
-  models <- models[!models %in% c("model_controls")]
+  models <- models[!models %in% c("model_controls", "use_bgc")]
   names(models) <- c("DYRESM-CAEDYM", "GLM-AED", "GOTM-WET")
   idx <- sapply(models, \(x) !is.null(cfg[[x]][["hydrodynamic"]]))
   models <- models[idx]

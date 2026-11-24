@@ -6,32 +6,34 @@
 \usage{
 sa_aeme(
   aeme,
-  path = ".",
-  param,
   model,
+  param,
+  FUN_list,
+  path,
   model_controls = NULL,
-  FUN_list = NULL,
-  ctrl = NULL,
+  ctrl,
   param_df = NULL
 )
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")}
-
-\item{model}{string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
-
-\item{model_controls}{dataframe; of configuration loaded from
-"model_controls.csv".}
+columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")}
 
 \item{FUN_list}{list of functions; named according to the variables in the
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
 to calculate model fit. If NULL, uses mean absolute error (MAE).}
+
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
+
+\item{model_controls}{data.frame; model configuration, typically loaded via
+\code{\link[AEME:get_model_controls]{get_model_controls()}}.}
 
 \item{ctrl}{list; of controls for sensitivity analysis function created using
 the \code{\link{create_control}} function. See \link{create_control} for
@@ -68,7 +70,7 @@ to run quicker.
                                     use_bgc = FALSE)
 
   # Load parameters
-  utils::data("aeme_parameters", package = "AEME")
+  data("aeme_parameters", package = "AEME")
   param <- aeme_parameters |>
     dplyr::filter(file != "wdr")
 

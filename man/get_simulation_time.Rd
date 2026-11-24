@@ -7,25 +7,53 @@
 get_simulation_time(aeme, model, path, param, FUN_list, vars_sim, weights)
 }
 \arguments{
-\item{aeme}{aeme; object.}
+\item{aeme}{Aeme object.}
 
-\item{model}{string; for which model to calibrate. Only one model can be
-passed. Options are c("dy_cd", "glm_aed" and "gotm_wet").}
+\item{model}{character vector; models to use. One or more of \code{"dy_cd"},
+\code{"glm_aed"}, \code{"gotm_wet"}, \code{"simstrat_aed2"}. Defaults to all models if
+not found in \code{aeme}.}
 
-\item{path}{filepath; where input files are located relative to `config`.}
+\item{path}{character; directory where input files are located. Defaults to
+the path stored in \code{aeme}, or the current working directory if not set.}
 
 \item{param}{dataframe; of parameters read in from a csv file. Requires the
-columns c("model", "file", "name", "value", "min", "max", "log")}
+columns c("model", "file", "group", "name", "index", "value", "min", "max", "log")}
 
 \item{FUN_list}{list of functions; named according to the variables in the
 \code{vars_sim}. Funtions are of the form \verb{function(df)} which will be used
-to calculate model fit. If NULL, uses mean absolute error (MAE).}
+to calculate model fit. If nor provided, uses mean absolute error (MAE).}
 
 \item{vars_sim}{vector; of variables names to be used in the calculation of
-model fit. Currently only supports using one variable.}
+model fit. Alternatively, a fully-named list of sub-regions, in the same
+format that \code{\link{create_sen_control}} accepts. Each element is a list
+with the fields:
+\itemize{
+\item \code{var} (required): the AEME variable to score, e.g. \code{"HYD_temp"}.
+\code{"LKE_lvlwtr"} is not allowed because it has no depth axis.
+\item \code{month}: integers from 1 to 12 to include. Defaults to every month.
+\item \code{depth_range}: \code{c(top, bottom)}, in metres below the surface. Defaults to
+every depth.
+\item \code{weight}: multiplies the underlying variable's entry in \code{weights}.
+Defaults to \code{1}.
+}
 
-\item{weights}{vector; of weights for each variable in vars_sim. Default to
-c(1).}
+Each region is calibrated as its own weighted target, e.g. \code{list(surf_temp = list(var = "HYD_temp", month = c(12, 1, 2), depth_range = c(0, 2)), bot_temp = list(var = "HYD_temp", depth_range = c(z - 4, z)))} calibrates
+surface and bottom temperature independently instead of pooling every
+depth into one \code{HYD_temp} objective. Region names must contain an underscore.
+\code{FUN_list} and \code{weights} are named by the underlying variable, not by the
+region, and the same function scores each region's own observations. A
+region's \code{weight} and the variable's entry in \code{weights} compose:
+\code{weights} sets HYD_temp's importance relative to other variables, the region
+\code{weight} splits that between sub-regions.
+
+Regions on the same variable must not overlap in both \code{month} and
+\code{depth_range}, and observations outside every region are not used. A region
+with no observations in its window adds \code{ctrl$na_value} to every fit. The
+list form cannot be mixed with plain variable names, so \code{LKE_lvlwtr} has to
+be calibrated in its own run.}
+
+\item{weights}{a named vector; of weights for each variable in vars_sim. If not
+provided, defaults to 1 for each variable.}
 }
 \value{
 numeric vector of simulation time for each model.
@@ -46,7 +74,7 @@ aeme <- AEME::build_aeme(path = path, aeme = aeme,
 model = model, model_controls = model_controls,
 ext_elev = 5, use_bgc = FALSE)
 aeme <- AEME::run_aeme(aeme = aeme, model = model, path = path)
-utils::data("aeme_parameters", package = "AEME")
+data("aeme_parameters", package = "AEME")
 param <- aeme_parameters
 # Function to calculate fitness
 fit <- function(df) {

@@ -28,6 +28,10 @@ jobs:
       MFE_KEY: ${{ secrets.MFE_KEY }}
       LINZ_BASEMAP_KEY: ${{ secrets.LINZ_BASEMAP_KEY }}
       R_KEEP_PKG_SOURCE: yes
+      # Full model-run/calibration tests are skipped by default (see
+      # tests/testthat/helper-slow.R) so PR/push checks stay fast; the full
+      # suite runs on its own schedule in test-full.yaml.
+      AEMETOOLS_RUN_SLOW_TESTS: "false"
 
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +48,7 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
-
+          
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true

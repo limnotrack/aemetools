@@ -25,6 +25,11 @@ make_temp_dir <- function(model, lake_dir, n = 2) {
     unlink(dir, recursive = TRUE, force = TRUE)
     dir.create(dir, recursive = TRUE)
     file.copy(fils, dir, recursive = TRUE)
+    # `output/` is excluded from the copy above (it only holds a previous
+    # run) but must exist: GLM 4.0.0, as bundled with AEME 0.4.0, does not
+    # create its own output directory and aborts during initialisation if it
+    # is missing. Mirrors `.pest_stage_model()`.
+    dir.create(file.path(dir, "output"), showWarnings = FALSE)
     file.path(tempdir(), paste0("n_", n))
   })
 }
